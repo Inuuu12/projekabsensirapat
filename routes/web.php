@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KehadiranController;
+use App\Http\Controllers\AduanController;
+use App\Http\Controllers\PublicAgendaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,4 +33,11 @@ Route::prefix('admin')->group(function () {
    // Route untuk absensi Pegawai / Tamu
     Route::post('/kehadiran/scan-qr', [KehadiranController::class, 'scan_QR']);
     Route::post('/kehadiran/verifikasi-fr', [KehadiranController::class, 'verifikasi_FaceRecognition']);
+
+    // fitur pengaduan masyarakat
+    Route::post('/aduan/kirim', [AduanController::class, 'kirim_Aduan']);
+    Route::get('/aduan/cek/{id}', [AduanController::class, 'cek_StatusAduan']);
+
+    // fitur cari jadwal agenda rapat publik
+    Route::get('/agenda/cari', [PublicAgendaController::class, 'cari_Agenda']);
 
