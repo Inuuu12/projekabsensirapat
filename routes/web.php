@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controller\AdminController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\KehadiranController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,4 +26,9 @@ Route::prefix('admin')->group(function () {
     Route::post('/kunjungan/kelola', [AdminController::class, 'kelola_Kunjungan']);
     Route::get('/laporan/cetak', [AdminController::class, 'cetak_Laporan']);
 });
+
+   //Routes Kehadiran
+   // Route untuk absensi Pegawai / Tamu
+    Route::post('/kehadiran/scan-qr', [KehadiranController::class, 'scan_QR']);
+    Route::post('/kehadiran/verifikasi-fr', [KehadiranController::class, 'verifikasi_FaceRecognition']);
 
