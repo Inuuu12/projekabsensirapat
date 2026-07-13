@@ -13,7 +13,7 @@ return new class extends Migration
     {
     Schema::create('logbook', function (Blueprint $table) {
             $table->id('idLog');
-            $table->foreignId('id_agenda')->constrained('agenda', 'id_agenda')->onDelete('cascade');
+            $table->foreignId('id_agenda')->constrained('agendas', 'id_agenda')->onDelete('cascade');
             $table->text('catatan');
             $table->dateTime('waktu_isi');
             $table->timestamps();

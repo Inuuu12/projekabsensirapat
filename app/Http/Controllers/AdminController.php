@@ -9,10 +9,12 @@ use App\Models\Logbook;
 use App\Models\Kunjungan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-    // 1. + login()
+    // AUTHENTICATION
+    // + login()
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -33,8 +35,10 @@ class AdminController extends Controller
         return response()->json(['success' => false, 'message' => 'Kredensial salah.'], 401);
     }
 
-    // 2. + tambah_Agenda()
-    public function tambah_Agenda(Request $request)
+    // PENGATURAN AGENDA (Sesuai Class Agenda & Admin)
+
+    // + kelola_Agenda() -> Gabungan tambah, lihat, dan update agenda
+    public function kelola_Agenda(Request $request)
     {
         $validated = $request->validate([
             'nama_agenda' => 'required|string|max:255',
@@ -44,35 +48,72 @@ class AdminController extends Controller
         ]);
 
         $agenda = Agenda::create($validated);
-        return response()->json(['message' => 'Agenda berhasil ditambahkan', 'data' => $agenda]);
+        return response()->json(['message' => 'Agenda berhasil dikelola/ditambahkan', 'data' => $agenda]);
     }
 
-    // 3. + lihat_Agenda()
+    // + lihat_Agenda()
     public function lihat_Agenda()
     {
         $agenda = Agenda::all();
         return response()->json(['success' => true, 'data' => $agenda]);
     }
 
-    // 4. + konfigurasi_FaceRecognition()
+    // + cari_Agenda() -> Admin juga bisa nyari internal
+    public function cari_Agenda(Request $request)
+    {
+        $keyword = $request->query('keyword');
+        $agenda = Agenda::when($keyword, function ($query, $keyword) {
+            return $query->where('nama_agenda', 'like', "%{$keyword}%");
+        })->get();
+
+        return response()->json(['success' => true, 'data' => $agenda]);
+    }
+
+    // + konfigurasi_FaceRecognition()
     public function konfigurasi_FaceRecognition($id, Request $request)
     {
         $agenda = Agenda::findOrFail($id);
         $agenda->update([
-            'status_qr' => $request->status_qr
+            'status_qr' => $request->status_qr // set 'aktif' atau 'nonaktif'
         ]);
 
-        return response()->json(['message' => 'Konfigurasi Face Recognition diperbarui']);
+        return response()->json(['message' => 'Konfigurasi Face Recognition / QR diperbarui']);
     }
 
-    // 5. + generate_QR()
+    // + generate_QR()
     public function generate_QR($id)
     {
         $agenda = Agenda::findOrFail($id);
         return response()->json(['message' => 'QR Code berhasil di-generate untuk ID: ' . $agenda->id_agenda]);
     }
 
-    // 6. + verifikasi_Aduan()
+    // + verifikasi_Kehadiran() -> Mengesahkan absensi manual/logbook oleh admin jika sistem error
+    public function verifikasi_Kehadiran(Request $request)
+    {
+        $validated = $request->validate([
+            'id_agenda' => 'required|integer',
+            'catatan'   => 'required|string'
+        ]);
+
+        $log = Logbook::create([
+            'id_agenda' => $validated['id_agenda'],
+            'catatan'   => '[Diverifikasi Admin] ' . $validated['catatan'],
+            'waktu_isi' => Carbon::now()
+        ]);
+
+        return response()->json(['message' => 'Kehadiran berhasil diverifikasi oleh admin', 'data' => $log]);
+    }
+
+    // FITUR ADUAN & KUNJUNGAN
+
+    // + lihat_Aduan()
+    public function lihat_Aduan()
+    {
+        $aduan = Aduan::all();
+        return response()->json(['success' => true, 'data' => $aduan]);
+    }
+
+    // + verifikasi_Aduan()
     public function verifikasi_Aduan($id, Request $request)
     {
         $request->validate(['status' => 'required|string']);
@@ -83,14 +124,7 @@ class AdminController extends Controller
         return response()->json(['message' => 'Aduan berhasil diverifikasi']);
     }
 
-    // 7. + lihat_Aduan()
-    public function lihat_Aduan()
-    {
-        $aduan = Aduan::all();
-        return response()->json(['success' => true, 'data' => $aduan]);
-    }
-
-    // 8. + kelola_Kunjungan()
+    // + kelola_Kunjungan()
     public function kelola_Kunjungan(Request $request)
     {
         $validated = $request->validate([
@@ -99,13 +133,13 @@ class AdminController extends Controller
         ]);
 
         $kunjungan = Kunjungan::create($validated);
-        return response()->json(['message' => 'Data kunjungan berhasil dikelola oleh Admin', 'data' => $kunjungan]);
+        return response()->json(['message' => 'Data kunjungan berhasil dikelola', 'data' => $kunjungan]);
     }
 
-    // 9. + cetak_Laporan()
+    // + cetak_Laporan()
     public function cetak_Laporan()
     {
         $logbook = Logbook::all();
-        return response()->json(['message' => 'Laporan berhasil dicetak', 'data' => $logbook]);
+        return response()->json(['message' => 'Laporan logbook berhasil ditarik', 'data' => $logbook]);
     }
 }
