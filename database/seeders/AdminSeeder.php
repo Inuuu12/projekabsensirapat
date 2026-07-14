@@ -13,7 +13,7 @@ class AdminSeeder extends Seeder
         Admin::create([
             'username' => 'admin_utama',
             'nama'     => 'Administrator Sistem',
-            'password' => Hash::make('rahasia123'), // Ini password Anda
+            'password' => Hash::make('R4has!A123'), // Ini password Anda
         ]);
     }
 }

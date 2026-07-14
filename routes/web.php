@@ -41,3 +41,22 @@ Route::prefix('admin')->group(function () {
     // fitur cari jadwal agenda rapat publik
     Route::get('/agenda/cari', [PublicAgendaController::class, 'cari_Agenda']);
 
+    //ROUTE MILIK USER
+    Route::prefix('user')->group(function () {
+    // Halaman Beranda Informasi Publik
+    Route::get('/beranda/pengumuman', [UserController::class, 'TampilkanPengumuman']);
+    Route::get('/beranda/ringkasan', [UserController::class, 'TampilkanRingkasan']);
+
+    // Informasi Agenda Rapat Terbuka Publik
+    Route::get('/agenda/list', [UserController::class, 'listAgenda']);
+    Route::get('/agenda/cari', [UserController::class, 'CariAgenda']);
+    Route::get('/agenda/qr/{id}', [UserController::class, 'tampilkanQrKode']);
+
+    // Manajemen Layanan Pengaduan (Aduan)
+    Route::post('/aduan/kirim', [UserController::class, 'kirimAduan']);
+    Route::get('/aduan/status/{id}', [UserController::class, 'cekStatusAduan']);
+
+    // Pendaftaran Kehadiran Tamu (Non-Pegawai)
+    Route::post('/tamu/hadir', [UserController::class, 'inputDataTamu']);
+});
+

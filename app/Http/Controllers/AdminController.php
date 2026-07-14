@@ -116,12 +116,21 @@ class AdminController extends Controller
     // + verifikasi_Aduan()
     public function verifikasi_Aduan($id, Request $request)
     {
-        $request->validate(['status' => 'required|string']);
+        // Validasi input agar status yang dikirimkan hanya boleh 'Di Baca' atau 'Pending'
+        $request->validate([
+            'status' => 'required|string|in:Pending,Di Baca'
+        ]);
 
         $aduan = Aduan::findOrFail($id);
-        $aduan->update(['status' => $request->status]);
+        $aduan->update([
+            'status' => $request->status
+        ]);
 
-        return response()->json(['message' => 'Aduan berhasil diverifikasi']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Status aduan berhasil diperbarui menjadi: ' . $aduan->status,
+            'data'    => $aduan
+        ]);
     }
 
     // + kelola_Kunjungan()
