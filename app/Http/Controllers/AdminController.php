@@ -9,6 +9,7 @@ use App\Models\Logbook;
 use App\Models\Kunjungan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -22,18 +23,54 @@ class AdminController extends Controller
             'password' => 'required|string',
         ]);
 
-        $admin = Admin::where('username', $credentials['username'])->first();
+        if (Auth::guard('admin')->attempt($credentials)) {
+            $request->session()->regenerate();
 
-        if ($admin && Hash::check($credentials['password'], $admin->password)) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Login berhasil!',
-                'admin'   => $admin
-            ]);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login berhasil!',
+                    'admin'   => Auth::guard('admin')->user()
+                ]);
+            }
+
+            return redirect()->intended(route('admin.dashboard'));
         }
 
-        return response()->json(['success' => false, 'message' => 'Kredensial salah.'], 401);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => false, 'message' => 'Kredensial salah.'], 401);
+        }
+
+        return back()->withErrors([
+            'username' => 'Kredensial salah.',
+        ])->onlyInput('username');
     }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json(['success' => true, 'message' => 'Logout berhasil']);
+    }
+
+        // Show login form for admin
+        public function showLoginForm()
+        {
+            if (Auth::guard('admin')->check()) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            return view('admin.login');
+        }
+
+        // Simple dashboard view for admin
+        public function dashboard()
+        {
+            $admin = Auth::guard('admin')->user();
+            return view('admin.dashboard', compact('admin'));
+        }
 
     // PENGATURAN AGENDA (Sesuai Class Agenda & Admin)
 
