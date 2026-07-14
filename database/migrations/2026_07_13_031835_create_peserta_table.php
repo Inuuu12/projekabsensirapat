@@ -11,7 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        
+        Schema::create('peserta', function (Blueprint $table) {
+            $table->id('id_peserta');
+            $table->string('nama');
+            $table->string('jenis_peserta');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-
+        Schema::dropIfExists('peserta');
     }
 };
+

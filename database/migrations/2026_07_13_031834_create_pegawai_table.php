@@ -11,14 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        
-    }
+        Schema::create('pegawai', function (Blueprint $table) {
+        $table->id('id_Pejabat');
+        $table->bigInteger('nip')->unique();
+        $table->string('nama_Pejabat');
+        $table->string('jabatan');
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-
+        Schema::dropIfExists('pegawai');
     }
 };
+
