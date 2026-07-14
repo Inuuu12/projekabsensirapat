@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 
-#[Fillable(['username', 'password', 'nama'])]
+#[Fillable(['username', 'email', 'password', 'nama'])]
 #[Hidden(['password'])]
 class Admin extends Authenticatable
 {

@@ -19,7 +19,7 @@ class AdminController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'username' => 'required|string',
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
@@ -42,8 +42,8 @@ class AdminController extends Controller
         }
 
         return back()->withErrors([
-            'username' => 'Kredensial salah.',
-        ])->onlyInput('username');
+            'email' => 'Kredensial salah.',
+        ])->onlyInput('email');
     }
 
     public function logout(Request $request)
@@ -52,7 +52,11 @@ class AdminController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json(['success' => true, 'message' => 'Logout berhasil']);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Logout berhasil']);
+        }
+
+        return redirect()->route('login')->with('status', 'Anda telah logout.');
     }
 
         // Show login form for admin

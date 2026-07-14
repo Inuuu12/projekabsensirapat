@@ -14,7 +14,7 @@ Route::get('/', function () {
 // ROUTE GRUP ADMIN
 Route::prefix('admin')->group(function () {
     // Show login form
-    Route::get('/login', [AdminController::class, 'showLoginForm']);
+    Route::get('/login', [AdminController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AdminController::class, 'login']);
 
     // Protected admin routes (require admin authentication)
