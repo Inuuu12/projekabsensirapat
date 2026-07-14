@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\AduanController;
 use App\Http\Controllers\PublicAgendaController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -12,14 +13,8 @@ Route::get('/', function () {
 
 // ROUTE GRUP ADMIN
 Route::prefix('admin')->group(function () {
-<<<<<<< HEAD
-    Route::get('/login', function () {
-        return view('login');
-    });
-=======
     // Show login form
     Route::get('/login', [AdminController::class, 'showLoginForm']);
->>>>>>> b6fa6d725e4a109a9973707609f57a41de7fdbd7
     Route::post('/login', [AdminController::class, 'login']);
 
     // Protected admin routes (require admin authentication)
