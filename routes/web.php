@@ -12,6 +12,9 @@ Route::get('/', function () {
 
 // ROUTE GRUP ADMIN
 Route::prefix('admin')->group(function () {
+    Route::get('/login', function () {
+        return view('login');
+    });
     Route::post('/login', [AdminController::class, 'login']);
 
     // Agenda & Kehadiran Internal
