@@ -8,21 +8,23 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('non_pegawai', function (Blueprint $table) {
-            $table->id('id_non_pegawai'); // Sesuai diagram
+        Schema::create('app_md_tamu', function (Blueprint $table) {
+            $table->bigIncrements('id_tamu');
+            $table->string('nik')->nullable();
             $table->string('nama');
+            $table->string('jabatan')->nullable();
             $table->string('no_hp');
             $table->string('asal_instansi');
             $table->string('foto_selfie')->nullable();
-            $table->text('tanda_tangan')->nullable(); // Disimpan sebagai string base64 / path berkas
-            // Berelasi dengan tabel agenda tunggal yang kita pisah sebelumnya
-            $table->foreignId('id_agenda')->constrained('agenda', 'id_agenda')->onDelete('cascade');
+            $table->unsignedBigInteger('id_agenda');
             $table->timestamps();
+
+            $table->foreign('id_agenda')->references('id_agenda')->on('app_md_agenda')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('non_pegawai');
+        Schema::dropIfExists('app_md_tamu');
     }
 };

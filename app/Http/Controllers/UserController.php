@@ -19,8 +19,8 @@ class UserController extends Controller
 
     public function TampilkanRingkasan()
     {
-        $totalAgenda = DB::table('agenda')->count();
-        $totalAduan = DB::table('aduan')->count();
+        $totalAgenda = DB::table('app_md_agenda')->count();
+        $totalAduan = DB::table('app_md_datamasukan')->count();
 
         return response()->json([
             'success' => true,
@@ -34,15 +34,15 @@ class UserController extends Controller
     // 2. CLASS AGENDA RAPAT PUBLIK
     public function listAgenda()
     {
-        $agenda = DB::table('agenda')->select('id_agenda', 'judul', 'tanggal', 'waktu', 'lokasi')->get();
+        $agenda = DB::table('app_md_agenda')->select('id_agenda', 'nama_agenda', 'tanggal', 'waktu', 'lokasi')->get();
         return response()->json(['success' => true, 'data' => $agenda]);
     }
 
     public function CariAgenda(Request $request)
     {
         $keyword = $request->query('keyword');
-        $agenda = DB::table('agenda')
-            ->where('judul', 'like', "%{$keyword}%")
+        $agenda = DB::table('app_md_agenda')
+            ->where('nama_agenda', 'like', "%{$keyword}%")
             ->orWhere('lokasi', 'like', "%{$keyword}%")
             ->get();
 
@@ -63,13 +63,13 @@ class UserController extends Controller
     public function kirimAduan(Request $request)
     {
         $validated = $request->validate([
-            'Nama_Pengadu' => 'required|string|max:255',
-            'isi_Aduan'    => 'required|string',
+            'nama_pengadu' => 'required|string|max:255',
+            'isi_aduan'    => 'required|string',
         ]);
 
-        $idAduan = DB::table('aduan')->insertGetId([
-            'Nama_Pengadu' => $validated['Nama_Pengadu'],
-            'isi_Aduan'    => $validated['isi_Aduan'],
+        $idAduan = DB::table('app_md_datamasukan')->insertGetId([
+            'nama_pengadu' => $validated['nama_pengadu'],
+            'isi_aduan'    => $validated['isi_aduan'],
             'status'       => 'Pending',
             'created_at'   => now(),
             'updated_at'   => now(),
@@ -84,7 +84,7 @@ class UserController extends Controller
 
     public function cekStatusAduan($id)
     {
-        $aduan = DB::table('aduan')->where('id_Aduan', $id)->first();
+        $aduan = DB::table('app_md_datamasukan')->where('id_datamasukan', $id)->first();
 
         if (!$aduan) {
             return response()->json(['success' => false, 'message' => 'Data aduan tidak ditemukan.'], 404);
@@ -105,7 +105,9 @@ class UserController extends Controller
             'tanda_tangan'  => 'nullable|string',     // Menerima data koordinat canvas / base64 string
         ]);
 
-        $idTamu = DB::table('non_pipegawai')->insertGetId(array_merge($validated, [
+        unset($validated['tanda_tangan']);
+
+        $idTamu = DB::table('app_md_tamu')->insertGetId(array_merge($validated, [
             'created_at' => now(),
             'updated_at' => now()
         ]));

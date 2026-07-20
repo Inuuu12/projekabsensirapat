@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('aduan', function (Blueprint $table) {
-            $table->id('id_Aduan'); // Sesuai diagram
-            $table->string('Nama_Pengadu');
-            $table->text('isi_Aduan');
-            $table->string('status')->default('Pending');
+        Schema::create('app_md_ulangtahun', function (Blueprint $table) {
+            $table->bigIncrements('id_ulangtahun');
+            $table->string('nama');
+            $table->date('tanggal');
+            $table->string('gambar');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('aduan');
+        Schema::dropIfExists('app_md_ulangtahun');
     }
 };

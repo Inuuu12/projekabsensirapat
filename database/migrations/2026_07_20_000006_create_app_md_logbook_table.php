@@ -8,16 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('booking', function (Blueprint $table) {
-            $table->id('id_Kunjungan'); // ngikutin nama properti PK di diagram kamu
-            $table->string('keperluan');
-            $table->date('tanggal_Kunjungan');
+        Schema::create('app_md_logbook', function (Blueprint $table) {
+            $table->bigIncrements('id_log');
+            $table->unsignedBigInteger('id_agenda')->nullable();
+            $table->text('catatan');
+            $table->dateTime('waktu_isi');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('booking');
+        Schema::dropIfExists('app_md_logbook');
     }
 };

@@ -13,8 +13,14 @@ class Admin extends Authenticatable
 {
     use HasFactory;
 
-    protected $table = 'admins';
+    protected $table = 'app_md_admin';
     protected $primaryKey = 'id_admin';
+
+    protected $fillable = [
+        'username',
+        'nama',
+        'password',
+    ];
 
     protected function casts(): array
     {

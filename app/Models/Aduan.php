@@ -6,16 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Aduan extends Model
 {
-    // Menghubungkan ke tabel fisik 'aduan' di database
-    protected $table = 'aduan';
+    protected $table = 'app_md_datamasukan';
 
-    // Primary key custom sesuai rancangan diagram kamu
-    protected $primaryKey = 'id_Aduan';
+    protected $primaryKey = 'id_datamasukan';
 
     protected $fillable = [
-        'Nama_Pengadu',
-        'isi_Aduan',
-        'status'
+        'nama_pengadu',
+        'nomor_pengadu',
+        'email',
+        'foto',
+        'isi_aduan',
+        'status',
+        'id_admin'
     ];
 
     public $timestamps = true;

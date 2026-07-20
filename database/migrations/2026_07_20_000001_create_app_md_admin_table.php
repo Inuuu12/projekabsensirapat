@@ -8,16 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('kunjungan', function (Blueprint $table) {
-            $table->id('id_Kunjungan');
-            $table->string('keperluan');
-            $table->date('tanggal_Kunjungan');
+        Schema::create('app_md_admin', function (Blueprint $table) {
+            $table->bigIncrements('id_admin');
+            $table->string('username');
+            $table->string('nama');
+            $table->string('password');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('kunjungan');
+        Schema::dropIfExists('app_md_admin');
     }
 };

@@ -8,16 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('data_aduan', function (Blueprint $table) {
-            $table->id('id_Kunjungan'); // ngikutin nama properti PK di diagram kamu
-            $table->string('keperluan');
-            $table->date('tanggal_Kunjungan');
+        Schema::create('app_md_statusmasukan', function (Blueprint $table) {
+            $table->bigIncrements('id_statusmasukan');
+            $table->string('nama_status');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('data_aduan');
+        Schema::dropIfExists('app_md_statusmasukan');
     }
 };

@@ -8,17 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('ruang_rapat', function (Blueprint $table) {
-            $table->id('id_ruang'); // Sesuai diagram
-            $table->string('nama_ruang');
-            $table->integer('kapasitas');
-            $table->boolean('is_tersedia')->default(true);
+        Schema::create('app_md_galeri', function (Blueprint $table) {
+            $table->bigIncrements('id_galeri');
+            $table->date('tanggal');
+            $table->string('gambar');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('ruang_rapat');
+        Schema::dropIfExists('app_md_galeri');
     }
 };

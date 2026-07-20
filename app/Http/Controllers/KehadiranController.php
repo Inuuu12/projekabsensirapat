@@ -71,13 +71,13 @@ class KehadiranController extends Controller
         // langsung buatin logbook tanda hadir rapat
         Logbook::create([
             'id_agenda' => $validated['id_agenda'],
-            'catatan'   => 'Hadir lewat Face Recognition. Pegawai: ' . $pegawai->nama_Pejabat,
+            'catatan'   => 'Hadir lewat Face Recognition. Pegawai: ' . $pegawai->nama_pegawai,
             'waktu_isi' => Carbon::now(),
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Wajah cocok! Selamat datang ' . $pegawai->nama_Pejabat
+            'message' => 'Wajah cocok! Selamat datang ' . $pegawai->nama_pegawai
         ]);
     }
 }

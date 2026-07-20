@@ -8,16 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('laporan', function (Blueprint $table) {
-            $table->id('idLaporan');
-            $table->string('jenis_laporan'); // buat penanda jenis laporan (kehadiran/kunjungan)
-            $table->string('file_path');
+        Schema::create('app_md_ruangrapat', function (Blueprint $table) {
+            $table->bigIncrements('id_ruangrapat');
+            $table->string('nama_ruang');
+            $table->integer('kapasitas');
+            $table->text('keterangan');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('laporan');
+        Schema::dropIfExists('app_md_ruangrapat');
     }
 };
