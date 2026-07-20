@@ -1,252 +1,255 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>e-Agenda - Daftar Agenda</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-      :root {
-        --primary-green: #2D5E55;
-        --light-green: #E8F0EE;
-        --accent-gold: #D4A34F;
-        
-      }
-      body {
-        background-color: #F8F9FA;
-        font-family: 'Segoe UI', sans-serif;
-      }
-      /* Sidebar Styling */
-      .sidebar {
-        background-color: var(--primary-green);
-        min-height: 100vh;
-        color: white;
-      }
-      .sidebar .nav-link {
-        color: rgba(255,255,255,0.75);
-        border-radius: 8px;
-        margin-bottom: 5px;
-        padding: 10px 15px;
-      }
-      .sidebar .nav-link.active {
-        background-color: rgba(255,255,255,0.15);
-        color: white;
-        font-weight: 600;
-      }
-      .sidebar .nav-link:hover {
-        color: white;
-        background-color: rgba(255,255,255,0.1);
-      }
-      /* Top Card Metrics */
-      .metric-card {
-        border: none;
-        border-radius: 12px;
-        background-color: white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-      }
-      .metric-icon-box {
-        width: 45px;
-        height: 45px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      /* Table Customization */
-      .table-container {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-      }
-      .custom-table th {
-        background-color: var(--primary-green) !important;
-        color: white !important;
-        font-weight: 500;
-        border: none;
-      }
-      .custom-table td {
-        vertical-align: middle;
-      }
-      .badge-ongoing {
-        background-color: #FFF3CD;
-        color: #856404;
-        border: 1px solid #FFEBAA;
-      }
-    </style>
-  </head>
-  <body>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Agenda - Admin</title>
+    <!-- Tailwind CSS v4 sesuai login.blade.php -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
 
-    <div class="container-fluid">
-      <div class="row">
-        
-        <div class="col-md-3 col-lg-2 sidebar p-3 d-flex flex-column justify-content-between">
-          <div>
-            <div class="d-flex align-items-center mb-4 px-2">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Coat_of_arms_of_Bogor_Regency.svg" alt="Logo" style="width: 35px;" class="me-2">
-              <div>
-                <h6 class="m-0 fw-bold tracking-wide">BAPPENDAS</h6>
-                <small style="font-size: 10px; opacity: 0.6;">KABUPATEN BOGOR</small>
-              </div>
+    <!-- NAVIGATION BAR (Gaya e-Agenda Bappenda) -->
+    <nav class="bg-[#3b6f6c] text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Sisi Kiri: Logo & Nama Sistem -->
+                <div class="flex items-center space-x-3">
+                    <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Bappenda" class="h-9 w-auto">
+                    <span class="text-xl font-extrabold tracking-wide">e-Agenda</span>
+                </div>
+                
+                <!-- Sisi Kanan: Nama Admin & Logout -->
+                <div class="flex items-center space-x-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs text-gray-200">Log masuk sebagai:</p>
+                        <!-- Variabel disamakan dengan dashboard.blade.php -->
+                        <p class="text-sm font-bold">{{ $admin->nama ?? $admin->username ?? 'Admin' }}</p>
+                    </div>
+                    <form method="POST" action="/admin/logout">
+                        @csrf
+                        <button type="submit" class="bg-[#d49e19] hover:bg-[#b88510] text-white text-xs font-bold py-2 px-4 rounded-lg transition duration-200 shadow-sm active:scale-95">
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
+        </div>
+    </nav>
+
+    <!-- UTAMA: KONTEN DETAIL AGENDA -->
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <!-- Tombol Kembali ke Dashboard -->
+        <a href="/admin/dashboard" class="inline-flex items-center text-sm font-bold text-[#3b6f6c] mb-6 hover:underline">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Kembali ke Dashboard
+        </a>
+
+        <!-- Grid Pembagian Dua Kolom Informasi -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            <ul class="nav flex-column">
-              <li class="nav-item">
-                <a class="nav-link text-white-50" href="#"><i class="fa-solid fa-chart-pie me-2"></i> Dashboard</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link active" href="/admin/agenda/lihat"><i class="fa-solid fa-calendar-days me-2"></i> Agenda</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-white-50" href="#"><i class="fa-solid fa-users me-2"></i> Data Pengguna</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-white-50" href="/admin/aduan/lihat"><i class="fa-solid fa-comments me-2"></i> Aduan</a>
-              </li>
-            </ul>
-          </div>
-
-          <div class="px-2">
-            <form method="POST" action="/admin/logout">
-              @csrf
-              <button class="btn btn-link nav-link w-100 text-start p-0 text-white-50" type="submit">
-                <i class="fa-solid fa-right-from-bracket me-2"></i> Keluar
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <div class="col-md-9 col-lg-10 p-4">
-          
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <h4 class="fw-bold m-0 text-dark">Daftar Agenda</h4>
-              <small class="text-muted">Selamat datang kembali, {{ session('admin_name', 'Admin') }}!</small>
-            </div>
-            <div class="d-flex align-items-center bg-white p-2 rounded-5 shadow-sm px-3">
-              <div class="text-end me-2">
-                <p class="m-0 small fw-bold text-dark">{{ session('admin_name', 'Admin') }}</p>
-                <small class="text-muted" style="font-size: 11px;">Super Admin</small>
-              </div>
-              <img src="https://ui-avatars.com/api/?name=Admin&background=2D5E55&color=fff" alt="User" class="rounded-circle" style="width: 35px;">
-            </div>
-          </div>
-
-          <div class="row g-3 mb-4">
-            <div class="col-6 col-lg-3">
-              <div class="card metric-card p-3">
-                <div class="d-flex align-items-center">
-                  <div class="metric-icon-box bg-light text-dark me-3"><i class="fa-solid fa-layer-group"></i></div>
-                  <div>
-                    <small class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Total Agenda</small>
-                    <h4 class="m-0 fw-bold">124</h4>
-                  </div>
+            <!-- KOLOM KIRI: INFO AGENDA & DOKUMEN (7 Grid) -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Box Informasi Utama -->
+                <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm relative overflow-hidden">
+                    <!-- Ornamen estetika sudut seperti halaman login -->
+                    <div class="absolute -top-10 -left-10 w-24 h-24 bg-[#3b6f6c]/10 rounded-full"></div>
+                    
+                    <span class="text-xs font-bold text-[#3b6f6c] tracking-wider uppercase bg-[#3b6f6c]/10 px-2.5 py-1 rounded">Informasi Agenda</span>
+                    <h2 class="text-xl font-extrabold text-gray-800 mt-4">Rapat Koordinasi Evaluasi PAD Triwulan III</h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 text-sm text-gray-600">
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400">Tanggal</p>
+                            <p class="font-medium text-gray-800 mt-0.5">📅 15 Okt 2023</p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400">Waktu</p>
+                            <p class="font-medium text-gray-800 mt-0.5">🕒 09:00 - 12:00 WIB</p>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <p class="text-xs font-semibold text-gray-400">Tempat</p>
+                            <p class="font-medium text-gray-800 mt-0.5">📍 Ruang Rapat Utama BAPPENDA Gedung A Lt. 2</p>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <p class="text-xs font-semibold text-gray-400">Asal Surat</p>
+                            <p class="font-medium text-gray-800 mt-0.5">Sekretariat Daerah Kabupaten Bogor</p>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-6 col-lg-3">
-              <div class="card metric-card p-3">
-                <div class="d-flex align-items-center">
-                  <div class="metric-icon-box text-warning me-3" style="background-color: #FFF3CD;"><i class="fa-solid fa-clock"></i></div>
-                  <div>
-                    <small class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Akan Datang</small>
-                    <h4 class="m-0 fw-bold">8</h4>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-lg-3">
-              <div class="card metric-card p-3">
-                <div class="d-flex align-items-center">
-                  <div class="metric-icon-box text-success me-3" style="background-color: #D1E7DD;"><i class="fa-solid fa-circle-check"></i></div>
-                  <div>
-                    <small class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Selesai</small>
-                    <h4 class="m-0 fw-bold">86</h4>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-lg-3">
-              <div class="card metric-card p-3">
-                <div class="d-flex align-items-center">
-                  <div class="metric-icon-box text-danger me-3" style="background-color: #F8D7DA;"><i class="fa-solid fa-calendar-xmark"></i></div>
-                  <div>
-                    <small class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Planned</small>
-                    <h4 class="m-0 fw-bold">30</h4>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div class="table-container">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
-              <div class="input-group style-search" style="max-width: 300px;">
-                <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
-                <input type="text" class="form-control bg-light border-start-0 ps-0" placeholder="Cari agenda...">
-              </div>
-              <div>
-                <button class="btn btn-success px-3 me-2" style="background-color: #2D5E55; border:none;">
-                  <i class="fa-solid fa-plus me-1"></i> Tambah Agenda
-                </button>
-                <button class="btn btn-outline-secondary px-3">
-                  <i class="fa-solid fa-filter me-1"></i> Filter Tanggal
-                </button>
-              </div>
+                <!-- Bagian Upload File Lampiran -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Notulen -->
+                    <div class="border-2 border-dashed border-gray-300 p-5 rounded-xl text-center bg-white hover:bg-gray-50 cursor-pointer transition-all">
+                        <p class="text-sm font-bold text-gray-700">Notulen Agenda</p>
+                        <p class="text-xs text-gray-400 mt-1">Klik atau tarik dokumen di sini</p>
+                    </div>
+                    <!-- Dokumentasi -->
+                    <div class="border-2 border-dashed border-gray-300 p-5 rounded-xl text-center bg-white hover:bg-gray-50 cursor-pointer transition-all">
+                        <p class="text-sm font-bold text-gray-700">Dokumentasi Agenda</p>
+                        <p class="text-xs text-gray-400 mt-1">Klik atau tarik foto kegiatan (JPG/PNG)</p>
+                    </div>
+                </div>
+
+                <!-- QR Absensi Switcher Box -->
+                <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-800 tracking-wide">QR ABSENSI GENERATOR</h3>
+                            <p class="text-xs text-gray-400">Aktifkan akses scan barcode absensi</p>
+                        </div>
+                        <!-- Toggle Switch -->
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3b6f6c]"></div>
+                            <span class="ml-2 text-xs font-semibold text-gray-700">Aktif</span>
+                        </label>
+                    </div>
+
+                    <!-- Kotak QR Code Pegawai & Tamu -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl text-center">
+                            <p class="text-xs font-bold text-gray-600 mb-2">QR ABSENSI PEGAWAI</p>
+                            <div class="w-24 h-24 bg-white border mx-auto flex items-center justify-center rounded-lg shadow-inner">
+                                <div class="w-20 h-20 bg-[#3b6f6c]/10 flex items-center justify-center text-[10px] text-[#3b6f6c] font-mono font-bold">QR CODE</div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl text-center">
+                            <p class="text-xs font-bold text-gray-600 mb-2">QR ABSENSI TAMU</p>
+                            <div class="w-24 h-24 bg-white border mx-auto flex items-center justify-center rounded-lg shadow-inner">
+                                <div class="w-20 h-20 bg-[#3b6f6c]/10 flex items-center justify-center text-[10px] text-[#3b6f6c] font-mono font-bold">QR CODE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="table-responsive">
-              <table class="table custom-table table-hover align-middle">
-                <thead>
-                  <tr>
-                    <th>Nama Agenda</th>
-                    <th>Tanggal</th>
-                    <th>Waktu</th>
-                    <th>Asal Surat</th>
-                    <th>Ditugaskan</th>
-                    <th>Tempat</th>
-                    <th>Status</th>
-                    <th class="text-center">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @forelse($data as $agenda)
-                  <tr>
-                    <td>
-                      <strong class="text-dark d-block">{{ $agenda->nama_agenda }}</strong>
-                      <span class="text-muted small" style="font-size: 11px;">Internal Dept. Revenue</span>
-                    </td>
-                    <td>{{ \Carbon\Carbon::parse($agenda->tanggal)->format('M d, Y') }}</td>
-                    <td>{{ $agenda->waktu }} WIB</td>
-                    <td><span class="text-muted">Dinas Kehutanan</span></td>
-                    <td><span class="badge bg-light text-dark border p-2">BP Bambang P.</span></td>
-                    <td><i class="fa-solid fa-video text-muted me-1"></i> {{ $agenda->lokasi }}</td>
-                    <td><span class="badge badge-ongoing rounded-pill px-3 py-2">Ongoing</span></td>
-                    <td class="text-center">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-link text-success p-1"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href="#" class="btn btn-link text-danger p-1"><i class="fa-solid fa-trash"></i></a>
-                        <a href="#" class="btn btn-link text-primary p-1"><i class="fa-solid fa-circle-info"></i></a>
-                      </div>
-                    </td>
-                  </tr>
-                  @empty
-                  <tr>
-                    <td colspan="8" class="text-center py-4 text-muted">Belum ada data agenda yang tersedia.</td>
-                  </tr>
-                  @endforelse
-                </tbody>
-              </table>
-            </div>
+            <!-- KOLOM KANAN: TABEL PESERTA YANG HADIR (5 Grid) -->
+            <div class="lg:col-span-5 bg-white border border-gray-200 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
+                        <h3 class="text-sm font-bold text-gray-800 tracking-wide uppercase">Peserta Yang Hadir</h3>
+                        <span class="bg-[#3b6f6c] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">3 Hadir</span>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="text-gray-400 uppercase tracking-wider text-[10px] border-b border-gray-100">
+                                    <th class="pb-2 font-semibold">Nama</th>
+                                    <th class="pb-2 font-semibold">Jabatan</th>
+                                    <th class="pb-2 font-semibold">Status</th>
+                                    <th class="pb-2 font-semibold text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 text-gray-700">
+                                <tr>
+                                    <td class="py-3 font-bold text-gray-900">Budi Santoso</td>
+                                    <td class="py-3 text-gray-500">Kepala Bidang</td>
+                                    <td class="py-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">Hadir</span></td>
+                                    <td class="py-3 text-right">
+                                        <button onclick="openModal()" class="text-[#3b6f6c] font-bold hover:underline">👁️ Bukti</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 font-bold text-gray-900">Siti Aminah</td>
+                                    <td class="py-3 text-gray-500">Staf Analis</td>
+                                    <td class="py-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">Hadir</span></td>
+                                    <td class="py-3 text-right">
+                                        <button onclick="openModal()" class="text-[#3b6f6c] font-bold hover:underline">👁️ Bukti</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 font-bold text-gray-900">Diana Putri</td>
+                                    <td class="py-3 text-gray-500">Sekretaris</td>
+                                    <td class="py-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">Hadir</span></td>
+                                    <td class="py-3 text-right">
+                                        <button onclick="openModal()" class="text-[#3b6f6c] font-bold hover:underline">👁️ Bukti</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-          </div>
+                <!-- Tombol Aksi Simpan Emas (Match Login Button) -->
+                <div class="text-right mt-6 pt-4 border-t border-gray-100">
+                    <button class="bg-[#d49e19] hover:bg-[#b88510] text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow transition duration-200 active:scale-95">
+                        💾 Simpan Perubahan
+                    </button>
+                </div>
+            </div>
 
         </div>
-
-      </div>
     </div>
 
-  </body>
+    <!-- ========================================== -->
+    <!-- COMPONENT MODAL POPUP: BUKTI ABSENSI -->
+    <!-- ========================================== -->
+    <div id="buktiModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden m-4 transform transition-all">
+            
+            <!-- Header Modal Hijau #3b6f6c -->
+            <div class="bg-[#3b6f6c] text-white px-5 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-sm tracking-wide">Bukti Absensi Peserta</h3>
+                <button onclick="closeModal()" class="text-white/80 hover:text-white text-xl font-bold transition-colors">&times;</button>
+            </div>
+
+            <!-- Isi Modal -->
+            <div class="p-5 space-y-4">
+                <!-- Frame Foto -->
+                <div class="w-full h-44 bg-gray-200 rounded-lg overflow-hidden border border-gray-300 shadow-inner">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop" alt="Foto Presensi Pegawai" class="w-full h-full object-cover">
+                </div>
+
+                <!-- Info Peserta -->
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg">
+                        <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Nama Peserta</p>
+                        <p class="font-bold text-gray-800 mt-0.5">Budi Santoso</p>
+                    </div>
+                    <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg">
+                        <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Waktu Absen</p>
+                        <p class="font-bold text-gray-800 mt-0.5">15 Okt 2023, 09:15 WIB</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg text-xs">
+                    <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Lokasi Pemotretan</p>
+                    <p class="font-bold text-gray-800 mt-0.5">📍 Ruang Rapat Utama (Geotag Valid)</p>
+                </div>
+
+                <div class="flex items-center space-x-2 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-lg">
+                    <span>✓</span>
+                    <span>Terverifikasi Sistem e-Agenda</span>
+                </div>
+            </div>
+
+            <!-- Footer Modal -->
+            <div class="bg-gray-50 px-5 py-3.5 flex justify-end space-x-2 border-t border-gray-100">
+                <button onclick="closeModal()" class="border border-gray-300 hover:bg-gray-100 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-colors">
+                    Tutup
+                </button>
+                <button class="bg-[#d49e19] hover:bg-[#b88510] text-white text-xs font-bold px-4 py-2 rounded-lg shadow transition-colors">
+                    📥 Unduh
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script Modal Toggle -->
+    <script>
+        function openModal() {
+            document.getElementById('buktiModal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('buktiModal').classList.add('hidden');
+        }
+    </script>
+</body>
 </html>
