@@ -9,13 +9,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('app_md_peserta', function (Blueprint $table) {
-            $table->bigIncrements('id_peserta');
+            $table->id('id_peserta');
             $table->string('nama');
             $table->string('jabatan');
             $table->string('instansi');
             $table->string('jenis_peserta');
             $table->string('nomor_hp');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->timestamps();
         });
     }

@@ -76,38 +76,99 @@ class AdminController extends Controller
             return view('admin.dashboard', compact('admin'));
         }
 
+        // Demo view for admin layout
+        public function layout()
+        {
+            $admin = Auth::guard('admin')->user();
+            return view('admin.layout_demo', compact('admin'));
+        }
+
     // PENGATURAN AGENDA (Sesuai Class Agenda & Admin)
 
-    // + kelola_Agenda() -> Gabungan tambah, lihat, dan update agenda
     public function kelola_Agenda(Request $request)
     {
         $validated = $request->validate([
-            'nama_agenda' => 'required|string|max:255',
-            'tanggal'     => 'required|date',
-            'waktu'       => 'required',
-            'lokasi'      => 'required|string',
+            'judul'                 => 'required|string|max:255',
+            'tanggal'               => 'required|date',
+            'waktu'                 => 'required',
+            'lokasi'                => 'required|string',
+            'kategori_surat'        => 'nullable|in:internal->internal,external->internal,internal->external',
+            'status_FaceRecognition' => 'nullable|boolean',
+            'status_qr'             => 'nullable|in:aktif,nonaktif',
+            'file_undangan'         => 'nullable|file|mimes:pdf,doc,docx'
         ]);
 
+        // Handle file upload jika ada
+        if ($request->hasFile('file_undangan')) {
+            $file = $request->file('file_undangan');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('undangan', $fileName);
+            $validated['file_undangan'] = $filePath;
+        }
+
         $agenda = Agenda::create($validated);
-        return response()->json(['message' => 'Agenda berhasil dikelola/ditambahkan', 'data' => $agenda]);
+        return response()->json(['message' => 'Agenda berhasil dikelola/ditambahkan', 'data' => $agenda], 201);
     }
 
     // + lihat_Agenda()
-    public function lihat_Agenda()
+    public function lihat_Agenda(Request $request)
     {
         $agenda = Agenda::all();
-        return response()->json(['success' => true, 'data' => $agenda]);
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'data' => $agenda]);
+        }
+        return view('admin.agenda.index', compact('agenda'));
     }
 
     // + cari_Agenda() -> Admin juga bisa nyari internal
     public function cari_Agenda(Request $request)
     {
         $keyword = $request->query('keyword');
+        $kategori = $request->query('kategori');
+        
         $agenda = Agenda::when($keyword, function ($query, $keyword) {
-            return $query->where('nama_agenda', 'like', "%{$keyword}%");
-        })->get();
+            return $query->where('judul', 'like', "%{$keyword}%");
+        })
+        ->when($kategori, function ($query, $kategori) {
+            return $query->where('kategori_surat', $kategori);
+        })
+        ->get();
 
         return response()->json(['success' => true, 'data' => $agenda]);
+    }
+
+    // + lihat_AgendaInternalToInternal() -> Surat internal ke internal
+    public function lihat_AgendaInternalToInternal()
+    {
+        $agenda = Agenda::internalToInternal()->get();
+        return response()->json(['success' => true, 'kategori' => 'internal->internal', 'data' => $agenda]);
+    }
+
+    // + lihat_AgendaExternalToInternal() -> Surat external ke internal
+    public function lihat_AgendaExternalToInternal()
+    {
+        $agenda = Agenda::externalToInternal()->get();
+        return response()->json(['success' => true, 'kategori' => 'external->internal', 'data' => $agenda]);
+    }
+
+    // + lihat_AgendaInternalToExternal() -> Surat internal ke external
+    public function lihat_AgendaInternalToExternal()
+    {
+        $agenda = Agenda::internalToExternal()->get();
+        return response()->json(['success' => true, 'kategori' => 'internal->external', 'data' => $agenda]);
+    }
+
+    // + lihat_AgendaByCategory() -> Filter by kategori_surat
+    public function lihat_AgendaByCategory($kategori)
+    {
+        $validCategories = ['internal->internal', 'external->internal', 'internal->external'];
+        
+        if (!in_array($kategori, $validCategories)) {
+            return response()->json(['success' => false, 'message' => 'Kategori tidak valid'], 400);
+        }
+
+        $agenda = Agenda::byCategory($kategori)->get();
+        return response()->json(['success' => true, 'kategori' => $kategori, 'data' => $agenda]);
     }
 
     // + konfigurasi_FaceRecognition()

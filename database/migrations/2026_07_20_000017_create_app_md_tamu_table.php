@@ -9,17 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('app_md_tamu', function (Blueprint $table) {
-            $table->bigIncrements('id_tamu');
+            $table->id('id_tamu');
             $table->string('nik')->nullable();
             $table->string('nama');
             $table->string('jabatan')->nullable();
             $table->string('no_hp');
             $table->string('asal_instansi');
             $table->string('foto_selfie')->nullable();
-            $table->unsignedBigInteger('id_agenda');
             $table->timestamps();
 
-            $table->foreign('id_agenda')->references('id_agenda')->on('app_md_agenda')->onDelete('cascade');
+            $table->foreignId('id_agenda')->constraide('app_md_agenda', 'id_agenda')->cascadeOnDelete();
         });
     }
 

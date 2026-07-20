@@ -9,12 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('app_md_pegawai', function (Blueprint $table) {
-            $table->bigIncrements('id_pegawai');
-            $table->string('nip');
+            $table->id('id_pegawai');
+            $table->string('nip')->unique();
             $table->string('nama_pegawai');
             $table->string('jabatan');
             $table->string('nomor_hp');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->timestamps();
         });
     }

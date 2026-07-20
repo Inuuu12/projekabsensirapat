@@ -9,12 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('app_md_qrcode', function (Blueprint $table) {
-            $table->bigIncrements('id_qrcode');
+            $table->id('id_qrcode');
             $table->string('qr_codepath');
-            $table->unsignedBigInteger('id_agenda');
             $table->timestamps();
 
-            $table->foreign('id_agenda')->references('id_agenda')->on('app_md_agenda')->onDelete('cascade');
+            $table->foreignId('id_agenda')->constrained('app_md_agenda','id_agenda')->cascadeonDelete('');
         });
     }
 

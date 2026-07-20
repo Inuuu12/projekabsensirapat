@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('app_md_ulangtahun', function (Blueprint $table) {
-            $table->bigIncrements('id_ulangtahun');
+            $table->id('id_ulangtahun');
             $table->string('nama');
             $table->date('tanggal');
             $table->string('gambar');

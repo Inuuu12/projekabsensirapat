@@ -9,13 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('app_md_dokumen_notulen', function (Blueprint $table) {
-            $table->bigIncrements('id_dokumen');
+            $table->id('id_dokumen');
             $table->string('nama_file');
             $table->string('file_path');
-            $table->unsignedBigInteger('id_kehadiran');
             $table->timestamps();
-
-            $table->foreign('id_kehadiran')->references('id_kehadiran')->on('app_md_kehadiran')->onDelete('cascade');
+            
+            $table->foreignId('id_kehadiran')->contstraide('id_kehadiran')->on('app_md_kehadiran')->onDelete('cascade');
         });
     }
 

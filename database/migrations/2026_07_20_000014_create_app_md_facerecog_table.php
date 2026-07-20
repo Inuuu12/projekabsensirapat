@@ -9,12 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('app_md_facerecog', function (Blueprint $table) {
-            $table->bigIncrements('id_facerecog');
-            $table->unsignedBigInteger('id_peserta');
+            $table->id('id_facerecog');
             $table->string('nama');
             $table->timestamps();
 
-            $table->foreign('id_peserta')->references('id_peserta')->on('app_md_peserta')->onDelete('cascade');
+            $table->foreignId('id_peserta')->constrained('app_md_peserta', 'id_peserta')->cascadeonDelete('');
         });
     }
 

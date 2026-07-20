@@ -9,18 +9,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('app_md_kunjungan', function (Blueprint $table) {
-            $table->bigIncrements('id_kunjungan');
+            $table->id('id_kunjungan');
             $table->string('nama_pejabat')->nullable();
             $table->string('nama_pengunjung')->nullable();
             $table->string('asal_instansi')->nullable();
             $table->string('nomorhp_pengunjung')->nullable();
-            $table->string('email_pengunjung')->nullable();
+            $table->string('email_pengunjung')->unique()->nullable();
             $table->string('keperluan');
             $table->date('tanggal_kunjungan');
-            $table->unsignedBigInteger('id_admin')->nullable();
             $table->timestamps();
 
-            $table->foreign('id_admin')->references('id_admin')->on('app_md_admin')->onDelete('cascade');
+            $table->foreignId('id_admin')->constraide('app_md_admin', 'id_admin')->cascadeonDelete('');
         });
     }
 

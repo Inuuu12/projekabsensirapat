@@ -9,11 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('app_md_logbook', function (Blueprint $table) {
-            $table->bigIncrements('id_log');
-            $table->unsignedBigInteger('id_agenda')->nullable();
+            $table->id('id_log');
             $table->text('catatan');
             $table->dateTime('waktu_isi');
             $table->timestamps();
+
+            $table->foreignId('Id_agenda')->constrained('app_md_agenda','id_agenda')->cascadeonDelete('');
         });
     }
 

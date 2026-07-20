@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('app_md_statusagenda', function (Blueprint $table) {
-            $table->bigIncrements('id_statusagenda');
+            $table->id('id_statusagenda');
             $table->string('nama_status');
             $table->timestamps();
         });
