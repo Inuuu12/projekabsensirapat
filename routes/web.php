@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KehadiranController;
-use App\Http\Controllers\AduanController;
-use App\Http\Controllers\PublicAgendaController;
 use App\Http\Controllers\UserController;
 
 
@@ -13,11 +11,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::redirect('/login', '/admin/login')->name('login');
+
 // ROUTE GRUP ADMIN
 Route::prefix('admin')->group(function () {
     // Show login form
-    Route::get('/login', [AdminController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
+    Route::get('/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/login', [AdminController::class, 'login'])->name('admin.login.submit');
 
     // Protected admin routes (require admin authentication)
     Route::middleware('auth:admin')->group(function () {
@@ -28,17 +28,16 @@ Route::prefix('admin')->group(function () {
         // Agenda & Kehadiran Internal
         Route::post('/agenda/tambah', [AdminController::class, 'kelola_Agenda']);
         Route::get('/agenda/lihat', [AdminController::class, 'lihat_Agenda'])->name('admin.agenda.lihat');
+        Route::redirect('/agenda', '/admin/agenda/lihat')->name('admin.agenda');
         Route::get('/agenda/cari', [AdminController::class, 'cari_Agenda']);
         
-        // Daftar Ruang (Placeholder)
-        Route::get('/ruang', function () {
-            return view('admin.placeholder', ['title' => 'Daftar Ruang']);
-        })->name('admin.ruang.lihat');
+        // Halaman admin
+        Route::get('/ruang', [AdminController::class, 'daftarRuang'])->name('admin.ruang.lihat');
 
-        // Data Pengguna (Placeholder)
-        Route::get('/pengguna', function () {
-            return view('admin.placeholder', ['title' => 'Data Pengguna']);
-        })->name('admin.pengguna.lihat');
+        Route::get('/pengguna', [AdminController::class, 'dataPegawai'])->name('admin.pengguna.lihat');
+        Route::get('/datapegawai', [AdminController::class, 'dataPegawai'])->name('admin.datapegawai');
+        Route::get('/datatamu', [AdminController::class, 'dataTamu'])->name('admin.datatamu');
+        Route::get('/umpanbalik', [AdminController::class, 'umpanBalik'])->name('admin.umpanbalik');
 
         // Filter agenda by kategori surat
         Route::get('/agenda/kategori/internal-to-internal', [AdminController::class, 'lihat_AgendaInternalToInternal']);
@@ -54,14 +53,11 @@ Route::prefix('admin')->group(function () {
         Route::get('/aduan/lihat', [AdminController::class, 'lihat_Aduan']);
         Route::put('/aduan/{id}/verifikasi', [AdminController::class, 'verifikasi_Aduan']);
         Route::post('/kunjungan/kelola', [AdminController::class, 'kelola_Kunjungan']);
-        Route::get('/kunjungan', function () {
-            return view('admin.placeholder', ['title' => 'Kunjungan']);
-        })->name('admin.kunjungan.lihat');
+        Route::get('/kunjungan', [AdminController::class, 'daftarKunjungan'])->name('admin.kunjungan.lihat');
+        Route::get('/daftarkunjungan', [AdminController::class, 'daftarKunjungan'])->name('admin.daftarkunjungan');
         
         Route::get('/laporan/cetak', [AdminController::class, 'cetak_Laporan']);
-        Route::get('/laporan', function () {
-            return view('admin.placeholder', ['title' => 'Laporan']);
-        })->name('admin.laporan.lihat');
+        Route::get('/laporan', [AdminController::class, 'laporan'])->name('admin.laporan.lihat');
     });
 });
 
@@ -71,11 +67,11 @@ Route::prefix('admin')->group(function () {
     Route::post('/kehadiran/verifikasi-fr', [KehadiranController::class, 'verifikasi_FaceRecognition']);
 
     // fitur pengaduan masyarakat
-    Route::post('/aduan/kirim', [AduanController::class, 'kirim_Aduan']);
-    Route::get('/aduan/cek/{id}', [AduanController::class, 'cek_StatusAduan']);
+    Route::post('/aduan/kirim', [UserController::class, 'kirimAduan']);
+    Route::get('/aduan/cek/{id}', [UserController::class, 'cekStatusAduan']);
 
     // fitur cari jadwal agenda rapat publik
-    Route::get('/agenda/cari', [PublicAgendaController::class, 'cari_Agenda']);
+    Route::get('/agenda/cari', [UserController::class, 'CariAgenda']);
 
     //ROUTE MILIK USER
     Route::prefix('user')->group(function () {
@@ -101,6 +97,3 @@ Route::prefix('admin')->group(function () {
 Route::get('/adminlayout', function () {
     return redirect()->route('admin.layout');
 });
-
-
-

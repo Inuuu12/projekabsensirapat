@@ -28,6 +28,8 @@ Thumbs.db
 /memori.md
 /.codex-backups/
 /codex-backups/
+/.agents/
+/.tmp/
 
 # Face service
 /face-service/venv/
@@ -42,3 +44,4 @@ Thumbs.db
 /face-service/embeddings/*.npy
 /face-service/embeddings/*.pkl
 memori.md
+/image/

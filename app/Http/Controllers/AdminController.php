@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Models\Agenda;
 use App\Models\Aduan;
-use App\Models\Logbook;
+use App\Models\DataMasukan;
 use App\Models\Kunjungan;
+use App\Models\Logbook;
+use App\Models\Pegawai;
+use App\Models\RuangRapat;
+use App\Models\Tamu;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -19,7 +22,7 @@ class AdminController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|string|email',
+            'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
@@ -42,8 +45,8 @@ class AdminController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Kredensial salah.',
-        ])->onlyInput('email');
+            'username' => 'Username atau password salah.',
+        ])->onlyInput('username');
     }
 
     public function logout(Request $request)
@@ -56,7 +59,7 @@ class AdminController extends Controller
             return response()->json(['success' => true, 'message' => 'Logout berhasil']);
         }
 
-        return redirect()->route('login')->with('status', 'Anda telah logout.');
+        return redirect()->route('admin.login')->with('status', 'Anda telah logout.');
     }
 
         // Show login form for admin
@@ -66,7 +69,7 @@ class AdminController extends Controller
                 return redirect()->route('admin.dashboard');
             }
 
-            return view('admin.login');
+            return view('auth.login');
         }
 
         // Simple dashboard view for admin
@@ -80,7 +83,55 @@ class AdminController extends Controller
         public function layout()
         {
             $admin = Auth::guard('admin')->user();
-            return view('admin.layout_demo', compact('admin'));
+            return view('admin.dashboard', compact('admin'));
+        }
+
+        public function daftarRuang()
+        {
+            $admin = Auth::guard('admin')->user();
+            $ruang = RuangRapat::latest('id_ruangrapat')->get();
+
+            return view('admin.daftarruangan', compact('admin', 'ruang'));
+        }
+
+        public function dataPegawai()
+        {
+            $admin = Auth::guard('admin')->user();
+            $pegawai = Pegawai::latest('id_pegawai')->get();
+
+            return view('admin.datapegawai', compact('admin', 'pegawai'));
+        }
+
+        public function dataTamu()
+        {
+            $admin = Auth::guard('admin')->user();
+            $tamu = Tamu::latest('id_tamu')->get();
+
+            return view('admin.datatamu', compact('admin', 'tamu'));
+        }
+
+        public function daftarKunjungan()
+        {
+            $admin = Auth::guard('admin')->user();
+            $kunjungan = Kunjungan::latest('id_kunjungan')->get();
+
+            return view('admin.daftarkunjungan', compact('admin', 'kunjungan'));
+        }
+
+        public function umpanBalik()
+        {
+            $admin = Auth::guard('admin')->user();
+            $masukan = DataMasukan::latest('id_datamasukan')->get();
+
+            return view('admin.umpanbalik', compact('admin', 'masukan'));
+        }
+
+        public function laporan()
+        {
+            $admin = Auth::guard('admin')->user();
+            $totalLogbook = Logbook::count();
+
+            return view('admin.laporan', compact('admin', 'totalLogbook'));
         }
 
     // PENGATURAN AGENDA (Sesuai Class Agenda & Admin)
@@ -117,7 +168,9 @@ class AdminController extends Controller
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json(['success' => true, 'data' => $agenda]);
         }
-        return view('admin.agenda.index', compact('agenda'));
+        $admin = Auth::guard('admin')->user();
+
+        return view('admin.daftaragenda', compact('admin', 'agenda'));
     }
 
     // + cari_Agenda() -> Admin juga bisa nyari internal

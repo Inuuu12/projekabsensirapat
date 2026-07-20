@@ -9,9 +9,9 @@ class RuangRapat extends Model
 {
     use HasFactory;
 
-    protected $table = 'ruang_rapat';
+    protected $table = 'app_md_ruangrapat';
     protected $primaryKey = 'id_ruangrapat';
-    protected $fillable = ['nama_ruang'];
+    protected $fillable = ['nama_ruang', 'kapasitas', 'keterangan'];
 
     public function agendas()
     {

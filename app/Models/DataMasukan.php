@@ -2,17 +2,28 @@
 
 namespace App\Models;
 
-class DataMasukan extends Masukan
-{
-    protected $appends = ['isi'];
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-    public function getIsiAttribute(): string
-    {
-        return $this->isi_masukan;
-    }
+class DataMasukan extends Model
+{
+    use HasFactory;
+
+    protected $table = 'app_md_datamasukan';
+    protected $primaryKey = 'id_datamasukan';
+
+    protected $fillable = [
+        'nama_pengadu',
+        'nomor_pengadu',
+        'email',
+        'foto',
+        'isi_aduan',
+        'status',
+        'id_admin',
+    ];
 
     public static function kelolaMasukan()
     {
-        return self::with('statusMasukan')->latest()->get();
+        return self::latest('id_datamasukan')->get();
     }
 }
