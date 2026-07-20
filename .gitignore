@@ -26,6 +26,7 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /memori.md
+/codex-backups/
 
 # Face service
 /face-service/venv/
