@@ -11,9 +11,9 @@
         <section class="flex items-center justify-center bg-[#3b6f6c] p-8 text-white">
             <div class="max-w-sm text-center">
                 <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Bappenda" class="mx-auto mb-6 h-24 w-auto">
-                <h1 class="text-3xl font-extrabold">BAPPENDA</h1>
-                <p class="mt-1 text-sm font-semibold tracking-wider text-white/80">KABUPATEN BOGOR</p>
-                <p class="mt-8 text-xl font-bold">e-Agenda</p>
+                <!-- <h1 class="text-3xl font-extrabold">BAPPENDA</h1>
+                <p class="mt-1 text-sm font-semibold tracking-wider text-white/80">KABUPATEN BOGOR</p> -->
+                <p class="mt-8 text-5xl font-bold">e-Agenda</p>
                 <p class="mt-2 text-sm text-white/80">Sistem Agenda Kegiatan Dinas Kab. Bogor</p>
             </div>
         </section>

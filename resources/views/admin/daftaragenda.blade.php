@@ -3,219 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Agenda - Admin</title>
-    <!-- Tailwind CSS v4 sesuai login.blade.php -->
+    <title>Daftar Agenda — Diskominfo Kabupaten Bogor</title>
+
+    {{-- Tailwind CSS CDN & Alpine.js --}}
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans antialiased flex min-h-screen">
+<body class="bg-[#f4f7f6] font-sans antialiased text-[#1c2b2a]">
+
+<div class="flex min-h-screen">
+
+    {{-- Sidebar Komponen --}}
     <x-admin.sidebar active="agenda" />
 
-    <!-- UTAMA: KONTEN DETAIL AGENDA -->
-    <main class="flex-1 p-8 overflow-y-auto">
-        <x-admin.navbar title="Daftar Agenda" subtitle="Kelola agenda rapat BAPPENDA." />
+    {{-- Main Content --}}
+    <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
 
-        <!-- Grid Pembagian Dua Kolom Informasi -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- KOLOM KIRI: INFO AGENDA & DOKUMEN (7 Grid) -->
-            <div class="lg:col-span-7 space-y-6">
-                <!-- Box Informasi Utama -->
-                <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm relative overflow-hidden">
-                    <!-- Ornamen estetika sudut seperti halaman login -->
-                    <div class="absolute -top-10 -left-10 w-24 h-24 bg-[#3b6f6c]/10 rounded-full"></div>
-                    
-                    <span class="text-xs font-bold text-[#3b6f6c] tracking-wider uppercase bg-[#3b6f6c]/10 px-2.5 py-1 rounded">Informasi Agenda</span>
-                    <h2 class="text-xl font-extrabold text-gray-800 mt-4">Rapat Koordinasi Evaluasi PAD Triwulan III</h2>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 text-sm text-gray-600">
-                        <div>
-                            <p class="text-xs font-semibold text-gray-400">Tanggal</p>
-                            <p class="font-medium text-gray-800 mt-0.5">📅 15 Okt 2023</p>
-                        </div>
-                        <div>
-                            <p class="text-xs font-semibold text-gray-400">Waktu</p>
-                            <p class="font-medium text-gray-800 mt-0.5">🕒 09:00 - 12:00 WIB</p>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <p class="text-xs font-semibold text-gray-400">Tempat</p>
-                            <p class="font-medium text-gray-800 mt-0.5">📍 Ruang Rapat Utama BAPPENDA Gedung A Lt. 2</p>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <p class="text-xs font-semibold text-gray-400">Asal Surat</p>
-                            <p class="font-medium text-gray-800 mt-0.5">Sekretariat Daerah Kabupaten Bogor</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bagian Upload File Lampiran -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Notulen -->
-                    <div class="border-2 border-dashed border-gray-300 p-5 rounded-xl text-center bg-white hover:bg-gray-50 cursor-pointer transition-all">
-                        <p class="text-sm font-bold text-gray-700">Notulen Agenda</p>
-                        <p class="text-xs text-gray-400 mt-1">Klik atau tarik dokumen di sini</p>
-                    </div>
-                    <!-- Dokumentasi -->
-                    <div class="border-2 border-dashed border-gray-300 p-5 rounded-xl text-center bg-white hover:bg-gray-50 cursor-pointer transition-all">
-                        <p class="text-sm font-bold text-gray-700">Dokumentasi Agenda</p>
-                        <p class="text-xs text-gray-400 mt-1">Klik atau tarik foto kegiatan (JPG/PNG)</p>
-                    </div>
-                </div>
-
-                <!-- QR Absensi Switcher Box -->
-                <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
-                    <div class="flex justify-between items-center mb-4">
-                        <div>
-                            <h3 class="text-sm font-bold text-gray-800 tracking-wide">QR ABSENSI GENERATOR</h3>
-                            <p class="text-xs text-gray-400">Aktifkan akses scan barcode absensi</p>
-                        </div>
-                        <!-- Toggle Switch -->
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" checked class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3b6f6c]"></div>
-                            <span class="ml-2 text-xs font-semibold text-gray-700">Aktif</span>
-                        </label>
-                    </div>
-
-                    <!-- Kotak QR Code Pegawai & Tamu -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl text-center">
-                            <p class="text-xs font-bold text-gray-600 mb-2">QR ABSENSI PEGAWAI</p>
-                            <div class="w-24 h-24 bg-white border mx-auto flex items-center justify-center rounded-lg shadow-inner">
-                                <div class="w-20 h-20 bg-[#3b6f6c]/10 flex items-center justify-center text-[10px] text-[#3b6f6c] font-mono font-bold">QR CODE</div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl text-center">
-                            <p class="text-xs font-bold text-gray-600 mb-2">QR ABSENSI TAMU</p>
-                            <div class="w-24 h-24 bg-white border mx-auto flex items-center justify-center rounded-lg shadow-inner">
-                                <div class="w-20 h-20 bg-[#3b6f6c]/10 flex items-center justify-center text-[10px] text-[#3b6f6c] font-mono font-bold">QR CODE</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        {{-- Page Header --}}
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div>
+                <h1 class="text-3xl font-extrabold text-[#0d3b38]">Daftar Agenda</h1>
+                <p class="text-sm text-[#6b7d7b] mt-1">Kelola dan pantau seluruh jadwal agenda</p>
             </div>
-
-            <!-- KOLOM KANAN: TABEL PESERTA YANG HADIR (5 Grid) -->
-            <div class="lg:col-span-5 bg-white border border-gray-200 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+            {{-- Admin Profile Chip --}}
+            <div class="flex items-center gap-3 bg-[#124e49] text-white px-4 py-2 rounded-full shadow-sm">
+                <img src="https://i.pravatar.cc/80?img=47" alt="Foto admin" class="w-9 h-9 rounded-full object-cover border-2 border-white/50">
                 <div>
-                    <div class="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
-                        <h3 class="text-sm font-bold text-gray-800 tracking-wide uppercase">Peserta Yang Hadir</h3>
-                        <span class="bg-[#3b6f6c] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">3 Hadir</span>
-                    </div>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-gray-400 uppercase tracking-wider text-[10px] border-b border-gray-100">
-                                    <th class="pb-2 font-semibold">Nama</th>
-                                    <th class="pb-2 font-semibold">Jabatan</th>
-                                    <th class="pb-2 font-semibold">Status</th>
-                                    <th class="pb-2 font-semibold text-right">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 text-gray-700">
-                                <tr>
-                                    <td class="py-3 font-bold text-gray-900">Budi Santoso</td>
-                                    <td class="py-3 text-gray-500">Kepala Bidang</td>
-                                    <td class="py-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">Hadir</span></td>
-                                    <td class="py-3 text-right">
-                                        <button onclick="openModal()" class="text-[#3b6f6c] font-bold hover:underline">👁️ Bukti</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 font-bold text-gray-900">Siti Aminah</td>
-                                    <td class="py-3 text-gray-500">Staf Analis</td>
-                                    <td class="py-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">Hadir</span></td>
-                                    <td class="py-3 text-right">
-                                        <button onclick="openModal()" class="text-[#3b6f6c] font-bold hover:underline">👁️ Bukti</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 font-bold text-gray-900">Diana Putri</td>
-                                    <td class="py-3 text-gray-500">Sekretaris</td>
-                                    <td class="py-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">Hadir</span></td>
-                                    <td class="py-3 text-right">
-                                        <button onclick="openModal()" class="text-[#3b6f6c] font-bold hover:underline">👁️ Bukti</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Tombol Aksi Simpan Emas (Match Login Button) -->
-                <div class="text-right mt-6 pt-4 border-t border-gray-100">
-                    <button class="bg-[#d49e19] hover:bg-[#b88510] text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow transition duration-200 active:scale-95">
-                        💾 Simpan Perubahan
-                    </button>
+                    <p class="text-xs font-bold leading-tight">Admin</p>
+                    <p class="text-[10px] text-[#bcd8d3]">Super Admin</p>
                 </div>
             </div>
-
         </div>
+
+        {{-- Search Bar --}}
+        <div class="relative mb-6">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-[#9db3af]">🔍</span>
+            <input type="text" placeholder="Cari agenda..." class="w-full pl-11 pr-4 py-3 bg-white border border-[#e7ece9] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1f7266]">
+        </div>
+
+        {{-- Stat Cards dengan Aset Logo PNG --}}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white border border-[#e7ece9] p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+                <div class="w-12 h-12 rounded-xl bg-[#e6f6f1] flex items-center justify-center p-2.5">
+                    <img src="{{ asset('foto/Totalagendalogo.png') }}" alt="Total Agenda" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <p class="text-[11px] uppercase tracking-wider text-[#6b7d7b] font-semibold">Total Agenda</p>
+                    <p class="text-2xl font-black text-[#1c2b2a]">124</p>
+                </div>
+            </div>
+            <div class="bg-white border border-[#e7ece9] p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+                <div class="w-12 h-12 rounded-xl bg-[#fdefe0] flex items-center justify-center p-2.5">
+                    <img src="{{ asset('foto/Akandatanglogo.png') }}" alt="Akan Datang" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <p class="text-[11px] uppercase tracking-wider text-[#6b7d7b] font-semibold">Akan Datang</p>
+                    <p class="text-2xl font-black text-[#1c2b2a]">8</p>
+                </div>
+            </div>
+            <div class="bg-white border border-[#e7ece9] p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+                <div class="w-12 h-12 rounded-xl bg-[#e5f7ea] flex items-center justify-center p-2.5">
+                    <img src="{{ asset('foto/Selesailogo.png') }}" alt="Selesai" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <p class="text-[11px] uppercase tracking-wider text-[#6b7d7b] font-semibold">Selesai</p>
+                    <p class="text-2xl font-black text-[#1c2b2a]">86</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Action Bar --}}
+        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 mb-6">
+            <div class="flex items-center gap-3">
+                <button class="bg-white border border-[#e7ece9] px-4 py-2.5 rounded-xl text-sm font-semibold text-[#1c2b2a] flex items-center gap-2">
+                    Surat Keluar ▾
+                </button>
+                <button class="bg-white border border-[#e7ece9] px-4 py-2.5 rounded-xl text-sm font-semibold text-[#1c2b2a] flex items-center gap-2">
+                    ☰ Filter tanggal
+                </button>
+            </div>
+            <button class="bg-[#2fae5c] hover:bg-[#279449] text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow transition">
+                + Tambah Agenda
+            </button>
+        </div>
+
+        {{-- Table Card --}}
+        <div class="bg-white border border-[#e7ece9] rounded-2xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[900px]">
+                    <thead class="bg-[#124e49] text-[#eaf5f3] text-xs font-bold">
+                        <tr>
+                            <th class="p-4">Nama Agenda</th>
+                            <th class="p-4">Tanggal</th>
+                            <th class="p-4">Waktu</th>
+                            <th class="p-4">Kuota</th>
+                            <th class="p-4">Asal Surat</th>
+                            <th class="p-4">Lampiran</th>
+                            <th class="p-4">Tempat</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#e7ece9] text-sm text-[#3a4a48]">
+                        @for ($i = 0; $i < 4; $i++)
+                        <tr class="hover:bg-[#f8fbfa] transition">
+                            <td class="p-4 font-bold text-[#124e49]">Rapat Koordinasi Pajak Daerah</td>
+                            <td class="p-4 whitespace-nowrap">Juli 15, 2026</td>
+                            <td class="p-4 whitespace-nowrap">09:00 – 11:30 WIB</td>
+                            <td class="p-4">100</td>
+                            <td class="p-4">Aplikasi Informatika</td>
+                            <td class="p-4">
+                                <span class="text-[#1f7266] font-semibold flex items-center gap-1.5 cursor-pointer">
+                                    <img src="{{ asset('foto/Lampiranlogo.png') }}" alt="Lampiran" class="w-4 h-4 object-contain">
+                                    Lihat Lampiran
+                                </span>
+                            </td>
+                            <td class="p-4 whitespace-nowrap">🎥 Zoom Meeting</td>
+                            <td class="p-4">
+                                <span class="bg-[#fdf1de] text-[#b9791a] px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#e6a13c]"></span> Ongoing
+                                </span>
+                            </td>
+                            <td class="p-4 text-center whitespace-nowrap">
+                                <div class="flex items-center justify-center gap-2">
+                                    {{-- Edit --}}
+                                    <button class="w-8 h-8 rounded-lg bg-[#e6f6f1] flex items-center justify-center p-1.5 hover:bg-[#d5f1e8] transition" title="Edit Agenda">
+                                        <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="w-full h-full object-contain">
+                                    </button>
+                                    
+                                    {{-- Delete --}}
+                                    <button class="w-8 h-8 rounded-lg bg-[#fdeceb] flex items-center justify-center p-1.5 hover:bg-[#fbdad8] transition" title="Hapus Agenda">
+                                        <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="w-full h-full object-contain">
+                                    </button>
+                                    
+                                    {{-- Detail --}}
+                                    <a href="{{ route('admin.agenda.detail') }}" class="w-8 h-8 rounded-lg bg-[#eef1f1] flex items-center justify-center p-1.5 hover:bg-gray-200 transition" title="Detail Agenda">
+                                        <img src="{{ asset('foto/Detaillogo.png') }}" alt="Detail" class="w-full h-full object-contain">
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        @endfor
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- Table Footer / Pagination --}}
+            <div class="p-4 border-t border-[#e7ece9] flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-[#6b7d7b]">
+                <span>Showing 1 to 10 of 124 entries</span>
+                <div class="flex items-center gap-1">
+                    <button class="w-8 h-8 border border-[#e7ece9] rounded-lg bg-white">‹</button>
+                    <button class="w-8 h-8 border border-[#124e49] bg-[#124e49] text-white font-bold rounded-lg">1</button>
+                    <button class="w-8 h-8 border border-[#e7ece9] rounded-lg bg-white">2</button>
+                    <button class="w-8 h-8 border border-[#e7ece9] rounded-lg bg-white">3</button>
+                    <button class="w-8 h-8 border border-[#e7ece9] rounded-lg bg-white">›</button>
+                </div>
+            </div>
+        </div>
+
     </main>
+</div>
 
-    <!-- ========================================== -->
-    <!-- COMPONENT MODAL POPUP: BUKTI ABSENSI -->
-    <!-- ========================================== -->
-    <div id="buktiModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div class="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden m-4 transform transition-all">
-            
-            <!-- Header Modal Hijau #3b6f6c -->
-            <div class="bg-[#3b6f6c] text-white px-5 py-4 flex justify-between items-center">
-                <h3 class="font-bold text-sm tracking-wide">Bukti Absensi Peserta</h3>
-                <button onclick="closeModal()" class="text-white/80 hover:text-white text-xl font-bold transition-colors">&times;</button>
-            </div>
-
-            <!-- Isi Modal -->
-            <div class="p-5 space-y-4">
-                <!-- Frame Foto -->
-                <div class="w-full h-44 bg-gray-200 rounded-lg overflow-hidden border border-gray-300 shadow-inner">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop" alt="Foto Presensi Pegawai" class="w-full h-full object-cover">
-                </div>
-
-                <!-- Info Peserta -->
-                <div class="grid grid-cols-2 gap-3 text-xs">
-                    <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg">
-                        <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Nama Peserta</p>
-                        <p class="font-bold text-gray-800 mt-0.5">Budi Santoso</p>
-                    </div>
-                    <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg">
-                        <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Waktu Absen</p>
-                        <p class="font-bold text-gray-800 mt-0.5">15 Okt 2023, 09:15 WIB</p>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 border border-gray-200 p-3 rounded-lg text-xs">
-                    <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Lokasi Pemotretan</p>
-                    <p class="font-bold text-gray-800 mt-0.5">📍 Ruang Rapat Utama (Geotag Valid)</p>
-                </div>
-
-                <div class="flex items-center space-x-2 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-lg">
-                    <span>✓</span>
-                    <span>Terverifikasi Sistem e-Agenda</span>
-                </div>
-            </div>
-
-            <!-- Footer Modal -->
-            <div class="bg-gray-50 px-5 py-3.5 flex justify-end space-x-2 border-t border-gray-100">
-                <button onclick="closeModal()" class="border border-gray-300 hover:bg-gray-100 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-colors">
-                    Tutup
-                </button>
-                <button class="bg-[#d49e19] hover:bg-[#b88510] text-white text-xs font-bold px-4 py-2 rounded-lg shadow transition-colors">
-                    📥 Unduh
-                </button>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Script Modal Toggle -->
-    <script>
-        function openModal() {
-            document.getElementById('buktiModal').classList.remove('hidden');
-        }
-        function closeModal() {
-            document.getElementById('buktiModal').classList.add('hidden');
-        }
-    </script>
 </body>
 </html>

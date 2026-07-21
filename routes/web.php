@@ -1,11 +1,10 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\UserController;
-
-
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,6 +27,12 @@ Route::prefix('admin')->group(function () {
         // Agenda & Kehadiran Internal
         Route::post('/agenda/tambah', [AdminController::class, 'kelola_Agenda']);
         Route::get('/agenda/lihat', [AdminController::class, 'lihat_Agenda'])->name('admin.agenda.lihat');
+        
+        // RUTE DETAIL AGENDA (Menghilangkan Error RouteNotFoundException)
+        Route::get('/agenda/detail', function () {
+            return view('admin.detailagenda');
+        })->name('admin.agenda.detail');
+
         Route::redirect('/agenda', '/admin/agenda/lihat')->name('admin.agenda');
         Route::get('/agenda/cari', [AdminController::class, 'cari_Agenda']);
         
@@ -61,20 +66,19 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-   //Routes Kehadiran
-   // Route untuk absensi Pegawai / Tamu
-    Route::post('/kehadiran/scan-qr', [KehadiranController::class, 'scan_QR']);
-    Route::post('/kehadiran/verifikasi-fr', [KehadiranController::class, 'verifikasi_FaceRecognition']);
+// Routes Kehadiran
+Route::post('/kehadiran/scan-qr', [KehadiranController::class, 'scan_QR']);
+Route::post('/kehadiran/verifikasi-fr', [KehadiranController::class, 'verifikasi_FaceRecognition']);
 
-    // fitur pengaduan masyarakat
-    Route::post('/aduan/kirim', [UserController::class, 'kirimAduan']);
-    Route::get('/aduan/cek/{id}', [UserController::class, 'cekStatusAduan']);
+// Fitur pengaduan masyarakat
+Route::post('/aduan/kirim', [UserController::class, 'kirimAduan']);
+Route::get('/aduan/cek/{id}', [UserController::class, 'cekStatusAduan']);
 
-    // fitur cari jadwal agenda rapat publik
-    Route::get('/agenda/cari', [UserController::class, 'CariAgenda']);
+// Fitur cari jadwal agenda rapat publik
+Route::get('/agenda/cari', [UserController::class, 'CariAgenda']);
 
-    //ROUTE MILIK USER
-    Route::prefix('user')->group(function () {
+// ROUTE MILIK USER
+Route::prefix('user')->group(function () {
     // Halaman Beranda Informasi Publik
     Route::get('/beranda/pengumuman', [UserController::class, 'TampilkanPengumuman']);
     Route::get('/beranda/ringkasan', [UserController::class, 'TampilkanRingkasan']);
@@ -90,10 +94,9 @@ Route::prefix('admin')->group(function () {
 
     // Pendaftaran Kehadiran Tamu (Non-Pegawai)
     Route::post('/tamu/hadir', [UserController::class, 'inputDataTamu']);
-    
 });
 
-//sidebar
+// Sidebar
 Route::get('/adminlayout', function () {
     return redirect()->route('admin.layout');
 });
