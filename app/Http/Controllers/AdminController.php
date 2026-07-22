@@ -76,14 +76,14 @@ class AdminController extends Controller
         public function dashboard()
         {
             $admin = Auth::guard('admin')->user();
-            return view('admin.dashboard', compact('admin'));
+            return view('admin.dashboard.index', compact('admin'));
         }
 
         // Demo view for admin layout
         public function layout()
         {
             $admin = Auth::guard('admin')->user();
-            return view('admin.dashboard', compact('admin'));
+            return view('admin.dashboard.index', compact('admin'));
         }
 
         public function daftarRuang()
@@ -91,7 +91,7 @@ class AdminController extends Controller
             $admin = Auth::guard('admin')->user();
             $ruang = RuangRapat::latest('id_ruangrapat')->get();
 
-            return view('admin.daftarruangan', compact('admin', 'ruang'));
+            return view('admin.ruang.index', compact('admin', 'ruang'));
         }
 
         public function dataPegawai()
@@ -99,7 +99,7 @@ class AdminController extends Controller
             $admin = Auth::guard('admin')->user();
             $pegawai = Pegawai::latest('id_pegawai')->get();
 
-            return view('admin.datapegawai', compact('admin', 'pegawai'));
+            return view('admin.pegawai.index', compact('admin', 'pegawai'));
         }
 
         public function dataTamu()
@@ -107,7 +107,7 @@ class AdminController extends Controller
             $admin = Auth::guard('admin')->user();
             $tamu = Tamu::latest('id_tamu')->get();
 
-            return view('admin.datatamu', compact('admin', 'tamu'));
+            return view('admin.tamu.index', compact('admin', 'tamu'));
         }
 
         public function daftarKunjungan()
@@ -115,7 +115,7 @@ class AdminController extends Controller
             $admin = Auth::guard('admin')->user();
             $kunjungan = Kunjungan::latest('id_kunjungan')->get();
 
-            return view('admin.daftarkunjungan', compact('admin', 'kunjungan'));
+            return view('admin.kunjungan.index', compact('admin', 'kunjungan'));
         }
 
         public function umpanBalik()
@@ -123,7 +123,7 @@ class AdminController extends Controller
             $admin = Auth::guard('admin')->user();
             $masukan = DataMasukan::latest('id_datamasukan')->get();
 
-            return view('admin.umpanbalik', compact('admin', 'masukan'));
+            return view('admin.masukkan.index', compact('admin', 'masukan'));
         }
 
         public function laporan()
@@ -131,7 +131,7 @@ class AdminController extends Controller
             $admin = Auth::guard('admin')->user();
             $totalLogbook = Logbook::count();
 
-            return view('admin.laporan', compact('admin', 'totalLogbook'));
+            return view('admin.laporan.index', compact('admin', 'totalLogbook'));
         }
 
     // PENGATURAN AGENDA (Sesuai Class Agenda & Admin)
@@ -170,7 +170,7 @@ class AdminController extends Controller
         }
         $admin = Auth::guard('admin')->user();
 
-        return view('admin.daftaragenda', compact('admin', 'agenda'));
+        return view('admin.agenda.index', compact('admin', 'agenda'));
     }
 
     // + cari_Agenda() -> Admin juga bisa nyari internal
