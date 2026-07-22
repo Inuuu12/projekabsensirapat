@@ -3,12 +3,13 @@
 @section('title', 'Daftar Agenda')
 
 @section('content')
-<div class="max-w-[1400px] mx-auto space-y-6">
-    <!-- Page Title & Header -->
+<div class="max-w-[1400px] mx-auto space-y-6" x-data="{ kategoriSurat: 'internal' }">
+    
+    <!-- Header Page & Profile Chip -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] tracking-tight">Daftar Agenda</h1>
-            <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola daftar agenda dinas BAPPENDA.</p>
+            <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola dan pantau seluruh jadwal agenda.</p>
         </div>
         <button onclick="openModal('modal-tambah')" class="bg-[#22C55E] hover:bg-[#16A34A] text-white font-bold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 transition shadow-xs cursor-pointer self-start sm:self-auto">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -18,7 +19,7 @@
 
     <!-- Search & Stats Header Bar -->
     <div class="space-y-4">
-        <!-- Search Bar -->
+        <!-- Search Input -->
         <div class="relative w-full max-w-md">
             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -61,12 +62,18 @@
                 </div>
             </div>
 
-            <!-- Filters -->
+            <!-- Filter Dropdown & Date Button -->
             <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                <select class="border border-gray-200 bg-white text-gray-700 font-semibold py-2.5 px-4 rounded-xl outline-none hover:bg-gray-50 transition shadow-xs text-sm cursor-pointer">
-                    <option>Surat Internal</option>
-                    <option>Surat Eksternal</option>
-                </select>
+                
+                {{-- Dropdown Pilihan 3 Kategori Surat --}}
+                <div class="relative">
+                    <select x-model="kategoriSurat" class="border border-gray-200 bg-white text-gray-700 font-semibold py-2.5 px-4 pr-9 rounded-xl outline-none hover:bg-gray-50 transition shadow-xs text-sm cursor-pointer appearance-none">
+                        <option value="internal">Surat Internal</option>
+                        <option value="masuk">Surat Masuk</option>
+                        <option value="keluar">Surat Keluar</option>
+                    </select>
+                    <span class="absolute right-3.5 top-3.5 text-xs pointer-events-none text-gray-500">▼</span>
+                </div>
 
                 <button class="border border-gray-200 bg-white text-gray-700 font-semibold py-2.5 px-4 rounded-xl flex items-center gap-2 hover:bg-gray-50 transition shadow-xs text-sm cursor-pointer">
                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
@@ -76,10 +83,165 @@
         </div>
     </div>
 
-    <!-- Table Section -->
-    <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
+    <!-- ========================================================================= -->
+    <!-- TABEL 1: SURAT INTERNAL (KOLOM: KUOTA & ASAL SURAT)                      -->
+    <!-- ========================================================================= -->
+    <div x-show="kategoriSurat === 'internal'" class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse min-w-[900px]">
+            <table class="w-full text-left border-collapse min-w-[950px]">
+                <thead>
+                    <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider">
+                        <th class="px-6 py-4">Nama Agenda</th>
+                        <th class="px-6 py-4">Tanggal</th>
+                        <th class="px-6 py-4">Waktu</th>
+                        <th class="px-6 py-4">Kuota</th>
+                        <th class="px-6 py-4">Asal Surat</th>
+                        <th class="px-6 py-4">Lampiran</th>
+                        <th class="px-6 py-4">Tempat</th>
+                        <th class="px-6 py-4 text-center">Status</th>
+                        <th class="px-6 py-4 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 text-sm">
+                    @php
+                        $kuota = [100, 50, 35, 25];
+                        $tempat = ['Aula Husni Hamid', 'Zoom Meeting', 'Zoom Meeting', 'Zoom Meeting'];
+                    @endphp
+                    @for ($i = 0; $i < 4; $i++)
+                    <tr class="hover:bg-gray-50/80 transition">
+                        <td class="px-6 py-4 font-bold text-[#35635b]">Rapat Koordinasi Pajak Daerah</td>
+                        <td class="px-6 py-4 text-gray-700 font-medium whitespace-nowrap">Juli 15, 2026</td>
+                        <td class="px-6 py-4 text-gray-700 whitespace-nowrap">09:00 - 11:30 WIB</td>
+                        <td class="px-6 py-4 text-gray-700 font-semibold">{{ $kuota[$i] }}</td>
+                        <td class="px-6 py-4 text-gray-700">Aplikasi Informatika</td>
+                        <td class="px-6 py-4">
+                            <a href="#" class="inline-flex items-center gap-1.5 text-[#35635b] hover:underline font-bold whitespace-nowrap">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Lihat Lampiran
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 text-gray-700">
+                            <div class="flex items-center gap-1.5 font-medium whitespace-nowrap">
+                                @if($i == 0)
+                                    <svg class="w-4 h-4 text-[#35635b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V5"></path></svg>
+                                @else
+                                    <svg class="w-4 h-4 text-[#35635b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                @endif
+                                {{ $tempat[$i] }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex justify-center">
+                                <span class="bg-[#FFEDD5] text-[#EA580C] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 whitespace-nowrap">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#EA580C]"></span> Ongoing
+                                </span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex justify-center items-center gap-2">
+                                <button onclick="openModal('modal-edit')" class="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition cursor-pointer" title="Edit"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                                <button onclick="openModal('modal-hapus')" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition cursor-pointer" title="Hapus"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                                <button onclick="openModal('modal-detail')" class="p-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition cursor-pointer" title="Detail"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+                            </div>
+                        </td>
+                    </tr>
+                    @endfor
+                </tbody>
+            </table>
+        </div>
+        <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500 font-medium">
+            <span>Showing 1 to 10 of 124 entries</span>
+            <div class="flex items-center gap-1">
+                <button class="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer">&lt;</button>
+                <button class="px-3 py-1.5 rounded-lg bg-[#35635b] text-white font-bold cursor-pointer">1</button>
+                <button class="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer">2</button>
+                <button class="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer">3</button>
+                <button class="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer">&gt;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TABEL 2: SURAT MASUK (KOLOM: DITUGASKAN & ASAL SURAT)                    -->
+    <!-- ========================================================================= -->
+    <div x-show="kategoriSurat === 'masuk'" class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden" x-cloak>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[950px]">
+                <thead>
+                    <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider">
+                        <th class="px-6 py-4">Nama Agenda</th>
+                        <th class="px-6 py-4">Tanggal</th>
+                        <th class="px-6 py-4">Waktu</th>
+                        <th class="px-6 py-4">Ditugaskan</th>
+                        <th class="px-6 py-4">Asal Surat</th>
+                        <th class="px-6 py-4">Lampiran</th>
+                        <th class="px-6 py-4">Tempat</th>
+                        <th class="px-6 py-4 text-center">Status</th>
+                        <th class="px-6 py-4 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 text-sm">
+                    @php
+                        $namaAgendaMasuk = ['Rapat Koordinasi Pendidikan', 'Rapat Koordinasi Pajak Daerah', 'Rapat Koordinasi Pajak Daerah', 'Rapat Koordinasi Pajak Daerah'];
+                        $ditugaskan = ['Bidang APTIKA', 'Bidang Publikasi', 'Bidang', 'Bidang'];
+                        $asalSuratMasuk = ['Dinas Pendidikan', 'Dinas', 'Dinas', 'Dinas'];
+                    @endphp
+                    @for ($i = 0; $i < 4; $i++)
+                    <tr class="hover:bg-gray-50/80 transition">
+                        <td class="px-6 py-4 font-bold text-[#35635b]">{{ $namaAgendaMasuk[$i] }}</td>
+                        <td class="px-6 py-4 text-gray-700 font-medium whitespace-nowrap">Juli 15, 2026</td>
+                        <td class="px-6 py-4 text-gray-700 whitespace-nowrap">09:00 - 11:30 WIB</td>
+                        <td class="px-6 py-4 text-gray-700 font-medium">{{ $ditugaskan[$i] }}</td>
+                        <td class="px-6 py-4 text-gray-700">{{ $asalSuratMasuk[$i] }}</td>
+                        <td class="px-6 py-4">
+                            <a href="#" class="inline-flex items-center gap-1.5 text-[#35635b] hover:underline font-bold whitespace-nowrap">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Lihat Lampiran
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 text-gray-700">
+                            <div class="flex items-center gap-1.5 font-medium whitespace-nowrap">
+                                <svg class="w-4 h-4 text-[#35635b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                Zoom Meeting
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex justify-center">
+                                <span class="bg-[#FFEDD5] text-[#EA580C] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 whitespace-nowrap">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#EA580C]"></span> Ongoing
+                                </span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex justify-center items-center gap-2">
+                                <button onclick="openModal('modal-edit')" class="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition cursor-pointer" title="Edit"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                                <button onclick="openModal('modal-hapus')" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition cursor-pointer" title="Hapus"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                                <button onclick="openModal('modal-detail')" class="p-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition cursor-pointer" title="Detail"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+                            </div>
+                        </td>
+                    </tr>
+                    @endfor
+                </tbody>
+            </table>
+        </div>
+        <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500 font-medium">
+            <span>Showing 1 to 10 of 124 entries</span>
+            <div class="flex items-center gap-1">
+                <button class="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer">&lt;</button>
+                <button class="px-3 py-1.5 rounded-lg bg-[#35635b] text-white font-bold cursor-pointer">1</button>
+                <button class="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer">2</button>
+                <button class="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer">3</button>
+                <button class="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer">&gt;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TABEL 3: SURAT KELUAR (KOLOM: KUOTA & ASAL SURAT)                        -->
+    <!-- ========================================================================= -->
+    <div x-show="kategoriSurat === 'keluar'" class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden" x-cloak>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[950px]">
                 <thead>
                     <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider">
                         <th class="px-6 py-4">Nama Agenda</th>
@@ -96,49 +258,35 @@
                 <tbody class="divide-y divide-gray-100 text-sm">
                     @for ($i = 0; $i < 4; $i++)
                     <tr class="hover:bg-gray-50/80 transition">
-                        <td class="px-6 py-4 font-bold text-[#35635b]">
-                            Rapat Koordinasi Pajak Daerah
-                        </td>
-                        <td class="px-6 py-4 text-gray-700 font-medium">Juli 15, 2026</td>
-                        <td class="px-6 py-4 text-gray-700">09:00 - 11:30 WIB</td>
-                        <td class="px-6 py-4 text-gray-700 font-semibold">{{ 100 - ($i * 25) }}</td>
+                        <td class="px-6 py-4 font-bold text-[#35635b]">Rapat Koordinasi Pajak Daerah</td>
+                        <td class="px-6 py-4 text-gray-700 font-medium whitespace-nowrap">Juli 15, 2026</td>
+                        <td class="px-6 py-4 text-gray-700 whitespace-nowrap">09:00 - 11:30 WIB</td>
+                        <td class="px-6 py-4 text-gray-700 font-semibold">{{ $kuota[$i] }}</td>
                         <td class="px-6 py-4 text-gray-700">Aplikasi Informatika</td>
                         <td class="px-6 py-4">
-                            <a href="#" class="inline-flex items-center gap-1.5 text-[#35635b] hover:underline font-bold">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                            <a href="#" class="inline-flex items-center gap-1.5 text-[#35635b] hover:underline font-bold whitespace-nowrap">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                 Lihat Lampiran
                             </a>
                         </td>
                         <td class="px-6 py-4 text-gray-700">
-                            <div class="flex items-center gap-1.5 font-medium">
-                                @if($i == 0)
-                                    <svg class="w-4 h-4 text-[#35635b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V5"></path></svg>
-                                    Aula Husni Hamid
-                                @else
-                                    <svg class="w-4 h-4 text-[#35635b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                                    Zoom Meeting
-                                @endif
+                            <div class="flex items-center gap-1.5 font-medium whitespace-nowrap">
+                                <svg class="w-4 h-4 text-[#35635b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                Zoom Meeting
                             </div>
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex justify-center">
-                                <span class="bg-[#FFEDD5] text-[#EA580C] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-[#EA580C]"></span>
-                                    Ongoing
+                                <span class="bg-[#FFEDD5] text-[#EA580C] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 whitespace-nowrap">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#EA580C]"></span> Ongoing
                                 </span>
                             </div>
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex justify-center items-center gap-2">
-                                <button onclick="openModal('modal-edit')" class="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition cursor-pointer" title="Edit">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                                </button>
-                                <button onclick="openModal('modal-hapus')" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition cursor-pointer" title="Hapus">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
-                                <button onclick="openModal('modal-detail')" class="p-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition cursor-pointer" title="Detail">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                </button>
+                                <button onclick="openModal('modal-edit')" class="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition cursor-pointer" title="Edit"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                                <button onclick="openModal('modal-hapus')" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition cursor-pointer" title="Hapus"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                                <button onclick="openModal('modal-detail')" class="p-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition cursor-pointer" title="Detail"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
                             </div>
                         </td>
                     </tr>
@@ -146,8 +294,6 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Pagination Footer -->
         <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500 font-medium">
             <span>Showing 1 to 10 of 124 entries</span>
             <div class="flex items-center gap-1">
@@ -161,32 +307,69 @@
     </div>
 </div>
 
-<!-- Modal Tambah Agenda -->
-<div id="modal-tambah" class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
-        <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Tambah Agenda Baru</h3>
-        <form class="space-y-4" onsubmit="event.preventDefault(); closeModal('modal-tambah');">
+<!-- ================= MODAL TAMBAH AGENDA ================= -->
+<div id="modal-tambah" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden my-auto max-h-[90vh] flex flex-col">
+        <div class="bg-[#3b6f6c] text-white px-6 py-4 flex justify-between items-center shrink-0">
+            <h3 class="text-base font-bold tracking-wide">Tambah Agenda</h3>
+            <button onclick="closeModal('modal-tambah')" class="text-white/80 hover:text-white text-xl font-bold leading-none cursor-pointer">&times;</button>
+        </div>
+        <form class="p-6 space-y-4 overflow-y-auto text-xs sm:text-sm text-gray-700" onsubmit="event.preventDefault(); closeModal('modal-tambah');">
             <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama Agenda</label>
-                <input type="text" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none" placeholder="Masukkan nama agenda">
+                <label class="block font-bold mb-1.5 text-gray-700">Nama Agenda</label>
+                <input type="text" class="w-full bg-[#f4f8f7] border border-[#e2ece9] rounded-xl px-4 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-[#3b6f6c] transition" placeholder="Masukkan nama agenda">
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Tanggal</label>
-                    <input type="date" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
+                    <label class="block font-bold mb-1.5 text-gray-700">Tanggal</label>
+                    <input type="date" class="w-full bg-[#f4f8f7] border border-[#e2ece9] rounded-xl px-3 py-2.5 text-xs focus:bg-white focus:outline-none focus:border-[#3b6f6c] transition text-gray-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Waktu</label>
-                    <input type="text" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none" placeholder="09:00 - 11:30 WIB">
+                    <label class="block font-bold mb-1.5 text-gray-700">Waktu Mulai</label>
+                    <input type="time" class="w-full bg-[#f4f8f7] border border-[#e2ece9] rounded-xl px-3 py-2.5 text-xs focus:bg-white focus:outline-none focus:border-[#3b6f6c] transition text-gray-500">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1.5 text-gray-700">Waktu Selesai</label>
+                    <input type="time" class="w-full bg-[#f4f8f7] border border-[#e2ece9] rounded-xl px-3 py-2.5 text-xs focus:bg-white focus:outline-none focus:border-[#3b6f6c] transition text-gray-500">
                 </div>
             </div>
             <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Asal Surat</label>
-                <input type="text" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none" placeholder="Dinas / Instansi asal">
+                <label class="block font-bold mb-1.5 text-gray-700">Kuota</label>
+                <input type="number" class="w-full bg-[#f4f8f7] border border-[#e2ece9] rounded-xl px-4 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-[#3b6f6c] transition" placeholder="Kuota agenda">
             </div>
-            <div class="flex justify-end gap-3 pt-3 border-t">
-                <button type="button" onclick="closeModal('modal-tambah')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] rounded-xl shadow-xs">Simpan Agenda</button>
+            <div>
+                <label class="block font-bold mb-1.5 text-gray-700">Asal Surat</label>
+                <input type="text" class="w-full bg-[#f4f8f7] border border-[#e2ece9] rounded-xl px-4 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-[#3b6f6c] transition" placeholder="Instansi/Bagian asal surat">
+            </div>
+            <div>
+                <label class="block font-bold mb-1.5 text-gray-700">Tempat</label>
+                <div class="relative">
+                    <select class="w-full bg-[#f4f8f7] border border-[#e2ece9] rounded-xl px-4 py-2.5 text-xs sm:text-sm appearance-none focus:bg-white focus:outline-none focus:border-[#3b6f6c] transition text-gray-600">
+                        <option value="" disabled selected>Pilih tempat</option>
+                        <option value="Aula Husni Hamid">Aula Husni Hamid</option>
+                        <option value="Ruang Rapat Utama">Ruang Rapat Utama</option>
+                        <option value="Zoom Meeting">Zoom Meeting</option>
+                    </select>
+                    <span class="absolute right-3.5 top-3.5 text-xs pointer-events-none text-gray-400">▼</span>
+                </div>
+            </div>
+            <div>
+                <label class="block font-bold mb-1.5 text-gray-700">Lampiran Surat Undangan</label>
+                <label class="border-2 border-dashed border-[#c2ded9] bg-[#f4f8f7] rounded-xl p-5 flex flex-col items-center justify-center cursor-pointer hover:bg-[#ebf4f2] transition group text-center">
+                    <input type="file" accept=".pdf" class="hidden">
+                    <div class="w-8 h-8 mb-2 border border-[#3b6f6c] text-[#3b6f6c] rounded-md flex items-center justify-center font-bold text-xs bg-white shadow-2xs group-hover:scale-105 transition">
+                        PDF
+                    </div>
+                    <p class="text-xs font-semibold text-gray-700">Klik atau seret file PDF ke sini</p>
+                    <p class="text-[10px] text-gray-400 mt-0.5">Maksimal 5MB</p>
+                </label>
+            </div>
+            <div class="flex justify-end items-center gap-3 pt-3">
+                <button type="button" onclick="closeModal('modal-tambah')" class="px-5 py-2.5 text-xs font-bold text-gray-600 hover:text-gray-800 transition">Batal</button>
+                <button type="submit" class="bg-[#0f534c] hover:bg-[#0a3b36] text-white px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition cursor-pointer active:scale-95">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    Simpan
+                </button>
             </div>
         </form>
     </div>
@@ -197,7 +380,7 @@
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
         <div class="flex justify-between items-center border-b pb-3">
             <h3 class="text-lg font-bold text-gray-800">Detail Agenda</h3>
-            <button onclick="closeModal('modal-detail')" class="text-gray-400 hover:text-gray-600">&times;</button>
+            <button onclick="closeModal('modal-detail')" class="text-gray-400 hover:text-gray-600 cursor-pointer">&times;</button>
         </div>
         <div class="space-y-3 text-sm">
             <div><span class="font-bold text-gray-500 text-xs uppercase block">Nama Agenda</span><p class="font-bold text-gray-800 text-base">Rapat Koordinasi Pajak Daerah</p></div>
@@ -208,7 +391,7 @@
             <div><span class="font-bold text-gray-500 text-xs uppercase block">Tempat</span><p class="text-gray-700">Aula Husni Hamid</p></div>
         </div>
         <div class="flex justify-end pt-3 border-t">
-            <button type="button" onclick="closeModal('modal-detail')" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] rounded-xl">Tutup</button>
+            <button type="button" onclick="closeModal('modal-detail')" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] rounded-xl cursor-pointer">Tutup</button>
         </div>
     </div>
 </div>
@@ -223,8 +406,8 @@
                 <input type="text" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none" value="Rapat Koordinasi Pajak Daerah">
             </div>
             <div class="flex justify-end gap-3 pt-3 border-t">
-                <button type="button" onclick="closeModal('modal-edit')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] rounded-xl shadow-xs">Simpan Perubahan</button>
+                <button type="button" onclick="closeModal('modal-edit')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl cursor-pointer">Batal</button>
+                <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] rounded-xl shadow-xs cursor-pointer">Simpan Perubahan</button>
             </div>
         </form>
     </div>
@@ -239,8 +422,8 @@
         <h3 class="text-base font-bold text-gray-800">Hapus Agenda?</h3>
         <p class="text-xs text-gray-500">Apakah Anda yakin ingin menghapus agenda ini? Tindakan ini tidak dapat dibatalkan.</p>
         <div class="flex justify-center gap-3 pt-2">
-            <button onclick="closeModal('modal-hapus')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl">Batal</button>
-            <button onclick="closeModal('modal-hapus')" class="px-4 py-2 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-xs">Hapus</button>
+            <button onclick="closeModal('modal-hapus')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl cursor-pointer">Batal</button>
+            <button onclick="closeModal('modal-hapus')" class="px-4 py-2 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-xs cursor-pointer">Hapus</button>
         </div>
     </div>
 </div>
