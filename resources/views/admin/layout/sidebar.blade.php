@@ -56,7 +56,7 @@
                 </button>
 
                 <div class="{{ $isUserActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
-                    <a href="{{ route('admin.pegawai.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-[#2b4f49]/50 transition {{ request()->routeIs('admin.pegawai.lihat') ? 'bg-[#2b4f49] font-bold text-white' : 'text-white/80' }}">Data Pegawai</a>
+                    <a href="{{ route('admin.datapegawai') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-[#2b4f49]/50 transition {{ request()->routeIs('admin.datapegawai', 'admin.pegawai.lihat') ? 'bg-[#2b4f49] font-bold text-white' : 'text-white/80' }}">Data Pegawai</a>
                     <a href="{{ route('admin.tamu.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-[#2b4f49]/50 transition {{ request()->routeIs('admin.tamu.lihat') ? 'bg-[#2b4f49] font-bold text-white' : 'text-white/80' }}">Data Tamu</a>
                 </div>
             </div>
@@ -86,4 +86,3 @@
     </div>
 
 </aside>
-
