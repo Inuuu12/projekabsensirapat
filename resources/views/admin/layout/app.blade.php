@@ -38,6 +38,18 @@
 
         <!-- Scrollable Content Page -->
         <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#FAFAFA]">
+            @if (session('success'))
+                <div class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
             @yield('content')
         </main>
     </div>
@@ -55,4 +67,3 @@
     @stack('scripts')
 </body>
 </html>
-

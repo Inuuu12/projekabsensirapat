@@ -9,12 +9,12 @@ class StatusAgenda extends Model
 {
     use HasFactory;
 
-    protected $table = 'status_agenda';
-    protected $primaryKey = 'id_statusAgenda';
+    protected $table = 'app_md_statusagenda';
+    protected $primaryKey = 'id_statusagenda';
     protected $fillable = ['nama_status'];
 
     public function agenda()
     {
-        return $this->hasMany(Agenda::class, 'id_statusAgenda', 'id_statusAgenda');
+        return $this->hasMany(Agenda::class, 'id_statusagenda', 'id_statusagenda');
     }
 }

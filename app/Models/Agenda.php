@@ -14,6 +14,10 @@ class Agenda extends Model
 
     protected $fillable = [
         'nama_agenda',
+        'kategori_surat',
+        'asal_surat',
+        'ditugaskan',
+        'lampiran',
         'tanggal',
         'waktu',
         'kuota',

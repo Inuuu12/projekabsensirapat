@@ -25,12 +25,12 @@ Route::prefix('admin')->group(function () {
         Route::get('/layout', [AdminController::class, 'layout'])->name('admin.layout');
 
         // Agenda & Kehadiran Internal
-        Route::post('/agenda/tambah', [AdminController::class, 'kelola_Agenda']);
+        Route::post('/agenda/tambah', [AdminController::class, 'kelola_Agenda'])->name('admin.agenda.store');
         Route::get('/agenda/lihat', [AdminController::class, 'lihat_Agenda'])->name('admin.agenda.lihat');
         
         // RUTE DETAIL AGENDA (Menghilangkan Error RouteNotFoundException)
         Route::get('/agenda/detail', function () {
-            return view('admin.detailagenda');
+            return view('admin.agenda.detail');
         })->name('admin.agenda.detail');
 
         Route::redirect('/agenda', '/admin/agenda/lihat')->name('admin.agenda');
@@ -41,8 +41,11 @@ Route::prefix('admin')->group(function () {
 
         Route::get('/pengguna', [AdminController::class, 'dataPegawai'])->name('admin.pengguna.lihat');
         Route::get('/datapegawai', [AdminController::class, 'dataPegawai'])->name('admin.datapegawai');
+        Route::get('/pegawai', [AdminController::class, 'dataPegawai'])->name('admin.pegawai.lihat');
         Route::get('/datatamu', [AdminController::class, 'dataTamu'])->name('admin.datatamu');
+        Route::get('/tamu', [AdminController::class, 'dataTamu'])->name('admin.tamu.lihat');
         Route::get('/umpanbalik', [AdminController::class, 'umpanBalik'])->name('admin.umpanbalik');
+        Route::get('/masukkan', [AdminController::class, 'umpanBalik'])->name('admin.masukkan.lihat');
 
         // Filter agenda by kategori surat
         Route::get('/agenda/kategori/internal-to-internal', [AdminController::class, 'lihat_AgendaInternalToInternal']);
@@ -52,17 +55,37 @@ Route::prefix('admin')->group(function () {
         
         Route::put('/agenda/{id}/konfigurasi-fr', [AdminController::class, 'konfigurasi_FaceRecognition']);
         Route::get('/agenda/{id}/generate-qr', [AdminController::class, 'generate_QR']);
+        Route::put('/agenda/{id}', [AdminController::class, 'update_Agenda'])->name('admin.agenda.update');
+        Route::delete('/agenda/{id}', [AdminController::class, 'hapus_Agenda'])->name('admin.agenda.destroy');
         Route::post('/kehadiran/verifikasi', [AdminController::class, 'verifikasi_Kehadiran']);
 
         // Aduan & Kunjungan
         Route::get('/aduan/lihat', [AdminController::class, 'lihat_Aduan']);
         Route::put('/aduan/{id}/verifikasi', [AdminController::class, 'verifikasi_Aduan']);
-        Route::post('/kunjungan/kelola', [AdminController::class, 'kelola_Kunjungan']);
+        Route::post('/kunjungan/kelola', [AdminController::class, 'kelola_Kunjungan'])->name('admin.kunjungan.store');
+        Route::put('/kunjungan/{id}', [AdminController::class, 'update_Kunjungan'])->name('admin.kunjungan.update');
+        Route::delete('/kunjungan/{id}', [AdminController::class, 'hapus_Kunjungan'])->name('admin.kunjungan.destroy');
         Route::get('/kunjungan', [AdminController::class, 'daftarKunjungan'])->name('admin.kunjungan.lihat');
         Route::get('/daftarkunjungan', [AdminController::class, 'daftarKunjungan'])->name('admin.daftarkunjungan');
         
         Route::get('/laporan/cetak', [AdminController::class, 'cetak_Laporan']);
+        Route::get('/kehadiran/download', [AdminController::class, 'cetak_Laporan'])->name('admin.kehadiran.download');
         Route::get('/laporan', [AdminController::class, 'laporan'])->name('admin.laporan.lihat');
+
+        Route::post('/ruang', [AdminController::class, 'store_Ruang'])->name('admin.ruang.store');
+        Route::put('/ruang/{id}', [AdminController::class, 'update_Ruang'])->name('admin.ruang.update');
+        Route::delete('/ruang/{id}', [AdminController::class, 'hapus_Ruang'])->name('admin.ruang.destroy');
+
+        Route::post('/pegawai', [AdminController::class, 'store_Pegawai'])->name('admin.pegawai.store');
+        Route::put('/pegawai/{id}', [AdminController::class, 'update_Pegawai'])->name('admin.pegawai.update');
+        Route::delete('/pegawai/{id}', [AdminController::class, 'hapus_Pegawai'])->name('admin.pegawai.destroy');
+
+        Route::post('/tamu', [AdminController::class, 'store_Tamu'])->name('admin.tamu.store');
+        Route::put('/tamu/{id}', [AdminController::class, 'update_Tamu'])->name('admin.tamu.update');
+        Route::delete('/tamu/{id}', [AdminController::class, 'hapus_Tamu'])->name('admin.tamu.destroy');
+
+        Route::put('/masukkan/{id}', [AdminController::class, 'update_Masukan'])->name('admin.masukkan.update');
+        Route::delete('/masukkan/{id}', [AdminController::class, 'hapus_Masukan'])->name('admin.masukkan.destroy');
     });
 });
 
