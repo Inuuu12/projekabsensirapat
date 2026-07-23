@@ -9,8 +9,8 @@
         <div class="p-5 flex items-center space-x-3 border-b border-[#2a504a]">
             <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo" class="w-10 h-auto object-contain">
             <div>
-                <h1 class="font-black text-lg leading-tight tracking-wide">BAPPENDA</h1>
-                <p class="text-[10px] tracking-wider opacity-80 uppercase">Kabupaten Bogor</p>
+                <h1 class="font-black text-lg leading-tight tracking-wide">Diskominfo</h1>
+                <p class="text-[10px] tracking-wider opacity-80 uppercase">Pemerintah Kabupaten Bogor</p>
             </div>
             <!-- Mobile Close Button -->
             <button onclick="toggleSidebar()" class="md:hidden ml-auto text-white focus:outline-none">
@@ -56,7 +56,7 @@
                 </button>
 
                 <div class="{{ $isUserActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
-                    <a href="{{ route('admin.datapegawai') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-[#2b4f49]/50 transition {{ request()->routeIs('admin.datapegawai', 'admin.pegawai.lihat') ? 'bg-[#2b4f49] font-bold text-white' : 'text-white/80' }}">Data Pegawai</a>
+                    <a href="{{ route('admin.pegawai.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-[#2b4f49]/50 transition {{ request()->routeIs('admin.pegawai.lihat') ? 'bg-[#2b4f49] font-bold text-white' : 'text-white/80' }}">Data Pegawai</a>
                     <a href="{{ route('admin.tamu.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-[#2b4f49]/50 transition {{ request()->routeIs('admin.tamu.lihat') ? 'bg-[#2b4f49] font-bold text-white' : 'text-white/80' }}">Data Tamu</a>
                 </div>
             </div>
@@ -86,3 +86,4 @@
     </div>
 
 </aside>
+
