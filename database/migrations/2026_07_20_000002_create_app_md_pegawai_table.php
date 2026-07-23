@@ -10,8 +10,9 @@ return new class extends Migration
     {
         Schema::create('app_md_pegawai', function (Blueprint $table) {
             $table->id('id_pegawai');
-            $table->string('nip')->unique();
+            $table->string('foto')->nullable();
             $table->string('nama_pegawai');
+            $table->string('nip')->unique();
             $table->string('jabatan');
             $table->string('nomor_hp');
             $table->string('email')->unique();

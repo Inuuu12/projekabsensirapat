@@ -84,6 +84,7 @@ Route::prefix('admin')->group(function () {
         Route::put('/tamu/{id}', [AdminController::class, 'update_Tamu'])->name('admin.tamu.update');
         Route::delete('/tamu/{id}', [AdminController::class, 'hapus_Tamu'])->name('admin.tamu.destroy');
 
+        Route::put('/masukkan/{id}/reply', [AdminController::class, 'reply_Masukan'])->name('admin.masukkan.reply');
         Route::put('/masukkan/{id}', [AdminController::class, 'update_Masukan'])->name('admin.masukkan.update');
         Route::delete('/masukkan/{id}', [AdminController::class, 'hapus_Masukan'])->name('admin.masukkan.destroy');
     });

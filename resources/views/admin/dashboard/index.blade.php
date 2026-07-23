@@ -10,21 +10,41 @@
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
-            <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Agenda Hari Ini</p>
-            <p class="mt-3 text-3xl font-black text-[#35635b]">12</p>
+        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4">
+            <div>
+                <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Agenda Hari Ini</p>
+                <p class="mt-3 text-3xl font-black text-[#35635b]">12</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-[#f3f7f6] p-2.5 shrink-0">
+                <img src="{{ asset('foto/Agendahariini.png') }}" alt="Agenda Hari Ini" class="w-full h-full object-contain">
+            </div>
         </div>
-        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
-            <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Ruang Rapat</p>
-            <p class="mt-3 text-3xl font-black text-[#35635b]">8</p>
+        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4">
+            <div>
+                <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Ruang Rapat</p>
+                <p class="mt-3 text-3xl font-black text-[#35635b]">8</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-[#f3f7f6] p-2.5 shrink-0">
+                <img src="{{ asset('foto/Ruanganlogo.png') }}" alt="Ruang Rapat" class="w-full h-full object-contain">
+            </div>
         </div>
-        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
-            <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Kunjungan</p>
-            <p class="mt-3 text-3xl font-black text-[#35635b]">24</p>
+        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4">
+            <div>
+                <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Kunjungan</p>
+                <p class="mt-3 text-3xl font-black text-[#35635b]">24</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-[#f3f7f6] p-2.5 shrink-0">
+                <img src="{{ asset('foto/Pengunjunglogo.png') }}" alt="Kunjungan" class="w-full h-full object-contain">
+            </div>
         </div>
-        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
-            <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Masukkan Baru</p>
-            <p class="mt-3 text-3xl font-black text-[#35635b]">5</p>
+        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4">
+            <div>
+                <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Masukkan Baru</p>
+                <p class="mt-3 text-3xl font-black text-[#35635b]">5</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-[#f3f7f6] p-2.5 shrink-0">
+                <img src="{{ asset('foto/Suratlogo.png') }}" alt="Masukkan Baru" class="w-full h-full object-contain">
+            </div>
         </div>
     </div>
 

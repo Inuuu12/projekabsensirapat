@@ -18,6 +18,7 @@ class DataMasukan extends Model
         'email',
         'foto',
         'isi_aduan',
+        'balasan_admin',
         'status',
         'id_admin',
     ];

@@ -22,8 +22,9 @@
             <table class="w-full text-left min-w-[920px]">
                 <thead>
                     <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider">
-                        <th class="px-6 py-4">NIP</th>
+                        <th class="px-6 py-4">Foto</th>
                         <th class="px-6 py-4">Nama</th>
+                        <th class="px-6 py-4">NIP</th>
                         <th class="px-6 py-4">Jabatan</th>
                         <th class="px-6 py-4">No HP</th>
                         <th class="px-6 py-4">Email</th>
@@ -33,8 +34,20 @@
                 <tbody class="divide-y divide-gray-100 text-sm">
                     @forelse ($pegawai as $item)
                         <tr class="hover:bg-gray-50/80 transition">
-                            <td class="px-6 py-4 font-semibold text-gray-700">{{ $item->nip }}</td>
+                            <td class="px-6 py-4">
+                                @if (!empty($item->foto))
+    {{-- Hasil asset('storage/' . $item->foto) akan menjadi http://localhost/storage/pegawai/namafile.jpg --}}
+    <img src="{{ asset('storage/' . $item->foto) }}" 
+         alt="{{ $item->nama_pegawai }}" 
+         class="w-10 h-10 rounded-full object-cover border border-gray-200">
+@else
+    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-400">
+        N/A
+    </div>
+@endif
+                            </td>
                             <td class="px-6 py-4 font-bold text-[#35635b]">{{ $item->nama_pegawai }}</td>
+                            <td class="px-6 py-4 font-semibold text-gray-700">{{ $item->nip }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->jabatan }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->nomor_hp }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->email }}</td>
@@ -44,8 +57,9 @@
                                         type="button"
                                         onclick="openEditPegawai(this)"
                                         data-action="{{ route('admin.pegawai.update', $item->id_pegawai) }}"
-                                        data-nip="{{ $item->nip }}"
+                                        data-foto="{{ $item->foto }}"
                                         data-nama="{{ $item->nama_pegawai }}"
+                                        data-nip="{{ $item->nip }}"
                                         data-jabatan="{{ $item->jabatan }}"
                                         data-nomor="{{ $item->nomor_hp }}"
                                         data-email="{{ $item->email }}"
@@ -74,7 +88,7 @@
 <div id="modal-tambah-pegawai" class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
         <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Tambah Pegawai Baru</h3>
-        <form method="POST" action="{{ route('admin.pegawai.store') }}" class="space-y-4">
+        <form method="POST" action="{{ route('admin.pegawai.store') }}" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @include('admin.pegawai.form-fields')
             <div class="flex justify-end gap-3 pt-3 border-t">
@@ -88,7 +102,7 @@
 <div id="modal-edit-pegawai" class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
         <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Edit Pegawai</h3>
-        <form id="form-edit-pegawai" method="POST" class="space-y-4">
+        <form id="form-edit-pegawai" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @method('PUT')
             @include('admin.pegawai.form-fields', ['prefix' => 'edit-'])
@@ -114,8 +128,9 @@
 
     function openEditPegawai(button) {
         document.getElementById('form-edit-pegawai').action = button.dataset.action;
-        document.getElementById('edit-nip').value = button.dataset.nip;
+        document.getElementById('edit-foto').value = '';
         document.getElementById('edit-nama_pegawai').value = button.dataset.nama;
+        document.getElementById('edit-nip').value = button.dataset.nip;
         document.getElementById('edit-jabatan').value = button.dataset.jabatan;
         document.getElementById('edit-nomor_hp').value = button.dataset.nomor;
         document.getElementById('edit-email').value = button.dataset.email;
