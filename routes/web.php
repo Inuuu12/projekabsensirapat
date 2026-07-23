@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -123,3 +122,62 @@ Route::prefix('user')->group(function () {
 Route::get('/adminlayout', function () {
     return redirect()->route('admin.layout');
 });
+<<<<<<< HEAD
+=======
+
+Route::get('/publik', function () {
+    return view('publik.index');
+})->name('publik.beranda');
+
+Route::get('/publik/agenda', function () {
+    return view('publik.agenda');
+})->name('publik.agenda');
+
+Route::get('/publik/agenda/detail', function () {
+    return view('publik.agenda-detail');
+});
+
+Route::get('/publik/agenda-detail', function () {
+    return view('publik.agenda-detail');
+})->name('publik.agenda-detail');
+
+Route::get('/publik/index-v2', function () {
+    return view('publik.index-v2');
+})->name('publik.index-v2');
+
+Route::get('/publik/berita', function () {
+    return view('publik.berita');
+})->name('publik.berita');
+
+Route::get('/publik/berita/detail', function () {
+    return view('publik.berita-detail');
+});
+
+Route::get('/publik/masukan', function () {
+    return view('publik.masukan');
+})->name('publik.masukan');
+
+Route::redirect('/publik/feedback', '/publik/masukan');
+
+Route::get('/publik/ulang-tahun', function () {
+    return view('publik.ulang-tahun');
+})->name('publik.ulang-tahun');
+
+Route::redirect('/publik/ulangtahun', '/publik/ulang-tahun')->name('publik.ulangtahun');
+
+Route::get('/publik/galeri', function () {
+    return view('publik.galeri');
+})->name('publik.galeri');
+
+Route::get('/publik/video', function () {
+    return view('publik.video');
+})->name('publik.video');
+
+Route::get('/publik/index', function () {
+    return view('publik.index');
+})->name('publik.index');
+
+Route::get('/publik/berita-detail', function () {
+    return view('publik.berita-detail');
+})->name('publik.berita-detail');
+>>>>>>> 80519bc (views publik & edit routes)
