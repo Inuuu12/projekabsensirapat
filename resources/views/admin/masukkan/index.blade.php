@@ -34,15 +34,6 @@
         };
     };
 
-    $statusDotClass = function ($status) use ($statusCategory) {
-        return match ($statusCategory($status)) {
-            'menunggu' => 'bg-red-500',
-            'diproses' => 'bg-yellow-400',
-            'selesai' => 'bg-[#0f6b52]',
-            default => 'bg-gray-400',
-        };
-    };
-
     $filteredMasukan = $statusFilter === 'semua'
         ? $masukan
         : $masukan->filter(fn ($item) => $statusCategory($item->status) === $statusFilter);
@@ -118,12 +109,13 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full min-w-[1100px] text-left">
+            <table class="w-full min-w-[1260px] text-left">
                 <thead>
                     <tr class="bg-[#397d77] text-sm font-black uppercase tracking-wider text-white">
                         <th class="px-14 py-6">Nama<br>Pengadu</th>
                         <th class="px-6 py-6">Email</th>
                         <th class="px-6 py-6">Isi Aduan</th>
+                        <th class="px-6 py-6">Balasan Admin</th>
                         <th class="px-6 py-6">Waktu</th>
                         <th class="px-6 py-6">Tanggal</th>
                         <th class="px-6 py-6">Status</th>
@@ -138,6 +130,13 @@
                             <td class="max-w-md px-6 py-8 leading-relaxed text-[#08251f]">
                                 {{ \Illuminate\Support\Str::limit($item->isi_aduan, 76) }}
                             </td>
+                            <td class="max-w-sm px-6 py-8 leading-relaxed text-[#08251f]">
+                                @if ($item->balasan_admin)
+                                    {{ \Illuminate\Support\Str::limit($item->balasan_admin, 72) }}
+                                @else
+                                    <span class="text-slate-400">Belum ada balasan</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-8 font-medium text-[#08251f]">
                                 {{ optional($item->created_at)->format('H:i') ?? '-' }}
                             </td>
@@ -145,10 +144,18 @@
                                 {{ optional($item->created_at)->translatedFormat('d M Y') ?? '-' }}
                             </td>
                             <td class="px-6 py-8">
-                                <span class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-black {{ $statusBadgeClass($item->status) }}">
-                                    <span class="h-2 w-2 rounded-full {{ $statusDotClass($item->status) }}"></span>
-                                    {{ $statusLabel($item->status) }}
-                                </span>
+                                <form method="POST" action="{{ route('admin.masukkan.update', $item->id_datamasukan) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <select
+                                        name="status"
+                                        onchange="this.form.submit()"
+                                        class="rounded-full border px-3 py-1.5 text-xs font-black outline-none {{ $statusBadgeClass($item->status) }}">
+                                        <option value="Menunggu" @selected($statusCategory($item->status) === 'menunggu')>Menunggu</option>
+                                        <option value="Diproses" @selected($statusCategory($item->status) === 'diproses')>Diproses</option>
+                                        <option value="Selesai" @selected($statusCategory($item->status) === 'selesai')>Selesai</option>
+                                    </select>
+                                </form>
                             </td>
                             <td class="px-6 py-8">
                                 <div class="flex items-center justify-center gap-4">
@@ -185,21 +192,21 @@
                                         <img src="{{ asset('foto/Reply.png') }}" alt="Reply" class="h-6 w-6 object-contain">
                                     </button>
 
-                                    <form method="POST" action="{{ route('admin.masukkan.destroy', $item->id_datamasukan) }}" onsubmit="return confirm('Hapus masukkan ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 transition hover:text-red-700" title="Hapus">
-                                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m-7 0V5a2 2 0 012-2h4a2 2 0 012 2v2" />
-                                            </svg>
-                                        </button>
-                                    </form>
+                                    <button
+                                        type="button"
+                                        onclick="openDeleteModal('{{ route('admin.masukkan.destroy', $item->id_datamasukan) }}', 'Hapus Masukkan?', 'Apakah Anda yakin ingin menghapus masukkan ini?')"
+                                        class="text-red-600 transition hover:text-red-700"
+                                        title="Hapus">
+                                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m-7 0V5a2 2 0 012-2h4a2 2 0 012 2v2" />
+                                        </svg>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-slate-500">Belum ada data masukkan.</td>
+                            <td colspan="8" class="px-6 py-12 text-center text-slate-500">Belum ada data masukkan.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -258,19 +265,6 @@
                 <p class="text-xs font-black uppercase tracking-wider text-slate-400">Balasan Admin</p>
                 <p id="detail-reply" class="mt-2 rounded-lg bg-emerald-50 p-4 leading-relaxed text-[#08251f]"></p>
             </div>
-            <form id="detail-status-form" method="POST" class="flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-end sm:justify-between">
-                @csrf
-                @method('PUT')
-                <div>
-                    <label for="detail-status" class="block text-xs font-black uppercase tracking-wider text-slate-400">Ubah Status</label>
-                    <select id="detail-status" name="status" class="mt-1 h-11 rounded-md border border-slate-300 bg-white px-4 text-sm font-bold text-slate-700 outline-none focus:border-[#35635b]">
-                        <option value="Menunggu">Menunggu</option>
-                        <option value="Diproses">Diproses</option>
-                        <option value="Selesai">Selesai</option>
-                    </select>
-                </div>
-                <button type="submit" class="h-11 rounded-md bg-[#35635b] px-5 text-sm font-black text-white hover:bg-[#2b4f49]">Simpan Status</button>
-            </form>
         </div>
     </div>
 </div>
@@ -317,14 +311,12 @@
 <script>
     function openMasukkanDetail(button) {
         const modal = document.getElementById('modal-detail-masukkan');
-        document.getElementById('detail-status-form').action = button.dataset.action;
         document.getElementById('detail-name').textContent = button.dataset.name || '-';
         document.getElementById('detail-email').textContent = button.dataset.email || '-';
         document.getElementById('detail-phone').textContent = button.dataset.phone || '-';
         document.getElementById('detail-time').textContent = `${button.dataset.time || '-'} / ${button.dataset.date || '-'}`;
         document.getElementById('detail-message').textContent = button.dataset.message || '-';
         document.getElementById('detail-reply').textContent = button.dataset.reply || 'Belum ada balasan.';
-        document.getElementById('detail-status').value = button.dataset.status || 'Menunggu';
         modal.classList.replace('hidden', 'flex');
     }
 

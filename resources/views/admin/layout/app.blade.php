@@ -54,6 +54,8 @@
         </main>
     </div>
 
+    @include('admin.agenda.deletepopup')
+
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-menu');

@@ -78,12 +78,14 @@
 
     <!-- Bottom Logout Button -->
     <div class="p-4 border-t border-[#2a504a]">
-        <a href="{{ route('login') }}" class="flex items-center justify-center p-2.5 hover:bg-[#2b4f49] rounded-xl transition-colors text-white/90 hover:text-white" title="Logout">
-            <svg class="w-6 h-6 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-            </svg>
-        </a>
+        <form method="POST" action="{{ route('admin.logout') }}">
+            @csrf
+            <button type="submit" class="flex w-full items-center justify-center p-2.5 hover:bg-[#2b4f49] rounded-xl transition-colors text-white/90 hover:text-white" title="Logout">
+                <svg class="w-6 h-6 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+            </button>
+        </form>
     </div>
 
 </aside>
-

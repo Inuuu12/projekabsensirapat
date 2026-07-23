@@ -148,14 +148,13 @@
                                         <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="w-full h-full object-contain">
                                     </button>
 
-                                    {{-- Tombol Hapus --}}
-                                    <form method="POST" action="{{ route('admin.agenda.destroy', $item->id_agenda) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus agenda ini?')" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="w-8 h-8 rounded-lg bg-red-50 p-1.5 hover:bg-red-100 transition flex items-center justify-center cursor-pointer" title="Hapus Agenda">
-                                            <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="w-full h-full object-contain">
-                                        </button>
-                                    </form>
+                                    {{-- Tombol Hapus Custom Modal --}}
+                                    <button type="button" 
+                                            onclick="openDeleteModal('{{ route('admin.agenda.destroy', $item->id_agenda) }}', 'Hapus Agenda?', 'Apakah Anda yakin ingin menghapus agenda ini?')"
+                                            class="w-8 h-8 rounded-lg bg-red-50 p-1.5 hover:bg-red-100 transition flex items-center justify-center cursor-pointer" 
+                                            title="Hapus Agenda">
+                                        <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="w-full h-full object-contain">
+                                    </button>
 
                                     {{-- Tombol Ke Detail Agenda --}}
                                     <a href="{{ route('admin.agenda.detail', ['id' => $item->id_agenda]) }}" 
@@ -207,6 +206,8 @@
         </form>
     </div>
 </div>
+
+
 
 @push('scripts')
 <script>

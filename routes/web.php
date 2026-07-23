@@ -1,7 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminAduanController;
+use App\Http\Controllers\AdminAgendaController;
+use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminKehadiranController;
+use App\Http\Controllers\AdminKunjunganController;
+use App\Http\Controllers\AdminLaporanController;
+use App\Http\Controllers\AdminMasukkanController;
+use App\Http\Controllers\AdminPegawaiController;
+use App\Http\Controllers\AdminRuangController;
+use App\Http\Controllers\AdminTamuController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\UserController;
 
@@ -14,18 +24,18 @@ Route::redirect('/login', '/admin/login')->name('login');
 // ROUTE GRUP ADMIN
 Route::prefix('admin')->group(function () {
     // Show login form
-    Route::get('/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/login', [AdminController::class, 'login'])->name('admin.login.submit');
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 
     // Protected admin routes (require admin authentication)
     Route::middleware('auth:admin')->group(function () {
-        Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-        Route::get('/layout', [AdminController::class, 'layout'])->name('admin.layout');
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+        Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/layout', [AdminDashboardController::class, 'layout'])->name('admin.layout');
 
         // Agenda & Kehadiran Internal
-        Route::post('/agenda/tambah', [AdminController::class, 'kelola_Agenda'])->name('admin.agenda.store');
-        Route::get('/agenda/lihat', [AdminController::class, 'lihat_Agenda'])->name('admin.agenda.lihat');
+        Route::post('/agenda/tambah', [AdminAgendaController::class, 'kelola_Agenda'])->name('admin.agenda.store');
+        Route::get('/agenda/lihat', [AdminAgendaController::class, 'lihat_Agenda'])->name('admin.agenda.lihat');
         
         // RUTE DETAIL AGENDA (Menghilangkan Error RouteNotFoundException)
         Route::get('/agenda/detail', function () {
@@ -33,59 +43,59 @@ Route::prefix('admin')->group(function () {
         })->name('admin.agenda.detail');
 
         Route::redirect('/agenda', '/admin/agenda/lihat')->name('admin.agenda');
-        Route::get('/agenda/cari', [AdminController::class, 'cari_Agenda']);
+        Route::get('/agenda/cari', [AdminAgendaController::class, 'cari_Agenda']);
         
         // Halaman admin
-        Route::get('/ruang', [AdminController::class, 'daftarRuang'])->name('admin.ruang.lihat');
+        Route::get('/ruang', [AdminRuangController::class, 'daftarRuang'])->name('admin.ruang.lihat');
 
-        Route::get('/pengguna', [AdminController::class, 'dataPegawai'])->name('admin.pengguna.lihat');
-        Route::get('/datapegawai', [AdminController::class, 'dataPegawai'])->name('admin.datapegawai');
-        Route::get('/pegawai', [AdminController::class, 'dataPegawai'])->name('admin.pegawai.lihat');
-        Route::get('/datatamu', [AdminController::class, 'dataTamu'])->name('admin.datatamu');
-        Route::get('/tamu', [AdminController::class, 'dataTamu'])->name('admin.tamu.lihat');
-        Route::get('/umpanbalik', [AdminController::class, 'umpanBalik'])->name('admin.umpanbalik');
-        Route::get('/masukkan', [AdminController::class, 'umpanBalik'])->name('admin.masukkan.lihat');
+        Route::get('/pengguna', [AdminPegawaiController::class, 'dataPegawai'])->name('admin.pengguna.lihat');
+        Route::get('/datapegawai', [AdminPegawaiController::class, 'dataPegawai'])->name('admin.datapegawai');
+        Route::get('/pegawai', [AdminPegawaiController::class, 'dataPegawai'])->name('admin.pegawai.lihat');
+        Route::get('/datatamu', [AdminTamuController::class, 'dataTamu'])->name('admin.datatamu');
+        Route::get('/tamu', [AdminTamuController::class, 'dataTamu'])->name('admin.tamu.lihat');
+        Route::get('/umpanbalik', [AdminMasukkanController::class, 'umpanBalik'])->name('admin.umpanbalik');
+        Route::get('/masukkan', [AdminMasukkanController::class, 'umpanBalik'])->name('admin.masukkan.lihat');
 
         // Filter agenda by kategori surat
-        Route::get('/agenda/kategori/internal-to-internal', [AdminController::class, 'lihat_AgendaInternalToInternal']);
-        Route::get('/agenda/kategori/external-to-internal', [AdminController::class, 'lihat_AgendaExternalToInternal']);
-        Route::get('/agenda/kategori/internal-to-external', [AdminController::class, 'lihat_AgendaInternalToExternal']);
-        Route::get('/agenda/kategori/{kategori}', [AdminController::class, 'lihat_AgendaByCategory']);
+        Route::get('/agenda/kategori/internal-to-internal', [AdminAgendaController::class, 'lihat_AgendaInternalToInternal']);
+        Route::get('/agenda/kategori/external-to-internal', [AdminAgendaController::class, 'lihat_AgendaExternalToInternal']);
+        Route::get('/agenda/kategori/internal-to-external', [AdminAgendaController::class, 'lihat_AgendaInternalToExternal']);
+        Route::get('/agenda/kategori/{kategori}', [AdminAgendaController::class, 'lihat_AgendaByCategory']);
         
-        Route::put('/agenda/{id}/konfigurasi-fr', [AdminController::class, 'konfigurasi_FaceRecognition']);
-        Route::get('/agenda/{id}/generate-qr', [AdminController::class, 'generate_QR']);
-        Route::put('/agenda/{id}', [AdminController::class, 'update_Agenda'])->name('admin.agenda.update');
-        Route::delete('/agenda/{id}', [AdminController::class, 'hapus_Agenda'])->name('admin.agenda.destroy');
-        Route::post('/kehadiran/verifikasi', [AdminController::class, 'verifikasi_Kehadiran']);
+        Route::put('/agenda/{id}/konfigurasi-fr', [AdminAgendaController::class, 'konfigurasi_FaceRecognition']);
+        Route::get('/agenda/{id}/generate-qr', [AdminAgendaController::class, 'generate_QR']);
+        Route::put('/agenda/{id}', [AdminAgendaController::class, 'update_Agenda'])->name('admin.agenda.update');
+        Route::delete('/agenda/{id}', [AdminAgendaController::class, 'hapus_Agenda'])->name('admin.agenda.destroy');
+        Route::post('/kehadiran/verifikasi', [AdminKehadiranController::class, 'verifikasi_Kehadiran']);
 
         // Aduan & Kunjungan
-        Route::get('/aduan/lihat', [AdminController::class, 'lihat_Aduan']);
-        Route::put('/aduan/{id}/verifikasi', [AdminController::class, 'verifikasi_Aduan']);
-        Route::post('/kunjungan/kelola', [AdminController::class, 'kelola_Kunjungan'])->name('admin.kunjungan.store');
-        Route::put('/kunjungan/{id}', [AdminController::class, 'update_Kunjungan'])->name('admin.kunjungan.update');
-        Route::delete('/kunjungan/{id}', [AdminController::class, 'hapus_Kunjungan'])->name('admin.kunjungan.destroy');
-        Route::get('/kunjungan', [AdminController::class, 'daftarKunjungan'])->name('admin.kunjungan.lihat');
-        Route::get('/daftarkunjungan', [AdminController::class, 'daftarKunjungan'])->name('admin.daftarkunjungan');
+        Route::get('/aduan/lihat', [AdminAduanController::class, 'lihat_Aduan']);
+        Route::put('/aduan/{id}/verifikasi', [AdminAduanController::class, 'verifikasi_Aduan']);
+        Route::post('/kunjungan/kelola', [AdminKunjunganController::class, 'kelola_Kunjungan'])->name('admin.kunjungan.store');
+        Route::put('/kunjungan/{id}', [AdminKunjunganController::class, 'update_Kunjungan'])->name('admin.kunjungan.update');
+        Route::delete('/kunjungan/{id}', [AdminKunjunganController::class, 'hapus_Kunjungan'])->name('admin.kunjungan.destroy');
+        Route::get('/kunjungan', [AdminKunjunganController::class, 'daftarKunjungan'])->name('admin.kunjungan.lihat');
+        Route::get('/daftarkunjungan', [AdminKunjunganController::class, 'daftarKunjungan'])->name('admin.daftarkunjungan');
         
-        Route::get('/laporan/cetak', [AdminController::class, 'cetak_Laporan']);
-        Route::get('/kehadiran/download', [AdminController::class, 'cetak_Laporan'])->name('admin.kehadiran.download');
-        Route::get('/laporan', [AdminController::class, 'laporan'])->name('admin.laporan.lihat');
+        Route::get('/laporan/cetak', [AdminLaporanController::class, 'cetak_Laporan']);
+        Route::get('/kehadiran/download', [AdminLaporanController::class, 'cetak_Laporan'])->name('admin.kehadiran.download');
+        Route::get('/laporan', [AdminLaporanController::class, 'laporan'])->name('admin.laporan.lihat');
 
-        Route::post('/ruang', [AdminController::class, 'store_Ruang'])->name('admin.ruang.store');
-        Route::put('/ruang/{id}', [AdminController::class, 'update_Ruang'])->name('admin.ruang.update');
-        Route::delete('/ruang/{id}', [AdminController::class, 'hapus_Ruang'])->name('admin.ruang.destroy');
+        Route::post('/ruang', [AdminRuangController::class, 'store_Ruang'])->name('admin.ruang.store');
+        Route::put('/ruang/{id}', [AdminRuangController::class, 'update_Ruang'])->name('admin.ruang.update');
+        Route::delete('/ruang/{id}', [AdminRuangController::class, 'hapus_Ruang'])->name('admin.ruang.destroy');
 
-        Route::post('/pegawai', [AdminController::class, 'store_Pegawai'])->name('admin.pegawai.store');
-        Route::put('/pegawai/{id}', [AdminController::class, 'update_Pegawai'])->name('admin.pegawai.update');
-        Route::delete('/pegawai/{id}', [AdminController::class, 'hapus_Pegawai'])->name('admin.pegawai.destroy');
+        Route::post('/pegawai', [AdminPegawaiController::class, 'store_Pegawai'])->name('admin.pegawai.store');
+        Route::put('/pegawai/{id}', [AdminPegawaiController::class, 'update_Pegawai'])->name('admin.pegawai.update');
+        Route::delete('/pegawai/{id}', [AdminPegawaiController::class, 'hapus_Pegawai'])->name('admin.pegawai.destroy');
 
-        Route::post('/tamu', [AdminController::class, 'store_Tamu'])->name('admin.tamu.store');
-        Route::put('/tamu/{id}', [AdminController::class, 'update_Tamu'])->name('admin.tamu.update');
-        Route::delete('/tamu/{id}', [AdminController::class, 'hapus_Tamu'])->name('admin.tamu.destroy');
+        Route::post('/tamu', [AdminTamuController::class, 'store_Tamu'])->name('admin.tamu.store');
+        Route::put('/tamu/{id}', [AdminTamuController::class, 'update_Tamu'])->name('admin.tamu.update');
+        Route::delete('/tamu/{id}', [AdminTamuController::class, 'hapus_Tamu'])->name('admin.tamu.destroy');
 
-        Route::put('/masukkan/{id}/reply', [AdminController::class, 'reply_Masukan'])->name('admin.masukkan.reply');
-        Route::put('/masukkan/{id}', [AdminController::class, 'update_Masukan'])->name('admin.masukkan.update');
-        Route::delete('/masukkan/{id}', [AdminController::class, 'hapus_Masukan'])->name('admin.masukkan.destroy');
+        Route::put('/masukkan/{id}/reply', [AdminMasukkanController::class, 'reply_Masukan'])->name('admin.masukkan.reply');
+        Route::put('/masukkan/{id}', [AdminMasukkanController::class, 'update_Masukan'])->name('admin.masukkan.update');
+        Route::delete('/masukkan/{id}', [AdminMasukkanController::class, 'hapus_Masukan'])->name('admin.masukkan.destroy');
     });
 });
 
@@ -123,8 +133,7 @@ Route::prefix('user')->group(function () {
 Route::get('/adminlayout', function () {
     return redirect()->route('admin.layout');
 });
-<<<<<<< HEAD
-=======
+
 
 Route::get('/publik', function () {
     return view('publik.index');
@@ -181,4 +190,3 @@ Route::get('/publik/index', function () {
 Route::get('/publik/berita-detail', function () {
     return view('publik.berita-detail');
 })->name('publik.berita-detail');
->>>>>>> 80519bc (views publik & edit routes)

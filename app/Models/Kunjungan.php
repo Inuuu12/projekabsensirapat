@@ -19,6 +19,7 @@ class Kunjungan extends Model
         'nomorhp_pengunjung',
         'email_pengunjung',
         'keperluan',
+        'waktu',
         'tanggal_kunjungan',
         'id_admin',
     ];

@@ -13,12 +13,12 @@ class Tamu extends Model
     protected $primaryKey = 'id_tamu';
 
     protected $fillable = [
-        'nik',
+        'foto_selfie',
         'nama',
+        'nik',
         'jabatan',
         'no_hp',
         'asal_instansi',
-        'foto_selfie',
         'id_agenda',
     ];
 }

@@ -22,8 +22,9 @@
             <table class="w-full text-left min-w-[980px]">
                 <thead>
                     <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider">
-                        <th class="px-6 py-4">NIK</th>
+                        <th class="px-6 py-4">Foto Selfie</th>
                         <th class="px-6 py-4">Nama</th>
+                        <th class="px-6 py-4">NIK</th>
                         <th class="px-6 py-4">Jabatan</th>
                         <th class="px-6 py-4">No HP</th>
                         <th class="px-6 py-4">Instansi</th>
@@ -34,8 +35,20 @@
                 <tbody class="divide-y divide-gray-100 text-sm">
                     @forelse ($tamu as $item)
                         <tr class="hover:bg-gray-50/80 transition">
-                            <td class="px-6 py-4 text-gray-700">{{ $item->nik ?? '-' }}</td>
+                            <td class="px-6 py-4">
+                                @if (!empty($item->foto_selfie) && file_exists(public_path('storage/' . $item->foto_selfie)))
+                                    <img src="{{ asset('storage/' . $item->foto_selfie) }}" 
+                                         alt="{{ $item->nama }}" 
+                                         class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                @else
+                                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-400">
+                                        N/A
+                                    </div>
+                                @endif
+                            </td>
+                        
                             <td class="px-6 py-4 font-bold text-[#35635b]">{{ $item->nama }}</td>
+                            <td class="px-6 py-4 text-gray-700">{{ $item->nik ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->jabatan ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->no_hp }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->asal_instansi }}</td>
@@ -46,8 +59,9 @@
                                         type="button"
                                         onclick="openEditTamu(this)"
                                         data-action="{{ route('admin.tamu.update', $item->id_tamu) }}"
-                                        data-nik="{{ $item->nik }}"
+                                        data-foto-selfie="{{ $item->foto_selfie }}"
                                         data-nama="{{ $item->nama }}"
+                                        data-nik="{{ $item->nik }}"
                                         data-jabatan="{{ $item->jabatan }}"
                                         data-nohp="{{ $item->no_hp }}"
                                         data-instansi="{{ $item->asal_instansi }}"
@@ -55,11 +69,12 @@
                                         class="rounded-lg bg-green-50 px-3 py-1.5 text-xs font-bold text-green-700 hover:bg-green-100">
                                         Edit
                                     </button>
-                                    <form method="POST" action="{{ route('admin.tamu.destroy', $item->id_tamu) }}" onsubmit="return confirm('Hapus tamu ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100">Hapus</button>
-                                    </form>
+                                    <button
+                                        type="button"
+                                        onclick="openDeleteModal('{{ route('admin.tamu.destroy', $item->id_tamu) }}', 'Hapus Tamu?', 'Apakah Anda yakin ingin menghapus tamu ini?')"
+                                        class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100">
+                                        Hapus
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -77,7 +92,7 @@
 <div id="modal-tambah-tamu" class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
         <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Tambah Tamu Baru</h3>
-        <form method="POST" action="{{ route('admin.tamu.store') }}" class="space-y-4">
+        <form method="POST" action="{{ route('admin.tamu.store') }}" enctype="multipart/form-data">
             @csrf
             @include('admin.tamu.form-fields')
             <div class="flex justify-end gap-3 pt-3 border-t">
@@ -91,7 +106,7 @@
 <div id="modal-edit-tamu" class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
         <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Edit Tamu</h3>
-        <form id="form-edit-tamu" method="POST" class="space-y-4">
+        <form id="form-edit-tamu" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @method('PUT')
             @include('admin.tamu.form-fields', ['prefix' => 'edit-'])
@@ -117,8 +132,9 @@
 
     function openEditTamu(button) {
         document.getElementById('form-edit-tamu').action = button.dataset.action;
-        document.getElementById('edit-nik').value = button.dataset.nik || '';
+        document.getElementById('edit-foto_selfie').value = '';
         document.getElementById('edit-nama').value = button.dataset.nama || '';
+        document.getElementById('edit-nik').value = button.dataset.nik || '';
         document.getElementById('edit-jabatan').value = button.dataset.jabatan || '';
         document.getElementById('edit-no_hp').value = button.dataset.nohp || '';
         document.getElementById('edit-asal_instansi').value = button.dataset.instansi || '';

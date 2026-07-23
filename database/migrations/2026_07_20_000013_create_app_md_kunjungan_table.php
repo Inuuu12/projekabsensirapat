@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nomorhp_pengunjung')->nullable();
             $table->string('email_pengunjung')->unique()->nullable();
             $table->string('keperluan');
+            $table->time('waktu')->nullable();
             $table->date('tanggal_kunjungan');
             $table->timestamps();
 

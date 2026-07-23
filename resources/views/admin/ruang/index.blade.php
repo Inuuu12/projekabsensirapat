@@ -58,11 +58,12 @@
                                         class="rounded-lg bg-green-50 px-3 py-1.5 text-xs font-bold text-green-700 hover:bg-green-100">
                                         Edit
                                     </button>
-                                    <form method="POST" action="{{ route('admin.ruang.destroy', $item->id_ruangrapat) }}" onsubmit="return confirm('Hapus ruangan ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100">Hapus</button>
-                                    </form>
+                                    <button
+                                        type="button"
+                                        onclick="openDeleteModal('{{ route('admin.ruang.destroy', $item->id_ruangrapat) }}', 'Hapus Ruangan?', 'Apakah Anda yakin ingin menghapus ruangan ini?')"
+                                        class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100">
+                                        Hapus
+                                    </button>
                                 </div>
                             </td>
                         </tr>

@@ -23,11 +23,12 @@
                 <thead>
                     <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider">
                         <th class="px-6 py-4">Pengunjung</th>
-                        <th class="px-6 py-4">Pejabat</th>
+                        <th class="px-6 py-4">Pihak Dituju</th>
                         <th class="px-6 py-4">Instansi</th>
                         <th class="px-6 py-4">No HP</th>
                         <th class="px-6 py-4">Email</th>
                         <th class="px-6 py-4">Keperluan</th>
+                        <th class="px-6 py-4">Waktu</th>
                         <th class="px-6 py-4">Tanggal</th>
                         <th class="px-6 py-4 text-center">Aksi</th>
                     </tr>
@@ -41,6 +42,7 @@
                             <td class="px-6 py-4 text-gray-700">{{ $item->nomorhp_pengunjung ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->email_pengunjung ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->keperluan }}</td>
+                            <td class="px-6 py-4 text-gray-700">{{ $item->waktu ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->tanggal_kunjungan }}</td>
                             <td class="px-6 py-4">
                                 <div class="flex justify-center gap-2">
@@ -54,15 +56,17 @@
                                         data-nomor="{{ $item->nomorhp_pengunjung }}"
                                         data-email="{{ $item->email_pengunjung }}"
                                         data-keperluan="{{ $item->keperluan }}"
+                                        data-waktu="{{ $item->waktu }}"
                                         data-tanggal="{{ $item->tanggal_kunjungan }}"
                                         class="rounded-lg bg-green-50 px-3 py-1.5 text-xs font-bold text-green-700 hover:bg-green-100">
                                         Edit
                                     </button>
-                                    <form method="POST" action="{{ route('admin.kunjungan.destroy', $item->id_kunjungan) }}" onsubmit="return confirm('Hapus kunjungan ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100">Hapus</button>
-                                    </form>
+                                    <button
+                                        type="button"
+                                        onclick="openDeleteModal('{{ route('admin.kunjungan.destroy', $item->id_kunjungan) }}', 'Hapus Kunjungan?', 'Apakah Anda yakin ingin menghapus kunjungan ini?')"
+                                        class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100">
+                                        Hapus
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -126,6 +130,7 @@
         document.getElementById('edit-nomorhp_pengunjung').value = button.dataset.nomor || '';
         document.getElementById('edit-email_pengunjung').value = button.dataset.email || '';
         document.getElementById('edit-keperluan').value = button.dataset.keperluan || '';
+        document.getElementById('edit-waktu').value = button.dataset.waktu || '';
         document.getElementById('edit-tanggal_kunjungan').value = button.dataset.tanggal || '';
         openModal('modal-edit-kunjungan');
     }

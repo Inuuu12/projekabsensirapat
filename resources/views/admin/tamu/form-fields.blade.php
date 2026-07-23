@@ -1,11 +1,11 @@
 @php($prefix = $prefix ?? '')
 <div>
-    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">NIK</label>
-    <input id="{{ $prefix }}nik" name="nik" type="text" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
-</div>
-<div>
     <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama</label>
     <input id="{{ $prefix }}nama" name="nama" type="text" required class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
+</div>
+<div>
+    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">NIK</label>
+    <input id="{{ $prefix }}nik" name="nik" type="text" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
 </div>
 <div>
     <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Jabatan</label>
@@ -28,3 +28,9 @@
         @endforeach
     </select>
 </div>
+<div>
+    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Foto</label>
+    <input id="{{ $prefix }}foto_selfie" name="foto_selfie" type="file" accept="image/*" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
+
+</div>
+    
