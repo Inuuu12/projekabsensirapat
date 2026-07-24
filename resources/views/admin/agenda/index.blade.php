@@ -34,7 +34,7 @@
                     <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $agendaStats[$key] ?? 0 }}</p>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center p-2">
-                    <img src="{{ asset('foto/Agendalogo.png') }}" alt="{{ $label }}" class="w-full h-full object-contain">
+                    <img src="{{ asset('foto/Suratlogo.png') }}" alt="{{ $label }}" class="w-full h-full object-contain">
                 </div>
             </a>
         @endforeach
