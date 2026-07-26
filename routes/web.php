@@ -190,3 +190,15 @@ Route::get('/publik/index', function () {
 Route::get('/publik/berita-detail', function () {
     return view('publik.berita-detail');
 })->name('publik.berita-detail');
+
+Route::get('/publik/presensi-pilih', function () {
+    return view('publik.presensi-pilih');
+})->name('publik.presensi-pilih');
+
+Route::get('/publik/presensi-pegawai', function () {
+    return view('publik.presensi-pegawai');
+})->name('publik.presensi-pegawai');
+
+Route::get('/publik/presensi-tamu', function () {
+    return view('publik.presensi-tamu');
+})->name('publik.presensi-tamu');
