@@ -221,8 +221,12 @@
                                     <p class="text-xs text-gray-500 line-clamp-2">{{ \Illuminate\Support\Str::limit(strip_tags($berita->isi_berita), 90) }}</p>
                                 </div>
                             </div>
+                            <!-- REVISI 1: Baca Selengkapnya pake ijo-tua (#14524E) -->
                             <div class="p-5 pt-0">
-                                <a href="{{ route('publik.berita.detail', $berita->id_berita) }}" class="text-xs font-bold text-ijo-tua hover:underline">Baca Selengkapnya &rarr;</a>
+                                <a href="{{ route('publik.berita.detail', $berita->id_berita) }}" class="inline-flex items-center justify-center space-x-1.5 text-xs font-bold text-white bg-ijo-tua hover:bg-ijo-semitua px-4 py-2.5 rounded-2xl transition-all shadow-sm">
+                                    <span>Baca Selengkapnya</span>
+                                    <span>&rarr;</span>
+                                </a>
                             </div>
                         </div>
                     @empty
@@ -264,8 +268,12 @@
                     </div>
                 </div>
 
-                <div class="border-t border-gray-100 pt-3 text-center">
-                    <a href="{{ route('publik.ulang-tahun') }}" class="text-xs font-bold text-ijo-tua hover:underline">Lihat Semua Pegawai &rarr;</a>
+                <!-- REVISI 2: Lihat Semua Pegawai pake ijo-tua (#14524E) -->
+                <div class="border-t border-gray-100 pt-3">
+                    <a href="{{ route('publik.ulang-tahun') }}" class="w-full inline-flex items-center justify-center space-x-1.5 text-xs font-bold text-white bg-ijo-tua hover:bg-ijo-semitua px-4 py-2.5 rounded-2xl transition-all shadow-sm">
+                        <span>Lihat Semua Pegawai</span>
+                        <span>&rarr;</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -311,8 +319,12 @@
                 </table>
             </div>
 
-            <div class="flex justify-end pt-2">
-                <a href="{{ route('publik.masukan') }}" class="text-xs font-bold text-ijo-tua hover:underline">Buat Aduan Baru &rarr;</a>
+            <!-- REVISI 3: Buat Aduan Baru pake ijo-tua (#14524E) -->
+            <div class="flex justify-end pt-2 border-t border-gray-100">
+                <a href="{{ route('publik.masukan') }}" class="inline-flex items-center space-x-2 text-xs font-bold text-white bg-ijo-tua hover:bg-ijo-semitua px-5 py-2.5 rounded-2xl transition-all shadow-md">
+                    <span>Buat Aduan Baru</span>
+                    <span>&rarr;</span>
+                </a>
             </div>
         </section>
     </main>
