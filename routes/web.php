@@ -185,3 +185,5 @@ Route::get('/publik/presensi-pegawai', [PublicPageController::class, 'presensiPe
 Route::get('/publik/presensi-tamu', [PublicPageController::class, 'presensiTamu'])->name('publik.presensi.tamu');
 
 Route::get('/publik/presensi/qr/{agenda}/hadir', [PublicPageController::class, 'qrHadir'])->name('publik.presensi.qr.hadir');
+
+Route::get('/peta-situs', [PublicPageController::class, 'petaSitus'])->name('peta.situs');

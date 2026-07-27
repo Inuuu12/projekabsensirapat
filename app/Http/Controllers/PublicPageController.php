@@ -151,6 +151,11 @@ class PublicPageController extends Controller
         return view('publik.masukan');
     }
 
+    public function petaSitus()
+    {
+        return view('publik.peta-sitemap');
+    }
+
     public function riwayatAduan()
     {
         $masukan = $this->queryOrDefault(fn () => DataMasukan::latest('id_datamasukan')->paginate(10), collect());

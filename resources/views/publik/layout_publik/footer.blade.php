@@ -7,8 +7,8 @@
             <!-- Kolom 1: Logo, Deskripsi & Sosmed (4 Cols) -->
             <div class="lg:col-span-4 space-y-4">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center font-bold text-lg border border-white/20 shrink-0">
-                        🏛️
+                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center p-1 border border-white/20 shrink-0 overflow-hidden">
+                        <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Bappenda" class="w-full h-full object-contain">
                     </div>
                     <div>
                         <p class="text-[10px] tracking-widest text-ijo-sangatmuda font-semibold uppercase">Pemerintah Kabupaten Bogor</p>
@@ -20,31 +20,22 @@
                     Melayani administrasi kependudukan, informasi publik, dan pengaduan masyarakat Kabupaten Bogor secara cepat, transparan, dan terintegrasi.
                 </p>
 
-                <!-- Social Media Buttons (Link Aktif + Tab Baru) -->
+                <!-- Social Media Buttons -->
                 <div class="flex items-center space-x-2 pt-2">
-                    <!-- Instagram -->
                     <a href="https://www.instagram.com/diskominfokabbogor?igsh=MXNkbDF1dDIyN3FrZg==" 
-                       target="_blank" 
-                       rel="noopener noreferrer" 
-                       title="Instagram Diskominfo Kab. Bogor"
+                       target="_blank" rel="noopener noreferrer" title="Instagram Diskominfo Kab. Bogor"
                        class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-bold flex items-center justify-center transition-colors">
                         IG
                     </a>
                     
-                    <!-- Facebook -->
                     <a href="https://www.facebook.com/share/1RYDNtxEpS/" 
-                       target="_blank" 
-                       rel="noopener noreferrer" 
-                       title="Facebook Diskominfo Kab. Bogor"
+                       target="_blank" rel="noopener noreferrer" title="Facebook Diskominfo Kab. Bogor"
                        class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-bold flex items-center justify-center transition-colors">
                         FB
                     </a>
 
-                    <!-- YouTube -->
                     <a href="https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy" 
-                       target="_blank" 
-                       rel="noopener noreferrer" 
-                       title="YouTube Kabupaten Bogor"
+                       target="_blank" rel="noopener noreferrer" title="YouTube Kabupaten Bogor"
                        class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-bold flex items-center justify-center transition-colors">
                         YT
                     </a>
@@ -60,8 +51,6 @@
                 <ul class="space-y-2.5 text-xs text-gray-300">
                     <li><a href="{{ route('publik.masukan') }}" class="hover:text-white transition-colors">Formulir Masukan</a></li>
                     <li><a href="{{ route('publik.ulangtahun') }}" class="hover:text-white transition-colors">Info Ulang Tahun</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Pelatihan Jurnalistik Digital</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Info Lowongan & Diklat</a></li>
                 </ul>
             </div>
 
@@ -88,27 +77,18 @@
                 </div>
                 
                 <div class="space-y-3 text-xs text-gray-300 pt-1">
-                    <!-- Alamat -->
                     <div class="flex items-start space-x-3">
-                        <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-xs">
-                            📍
-                        </div>
+                        <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-xs">📍</div>
                         <p class="leading-relaxed">Jl. Tegar Beriman, Cibinong, Kabupaten Bogor, Jawa Barat</p>
                     </div>
 
-                    <!-- Telepon -->
                     <div class="flex items-center space-x-3">
-                        <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-xs">
-                            ☎️
-                        </div>
+                        <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-xs">☎️</div>
                         <p>(021) 875-xxxx</p>
                     </div>
 
-                    <!-- Email -->
                     <div class="flex items-center space-x-3">
-                        <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-xs">
-                            ✉️
-                        </div>
+                        <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-xs">✉️</div>
                         <p>diskominfo@bogorkab.go.id</p>
                     </div>
                 </div>
@@ -120,17 +100,16 @@
         <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-400 gap-4">
             <p>&copy; {{ date('Y') }} Dinas Komunikasi & Informatika Kabupaten Bogor. Hak cipta dilindungi.</p>
             
-            <!-- Badge Status -->
             <div class="bg-white/10 border border-white/10 px-3 py-1 rounded-full text-oren-muda font-semibold flex items-center space-x-1.5 text-[10px]">
                 <span class="w-2 h-2 rounded-full bg-oren-utama animate-pulse"></span>
                 <span>Layanan Aktif</span>
             </div>
 
-            <!-- Links Legal -->
+            <!-- Links Legal (DI SINI PERUBAHANNYA) -->
             <div class="flex items-center space-x-4">
                 <a href="#" class="hover:text-white transition-colors">Kebijakan Privasi</a>
                 <a href="#" class="hover:text-white transition-colors">Syarat & Ketentuan</a>
-                <a href="#" class="hover:text-white transition-colors">Peta Situs</a>
+                <a href="{{ route('peta.situs') }}" class="hover:text-white transition-colors">Peta Situs</a>
             </div>
         </div>
 
