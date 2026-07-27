@@ -11,7 +11,7 @@ class RuangRapat extends Model
 
     protected $table = 'app_md_ruangrapat';
     protected $primaryKey = 'id_ruangrapat';
-    protected $fillable = ['nama_ruang', 'kapasitas', 'keterangan'];
+    protected $fillable = ['nama_ruang', 'kapasitas', 'status', 'keterangan'];
 
     public function agendas()
     {

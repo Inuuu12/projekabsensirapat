@@ -38,10 +38,8 @@ Route::prefix('admin')->group(function () {
         Route::post('/agenda/tambah', [AdminAgendaController::class, 'kelola_Agenda'])->name('admin.agenda.store');
         Route::get('/agenda/lihat', [AdminAgendaController::class, 'lihat_Agenda'])->name('admin.agenda.lihat');
         
-        // RUTE DETAIL AGENDA (Menghilangkan Error RouteNotFoundException)
-        Route::get('/agenda/detail', function () {
-            return view('admin.agenda.detail');
-        })->name('admin.agenda.detail');
+        Route::get('/agenda/detail', [AdminAgendaController::class, 'detail_Agenda']);
+        Route::get('/agenda/{id}/detail', [AdminAgendaController::class, 'detail_Agenda'])->name('admin.agenda.detail');
 
         Route::redirect('/agenda', '/admin/agenda/lihat')->name('admin.agenda');
         Route::get('/agenda/cari', [AdminAgendaController::class, 'cari_Agenda']);
@@ -75,6 +73,8 @@ Route::prefix('admin')->group(function () {
         
         Route::put('/agenda/{id}/konfigurasi-fr', [AdminAgendaController::class, 'konfigurasi_FaceRecognition']);
         Route::get('/agenda/{id}/generate-qr', [AdminAgendaController::class, 'generate_QR']);
+        Route::post('/agenda/{id}/dokumen', [AdminAgendaController::class, 'upload_DokumenAgenda'])->name('admin.agenda.dokumen.store');
+        Route::delete('/agenda/{id}/dokumen/{dokumenId}', [AdminAgendaController::class, 'hapus_DokumenAgenda'])->name('admin.agenda.dokumen.destroy');
         Route::put('/agenda/{id}', [AdminAgendaController::class, 'update_Agenda'])->name('admin.agenda.update');
         Route::delete('/agenda/{id}', [AdminAgendaController::class, 'hapus_Agenda'])->name('admin.agenda.destroy');
         Route::post('/kehadiran/verifikasi', [AdminKehadiranController::class, 'verifikasi_Kehadiran']);

@@ -9,9 +9,9 @@ class DokumenNotulen extends Model
 {
     use HasFactory;
 
-    protected $table = 'dokumen_notulen';
+    protected $table = 'app_md_dokumen_notulen';
     protected $primaryKey = 'id_dokumen';
-    protected $fillable = ['id_agenda', 'namaFile', 'filePath'];
+    protected $fillable = ['id_agenda', 'jenis_dokumen', 'nama_file', 'file_path'];
 
     public function agenda()
     {
@@ -20,6 +20,15 @@ class DokumenNotulen extends Model
 
     public static function uploadDokumen(array $data): self
     {
-        return self::create($data);
+        return self::updateOrCreate(
+            [
+                'id_agenda' => $data['id_agenda'],
+                'jenis_dokumen' => $data['jenis_dokumen'],
+            ],
+            [
+                'nama_file' => $data['nama_file'],
+                'file_path' => $data['file_path'],
+            ],
+        );
     }
 }

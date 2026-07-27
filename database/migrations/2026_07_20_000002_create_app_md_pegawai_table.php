@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('nama_pegawai');
             $table->string('nip')->unique();
             $table->string('jabatan');
+            $table->string('bidang')->nullable();
             $table->string('nomor_hp');
             $table->string('email')->unique();
             $table->timestamps();
