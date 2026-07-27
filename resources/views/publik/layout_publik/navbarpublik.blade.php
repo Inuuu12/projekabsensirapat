@@ -4,7 +4,7 @@
         <!-- Logo Diskominfo -->
         <a href="{{ route('publik.beranda') }}" class="flex items-center space-x-3 group">
             <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center font-bold text-lg border border-white/20 group-hover:scale-105 transition-transform">
-                🏛️
+                <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo" class="w-10 h-auto object-contain">
             </div>
             <div>
                 <p class="text-[10px] tracking-widest text-ijo-sangatmuda font-semibold uppercase">Pemerintah Kabupaten Bogor</p>

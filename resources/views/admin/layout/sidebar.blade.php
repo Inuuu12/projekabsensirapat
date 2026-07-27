@@ -40,7 +40,7 @@
                 
                 <div class="{{ $isAgendaActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
                     <a href="{{ route('admin.agenda.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-[#2b4f49]/50 transition {{ request()->routeIs('admin.agenda.lihat') ? 'bg-[#2b4f49] font-bold text-white' : 'text-white/80' }}">Daftar Agenda</a>
-                    <a href="{{ route('admin.ruang.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-[#2b4f49]/50 transition {{ request()->routeIs('admin.ruang.lihat') ? 'bg-[#2b4f49] font-bold text-white' : 'text-white/80' }}">Daftar Ruang</a>
+                    <a href="{{ route('admin.ruang.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-[#2b4f49]/50 transition {{ request()->routeIs('admin.ruang.lihat') ? 'bg-[#2b4f49] font-bold text-white' : 'text-white/80' }}">Daftar Ruangan</a>
                 </div>
             </div>
 
