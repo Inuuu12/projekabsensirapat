@@ -17,9 +17,11 @@ use Illuminate\Support\Facades\Http;
 
 class PublicPageController extends Controller
 {
+    private const PUBLIC_TIMEZONE = 'Asia/Jakarta';
+
     public function index()
     {
-        $today = Carbon::today();
+        $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $agendaHariIni = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', $today)
             ->orderBy('waktu')
             ->take(3)
@@ -139,7 +141,7 @@ class PublicPageController extends Controller
 
     public function ulangTahun()
     {
-        $today = Carbon::today();
+        $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $ulangTahun = $this->queryOrDefault(fn () => UlangTahun::tampilkanUlangTahunPegawai(), collect());
         $ulangTahunHariIni = $ulangTahun->first(fn ($item) => $item->tanggal?->format('m-d') === $today->format('m-d'));
 
@@ -249,7 +251,7 @@ class PublicPageController extends Controller
             ? $this->queryOrDefault(fn () => QRCode::where('id_agenda', $agenda->id_agenda)->first())
             : null;
         $qrWindow = $agenda ? $this->qrWindow($agenda) : null;
-        $qrSedangBerlangsung = $qrWindow ? now()->betweenIncluded($qrWindow['start'], $qrWindow['end']) : false;
+        $qrSedangBerlangsung = $qrWindow ? $this->nowWib()->betweenIncluded($qrWindow['start'], $qrWindow['end']) : false;
         $qrWindowLabel = $qrWindow
             ? $qrWindow['start']->translatedFormat('d F Y H:i') . ' - ' . $qrWindow['end']->translatedFormat('H:i') . ' WIB'
             : null;
@@ -275,7 +277,7 @@ class PublicPageController extends Controller
         }
 
         $qrWindow = $this->qrWindow($agenda);
-        if (! now()->betweenIncluded($qrWindow['start'], $qrWindow['end'])) {
+        if (! $this->nowWib()->betweenIncluded($qrWindow['start'], $qrWindow['end'])) {
             return view('publik.presensi-qr-result', [
                 'success' => false,
                 'agenda' => $agenda,
@@ -296,7 +298,7 @@ class PublicPageController extends Controller
         Logbook::create([
             'id_agenda' => $agenda->id_agenda,
             'catatan' => 'Hadir lewat Scan QR pegawai.',
-            'waktu_isi' => now(),
+            'waktu_isi' => $this->nowWib(),
         ]);
 
         return view('publik.presensi-qr-result', [
@@ -321,7 +323,7 @@ class PublicPageController extends Controller
 
         return $this->queryOrDefault(fn () => Agenda::query()
             ->when($id, fn ($query) => $query->whereKey($id))
-            ->orderByRaw('tanggal >= ? desc', [Carbon::today()->toDateString()])
+            ->orderByRaw('tanggal >= ? desc', [Carbon::today(self::PUBLIC_TIMEZONE)->toDateString()])
             ->orderBy('tanggal')
             ->orderBy('waktu')
             ->first());
@@ -329,17 +331,22 @@ class PublicPageController extends Controller
 
     private function qrWindow(Agenda $agenda): array
     {
-        $date = $agenda->tanggal?->toDateString() ?? Carbon::today()->toDateString();
+        $date = $agenda->tanggal?->toDateString() ?? Carbon::today(self::PUBLIC_TIMEZONE)->toDateString();
         $startTime = substr((string) $agenda->waktu, 0, 5) ?: '00:00';
         $endTime = substr((string) $agenda->waktu_selesai, 0, 5);
-        $start = Carbon::parse($date . ' ' . $startTime);
-        $end = $endTime ? Carbon::parse($date . ' ' . $endTime) : $start->copy()->addHour();
+        $start = Carbon::parse($date . ' ' . $startTime, self::PUBLIC_TIMEZONE);
+        $end = $endTime ? Carbon::parse($date . ' ' . $endTime, self::PUBLIC_TIMEZONE) : $start->copy()->addHour();
 
         if ($end->lessThanOrEqualTo($start)) {
             $end = $start->copy()->addHour();
         }
 
         return compact('start', 'end');
+    }
+
+    private function nowWib(): Carbon
+    {
+        return Carbon::now(self::PUBLIC_TIMEZONE);
     }
 
     private function weatherCodeLabel(mixed $code): string
