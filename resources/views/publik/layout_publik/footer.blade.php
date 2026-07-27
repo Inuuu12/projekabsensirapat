@@ -1,5 +1,11 @@
+@php
+    $appName = config('sirapi.name', 'SIRAPI');
+    $organizationName = config('sirapi.organization', 'Dinas Komunikasi & Informatika');
+    $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
+@endphp
+
 <footer class="bg-ijo-tua text-white mt-auto border-t border-white/10">
-    <div class="container mx-auto px-4 md:px-12 pt-12 pb-8 max-w-7xl space-y-10">
+    <div class="w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 pt-12 pb-8 space-y-10">
         
         <!-- MAIN FOOTER CONTENT (GRID 4 KOLOM) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
@@ -11,8 +17,9 @@
                         <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Bappenda" class="w-full h-full object-contain">
                     </div>
                     <div>
-                        <p class="text-[10px] tracking-widest text-ijo-sangatmuda font-semibold uppercase">Pemerintah Kabupaten Bogor</p>
-                        <p class="text-sm font-extrabold tracking-tight">Dinas Komunikasi & Informatika</p>
+                        <p class="text-[10px] tracking-widest text-ijo-sangatmuda font-semibold uppercase">{{ $regionName }}</p>
+                        <p class="text-sm font-extrabold tracking-tight">{{ $appName }}</p>
+                        <p class="text-[10px] font-semibold text-white/80">{{ $organizationName }}</p>
                     </div>
                 </div>
 
@@ -98,7 +105,7 @@
 
         <!-- BOTTOM FOOTER / COPYRIGHT BAR -->
         <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-400 gap-4">
-            <p>&copy; {{ date('Y') }} Dinas Komunikasi & Informatika Kabupaten Bogor. Hak cipta dilindungi.</p>
+            <p>&copy; {{ date('Y') }} {{ $appName }} - {{ $organizationName }}. Hak cipta dilindungi.</p>
             
             <div class="bg-white/10 border border-white/10 px-3 py-1 rounded-full text-oren-muda font-semibold flex items-center space-x-1.5 text-[10px]">
                 <span class="w-2 h-2 rounded-full bg-oren-utama animate-pulse"></span>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sampaikan Masukan Anda - Diskominfo Kabupaten Bogor</title>
+    <title>Sampaikan Masukan Anda - SIRAPI</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -29,7 +29,7 @@
     <!-- Memanggil Navbar Publik -->
     @include('publik.layout_publik.navbarpublik') 
 
-    <main class="flex-grow container mx-auto px-6 lg:px-12 py-8 space-y-6 max-w-7xl">
+    <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-8 space-y-6">
 
         <!-- Breadcrumb & Header Section -->
         <div class="space-y-2">

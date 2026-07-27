@@ -1,10 +1,15 @@
+@php
+    $appName = config('sirapi.name', 'SIRAPI');
+    $organizationName = config('sirapi.organization', 'Dinas Komunikasi & Informatika');
+@endphp
+
 <header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 sm:px-8 shadow-xs z-30">
     <!-- Left Side: Hamburger Menu & Title -->
     <div class="flex items-center space-x-3">
         <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
-        <span class="text-sm font-bold text-gray-500 uppercase tracking-wider hidden sm:inline-block">Dinas Komunikasi & Informatika</span>
+        <span class="text-sm font-bold text-gray-500 uppercase tracking-wider hidden sm:inline-block">{{ $appName }} - {{ $organizationName }}</span>
     </div>
 
     <!-- Right Side: Date & User Profile Pill -->
@@ -30,4 +35,3 @@
         </div>
     </div>
 </header>
-

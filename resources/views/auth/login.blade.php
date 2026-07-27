@@ -3,18 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - e-Agenda</title>
+    <title>Login Admin - SIRAPI</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="min-h-screen bg-gray-100 font-sans antialiased">
+    @php
+        $organizationName = config('sirapi.organization', 'Dinas Komunikasi & Informatika');
+        $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
+    @endphp
+
     <main class="grid min-h-screen grid-cols-1 lg:grid-cols-2">
         <section class="flex items-center justify-center bg-[#3b6f6c] p-8 text-white">
             <div class="max-w-sm text-center">
                 <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Bappenda" class="mx-auto mb-6 h-24 w-auto">
                 <!-- <h1 class="text-3xl font-extrabold">BAPPENDA</h1>
                 <p class="mt-1 text-sm font-semibold tracking-wider text-white/80">KABUPATEN BOGOR</p> -->
-                <p class="mt-8 text-5xl font-bold">e-Agenda</p>
-                <p class="mt-2 text-sm text-white/80">Sistem Agenda Kegiatan Dinas Kab. Bogor</p>
+                <p class="mt-8 text-5xl font-bold">SIRAPI</p>
+                <p class="mt-2 text-sm font-semibold text-white/90">Sistem Informasi Rapat dan Presensi</p>
+                <p class="mt-1 text-xs text-white/70">{{ $organizationName }} - {{ $regionName }}</p>
             </div>
         </section>
 

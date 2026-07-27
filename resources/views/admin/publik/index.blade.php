@@ -111,7 +111,10 @@
                         <form method="POST" action="{{ route('admin.publik.berita.destroy', $item->id_berita) }}">
                             @csrf
                             @method('DELETE')
-                            <button class="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-100">Hapus</button>
+                            <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Berita">
+                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                <span class="sr-only">Hapus</span>
+                            </button>
                         </form>
                     </div>
                 @empty
@@ -132,7 +135,10 @@
                         <form method="POST" action="{{ route('admin.publik.galeri.destroy', $item->id_galeri) }}" class="p-2">
                             @csrf
                             @method('DELETE')
-                            <button class="w-full rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-100">Hapus</button>
+                            <button class="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Foto">
+                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                <span class="sr-only">Hapus</span>
+                            </button>
                         </form>
                     </div>
                 @empty
@@ -156,7 +162,10 @@
                         <form method="POST" action="{{ route('admin.publik.ulang-tahun.destroy', $item->id_ulangtahun) }}">
                             @csrf
                             @method('DELETE')
-                            <button class="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-100">Hapus</button>
+                            <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Ulang Tahun">
+                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                <span class="sr-only">Hapus</span>
+                            </button>
                         </form>
                     </div>
                 @empty
@@ -180,7 +189,10 @@
                         <form method="POST" action="{{ route('admin.publik.cuaca.destroy', $item->id_cuaca) }}">
                             @csrf
                             @method('DELETE')
-                            <button class="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-100">Hapus</button>
+                            <button class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Cuaca">
+                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                <span class="sr-only">Hapus</span>
+                            </button>
                         </form>
                     </div>
                 @empty

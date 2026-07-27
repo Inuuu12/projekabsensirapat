@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman Dialihkan - Diskominfo Kabupaten Bogor</title>
+    <title>Halaman Dialihkan - SIRAPI</title>
     <meta http-equiv="refresh" content="0;url={{ route('publik.beranda') }}">
 </head>
 <body>
