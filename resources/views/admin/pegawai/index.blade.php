@@ -91,7 +91,6 @@
         </div>
     </div>
 </div>
-
 <div id="modal-tambah-pegawai" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
     <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
