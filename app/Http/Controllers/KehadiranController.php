@@ -3,81 +3,88 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
-use App\Models\Pegawai;
-use App\Models\Peserta;
-use App\Models\Logbook;
+use App\Models\QRCode;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class KehadiranController extends Controller
 {
-    // fungsi buat handle scan qr code rapat
     public function scan_QR(Request $request)
     {
-        // validasi inputan dari scanner / device luar
         $validated = $request->validate([
-            'id_agenda'       => 'required|integer',
-            'nomor_identitas' => 'required', // isi NIP kalau pegawai, isi nama kalau tamu
-            'tipe_peserta'    => 'required|in:pegawai,tamu'
+            'id_agenda' => 'nullable|integer',
+            'qr_code' => 'nullable|string',
         ]);
 
-        // cari agendanya ada apa nggak
-        $agenda = Agenda::findOrFail($validated['id_agenda']);
+        $agendaId = $validated['id_agenda'] ?? null;
 
-        // cek dulu status qr di agenda ini udah dibuka admin atau belum
-        if ($agenda->status_qr !== 'aktif') {
-            return response()->json([
-                'success' => false,
-                'message' => 'QR Code agenda ini belum diaktifkan sama admin.'
-            ], 403);
+        if (! $agendaId && ! empty($validated['qr_code'])) {
+            $qrCode = QRCode::where('qr_codepath', $validated['qr_code'])
+                ->orWhere('qr_codepath', 'like', '%' . $validated['qr_code'] . '%')
+                ->first();
+
+            $agendaId = $qrCode?->id_agenda;
         }
 
-        // kalau aman, langsung masukin ke logbook sebagai bukti hadir
-        Logbook::create([
-            'id_agenda' => $agenda->id_agenda,
-            'catatan'   => 'Hadir lewat Scan QR. Identitas: ' . $validated['nomor_identitas'] . ' (' . $validated['tipe_peserta'] . ')',
-            'waktu_isi' => Carbon::now(),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Scan QR berhasil, kehadiran kamu udah dicatat!'
-        ]);
-    }
-
-    // fungsi sesuai draw.io buat verifikasi wajah face recognition
-    public function verifikasi_FaceRecognition(Request $request)
-    {
-        // validasi kecocokan data sebelum kirim ke logic kamera
-        $validated = $request->validate([
-            'id_agenda'   => 'required|integer',
-            'nip'         => 'required|integer',
-            'foto_base64' => 'required|string' // payload mentah foto dari kamera frontend
-        ]);
-
-        // pastiin nip pegawai ini emang ada di database kita
-        $pegawai = Pegawai::where('nip', $validated['nip'])->first();
-
-        if (!$pegawai) {
+        if (! $agendaId) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data pegawai gak ketemu.'
+                'message' => 'QR code tidak valid atau agenda tidak ditemukan.',
+            ], 422);
+        }
+
+        $agenda = Agenda::find($agendaId);
+
+        if (! $agenda) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Agenda tidak ditemukan.',
             ], 404);
         }
 
-        // tempat taruh logic hit api python / model face recognition nanti di sini
-        // assume wajahnya cocok dan terverifikasi sama sistem:
-
-        // langsung buatin logbook tanda hadir rapat
-        Logbook::create([
-            'id_agenda' => $validated['id_agenda'],
-            'catatan'   => 'Hadir lewat Face Recognition. Pegawai: ' . $pegawai->nama_pegawai,
-            'waktu_isi' => Carbon::now(),
+        return response()->json([
+            'success' => true,
+            'message' => 'QR code valid.',
+            'data' => $agenda,
         ]);
+    }
+
+    public function verifikasi_FaceRecognition(Request $request)
+    {
+        $validated = $request->validate([
+            'id_agenda' => 'required|integer|exists:app_md_agenda,id_agenda',
+            'id_peserta' => 'nullable|integer|exists:app_md_peserta,id_peserta',
+            'catatan' => 'nullable|string|max:1000',
+        ]);
+
+        $now = now();
+
+        $idLog = DB::table('app_md_logbook')->insertGetId([
+            'Id_agenda' => $validated['id_agenda'],
+            'catatan' => $validated['catatan'] ?? 'Verifikasi face recognition berhasil.',
+            'waktu_isi' => $now,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
+        if (! empty($validated['id_peserta'])) {
+            DB::table('app_md_kehadiran')->updateOrInsert(
+                [
+                    'id_agenda' => $validated['id_agenda'],
+                    'id_peserta' => $validated['id_peserta'],
+                ],
+                [
+                    'id_log' => $idLog,
+                    'updated_at' => $now,
+                    'created_at' => $now,
+                ],
+            );
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Wajah cocok! Selamat datang ' . $pegawai->nama_pegawai
+            'message' => 'Verifikasi face recognition berhasil.',
+            'id_log' => $idLog,
         ]);
     }
 }

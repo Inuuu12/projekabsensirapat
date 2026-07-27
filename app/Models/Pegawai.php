@@ -2,14 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-#[Fillable(['foto', 'nama_pegawai','nip', 'jabatan', 'bidang', 'nomor_hp', 'email'])]
 class Pegawai extends Model
 {
     use HasFactory;
+
     protected $table = 'app_md_pegawai';
     protected $primaryKey = 'id_pegawai';
+
+    protected $fillable = [
+        'foto',
+        'nama_pegawai',    
+        'nip',
+        'jabatan',
+        'bidang',
+        'nomor_hp',
+        'email',
+    ];
 }
