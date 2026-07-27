@@ -10,32 +10,49 @@
             <p class="text-xs sm:text-sm text-gray-500 mt-1">Data ruangan langsung terhubung ke database.</p>
         </div>
         <button onclick="openModal('modal-tambah-ruang')" class="bg-[#22C55E] hover:bg-[#16A34A] text-white font-bold py-2.5 px-5 rounded-xl flex items-center gap-2 transition shadow-xs self-start sm:self-auto">
-            Tambah Ruang
+            <span class="text-lg leading-none">+</span>
+            <span>Tambah Ruang</span>
         </button>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
-            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Ruangan</p>
-            <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $ruang->count() }}</p>
+        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Ruangan Tersedia</p>
+                <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $ruang->where('status', 'tersedia')->count() }}</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center p-2">
+                <img src="{{ asset('foto/ruangantersedia.png') }}" alt="Ruangan Tersedia" class="w-full h-full object-contain">
+            </div>
         </div>
-        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
-            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Kapasitas</p>
-            <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $ruang->sum('kapasitas') }}</p>
+        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Ruangan Terpakai</p>
+                <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $ruang->where('status', 'terpakai')->count() }}</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center p-2">
+                <img src="{{ asset('foto/ruanganterpakai.png') }}" alt="Ruangan Terpakai" class="w-full h-full object-contain">
+            </div>
         </div>
-        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
-            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Terakhir Diupdate</p>
-            <p class="mt-2 text-sm font-bold text-gray-700">{{ optional($ruang->first()?->updated_at)->format('d M Y') ?? '-' }}</p>
+        <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs flex items-center justify-between">
+            <div>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Ruangan</p>
+                <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $ruang->count() }}</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center p-2">
+                <img src="{{ asset('foto/totalruangan.png') }}" alt="Total Ruangan" class="w-full h-full object-contain">
+            </div>
         </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[760px]">
+            <table class="w-full text-left min-w-[860px]">
                 <thead>
                     <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider">
                         <th class="px-6 py-4">Nama Ruangan</th>
                         <th class="px-6 py-4">Kapasitas</th>
+                        <th class="px-6 py-4">Status</th>
                         <th class="px-6 py-4">Keterangan</th>
                         <th class="px-6 py-4 text-center">Aksi</th>
                     </tr>
@@ -45,6 +62,13 @@
                         <tr class="hover:bg-gray-50/80 transition">
                             <td class="px-6 py-4 font-bold text-gray-800">{{ $item->nama_ruang }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->kapasitas }} orang</td>
+                            <td class="px-6 py-4">
+                                @if (($item->status ?? 'tersedia') === 'terpakai')
+                                    <span class="inline-flex rounded-lg bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">Terpakai</span>
+                                @else
+                                    <span class="inline-flex rounded-lg bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">Tersedia</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->keterangan }}</td>
                             <td class="px-6 py-4">
                                 <div class="flex justify-center gap-2">
@@ -54,6 +78,7 @@
                                         data-action="{{ route('admin.ruang.update', $item->id_ruangrapat) }}"
                                         data-nama="{{ $item->nama_ruang }}"
                                         data-kapasitas="{{ $item->kapasitas }}"
+                                        data-status="{{ $item->status ?? 'tersedia' }}"
                                         data-keterangan="{{ $item->keterangan }}"
                                         class="rounded-lg bg-green-50 px-3 py-1.5 text-xs font-bold text-green-700 hover:bg-green-100">
                                         Edit
@@ -69,7 +94,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-8 text-center text-gray-500">Belum ada data ruangan.</td>
+                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">Belum ada data ruangan.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -78,52 +103,106 @@
     </div>
 </div>
 
-<div id="modal-tambah-ruang" class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
-        <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Tambah Ruangan Baru</h3>
-        <form method="POST" action="{{ route('admin.ruang.store') }}" class="space-y-4">
+<div id="modal-tambah-ruang" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <h3 class="text-lg font-bold">Tambah Ruangan</h3>
+            <button type="button" onclick="closeModal('modal-tambah-ruang')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal tambah ruangan">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </div>
+
+        <form id="form-tambah-ruang" method="POST" action="{{ route('admin.ruang.store') }}" class="flex min-h-0 flex-1 flex-col">
             @csrf
-            <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama Ruangan</label>
-                <input name="nama_ruang" type="text" required class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
+            <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
+                <div>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Nama Ruangan</label>
+                    <input name="nama_ruang" type="text" required placeholder="Masukkan nama ruangan" class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Kapasitas</label>
+                    <input name="kapasitas" type="number" min="1" required placeholder="Kapasitas ruangan" class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Status</label>
+                    <div class="relative">
+                        <select name="status" required class="h-11 w-full appearance-none rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 pr-10 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                            <option value="tersedia">Tersedia</option>
+                            <option value="terpakai">Terpakai</option>
+                        </select>
+                        <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Keterangan</label>
+                    <textarea name="keterangan" rows="3" required placeholder="Masukkan keterangan ruangan" class="w-full resize-none rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10"></textarea>
+                </div>
             </div>
-            <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Kapasitas</label>
-                <input name="kapasitas" type="number" min="1" required class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Keterangan</label>
-                <input name="keterangan" type="text" required class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
-            </div>
-            <div class="flex justify-end gap-3 pt-3 border-t">
-                <button type="button" onclick="closeModal('modal-tambah-ruang')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] rounded-xl shadow-xs">Simpan</button>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <button type="button" onclick="closeModal('modal-tambah-ruang')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h12l2 2v12H5zM8 5v6h8V5M9 18h6"></path>
+                    </svg>
+                    Simpan
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-<div id="modal-edit-ruang" class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
-        <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Edit Ruangan</h3>
-        <form id="form-edit-ruang" method="POST" class="space-y-4">
+<div id="modal-edit-ruang" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <h3 class="text-lg font-bold">Edit Ruangan</h3>
+            <button type="button" onclick="closeModal('modal-edit-ruang')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal edit ruangan">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </div>
+
+        <form id="form-edit-ruang" method="POST" class="flex min-h-0 flex-1 flex-col">
             @csrf
             @method('PUT')
-            <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama Ruangan</label>
-                <input id="edit-ruang-nama" name="nama_ruang" type="text" required class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
+            <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
+                <div>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Nama Ruangan</label>
+                    <input id="edit-ruang-nama" name="nama_ruang" type="text" required placeholder="Masukkan nama ruangan" class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Kapasitas</label>
+                    <input id="edit-ruang-kapasitas" name="kapasitas" type="number" min="1" required placeholder="Kapasitas ruangan" class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Status</label>
+                    <div class="relative">
+                        <select id="edit-ruang-status" name="status" required class="h-11 w-full appearance-none rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 pr-10 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                            <option value="tersedia">Tersedia</option>
+                            <option value="terpakai">Terpakai</option>
+                        </select>
+                        <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Keterangan</label>
+                    <textarea id="edit-ruang-keterangan" name="keterangan" rows="3" required placeholder="Masukkan keterangan ruangan" class="w-full resize-none rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10"></textarea>
+                </div>
             </div>
-            <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Kapasitas</label>
-                <input id="edit-ruang-kapasitas" name="kapasitas" type="number" min="1" required class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Keterangan</label>
-                <input id="edit-ruang-keterangan" name="keterangan" type="text" required class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
-            </div>
-            <div class="flex justify-end gap-3 pt-3 border-t">
-                <button type="button" onclick="closeModal('modal-edit-ruang')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] rounded-xl shadow-xs">Simpan</button>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <button type="button" onclick="closeModal('modal-edit-ruang')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h12l2 2v12H5zM8 5v6h8V5M9 18h6"></path>
+                    </svg>
+                    Simpan
+                </button>
             </div>
         </form>
     </div>
@@ -133,6 +212,10 @@
 <script>
     function openModal(id) {
         const modal = document.getElementById(id);
+        if (id === 'modal-tambah-ruang') {
+            const form = document.getElementById('form-tambah-ruang');
+            if (form) form.reset();
+        }
         if (modal) modal.classList.replace('hidden', 'flex');
     }
 
@@ -145,6 +228,7 @@
         document.getElementById('form-edit-ruang').action = button.dataset.action;
         document.getElementById('edit-ruang-nama').value = button.dataset.nama;
         document.getElementById('edit-ruang-kapasitas').value = button.dataset.kapasitas;
+        document.getElementById('edit-ruang-status').value = button.dataset.status || 'tersedia';
         document.getElementById('edit-ruang-keterangan').value = button.dataset.keterangan;
         openModal('modal-edit-ruang');
     }

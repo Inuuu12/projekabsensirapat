@@ -21,6 +21,7 @@ class AdminRuangController extends Controller
         RuangRapat::create($request->validate([
             'nama_ruang' => 'required|string|max:255',
             'kapasitas' => 'required|integer|min:1',
+            'status' => 'required|in:tersedia,terpakai',
             'keterangan' => 'required|string|max:255',
         ]));
 
@@ -32,6 +33,7 @@ class AdminRuangController extends Controller
         RuangRapat::findOrFail($id)->update($request->validate([
             'nama_ruang' => 'required|string|max:255',
             'kapasitas' => 'required|integer|min:1',
+            'status' => 'required|in:tersedia,terpakai',
             'keterangan' => 'required|string|max:255',
         ]));
 

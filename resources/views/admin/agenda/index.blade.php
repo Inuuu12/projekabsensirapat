@@ -187,14 +187,29 @@
 
 <!-- MODAL TAMBAH AGENDA -->
 <div id="modal-tambah-agenda" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
-        <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Tambah Agenda</h3>
-        <form method="POST" action="{{ route('admin.agenda.store') }}" enctype="multipart/form-data" class="space-y-4">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <h3 class="text-lg font-bold">Tambah Agenda</h3>
+            <button type="button" onclick="closeModal('modal-tambah-agenda')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal tambah agenda">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </div>
+
+        <form id="form-tambah-agenda" method="POST" action="{{ route('admin.agenda.store') }}" enctype="multipart/form-data" class="flex min-h-0 flex-1 flex-col">
             @csrf
-            @include('admin.agenda.form-fields')
-            <div class="flex justify-end gap-3 pt-3 border-t">
-                <button type="button" onclick="closeModal('modal-tambah-agenda')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl cursor-pointer">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] rounded-xl shadow-xs cursor-pointer">Simpan</button>
+            <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
+                @include('admin.agenda.form-fields')
+            </div>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <button type="button" onclick="closeModal('modal-tambah-agenda')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100 cursor-pointer">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h12l2 2v12H5zM8 5v6h8V5M9 18h6"></path>
+                    </svg>
+                    Simpan
+                </button>
             </div>
         </form>
     </div>
@@ -202,15 +217,30 @@
 
 <!-- MODAL EDIT AGENDA -->
 <div id="modal-edit-agenda" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
-        <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Edit Agenda</h3>
-        <form id="form-edit-agenda" method="POST" enctype="multipart/form-data" class="space-y-4">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <h3 class="text-lg font-bold">Edit Agenda</h3>
+            <button type="button" onclick="closeModal('modal-edit-agenda')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal edit agenda">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </div>
+
+        <form id="form-edit-agenda" method="POST" enctype="multipart/form-data" class="flex min-h-0 flex-1 flex-col">
             @csrf
             @method('PUT')
-            @include('admin.agenda.form-fields', ['prefix' => 'edit-'])
-            <div class="flex justify-end gap-3 pt-3 border-t">
-                <button type="button" onclick="closeModal('modal-edit-agenda')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl cursor-pointer">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] rounded-xl shadow-xs cursor-pointer">Simpan Perubahan</button>
+            <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
+                @include('admin.agenda.form-fields', ['prefix' => 'edit-'])
+            </div>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <button type="button" onclick="closeModal('modal-edit-agenda')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100 cursor-pointer">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h12l2 2v12H5zM8 5v6h8V5M9 18h6"></path>
+                    </svg>
+                    Simpan
+                </button>
             </div>
         </form>
     </div>
@@ -222,6 +252,12 @@
 <script>
     function openModal(id) {
         const modal = document.getElementById(id);
+        if (id === 'modal-tambah-agenda') {
+            const form = document.getElementById('form-tambah-agenda');
+            if (form) form.reset();
+            setAgendaFileLabel('', '');
+            syncAgendaRoomLocation('');
+        }
         if (modal) modal.classList.replace('hidden', 'flex');
     }
 
@@ -244,10 +280,41 @@
         if(document.getElementById('edit-id_ruangrapat')) document.getElementById('edit-id_ruangrapat').value = button.dataset.ruang || '';
         if(document.getElementById('edit-id_statusagenda')) document.getElementById('edit-id_statusagenda').value = button.dataset.status || '';
         if(document.getElementById('edit-status_qr')) document.getElementById('edit-status_qr').value = button.dataset.statusqr || 'nonaktif';
-        if(document.getElementById('edit-status_fr')) document.getElementById('edit-status_fr').checked = button.dataset.statusfr === '1';
+        if(document.getElementById('edit-status_fr')) document.getElementById('edit-status_fr').value = button.dataset.statusfr === '1' ? '1' : '0';
+        setAgendaFileLabel('edit-', '');
+        if (!button.dataset.lokasi) syncAgendaRoomLocation('edit-');
         
         openModal('modal-edit-agenda');
     }
+
+    function syncAgendaRoomLocation(prefix) {
+        const select = document.getElementById(prefix + 'id_ruangrapat');
+        const location = document.getElementById(prefix + 'lokasi');
+        if (!select || !location) return;
+
+        const selected = select.options[select.selectedIndex];
+        location.value = selected && selected.value ? selected.text.trim() : '';
+    }
+
+    function setAgendaFileLabel(prefix, fileName) {
+        const label = document.getElementById(prefix + 'lampiran-label');
+        if (!label) return;
+        label.textContent = fileName || 'Klik atau seret file PDF ke sini';
+    }
+
+    document.querySelectorAll('[data-agenda-room-select]').forEach((select) => {
+        select.addEventListener('change', function () {
+            syncAgendaRoomLocation(this.dataset.agendaRoomSelect || '');
+        });
+    });
+
+    document.querySelectorAll('[data-agenda-file-input]').forEach((input) => {
+        input.addEventListener('change', function () {
+            const prefix = this.dataset.agendaFileInput || '';
+            const file = this.files && this.files[0];
+            setAgendaFileLabel(prefix, file ? file.name : '');
+        });
+    });
 </script>
 @endpush
 @endsection

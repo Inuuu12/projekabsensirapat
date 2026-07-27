@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id('id_ruangrapat');
             $table->string('nama_ruang');
             $table->integer('kapasitas');
+            $table->string('status', 20)->default('tersedia');
             $table->text('keterangan');
             $table->timestamps();
         });

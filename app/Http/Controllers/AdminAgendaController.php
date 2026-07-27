@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
+use App\Models\DokumenNotulen;
 use App\Models\QRCode;
 use App\Models\RuangRapat;
 use App\Models\StatusAgenda;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AdminAgendaController extends Controller
 {
@@ -86,6 +89,70 @@ class AdminAgendaController extends Controller
             ->pluck('total', 'kategori_surat');
 
         return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'statusAgenda', 'kategoriSurat', 'agendaStats'));
+    }
+
+    public function detail_Agenda(Request $request, ?int $id = null)
+    {
+        $agendaId = $id ?? $request->query('id');
+        $agenda = Agenda::with('statusAgenda')->findOrFail($agendaId);
+        $ruang = RuangRapat::find($agenda->id_ruangrapat);
+        $dokumen = DokumenNotulen::where('id_agenda', $agenda->id_agenda)
+            ->latest('id_dokumen')
+            ->get()
+            ->keyBy('jenis_dokumen');
+        $pesertaHadir = DB::table('app_md_kehadiran')
+            ->join('app_md_peserta', 'app_md_kehadiran.id_peserta', '=', 'app_md_peserta.id_peserta')
+            ->where('app_md_kehadiran.id_agenda', $agenda->id_agenda)
+            ->select('app_md_peserta.nama', 'app_md_peserta.jabatan', 'app_md_kehadiran.created_at')
+            ->latest('app_md_kehadiran.created_at')
+            ->get();
+
+        return view('admin.agenda.detail', compact('agenda', 'ruang', 'dokumen', 'pesertaHadir'));
+    }
+
+    public function upload_DokumenAgenda($id, Request $request)
+    {
+        $agenda = Agenda::findOrFail($id);
+        $validated = $request->validate([
+            'jenis_dokumen' => 'required|in:notulen,dokumentasi',
+            'dokumen' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,webp|max:5120',
+        ]);
+
+        $dokumenLama = DokumenNotulen::where('id_agenda', $agenda->id_agenda)
+            ->where('jenis_dokumen', $validated['jenis_dokumen'])
+            ->first();
+
+        if ($dokumenLama && Storage::disk('public')->exists($dokumenLama->file_path)) {
+            Storage::disk('public')->delete($dokumenLama->file_path);
+        }
+
+        $file = $request->file('dokumen');
+        $path = $file->store('agenda-dokumen', 'public');
+
+        DokumenNotulen::uploadDokumen([
+            'id_agenda' => $agenda->id_agenda,
+            'jenis_dokumen' => $validated['jenis_dokumen'],
+            'nama_file' => $file->getClientOriginalName(),
+            'file_path' => $path,
+        ]);
+
+        $label = $validated['jenis_dokumen'] === 'notulen' ? 'Notulen' : 'Dokumentasi';
+
+        return back()->with('success', $label . ' agenda berhasil diunggah.');
+    }
+
+    public function hapus_DokumenAgenda($id, $dokumenId)
+    {
+        $agenda = Agenda::findOrFail($id);
+        $dokumen = DokumenNotulen::where('id_agenda', $agenda->id_agenda)->findOrFail($dokumenId);
+
+        if (Storage::disk('public')->exists($dokumen->file_path)) {
+            Storage::disk('public')->delete($dokumen->file_path);
+        }
+
+        $dokumen->delete();
+
+        return back()->with('success', 'Dokumen agenda berhasil dihapus.');
     }
 
     public function cari_Agenda(Request $request)
