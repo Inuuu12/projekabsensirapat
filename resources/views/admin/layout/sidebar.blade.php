@@ -73,6 +73,12 @@
                 <span>Masukkan</span>
             </a>
 
+            <!-- Konten Publik -->
+            <a href="{{ route('admin.publik.index') }}" class="flex items-center px-4 py-3 rounded-xl transition-colors {{ request()->routeIs('admin.publik.*') ? 'bg-[#2b4f49] font-bold text-white shadow-sm' : 'hover:bg-[#2b4f49]/60 text-white/90' }}">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v8a2 2 0 01-2 2z"></path></svg>
+                <span>Konten Publik</span>
+            </a>
+
         </nav>
     </div>
 

@@ -56,13 +56,32 @@
                     <p class="text-xs text-gray-400 mt-0.5">Semua kolom wajib diisi</p>
                 </div>
 
-                <form action="#" method="POST" enctype="multipart/form-data" class="space-y-5">
+                @if (session('success'))
+                    <div class="rounded-2xl bg-ijo-sangatmuda px-4 py-3 text-xs font-bold text-ijo-tua">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="rounded-2xl bg-red-50 px-4 py-3 text-xs font-bold text-red-600">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+
+                <form action="{{ route('publik.aduan.kirim') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                     @csrf
+
+                    <!-- Nama Input -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-gray-700">Nama *</label>
+                        <input type="text" name="nama_pengadu" value="{{ old('nama_pengadu') }}" required placeholder="Nama lengkap"
+                               class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                    </div>
 
                     <!-- Email Input -->
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-gray-700">Email *</label>
-                        <input type="email" required placeholder="nama@email.com" 
+                        <input type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" 
                                class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
                         <p class="text-[10px] text-gray-400 flex items-center space-x-1 pt-0.5">
                             <span>🔒</span>
@@ -73,7 +92,7 @@
                     <!-- No HP Input -->
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-gray-700">No. HP *</label>
-                        <input type="text" required placeholder="08xx-xxxx-xxxx" 
+                        <input type="text" name="nomor_pengadu" value="{{ old('nomor_pengadu') }}" required placeholder="08xx-xxxx-xxxx" 
                                class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
                     </div>
 
@@ -97,8 +116,8 @@
                     <!-- Isi Masukan Textarea -->
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-gray-700">Isi Masukan *</label>
-                        <textarea rows="4" required placeholder="Jelaskan detail masalah yang Anda alami, contoh: ruang rapat bentrok jadwal, atau aplikasi SIAP Bogor gagal login sejak pagi ini..." 
-                                  class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl p-4 text-gray-800 placeholder-gray-400 focus:outline-none transition-all resize-none"></textarea>
+                        <textarea rows="4" name="isi_aduan" required placeholder="Jelaskan detail masalah yang Anda alami, contoh: ruang rapat bentrok jadwal, atau aplikasi SIAP Bogor gagal login sejak pagi ini..." 
+                                  class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl p-4 text-gray-800 placeholder-gray-400 focus:outline-none transition-all resize-none">{{ old('isi_aduan') }}</textarea>
                     </div>
 
                     <!-- Lampiran File Upload -->
@@ -112,7 +131,7 @@
                                 <p class="font-bold text-gray-800">Klik untuk unggah gambar</p>
                                 <p class="text-[10px] text-gray-400">PNG, JPG, atau WEBP - maks 5MB per gambar</p>
                             </div>
-                            <input type="file" accept="image/*" class="hidden">
+                            <input type="file" name="foto" accept="image/*" class="hidden">
                         </label>
                     </div>
 

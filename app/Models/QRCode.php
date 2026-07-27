@@ -9,9 +9,9 @@ class QRCode extends Model
 {
     use HasFactory;
 
-    protected $table = 'qrcodes';
+    protected $table = 'app_md_qrcode';
     protected $primaryKey = 'id_qrcode';
-    protected $fillable = ['id_agenda', 'qr_code_path'];
+    protected $fillable = ['id_agenda', 'qr_codepath'];
 
     public function agenda()
     {
@@ -22,7 +22,7 @@ class QRCode extends Model
     {
         return self::updateOrCreate(
             ['id_agenda' => $idAgenda],
-            ['qr_code_path' => "qrcodes/agenda-{$idAgenda}.png"]
+            ['qr_codepath' => route('publik.presensi.qr.hadir', ['agenda' => $idAgenda])]
         );
     }
 }

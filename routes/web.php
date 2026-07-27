@@ -10,14 +10,15 @@ use App\Http\Controllers\AdminKunjunganController;
 use App\Http\Controllers\AdminLaporanController;
 use App\Http\Controllers\AdminMasukkanController;
 use App\Http\Controllers\AdminPegawaiController;
+use App\Http\Controllers\AdminPublikController;
 use App\Http\Controllers\AdminRuangController;
 use App\Http\Controllers\AdminTamuController;
 use App\Http\Controllers\KehadiranController;
+use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\UserController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PublicPageController::class, 'index'])->name('publik.beranda');
+Route::redirect('/publik', '/');
 
 Route::redirect('/login', '/admin/login')->name('login');
 
@@ -55,6 +56,16 @@ Route::prefix('admin')->group(function () {
         Route::get('/tamu', [AdminTamuController::class, 'dataTamu'])->name('admin.tamu.lihat');
         Route::get('/umpanbalik', [AdminMasukkanController::class, 'umpanBalik'])->name('admin.umpanbalik');
         Route::get('/masukkan', [AdminMasukkanController::class, 'umpanBalik'])->name('admin.masukkan.lihat');
+        Route::get('/konten-publik', [AdminPublikController::class, 'index'])->name('admin.publik.index');
+        Route::post('/konten-publik/berita', [AdminPublikController::class, 'storeBerita'])->name('admin.publik.berita.store');
+        Route::put('/konten-publik/berita/{id}', [AdminPublikController::class, 'updateBerita'])->name('admin.publik.berita.update');
+        Route::delete('/konten-publik/berita/{id}', [AdminPublikController::class, 'destroyBerita'])->name('admin.publik.berita.destroy');
+        Route::post('/konten-publik/galeri', [AdminPublikController::class, 'storeGaleri'])->name('admin.publik.galeri.store');
+        Route::delete('/konten-publik/galeri/{id}', [AdminPublikController::class, 'destroyGaleri'])->name('admin.publik.galeri.destroy');
+        Route::post('/konten-publik/ulang-tahun', [AdminPublikController::class, 'storeUlangTahun'])->name('admin.publik.ulang-tahun.store');
+        Route::delete('/konten-publik/ulang-tahun/{id}', [AdminPublikController::class, 'destroyUlangTahun'])->name('admin.publik.ulang-tahun.destroy');
+        Route::post('/konten-publik/cuaca', [AdminPublikController::class, 'storeCuaca'])->name('admin.publik.cuaca.store');
+        Route::delete('/konten-publik/cuaca/{id}', [AdminPublikController::class, 'destroyCuaca'])->name('admin.publik.cuaca.destroy');
 
         // Filter agenda by kategori surat
         Route::get('/agenda/kategori/internal-to-internal', [AdminAgendaController::class, 'lihat_AgendaInternalToInternal']);
@@ -104,7 +115,7 @@ Route::post('/kehadiran/scan-qr', [KehadiranController::class, 'scan_QR']);
 Route::post('/kehadiran/verifikasi-fr', [KehadiranController::class, 'verifikasi_FaceRecognition']);
 
 // Fitur pengaduan masyarakat
-Route::post('/aduan/kirim', [UserController::class, 'kirimAduan']);
+Route::post('/aduan/kirim', [UserController::class, 'kirimAduan'])->name('publik.aduan.kirim');
 Route::get('/aduan/cek/{id}', [UserController::class, 'cekStatusAduan']);
 
 // Fitur cari jadwal agenda rapat publik
@@ -126,7 +137,7 @@ Route::prefix('user')->group(function () {
     Route::get('/aduan/status/{id}', [UserController::class, 'cekStatusAduan']);
 
     // Pendaftaran Kehadiran Tamu (Non-Pegawai)
-    Route::post('/tamu/hadir', [UserController::class, 'inputDataTamu']);
+    Route::post('/tamu/hadir', [UserController::class, 'inputDataTamu'])->name('publik.tamu.hadir');
 });
 
 // Sidebar
@@ -135,70 +146,42 @@ Route::get('/adminlayout', function () {
 });
 
 
-Route::get('/publik', function () {
-    return view('publik.index');
-})->name('publik.beranda');
+Route::get('/publik/agenda', [PublicPageController::class, 'agenda'])->name('publik.agenda');
 
-Route::get('/publik/agenda', function () {
-    return view('publik.agenda');
-})->name('publik.agenda');
+Route::get('/publik/agenda/detail/{id?}', [PublicPageController::class, 'agendaDetail'])->name('publik.agenda.detail');
 
-Route::get('/publik/agenda/detail', function () {
-    return view('publik.agenda-detail');
-});
+Route::get('/publik/agenda-detail/{id?}', [PublicPageController::class, 'agendaDetail'])->name('publik.agenda-detail');
 
-Route::get('/publik/agenda-detail', function () {
-    return view('publik.agenda-detail');
-})->name('publik.agenda-detail');
+Route::redirect('/publik/index-v2', '/')->name('publik.index-v2');
 
-Route::get('/publik/index-v2', function () {
-    return view('publik.index-v2');
-})->name('publik.index-v2');
+Route::get('/publik/berita', [PublicPageController::class, 'berita'])->name('publik.berita');
 
-Route::get('/publik/berita', function () {
-    return view('publik.berita');
-})->name('publik.berita');
+Route::get('/publik/berita/detail/{id?}', [PublicPageController::class, 'beritaDetail'])->name('publik.berita.detail');
 
-Route::get('/publik/berita/detail', function () {
-    return view('publik.berita-detail');
-});
+Route::get('/publik/masukan', [PublicPageController::class, 'masukan'])->name('publik.masukan');
 
-Route::get('/publik/masukan', function () {
-    return view('publik.masukan');
-})->name('publik.masukan');
+Route::get('/publik/riwayat-aduan', [PublicPageController::class, 'riwayatAduan'])->name('publik.riwayat-aduan');
 
 Route::redirect('/publik/feedback', '/publik/masukan');
 
-Route::get('/publik/ulang-tahun', function () {
-    return view('publik.ulang-tahun');
-})->name('publik.ulang-tahun');
+Route::get('/publik/cuaca/api', [PublicPageController::class, 'cuacaApi'])->name('publik.cuaca.api');
+
+Route::get('/publik/ulang-tahun', [PublicPageController::class, 'ulangTahun'])->name('publik.ulang-tahun');
 
 Route::redirect('/publik/ulangtahun', '/publik/ulang-tahun')->name('publik.ulangtahun');
 
-Route::get('/publik/galeri', function () {
-    return view('publik.galeri');
-})->name('publik.galeri');
+Route::get('/publik/galeri', [PublicPageController::class, 'galeri'])->name('publik.galeri');
 
-Route::get('/publik/video', function () {
-    return view('publik.video');
-})->name('publik.video');
+Route::get('/publik/video', [PublicPageController::class, 'video'])->name('publik.video');
 
-Route::get('/publik/index', function () {
-    return view('publik.index');
-})->name('publik.index');
+Route::get('/publik/index', [PublicPageController::class, 'index'])->name('publik.index');
 
-Route::get('/publik/berita-detail', function () {
-    return view('publik.berita-detail');
-})->name('publik.berita-detail');
+Route::get('/publik/berita-detail/{id?}', [PublicPageController::class, 'beritaDetail'])->name('publik.berita-detail');
 
-Route::get('/publik/presensi-pilih', function () {
-    return view('publik.presensi-pilih');
-})->name('publik.presensi-pilih');
+Route::get('/publik/presensi-pilih', [PublicPageController::class, 'presensiPilih'])->name('publik.presensi.pilih');
 
-Route::get('/publik/presensi-pegawai', function () {
-    return view('publik.presensi-pegawai');
-})->name('publik.presensi-pegawai');
+Route::get('/publik/presensi-pegawai', [PublicPageController::class, 'presensiPegawai'])->name('publik.presensi.pegawai');
 
-Route::get('/publik/presensi-tamu', function () {
-    return view('publik.presensi-tamu');
-})->name('publik.presensi-tamu');
+Route::get('/publik/presensi-tamu', [PublicPageController::class, 'presensiTamu'])->name('publik.presensi.tamu');
+
+Route::get('/publik/presensi/qr/{agenda}/hadir', [PublicPageController::class, 'qrHadir'])->name('publik.presensi.qr.hadir');

@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.py[cod]
+.cache/
+uploads/*
+!uploads/.gitignore
+embeddings/*.json
+embeddings/*.npz
+embeddings/*.tmp
+weights/*
+!weights/.gitkeep
+.env
+uvicorn-*.log

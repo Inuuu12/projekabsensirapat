@@ -64,16 +64,30 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'nama_pengadu' => 'required|string|max:255',
+            'nomor_pengadu' => 'required|string|max:30',
+            'email' => 'required|email|max:255',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'isi_aduan'    => 'required|string',
         ]);
 
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('aduan', 'public');
+        }
+
         $idAduan = DB::table('app_md_datamasukan')->insertGetId([
             'nama_pengadu' => $validated['nama_pengadu'],
+            'nomor_pengadu' => $validated['nomor_pengadu'],
+            'email' => $validated['email'],
+            'foto' => $validated['foto'] ?? 'aduan/default.jpg',
             'isi_aduan'    => $validated['isi_aduan'],
             'status'       => 'Pending',
             'created_at'   => now(),
             'updated_at'   => now(),
         ]);
+
+        if (! $request->wantsJson()) {
+            return back()->with('success', 'Aduan berhasil dikirim!');
+        }
 
         return response()->json([
             'success' => true,
@@ -111,6 +125,10 @@ class UserController extends Controller
             'created_at' => now(),
             'updated_at' => now()
         ]));
+
+        if (! $request->wantsJson()) {
+            return back()->with('success', 'Data kehadiran tamu berhasil disimpan!');
+        }
 
         return response()->json([
             'success' => true,

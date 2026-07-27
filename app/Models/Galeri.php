@@ -9,9 +9,14 @@ class Galeri extends Model
 {
     use HasFactory;
 
-    protected $table = 'galeri';
+    protected $table = 'app_md_galeri';
     protected $primaryKey = 'id_galeri';
-    protected $fillable = ['foto', 'keterangan'];
+    protected $fillable = ['tanggal', 'gambar'];
+
+    protected function casts(): array
+    {
+        return ['tanggal' => 'date'];
+    }
 
     public static function tampilFoto()
     {

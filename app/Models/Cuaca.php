@@ -9,9 +9,9 @@ class Cuaca extends Model
 {
     use HasFactory;
 
-    protected $table = 'cuaca';
+    protected $table = 'app_md_cuaca';
     protected $primaryKey = 'id_cuaca';
-    protected $fillable = ['lokasi', 'suhu', 'kondisi', 'kelembapan'];
+    protected $fillable = ['lokasi', 'isi_berita', 'suhu', 'kondisi', 'kelembapan'];
 
     public static function ambilCuaca()
     {

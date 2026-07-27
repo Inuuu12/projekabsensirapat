@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
+use App\Models\QRCode;
 use App\Models\RuangRapat;
 use App\Models\StatusAgenda;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ class AdminAgendaController extends Controller
             'lampiran' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
             'tanggal' => 'required|date',
             'waktu' => 'required',
+            'waktu_selesai' => 'nullable',
             'kuota' => 'nullable|integer|min:0',
             'lokasi' => 'required|string|max:255',
             'status_fr' => 'nullable|boolean',
@@ -36,6 +38,11 @@ class AdminAgendaController extends Controller
         $validated['status_qr'] = $validated['status_qr'] ?? 'nonaktif';
 
         $agenda = Agenda::create($validated);
+
+        if ($agenda->status_qr === 'aktif') {
+            QRCode::generateQR($agenda->id_agenda);
+        }
+
         if (! $request->wantsJson()) {
             return back()->with('success', 'Agenda berhasil ditambahkan.');
         }
@@ -148,8 +155,10 @@ class AdminAgendaController extends Controller
     public function generate_QR($id)
     {
         $agenda = Agenda::findOrFail($id);
+        $agenda->update(['status_qr' => 'aktif']);
+        $qrCode = QRCode::generateQR($agenda->id_agenda);
 
-        return response()->json(['message' => 'QR Code berhasil di-generate untuk ID: ' . $agenda->id_agenda]);
+        return back()->with('success', 'QR Code berhasil di-generate untuk agenda: ' . $agenda->nama_agenda);
     }
 
     public function update_Agenda($id, Request $request)
@@ -162,6 +171,7 @@ class AdminAgendaController extends Controller
             'lampiran' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
             'tanggal' => 'required|date',
             'waktu' => 'required',
+            'waktu_selesai' => 'nullable',
             'kuota' => 'nullable|integer|min:0',
             'lokasi' => 'required|string|max:255',
             'status_fr' => 'nullable|boolean',
@@ -177,7 +187,12 @@ class AdminAgendaController extends Controller
         $validated['status_fr'] = $request->boolean('status_fr');
         $validated['status_qr'] = $validated['status_qr'] ?? 'nonaktif';
 
-        Agenda::findOrFail($id)->update($validated);
+        $agenda = Agenda::findOrFail($id);
+        $agenda->update($validated);
+
+        if ($agenda->status_qr === 'aktif') {
+            QRCode::generateQR($agenda->id_agenda);
+        }
 
         return back()->with('success', 'Agenda berhasil diperbarui.');
     }

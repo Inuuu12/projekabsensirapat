@@ -93,7 +93,9 @@
                         <tr class="hover:bg-gray-50/80 transition">
                             <td class="px-6 py-4 font-bold text-[#35635b]">{{ $item->nama_agenda }}</td>
                             <td class="px-6 py-4 text-gray-700 whitespace-nowrap">{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
-                            <td class="px-6 py-4 text-gray-700 whitespace-nowrap">{{ $item->waktu }}</td>
+                            <td class="px-6 py-4 text-gray-700 whitespace-nowrap">
+                                {{ substr((string) $item->waktu, 0, 5) }}{{ $item->waktu_selesai ? ' - ' . substr((string) $item->waktu_selesai, 0, 5) : '' }}
+                            </td>
                             
                             @if ($kategoriSurat === 'masuk')
                                 <td class="px-6 py-4 text-gray-700 font-medium">{{ $item->ditugaskan ?: '-' }}</td>
@@ -137,6 +139,7 @@
                                         data-ditugaskan="{{ $item->ditugaskan }}"
                                         data-tanggal="{{ $item->tanggal }}"
                                         data-waktu="{{ $item->waktu }}"
+                                        data-waktuselesai="{{ $item->waktu_selesai }}"
                                         data-kuota="{{ $item->kuota }}"
                                         data-lokasi="{{ $item->lokasi }}"
                                         data-ruang="{{ $item->id_ruangrapat }}"
@@ -161,6 +164,12 @@
                                        class="w-8 h-8 rounded-lg bg-gray-50 p-1.5 hover:bg-gray-100 transition flex items-center justify-center cursor-pointer" 
                                        title="Lihat Detail Agenda">
                                         <img src="{{ asset('foto/Detaillogo.png') }}" alt="Detail Agenda" class="w-full h-full object-contain">
+                                    </a>
+
+                                    <a href="{{ url('/admin/agenda/' . $item->id_agenda . '/generate-qr') }}"
+                                       class="w-8 h-8 rounded-lg bg-emerald-50 text-[#35635b] hover:bg-emerald-100 transition flex items-center justify-center cursor-pointer text-[10px] font-black"
+                                       title="Generate QR Presensi">
+                                        QR
                                     </a>
                                 </div>
                             </td>
@@ -229,6 +238,7 @@
         if(document.getElementById('edit-ditugaskan')) document.getElementById('edit-ditugaskan').value = button.dataset.ditugaskan || '';
         if(document.getElementById('edit-tanggal')) document.getElementById('edit-tanggal').value = button.dataset.tanggal || '';
         if(document.getElementById('edit-waktu')) document.getElementById('edit-waktu').value = button.dataset.waktu || '';
+        if(document.getElementById('edit-waktu_selesai')) document.getElementById('edit-waktu_selesai').value = button.dataset.waktuselesai || '';
         if(document.getElementById('edit-kuota')) document.getElementById('edit-kuota').value = button.dataset.kuota || '';
         if(document.getElementById('edit-lokasi')) document.getElementById('edit-lokasi').value = button.dataset.lokasi || '';
         if(document.getElementById('edit-id_ruangrapat')) document.getElementById('edit-id_ruangrapat').value = button.dataset.ruang || '';

@@ -19,31 +19,6 @@
                 Beranda
             </a>
 
-            <a href="{{ route('publik.berita') }}" 
-               class="px-3 py-2 rounded-xl transition-all {{ request()->routeIs('publik.berita*') ? 'bg-white/15 text-white font-bold' : 'text-gray-200 hover:bg-white/10 hover:text-white' }}">
-                Berita
-            </a>
-
-            <a href="{{ route('publik.agenda') }}" 
-               class="px-3 py-2 rounded-xl transition-all {{ request()->routeIs('publik.agenda*') ? 'bg-white/15 text-white font-bold' : 'text-gray-200 hover:bg-white/10 hover:text-white' }}">
-                Agenda
-            </a>
-
-            <a href="{{ route('publik.galeri') }}" 
-               class="px-3 py-2 rounded-xl transition-all {{ request()->routeIs('publik.galeri') ? 'bg-white/15 text-white font-bold' : 'text-gray-200 hover:bg-white/10 hover:text-white' }}">
-                Galeri
-            </a>
-
-            <a href="{{ route('publik.video') }}" 
-               class="px-3 py-2 rounded-xl transition-all {{ request()->routeIs('publik.video') ? 'bg-white/15 text-white font-bold' : 'text-gray-200 hover:bg-white/10 hover:text-white' }}">
-                Video
-            </a>
-
-            <a href="{{ route('publik.ulangtahun') }}" 
-               class="px-3 py-2 rounded-xl transition-all {{ request()->routeIs('publik.ulangtahun') ? 'bg-white/15 text-white font-bold' : 'text-gray-200 hover:bg-white/10 hover:text-white' }}">
-                Ulang Tahun
-            </a>
-
             <a href="{{ route('publik.masukan') }}" 
                class="ml-2 px-4 py-2 bg-oren-utama hover:bg-oren-tua text-white font-bold rounded-xl shadow-sm transition-colors">
                 Masukan

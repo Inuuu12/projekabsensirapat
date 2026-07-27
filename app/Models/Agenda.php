@@ -20,6 +20,7 @@ class Agenda extends Model
         'lampiran',
         'tanggal',
         'waktu',
+        'waktu_selesai',
         'kuota',
         'lokasi',
         'status_fr',
@@ -27,4 +28,17 @@ class Agenda extends Model
         'id_ruangrapat',
         'id_statusagenda',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'tanggal' => 'date',
+            'status_fr' => 'boolean',
+        ];
+    }
+
+    public function statusAgenda()
+    {
+        return $this->belongsTo(StatusAgenda::class, 'id_statusagenda', 'id_statusagenda');
+    }
 }

@@ -1,88 +1,52 @@
-from pathlib import Path
+import logging
 
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse
 
-from app.services.face_recognition import enroll_face, recognize_face
-from app.services.liveness import check_liveness
+from app.api import delete, health, register, verify
+from app.config import get_settings
+from app.exceptions import FaceServiceError
+from app.logging_config import configure_logging
 
 
-app = FastAPI(title="Face Service")
-BASE_DIR = Path(__file__).resolve().parent
-CAMERA_PAGE = BASE_DIR / "static" / "camera.html"
+settings = get_settings()
+configure_logging(settings.log_level)
+logger = logging.getLogger(__name__)
+
+app = FastAPI(
+    title=settings.app_name,
+    version="1.0.0",
+    docs_url="/docs" if settings.docs_enabled else None,
+    redoc_url="/redoc" if settings.docs_enabled else None,
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.cors_origins,
     allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
-
-@app.get("/")
-def index():
-    return {
-        "status": "ok",
-        "service": "face-service",
-        "type": "api",
-        "docs": "/docs",
-        "health": "/health",
-        "camera_test": "/camera",
-    }
+app.include_router(health.router)
+app.include_router(register.router)
+app.include_router(verify.router)
+app.include_router(delete.router)
 
 
-@app.get("/camera")
-def camera():
-    return FileResponse(CAMERA_PAGE)
+@app.exception_handler(FaceServiceError)
+async def face_service_error_handler(_, exc: FaceServiceError) -> JSONResponse:
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"success": False, "message": exc.message},
+    )
 
 
-@app.get("/health")
-def health_check():
-    return {
-        "status": "ok",
-        "service": "face-service",
-    }
-
-
-@app.post("/enroll")
-async def enroll(user_id: str = Form(...), image: UploadFile = File(...)):
-    image_bytes = await image.read()
-
-    liveness_result = check_liveness(image_bytes)
-    if not liveness_result["is_live"]:
-        return {
-            "success": False,
-            "reason": "liveness_failed",
-            "liveness": liveness_result,
-        }
-
-    enrollment_result = enroll_face(user_id=user_id, image_bytes=image_bytes)
-
-    return {
-        "success": enrollment_result["enrolled"],
-        "liveness": liveness_result,
-        "enrollment": enrollment_result,
-    }
-
-
-@app.post("/recognize")
-async def recognize(image: UploadFile = File(...), threshold: float = Form(0.35)):
-    image_bytes = await image.read()
-
-    liveness_result = check_liveness(image_bytes)
-    if not liveness_result["is_live"]:
-        return {
-            "success": False,
-            "reason": "liveness_failed",
-            "liveness": liveness_result,
-        }
-
-    recognition_result = recognize_face(image_bytes, threshold=threshold)
-
-    return {
-        "success": recognition_result["matched"],
-        "liveness": liveness_result,
-        "recognition": recognition_result,
-    }
+@app.exception_handler(Exception)
+async def unhandled_error_handler(_, exc: Exception) -> JSONResponse:
+    logger.exception("Unhandled face-service error: %s", exc)
+    return JSONResponse(
+        status_code=500,
+        content={"success": False, "message": "Internal service error."},
+    )

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Semua Berita - Diskominfo Kabupaten Bogor</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -25,16 +24,35 @@
     </script>
 </head>
 <body class="bg-[#F8F7F4] font-sans antialiased text-gray-800 flex flex-col min-h-screen">
-
-    <!-- Memanggil Navbar Publik -->
-    @include('publik.layout_publik.navbarpublik') 
+    @include('publik.layout_publik.navbarpublik')
 
     <main class="flex-grow container mx-auto px-6 lg:px-12 py-8 space-y-8 max-w-7xl">
+        @php
+            $beritaItems = ($berita ?? null) instanceof \Illuminate\Contracts\Pagination\Paginator
+                ? $berita->getCollection()
+                : collect($berita ?? []);
+            $imageUrl = function ($path) {
+                if (! $path) {
+                    return asset('foto/Suratlogo.png');
+                }
 
-        <!-- Breadcrumb & Header Section -->
+                if (filter_var($path, FILTER_VALIDATE_URL)) {
+                    return $path;
+                }
+
+                $path = ltrim($path, '/');
+
+                if (str_starts_with($path, 'foto/') || str_starts_with($path, 'uploads/')) {
+                    return asset($path);
+                }
+
+                return asset('storage/' . $path);
+            };
+        @endphp
+
         <div class="space-y-4">
             <nav class="text-xs text-gray-500 flex items-center space-x-2">
-                <a href="/publik" class="hover:underline">Beranda</a>
+                <a href="{{ route('publik.beranda') }}" class="hover:underline">Beranda</a>
                 <span>/</span>
                 <span class="text-gray-800 font-semibold">Berita</span>
             </nav>
@@ -42,202 +60,55 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Semua Berita</h1>
-                    <p class="text-xs text-gray-500 mt-1">Kabar terbaru seputar Diskominfo Kabupaten Bogor</p>
+                    <p class="text-xs text-gray-500 mt-1">Kabar terbaru seputar Diskominfo Kabupaten Bogor dari database</p>
                 </div>
 
-                <!-- Dropdown / Filter Kategori & Urutan -->
-                <div class="flex items-center space-x-3">
-                    <button class="bg-ijo-tua text-white text-xs font-semibold px-4 py-2 rounded-full flex items-center space-x-2 shadow-sm">
-                        <span>Semua Kategori</span>
-                    </button>
-                    <button class="bg-white border border-gray-200 text-gray-700 text-xs font-semibold px-4 py-2 rounded-full flex items-center space-x-2 shadow-sm hover:bg-gray-50">
-                        <span>Terbaru</span>
-                        <span class="text-[10px]">↓</span>
-                    </button>
-                </div>
+                <form method="GET" action="{{ route('publik.berita') }}" class="relative w-full md:w-72">
+                    <input type="text" name="keyword" value="{{ $keyword ?? '' }}" placeholder="Cari berita atau sumber" class="w-full bg-gray-200/70 border-none rounded-full py-2 pl-4 pr-20 text-xs focus:ring-2 focus:ring-ijo-tua focus:outline-none">
+                    <button type="submit" class="absolute right-1 top-1 bg-ijo-tua text-white text-xs font-bold px-4 py-1.5 rounded-full">Cari</button>
+                </form>
             </div>
         </div>
 
-        <!-- GRID BERITA (3 Kolom) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            <!-- Card Berita 1 -->
-            <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                    <!-- Banner Placeholder dengan Badge Kategori -->
-                    <div class="h-48 bg-[#6A9C95] relative p-4">
-                        <span class="bg-white text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
-                            Kegiatan
-                        </span>
+            @forelse ($beritaItems as $item)
+                <article class="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                    <div>
+                        <div class="h-48 bg-[#6A9C95] relative p-4 bg-cover bg-center" style="background-image: url('{{ $imageUrl($item->gambar) }}')">
+                            <span class="bg-white text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">Berita</span>
+                        </div>
+                        <div class="p-6 space-y-2">
+                            <p class="text-xs text-gray-400 font-mono">{{ $item->tanggal?->translatedFormat('d F Y') ?? '-' }}</p>
+                            <h3 class="font-bold text-base text-gray-900 leading-snug hover:text-ijo-semitua transition-colors">
+                                <a href="{{ route('publik.berita.detail', $item->id_berita) }}">{{ $item->judul }}</a>
+                            </h3>
+                            <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">
+                                {{ \Illuminate\Support\Str::limit(strip_tags($item->isi_berita), 110) }}
+                            </p>
+                        </div>
                     </div>
-                    <!-- Konten Berita -->
-                    <div class="p-6 space-y-2">
-                        <p class="text-xs text-gray-400 font-mono">12 Juli 2026</p>
-                        <h3 class="font-bold text-base text-gray-900 leading-snug hover:text-ijo-semitua transition-colors">
-                            <a href="/publik/berita/detail">Kepala Diskominfo Dampingi Kampanye Iklim di Car Free Day</a>
-                        </h3>
-                        <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                            Mengedukasi warga tentang dampak perubahan cuaca ekstrem di Bogor...
-                        </p>
+                    <div class="px-6 pb-6 pt-2">
+                        <a href="{{ route('publik.berita.detail', $item->id_berita) }}" class="text-xs font-bold text-ijo-tua hover:text-ijo-semitua inline-flex items-center space-x-1">
+                            <span>Baca Selengkapnya</span>
+                            <span>&rarr;</span>
+                        </a>
                     </div>
+                </article>
+            @empty
+                <div class="lg:col-span-3 md:col-span-2 bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center">
+                    <h3 class="font-bold text-gray-900">Belum ada berita di database</h3>
+                    <p class="text-xs text-gray-500 mt-2">Data berita akan tampil di sini setelah admin menambahkan berita.</p>
                 </div>
-                <div class="px-6 pb-6 pt-2">
-                    <a href="/publik/berita/detail" class="text-xs font-bold text-ijo-tua hover:text-ijo-semitua inline-flex items-center space-x-1">
-                        <span>Baca Selengkapnya</span>
-                        <span>&rarr;</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Card Berita 2 -->
-            <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                    <div class="h-48 bg-[#3B7A75] relative p-4">
-                        <span class="bg-white text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
-                            Layanan Publik
-                        </span>
-                    </div>
-                    <div class="p-6 space-y-2">
-                        <p class="text-xs text-gray-400 font-mono">10 Juli 2026</p>
-                        <h3 class="font-bold text-base text-gray-900 leading-snug hover:text-ijo-semitua transition-colors">
-                            <a href="/publik/berita/detail">Diskominfo Luncurkan Layanan Pengaduan Online Terintegrasi</a>
-                        </h3>
-                        <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                            Warga bisa melapor keluhan tanpa perlu datang langsung ke kantor...
-                        </p>
-                    </div>
-                </div>
-                <div class="px-6 pb-6 pt-2">
-                    <a href="/publik/berita/detail" class="text-xs font-bold text-ijo-tua hover:text-ijo-semitua inline-flex items-center space-x-1">
-                        <span>Baca Selengkapnya</span>
-                        <span>&rarr;</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Card Berita 3 -->
-            <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                    <div class="h-48 bg-[#1A3A37] relative p-4">
-                        <span class="bg-white text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
-                            Sumber Daya
-                        </span>
-                    </div>
-                    <div class="p-6 space-y-2">
-                        <p class="text-xs text-gray-400 font-mono">8 Juli 2026</p>
-                        <h3 class="font-bold text-base text-gray-900 leading-snug hover:text-ijo-semitua transition-colors">
-                            <a href="/publik/berita/detail">Pelatihan Jurnalistik Digital Dibuka untuk 60 ASN Bogor</a>
-                        </h3>
-                        <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                            Membekali aparatur dengan skill komunikasi publik di era digital...
-                        </p>
-                    </div>
-                </div>
-                <div class="px-6 pb-6 pt-2">
-                    <a href="/publik/berita/detail" class="text-xs font-bold text-ijo-tua hover:text-ijo-semitua inline-flex items-center space-x-1">
-                        <span>Baca Selengkapnya</span>
-                        <span>&rarr;</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Card Berita 4 -->
-            <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                    <div class="h-48 bg-[#D29D47] relative p-4">
-                        <span class="bg-white text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
-                            Teknologi
-                        </span>
-                    </div>
-                    <div class="p-6 space-y-2">
-                        <p class="text-xs text-gray-400 font-mono">6 Juli 2026</p>
-                        <h3 class="font-bold text-base text-gray-900 leading-snug hover:text-ijo-semitua transition-colors">
-                            <a href="/publik/berita/detail">Aplikasi SIAP Bogor Resmi Diluncurkan untuk Warga</a>
-                        </h3>
-                        <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                            Satu aplikasi untuk akses seluruh layanan administrasi Kabupaten Bogor...
-                        </p>
-                    </div>
-                </div>
-                <div class="px-6 pb-6 pt-2">
-                    <a href="/publik/berita/detail" class="text-xs font-bold text-ijo-tua hover:text-ijo-semitua inline-flex items-center space-x-1">
-                        <span>Baca Selengkapnya</span>
-                        <span>&rarr;</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Card Berita 5 -->
-            <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                    <div class="h-48 bg-[#6A9C95] relative p-4">
-                        <span class="bg-white text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
-                            Pemerintahan
-                        </span>
-                    </div>
-                    <div class="p-6 space-y-2">
-                        <p class="text-xs text-gray-400 font-mono">4 Juli 2026</p>
-                        <h3 class="font-bold text-base text-gray-900 leading-snug hover:text-ijo-semitua transition-colors">
-                            <a href="/publik/berita/detail">Rakor Smart City Bahas Integrasi Data Antar Dinas</a>
-                        </h3>
-                        <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                            Delapan OPD sepakat menyatukan basis data layanan publik tahun ini...
-                        </p>
-                    </div>
-                </div>
-                <div class="px-6 pb-6 pt-2">
-                    <a href="/publik/berita/detail" class="text-xs font-bold text-ijo-tua hover:text-ijo-semitua inline-flex items-center space-x-1">
-                        <span>Baca Selengkapnya</span>
-                        <span>&rarr;</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Card Berita 6 -->
-            <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div>
-                    <div class="h-48 bg-[#3B7A75] relative p-4">
-                        <span class="bg-white text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
-                            Sumber Daya
-                        </span>
-                    </div>
-                    <div class="p-6 space-y-2">
-                        <p class="text-xs text-gray-400 font-mono">2 Juli 2026</p>
-                        <h3 class="font-bold text-base text-gray-900 leading-snug hover:text-ijo-semitua transition-colors">
-                            <a href="/publik/berita/detail">Bimtek Medsos untuk 75 Perangkat Desa se-Bogor</a>
-                        </h3>
-                        <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                            Mendorong desa lebih aktif mempublikasikan program kerjanya...
-                        </p>
-                    </div>
-                </div>
-                <div class="px-6 pb-6 pt-2">
-                    <a href="/publik/berita/detail" class="text-xs font-bold text-ijo-tua hover:text-ijo-semitua inline-flex items-center space-x-1">
-                        <span>Baca Selengkapnya</span>
-                        <span>&rarr;</span>
-                    </a>
-                </div>
-            </div>
-
+            @endforelse
         </div>
 
-        <!-- PAGINATION SECTION -->
-        <div class="flex items-center justify-center space-x-2 pt-6">
-            <button class="w-8 h-8 rounded-full bg-ijo-tua text-white font-bold text-xs flex items-center justify-center shadow-sm">
-                1
-            </button>
-            <button class="w-8 h-8 rounded-full bg-gray-200/80 hover:bg-gray-300 text-gray-700 text-xs flex items-center justify-center transition-colors">
-                2
-            </button>
-            <button class="w-8 h-8 rounded-full bg-gray-200/80 hover:bg-gray-300 text-gray-700 text-xs flex items-center justify-center transition-colors">
-                3
-            </button>
-        </div>
-
+        @if (($berita ?? null) instanceof \Illuminate\Contracts\Pagination\Paginator)
+            <div class="pt-6">
+                {{ $berita->links() }}
+            </div>
+        @endif
     </main>
 
-    <!-- Memanggil Footer Publik -->
-    @include('publik.layout_publik.footer') 
-
+    @include('publik.layout_publik.footer')
 </body>
 </html>

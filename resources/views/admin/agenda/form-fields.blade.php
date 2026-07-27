@@ -21,14 +21,18 @@
     <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Ditugaskan</label>
     <input id="{{ $prefix }}ditugaskan" name="ditugaskan" type="text" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none" placeholder="Diisi terutama untuk Surat Masuk">
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
     <div>
         <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Tanggal</label>
         <input id="{{ $prefix }}tanggal" name="tanggal" type="date" required class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
     </div>
     <div>
-        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Waktu</label>
+        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Waktu Mulai</label>
         <input id="{{ $prefix }}waktu" name="waktu" type="time" required class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
+    </div>
+    <div>
+        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Waktu Selesai</label>
+        <input id="{{ $prefix }}waktu_selesai" name="waktu_selesai" type="time" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
     </div>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -42,6 +46,7 @@
             <option value="nonaktif">Nonaktif</option>
             <option value="aktif">Aktif</option>
         </select>
+        <p class="mt-1 text-[10px] text-gray-500">Pilih Aktif untuk otomatis membuat QR presensi.</p>
     </div>
 </div>
 <div>

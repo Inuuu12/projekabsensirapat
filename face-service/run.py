@@ -25,6 +25,7 @@ def configure_environment() -> None:
     (BASE_DIR / ".cache" / "torch").mkdir(parents=True, exist_ok=True)
     (BASE_DIR / ".cache" / "matplotlib").mkdir(parents=True, exist_ok=True)
     (BASE_DIR / "embeddings").mkdir(parents=True, exist_ok=True)
+    (BASE_DIR / "uploads").mkdir(parents=True, exist_ok=True)
 
     os.environ.setdefault("TORCH_HOME", str(BASE_DIR / ".cache" / "torch"))
     os.environ.setdefault("MPLCONFIGDIR", str(BASE_DIR / ".cache" / "matplotlib"))
@@ -32,8 +33,8 @@ def configure_environment() -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the face-service API.")
-    parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", type=int, default=8001)
+    parser.add_argument("--host", default=None)
+    parser.add_argument("--port", type=int, default=None)
     parser.add_argument("--no-reload", action="store_true", help="Disable auto reload.")
     return parser.parse_args()
 
@@ -48,6 +49,7 @@ def main() -> int:
 
     try:
         import uvicorn
+        from app.config import get_settings
     except ModuleNotFoundError:
         print("Dependency belum terinstall.")
         print("Jalankan dari folder face-service:")
@@ -55,16 +57,21 @@ def main() -> int:
         print("  .\\venv\\Scripts\\python.exe -m pip install -r requirements.txt")
         return 1
 
-    url = f"http://{args.host}:{args.port}"
+    settings = get_settings()
+    host = args.host or settings.app_host
+    port = args.port or settings.app_port
+    reload_enabled = settings.app_reload and not args.no_reload
+
+    url = f"http://{host}:{port}"
     print(f"Face Service jalan di {url}")
-    print(f"Buka kamera: {url}/camera")
+    print(f"Dokumentasi API: {url}/docs")
     print("Stop server: Ctrl+C")
 
     uvicorn.run(
         "app.main:app",
-        host=args.host,
-        port=args.port,
-        reload=not args.no_reload,
+        host=host,
+        port=port,
+        reload=reload_enabled,
     )
     return 0
 

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeri Foto Kegiatan - Diskominfo Kabupaten Bogor</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -16,8 +15,6 @@
                         'ijo-muda': '#5FA79C',
                         'ijo-sangatmuda': '#DCF1E6',
                         'oren-utama': '#D89B3C',
-                        'oren-muda': '#FBEBD1',
-                        'oren-tua': '#B87A1E',
                     }
                 }
             }
@@ -25,137 +22,67 @@
     </script>
 </head>
 <body class="bg-[#F8F7F4] font-sans antialiased text-gray-800 flex flex-col min-h-screen">
-
-    <!-- Memanggil Navbar Publik -->
-     @include('publik.layout_publik.navbarpublik') 
+    @include('publik.layout_publik.navbarpublik')
 
     <main class="flex-grow container mx-auto px-4 md:px-12 py-8 space-y-8 max-w-7xl">
+        @php
+            $galeriItems = collect($galeri ?? []);
+            $imageUrl = function ($path) {
+                if (! $path) {
+                    return asset('foto/Agendahariini.png');
+                }
 
-        <!-- Breadcrumb & Header Section -->
+                if (filter_var($path, FILTER_VALIDATE_URL)) {
+                    return $path;
+                }
+
+                $path = ltrim($path, '/');
+
+                if (str_starts_with($path, 'foto/') || str_starts_with($path, 'uploads/')) {
+                    return asset($path);
+                }
+
+                return asset('storage/' . $path);
+            };
+        @endphp
+
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div class="space-y-3">
                 <nav class="text-xs text-gray-500 flex items-center space-x-2">
-                    <a href="/publik" class="hover:underline">Beranda</a>
+                    <a href="{{ route('publik.beranda') }}" class="hover:underline">Beranda</a>
                     <span>/</span>
                     <span class="text-gray-800 font-semibold">Galeri</span>
                 </nav>
 
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Galeri Foto Kegiatan</h1>
-                    <p class="text-xs text-gray-500 mt-1">Dokumentasi visual seluruh kegiatan Diskominfo Kabupaten Bogor</p>
+                    <p class="text-xs text-gray-500 mt-1">Dokumentasi visual kegiatan Diskominfo Kabupaten Bogor dari database</p>
                 </div>
             </div>
 
-            <!-- Badge Summary Total Foto -->
             <div class="bg-ijo-tua text-white text-xs font-bold px-4 py-2 rounded-full self-start md:self-auto shadow-sm">
-                32 Foto &bull; 6 Album
+                {{ $galeriItems->count() }} Foto
             </div>
         </div>
 
-        <!-- MASONRY / ASYMMETRIC GRID GALERI -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
-
-            <!-- KOLOM 1 -->
-            <div class="space-y-4">
-                <!-- Foto 1 (Ijo Muda - Tinggi) -->
-                <div class="relative bg-ijo-muda rounded-3xl p-4 min-h-[260px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Kegiatan
-                    </span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            @forelse ($galeriItems as $foto)
+                <article class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+                    <div class="aspect-[4/3] bg-ijo-sangatmuda bg-cover bg-center" style="background-image: url('{{ $imageUrl($foto->gambar) }}')"></div>
+                    <div class="p-4 flex items-center justify-between">
+                        <span class="text-xs font-bold text-gray-900">Dokumentasi Kegiatan</span>
+                        <span class="text-[11px] text-gray-400 font-mono">{{ $foto->tanggal?->translatedFormat('d M Y') ?? '-' }}</span>
+                    </div>
+                </article>
+            @empty
+                <div class="lg:col-span-3 sm:col-span-2 bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center">
+                    <h3 class="font-bold text-gray-900">Belum ada foto di database</h3>
+                    <p class="text-xs text-gray-500 mt-2">Galeri akan tampil setelah admin menambahkan dokumentasi.</p>
                 </div>
-
-                <!-- Foto 2 (Ijo Semitua - Pendek) -->
-                <div class="relative bg-ijo-semitua rounded-3xl p-4 min-h-[160px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Rapat
-                    </span>
-                </div>
-
-                <!-- Foto 3 (Ijo Tua - Sedang) -->
-                <div class="relative bg-ijo-tua rounded-3xl p-4 min-h-[200px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Pelatihan
-                    </span>
-                </div>
-            </div>
-
-            <!-- KOLOM 2 -->
-            <div class="space-y-4">
-                <!-- Foto 4 (Oren Utama - Sedang) -->
-                <div class="relative bg-oren-utama rounded-3xl p-4 min-h-[190px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Kegiatan
-                    </span>
-                </div>
-
-                <!-- Foto 5 (Ijo Muda - Tinggi) -->
-                <div class="relative bg-ijo-muda rounded-3xl p-4 min-h-[250px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Sosialisasi
-                    </span>
-                </div>
-
-                <!-- Foto 6 (Ijo Semitua - Pendek) -->
-                <div class="relative bg-ijo-semitua rounded-3xl p-4 min-h-[170px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Rapat
-                    </span>
-                </div>
-            </div>
-
-            <!-- KOLOM 3 -->
-            <div class="space-y-4">
-                <!-- Foto 7 (Ijo Tua - Tinggi) -->
-                <div class="relative bg-ijo-tua rounded-3xl p-4 min-h-[230px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Pelatihan
-                    </span>
-                </div>
-
-                <!-- Foto 8 (Oren Utama - Sedang) -->
-                <div class="relative bg-oren-utama rounded-3xl p-4 min-h-[200px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Kegiatan
-                    </span>
-                </div>
-
-                <!-- Foto 9 (Ijo Muda - Tinggi) -->
-                <div class="relative bg-ijo-muda rounded-3xl p-4 min-h-[240px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Sosialisasi
-                    </span>
-                </div>
-            </div>
-
-            <!-- KOLOM 4 -->
-            <div class="space-y-4">
-                <!-- Foto 10 (Ijo Semitua - Tinggi) -->
-                <div class="relative bg-ijo-semitua rounded-3xl p-4 min-h-[270px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Rapat
-                    </span>
-                </div>
-
-                <!-- Foto 11 (Ijo Tua - Sedang) -->
-                <div class="relative bg-ijo-tua rounded-3xl p-4 min-h-[180px] shadow-sm overflow-hidden group cursor-pointer transition-transform hover:scale-[1.01]">
-                    <span class="bg-white/80 backdrop-blur-md text-gray-900 text-[10px] font-bold px-3 py-1 rounded-full inline-block">
-                        Pelatihan
-                    </span>
-                </div>
-
-                <!-- Card Spesial "+20 Foto Lainnya" -->
-                <div class="relative bg-[#0F3A37] text-white rounded-3xl p-6 min-h-[210px] shadow-md flex items-center justify-center text-center cursor-pointer transition-transform hover:scale-[1.01]">
-                    <h3 class="text-lg md:text-xl font-extrabold tracking-wide">
-                        +20 Foto Lainnya
-                    </h3>
-                </div>
-            </div>
-
+            @endforelse
         </div>
-
     </main>
 
-  
-@include('publik.layout_publik.footer')
+    @include('publik.layout_publik.footer')
 </body>
 </html>

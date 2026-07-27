@@ -9,9 +9,9 @@ class Berita extends Model
 {
     use HasFactory;
 
-    protected $table = 'berita';
+    protected $table = 'app_md_berita';
     protected $primaryKey = 'id_berita';
-    protected $fillable = ['judul', 'isiBerita', 'tanggal', 'gambar', 'sumber'];
+    protected $fillable = ['judul', 'isi_berita', 'tanggal', 'gambar', 'sumber'];
 
     protected function casts(): array
     {
@@ -26,7 +26,7 @@ class Berita extends Model
     public static function cariBerita(string $keyword)
     {
         return self::where('judul', 'like', "%{$keyword}%")
-            ->orWhere('isiBerita', 'like', "%{$keyword}%")
+            ->orWhere('isi_berita', 'like', "%{$keyword}%")
             ->latest('tanggal')
             ->get();
     }
