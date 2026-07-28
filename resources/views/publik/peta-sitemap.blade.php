@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peta Situs (Sitemap) - Diskominfo Kab. Bogor</title>
+    <title>Peta Situs (Sitemap) - SIRAPI</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -29,12 +29,12 @@
     <!-- Navbar Publik -->
     @include('publik.layout_publik.navbarpublik')
 
-    <main class="flex-grow container mx-auto px-4 md:px-12 max-w-7xl py-10 space-y-8">
+    <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-10 space-y-8">
         
         <!-- Header Page -->
         <div class="bg-white border border-gray-200/80 rounded-3xl p-6 md:p-8 shadow-sm">
             <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Peta Situs (Sitemap)</h1>
-            <p class="text-xs md:text-sm text-gray-500 mt-1">Daftar struktur halaman dan layanan yang tersedia di website Resmi Diskominfo Kabupaten Bogor.</p>
+            <p class="text-xs md:text-sm text-gray-500 mt-1">Daftar struktur halaman dan layanan yang tersedia di website resmi SIRAPI.</p>
         </div>
 
         <!-- Grid Sitemap / Daftar Isi Website -->

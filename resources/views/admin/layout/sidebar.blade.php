@@ -1,3 +1,9 @@
+@php
+    $appName = config('sirapi.name', 'SIRAPI');
+    $organizationName = config('sirapi.organization', 'Dinas Komunikasi & Informatika');
+    $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
+@endphp
+
 <!-- Mobile Overlay Backdrop -->
 <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity"></div>
 
@@ -9,8 +15,9 @@
         <div class="p-5 flex items-center space-x-3 border-b border-[#2a504a]">
             <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo" class="w-10 h-auto object-contain">
             <div>
-                <h1 class="font-black text-lg leading-tight tracking-wide">Diskominfo</h1>
-                <p class="text-[10px] tracking-wider opacity-80 uppercase">Pemerintah Kabupaten Bogor</p>
+                <h1 class="font-black text-lg leading-tight tracking-wide">{{ $appName }}</h1>
+                
+                <p class="text-[10px] tracking-wider opacity-70 uppercase">{{ $regionName }}</p>
             </div>
             <!-- Mobile Close Button -->
             <button onclick="toggleSidebar()" class="md:hidden ml-auto text-white focus:outline-none">

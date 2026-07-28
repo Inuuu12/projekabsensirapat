@@ -69,14 +69,18 @@
                                         data-bidang="{{ $item->bidang }}"
                                         data-nomor="{{ $item->nomor_hp }}"
                                         data-email="{{ $item->email }}"
-                                        class="rounded-lg bg-green-50 px-3 py-1.5 text-xs font-bold text-green-700 hover:bg-green-100">
-                                        Edit
+                                        class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                                        title="Edit Pegawai">
+                                        <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                        <span class="sr-only">Edit</span>
                                     </button>
                                     <button
                                         type="button"
                                         onclick="openDeleteModal('{{ route('admin.pegawai.destroy', $item->id_pegawai) }}', 'Hapus Pegawai?', 'Apakah Anda yakin ingin menghapus pegawai ini?')"
-                                        class="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-100">
-                                        Hapus
+                                        class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100"
+                                        title="Hapus Pegawai">
+                                        <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                        <span class="sr-only">Hapus</span>
                                     </button>
                                 </div>
                             </td>

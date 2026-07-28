@@ -60,7 +60,10 @@
                         <p class="mt-1 truncate text-xs font-semibold text-[#35635b]">{{ $notulen->nama_file }}</p>
                         <div class="mt-4 flex flex-wrap gap-2">
                             <a href="{{ asset('storage/' . $notulen->file_path) }}" target="_blank" class="rounded-lg bg-[#35635b] px-3 py-2 text-xs font-bold text-white hover:bg-[#2b4f49]">Lihat</a>
-                            <button type="button" onclick="openDeleteModal('{{ route('admin.agenda.dokumen.destroy', [$agenda->id_agenda, $notulen->id_dokumen]) }}', 'Hapus Notulen?', 'Apakah Anda yakin ingin menghapus notulen agenda ini?')" class="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-100">Hapus</button>
+                            <button type="button" onclick="openDeleteModal('{{ route('admin.agenda.dokumen.destroy', [$agenda->id_agenda, $notulen->id_dokumen]) }}', 'Hapus Notulen?', 'Apakah Anda yakin ingin menghapus notulen agenda ini?')" class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Notulen">
+                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                <span class="sr-only">Hapus</span>
+                            </button>
                         </div>
                     @else
                         <p class="text-xs text-gray-400 mt-1">Belum ada dokumen.</p>
@@ -81,7 +84,10 @@
                         <p class="mt-1 truncate text-xs font-semibold text-[#35635b]">{{ $dokumentasi->nama_file }}</p>
                         <div class="mt-4 flex flex-wrap gap-2">
                             <a href="{{ asset('storage/' . $dokumentasi->file_path) }}" target="_blank" class="rounded-lg bg-[#35635b] px-3 py-2 text-xs font-bold text-white hover:bg-[#2b4f49]">Lihat</a>
-                            <button type="button" onclick="openDeleteModal('{{ route('admin.agenda.dokumen.destroy', [$agenda->id_agenda, $dokumentasi->id_dokumen]) }}', 'Hapus Dokumentasi?', 'Apakah Anda yakin ingin menghapus dokumentasi agenda ini?')" class="rounded-lg bg-red-50 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-100">Hapus</button>
+                            <button type="button" onclick="openDeleteModal('{{ route('admin.agenda.dokumen.destroy', [$agenda->id_agenda, $dokumentasi->id_dokumen]) }}', 'Hapus Dokumentasi?', 'Apakah Anda yakin ingin menghapus dokumentasi agenda ini?')" class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Dokumentasi">
+                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                <span class="sr-only">Hapus</span>
+                            </button>
                         </div>
                     @else
                         <p class="text-xs text-gray-400 mt-1">Belum ada dokumentasi.</p>

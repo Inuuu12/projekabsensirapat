@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>e-Agenda - Login</title>
+    <title>Login Admin - SIRAPI</title>
     
     <!-- Font & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,6 +35,11 @@
 </head>
 <body class="font-sans antialiased bg-gray-100 min-h-screen flex items-center justify-center">
 
+    @php
+        $organizationName = config('sirapi.organization', 'Dinas Komunikasi & Informatika');
+        $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
+    @endphp
+
     <div class="flex flex-col md:flex-row w-full h-screen bg-white overflow-hidden">
         
         <!-- BAGIAN KIRI: Branding & Informasi -->
@@ -51,10 +56,14 @@
                          class="h-36 w-auto drop-shadow-md">
                 </div>
                 
-                <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">e-Agenda</h1>
-                <p class="text-sm md:text-base font-medium opacity-90 max-w-xs">
-                    Sistem Agenda Kegiatan Dinas Kab. Bogor
+                <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">SIRAPI</h1>
+                <p class="text-sm md:text-base font-medium opacity-90 max-w-xs mb-2">
+                    Sistem Informasi Rapat dan Presensi
                 </p>
+                <p class="text-xs opacity-80 max-w-xs">
+                    {{ $organizationName }} <br> {{ $regionName }}
+                </p>
+            </div>
             </div>
 
             <!-- Footer Kiri -->
