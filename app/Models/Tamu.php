@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Agenda;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,4 +22,9 @@ class Tamu extends Model
         'asal_instansi',
         'id_agenda',
     ];
+
+    public function agenda()
+    {
+        return $this->belongsTo(Agenda::class, 'id_agenda', 'id_agenda');
+    }
 }

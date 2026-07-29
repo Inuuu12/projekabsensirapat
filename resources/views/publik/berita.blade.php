@@ -60,7 +60,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Semua Berita</h1>
-                    <p class="text-xs text-gray-500 mt-1">Kabar terbaru seputar Diskominfo Kabupaten Bogor dari database</p>
+                    <p class="text-xs text-gray-500 mt-1">Kabar terbaru seputar Diskominfo Kabupaten Bogor</p>
                 </div>
 
                 <form method="GET" action="{{ route('publik.berita') }}" class="relative w-full md:w-72">

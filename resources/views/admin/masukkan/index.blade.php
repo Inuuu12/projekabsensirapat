@@ -53,7 +53,7 @@
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div class="flex min-h-24 items-center gap-4 rounded-lg border border-[#b9c9c5] bg-white px-5 py-4">
+        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-xs">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-200/80 p-2.5">
                 <img src="{{ asset('foto/Total Aduan.png') }}" alt="Total Aduan" class="h-full w-full object-contain">
             </div>
@@ -63,7 +63,7 @@
             </div>
         </div>
 
-        <div class="flex min-h-24 items-center gap-4 rounded-lg border border-[#b9c9c5] bg-white px-5 py-4">
+        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-xs">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-50 p-2.5">
                 <img src="{{ asset('foto/Menunggu.png') }}" alt="Menunggu" class="h-full w-full object-contain">
             </div>
@@ -73,7 +73,7 @@
             </div>
         </div>
 
-        <div class="flex min-h-24 items-center gap-4 rounded-lg border border-[#b9c9c5] bg-white px-5 py-4">
+        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-xs">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f0ed] p-2.5">
                 <img src="{{ asset('foto/process.png') }}" alt="Diproses" class="h-full w-full object-contain">
             </div>
@@ -83,7 +83,7 @@
             </div>
         </div>
 
-        <div class="flex min-h-24 items-center gap-4 rounded-lg border border-[#b9c9c5] bg-white px-5 py-4">
+        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-xs">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f0ed] p-2.5">
                 <img src="{{ asset('foto/Selesai.png') }}" alt="Selesai" class="h-full w-full object-contain">
             </div>
@@ -94,8 +94,8 @@
         </div>
     </div>
 
-    <section class="overflow-hidden rounded-lg border border-emerald-200 bg-white shadow-[0_14px_30px_rgba(15,23,42,0.08)]">
-        <div class="flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+    <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xs">
+        <div class="flex flex-col gap-4 border-b border-gray-100 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
             <h2 class="text-2xl font-extrabold text-[#0f513f]">Log Aduan</h2>
             <form method="GET" action="{{ route('admin.masukkan.lihat') }}" class="flex items-center gap-3">
                 <label for="status-filter" class="text-sm font-medium text-slate-600">Filter by:</label>
@@ -171,12 +171,10 @@
                                         data-date="{{ optional($item->created_at)->translatedFormat('d M Y') ?? '-' }}"
                                         data-message="{{ $item->isi_aduan }}"
                                         data-reply="{{ $item->balasan_admin }}"
-                                        class="text-[#0f6b52] transition hover:text-[#083c30]"
+                                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 p-1.5 transition hover:bg-gray-100"
                                         title="Lihat Detail">
-                                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 12s3.75-6 9.75-6 9.75 6 9.75 6-3.75 6-9.75 6-9.75-6-9.75-6z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
+                                        <img src="{{ asset('foto/Detaillogo.png') }}" alt="Detail" class="h-full w-full object-contain">
+                                        <span class="sr-only">Lihat Detail</span>
                                     </button>
 
                                     <button
@@ -212,7 +210,7 @@
             </table>
         </div>
 
-        <div class="flex flex-col gap-4 border-t border-slate-200 px-6 py-5 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-col gap-4 border-t border-gray-100 px-6 py-5 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
             <p>Menampilkan {{ $filteredMasukan->count() ? '1-' . $filteredMasukan->count() : '0' }} dari {{ $totalAduan }} aduan</p>
             <div class="flex items-center gap-2">
                 <button type="button" class="flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 text-[#0f513f]">

@@ -38,7 +38,6 @@
             $masukanItems = collect($masukan ?? []);
             $ulangTahunUtama = $ulangTahunHariIni ?? $ulangTahunItems->first();
             $infoItems = $agendaTerbaruItems->pluck('nama_agenda')->merge($beritaItems->pluck('judul'))->take(4);
-            $youtubeEmbedUrl = 'https://www.youtube.com/embed/videoseries?list=UUJlX_73GqPvJlerJFN4cRgA';
             $initial = fn ($name) => collect(explode(' ', trim((string) $name)))->filter()->take(2)->map(fn ($word) => strtoupper(substr($word, 0, 1)))->join('') ?: 'DB';
             $imageUrl = function ($path, $fallback = 'foto/Suratlogo.png') {
                 if (! $path) {
@@ -98,10 +97,10 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <button type="button" id="open-weather-modal" class="lg:col-span-6 bg-ijo-tua text-white rounded-3xl p-6 flex items-center justify-between shadow-md text-left hover:shadow-lg hover:-translate-y-0.5 transition-all">
                 <div>
-                    <p class="text-xs text-gray-200">{{ $cuaca?->lokasi ?? 'Cibinong, Kab. Bogor' }}</p>
-                    <h2 class="text-4xl font-extrabold mt-1">{{ $cuaca?->suhu ? $cuaca->suhu . '°C' : '-' }}</h2>
-                    <p class="text-xs text-gray-200 mt-1">{{ $cuaca?->kondisi ?? 'Data cuaca belum tersedia' }}</p>
-                    <p class="text-[10px] text-gray-300 mt-2">Kelembapan {{ $cuaca?->kelembapan ?? '-' }} &bull; Klik untuk detail API</p>
+                    <p id="home-weather-location" class="text-xs text-gray-200">Cibinong, Kab. Bogor</p>
+                    <h2 id="home-weather-temp" class="text-4xl font-extrabold mt-1">-</h2>
+                    <p id="home-weather-condition" class="text-xs text-gray-200 mt-1">Memuat data cuaca API...</p>
+                    <p id="home-weather-humidity" class="text-[10px] text-gray-300 mt-2">Kelembapan - • Klik untuk detail </p>
                 </div>
                 <div class="text-5xl">☁</div>
             </button>
@@ -169,7 +168,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-base font-bold text-gray-900">Video Terbaru</h3>
-                        <p class="text-xs text-gray-500">Publikasi video resmi terkait Diskominfo</p>
+                        <p class="text-xs text-gray-500">{{ $videoTerbaru->judul ?? 'Publikasi video resmi terkait Diskominfo' }}</p>
                     </div>
                     <a href="{{ route('publik.video') }}" class="text-xs font-bold text-ijo-tua hover:underline">Lihat Semua &rarr;</a>
                 </div>
@@ -498,6 +497,10 @@
                 setText('weather-temp', formatWeatherValue(current.temperature, '°C'));
                 setText('weather-condition', current.condition || '-');
                 setText('weather-humidity', formatWeatherValue(current.humidity, '%'));
+                setText('home-weather-location', payload.location || 'Cibinong, Kabupaten Bogor');
+                setText('home-weather-temp', formatWeatherValue(current.temperature, '°C'));
+                setText('home-weather-condition', current.condition || 'Data API belum tersedia');
+                setText('home-weather-humidity', `Kelembapan ${formatWeatherValue(current.humidity, '%')} • Klik untuk detail `);
                 setText('weather-cloud', `Awan ${formatWeatherValue(current.cloud_cover, '%')}`);
                 setText('weather-wind', formatWeatherValue(current.wind_speed, ' km/jam'));
                 setText('weather-rain', `Hujan ${formatWeatherValue(current.precipitation, ' mm')}`);
@@ -525,6 +528,8 @@
             weatherModal.classList.add('flex');
             loadWeather();
         });
+
+        loadWeather();
 
         weatherClose?.addEventListener('click', () => {
             weatherModal.classList.add('hidden');

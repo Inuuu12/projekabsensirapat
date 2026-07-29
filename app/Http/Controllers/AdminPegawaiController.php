@@ -9,12 +9,52 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminPegawaiController extends Controller
 {
-    public function dataPegawai()
+    public function dataPegawai(Request $request)
     {
         $admin = Auth::guard('admin')->user();
-        $pegawai = Pegawai::latest('id_pegawai')->get();
+        $keyword = trim((string) $request->query('keyword', ''));
+        $bidangFilter = (string) $request->query('bidang', 'semua');
+        $jabatanFilter = (string) $request->query('jabatan', 'semua');
 
-        return view('admin.pegawai.index', compact('admin', 'pegawai'));
+        $pegawaiQuery = Pegawai::query()
+            ->when($keyword !== '', function ($query) use ($keyword) {
+                $query->where(function ($search) use ($keyword) {
+                    $search->where('nama_pegawai', 'like', "%{$keyword}%")
+                        ->orWhere('nip', 'like', "%{$keyword}%")
+                        ->orWhere('jabatan', 'like', "%{$keyword}%")
+                        ->orWhere('bidang', 'like', "%{$keyword}%")
+                        ->orWhere('nomor_hp', 'like', "%{$keyword}%")
+                        ->orWhere('email', 'like', "%{$keyword}%");
+                });
+            })
+            ->when($bidangFilter !== 'semua', fn ($query) => $query->where('bidang', $bidangFilter))
+            ->when($jabatanFilter !== 'semua', fn ($query) => $query->where('jabatan', $jabatanFilter));
+
+        $pegawai = $pegawaiQuery->latest('id_pegawai')->get();
+        $totalPegawai = Pegawai::count();
+        $bidangOptions = Pegawai::query()
+            ->whereNotNull('bidang')
+            ->where('bidang', '!=', '')
+            ->distinct()
+            ->orderBy('bidang')
+            ->pluck('bidang');
+        $jabatanOptions = Pegawai::query()
+            ->whereNotNull('jabatan')
+            ->where('jabatan', '!=', '')
+            ->distinct()
+            ->orderBy('jabatan')
+            ->pluck('jabatan');
+
+        return view('admin.pegawai.index', compact(
+            'admin',
+            'pegawai',
+            'totalPegawai',
+            'keyword',
+            'bidangFilter',
+            'jabatanFilter',
+            'bidangOptions',
+            'jabatanOptions'
+        ));
     }
 
     public function store_Pegawai(Request $request)

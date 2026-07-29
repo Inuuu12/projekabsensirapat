@@ -19,7 +19,7 @@
         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs flex items-center justify-between">
             <div>
                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Ruangan Tersedia</p>
-                <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $ruang->where('status', 'tersedia')->count() }}</p>
+                <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $totalTersedia ?? $ruang->where('status', 'tersedia')->count() }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center p-2">
                 <img src="{{ asset('foto/ruangantersedia.png') }}" alt="Ruangan Tersedia" class="w-full h-full object-contain">
@@ -28,7 +28,7 @@
         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs flex items-center justify-between">
             <div>
                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Ruangan Terpakai</p>
-                <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $ruang->where('status', 'terpakai')->count() }}</p>
+                <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $totalTerpakai ?? $ruang->where('status', 'terpakai')->count() }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center p-2">
                 <img src="{{ asset('foto/ruanganterpakai.png') }}" alt="Ruangan Terpakai" class="w-full h-full object-contain">
@@ -37,7 +37,7 @@
         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs flex items-center justify-between">
             <div>
                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Ruangan</p>
-                <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $ruang->count() }}</p>
+                <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $totalRuangan ?? $ruang->count() }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center p-2">
                 <img src="{{ asset('foto/totalruangan.png') }}" alt="Total Ruangan" class="w-full h-full object-contain">
@@ -45,7 +45,19 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
+    <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xs">
+        <div class="flex flex-col gap-4 border-b border-gray-100 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+            <h2 class="text-2xl font-extrabold text-[#0f513f]">Data Ruangan</h2>
+            <form method="GET" action="{{ route('admin.ruang.lihat') }}" class="flex items-center gap-3">
+                <label for="status-filter" class="text-sm font-medium text-slate-600">Filter by:</label>
+                <select id="status-filter" name="status" onchange="this.form.submit()" class="h-10 rounded-md border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700 outline-none focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <option value="semua" @selected(($statusFilter ?? 'semua') === 'semua')>Status: Semua</option>
+                    <option value="tersedia" @selected(($statusFilter ?? 'semua') === 'tersedia')>Tersedia</option>
+                    <option value="terpakai" @selected(($statusFilter ?? 'semua') === 'terpakai')>Terpakai</option>
+                </select>
+            </form>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[860px]">
                 <thead>
@@ -104,7 +116,11 @@
                 </tbody>
             </table>
         </div>
-    </div>
+
+        <div class="flex flex-col gap-4 border-t border-gray-100 px-6 py-5 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+            <p>Menampilkan {{ $ruang->count() ? '1-' . $ruang->count() : '0' }} dari {{ $totalRuangan ?? $ruang->count() }} ruangan</p>
+        </div>
+    </section>
 </div>
 
 <div id="modal-tambah-ruang" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">

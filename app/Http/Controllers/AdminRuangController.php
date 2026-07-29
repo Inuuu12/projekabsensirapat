@@ -8,12 +8,27 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminRuangController extends Controller
 {
-    public function daftarRuang()
+    public function daftarRuang(Request $request)
     {
         $admin = Auth::guard('admin')->user();
-        $ruang = RuangRapat::latest('id_ruangrapat')->get();
+        $statusFilter = (string) $request->query('status', 'semua');
 
-        return view('admin.ruang.index', compact('admin', 'ruang'));
+        $ruang = RuangRapat::query()
+            ->when($statusFilter !== 'semua', fn ($query) => $query->where('status', $statusFilter))
+            ->latest('id_ruangrapat')
+            ->get();
+        $totalRuangan = RuangRapat::count();
+        $totalTersedia = RuangRapat::where('status', 'tersedia')->count();
+        $totalTerpakai = RuangRapat::where('status', 'terpakai')->count();
+
+        return view('admin.ruang.index', compact(
+            'admin',
+            'ruang',
+            'statusFilter',
+            'totalRuangan',
+            'totalTersedia',
+            'totalTerpakai'
+        ));
     }
 
     public function store_Ruang(Request $request)
