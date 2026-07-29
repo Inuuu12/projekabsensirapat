@@ -15,7 +15,7 @@ class Admin extends Authenticatable
     protected $table = 'app_md_admin';
 
     //primary key
-    protected $primarykey='id_admin';
+    protected $primaryKey = 'id_admin';
     
     //Kolom yang boleh diisi
     protected $fillable = [

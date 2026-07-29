@@ -21,6 +21,7 @@ Route::get('/', [PublicPageController::class, 'index'])->name('publik.beranda');
 Route::redirect('/publik', '/');
 
 Route::redirect('/login', '/admin/login')->name('login');
+Route::post('/login/proses', [AdminAuthController::class, 'login'])->name('login.proses');
 
 // ROUTE GRUP ADMIN
 Route::prefix('admin')->group(function () {

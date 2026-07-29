@@ -64,7 +64,6 @@
                     {{ $organizationName }} <br> {{ $regionName }}
                 </p>
             </div>
-            </div>
 
             <!-- Footer Kiri -->
             <div class="text-center text-xs opacity-80 z-10 space-y-1">
@@ -95,8 +94,7 @@
                 @endif
 
                 <!-- Form Login -->
-                <!-- PASTIKAN action mengarah ke route proses POST login (misal: login.proses) -->
-                <form action="{{ route('login.proses') }}" method="POST" class="space-y-5">
+                <form action="{{ route('admin.login.submit') }}" method="POST" class="space-y-5">
                     @csrf
 
                     <!-- Input Username (Sudah diubah dari Email ke Username) -->

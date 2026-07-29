@@ -2,6 +2,7 @@
     $appName = config('sirapi.name', 'SIRAPI');
     $organizationName = config('sirapi.organization', 'Dinas Komunikasi & Informatika');
     $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
+    
 @endphp
 
 <!-- Mobile Overlay Backdrop -->
