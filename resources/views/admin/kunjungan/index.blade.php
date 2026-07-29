@@ -17,10 +17,65 @@
 
     <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
         <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Kunjungan</p>
-        <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $kunjungan->count() }}</p>
+        <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $totalKunjungan ?? $kunjungan->count() }}</p>
     </div>
 
+    <form method="GET" action="{{ route('admin.kunjungan.lihat') }}" class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+        <div class="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_220px_220px_180px] xl:items-end">
+            <div>
+                <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Search</label>
+                <input
+                    id="keyword"
+                    name="keyword"
+                    value="{{ $keyword ?? request('keyword') }}"
+                    type="search"
+                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20"
+                    placeholder="Cari pengunjung, pihak dituju, instansi, no HP, email, keperluan...">
+            </div>
+            <div>
+                <label for="pihak-dituju-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Pihak Dituju</label>
+                <select
+                    id="pihak-dituju-filter"
+                    name="pihak_dituju"
+                    onchange="this.form.submit()"
+                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <option value="semua" @selected(($pihakDitujuFilter ?? 'semua') === 'semua')>Semua Pihak</option>
+                    @foreach (($pihakDitujuOptions ?? collect()) as $pihakDituju)
+                        <option value="{{ $pihakDituju }}" @selected(($pihakDitujuFilter ?? 'semua') === $pihakDituju)>{{ $pihakDituju }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label for="keperluan-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Keperluan</label>
+                <select
+                    id="keperluan-filter"
+                    name="keperluan"
+                    onchange="this.form.submit()"
+                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <option value="semua" @selected(($keperluanFilter ?? 'semua') === 'semua')>Semua Keperluan</option>
+                    @foreach (($keperluanOptions ?? collect()) as $keperluan)
+                        <option value="{{ $keperluan }}" @selected(($keperluanFilter ?? 'semua') === $keperluan)>{{ \Illuminate\Support\Str::limit($keperluan, 42) }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label for="tanggal-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Tanggal</label>
+                <input
+                    id="tanggal-filter"
+                    name="tanggal"
+                    value="{{ $tanggalFilter ?? request('tanggal') }}"
+                    type="date"
+                    onchange="this.form.submit()"
+                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+            </div>
+        </div>
+    </form>
+
     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
+        <div class="border-b border-gray-100 px-6 py-4">
+            <h2 class="text-base font-extrabold text-gray-800">Daftar Kunjungan</h2>
+            <p class="mt-1 text-xs text-gray-500">Menampilkan {{ $kunjungan->count() }} dari {{ $totalKunjungan ?? $kunjungan->count() }} kunjungan.</p>
+        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[1040px]">
                 <thead>

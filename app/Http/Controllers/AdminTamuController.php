@@ -10,13 +10,29 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminTamuController extends Controller
 {
-    public function dataTamu()
+    public function dataTamu(Request $request)
     {
         $admin = Auth::guard('admin')->user();
-        $tamu = Tamu::latest('id_tamu')->get();
+        $keyword = trim((string) $request->query('keyword', ''));
+        $tamu = Tamu::query()
+            ->when($keyword !== '', function ($query) use ($keyword) {
+                $query->where(function ($search) use ($keyword) {
+                    $search->where('nama', 'like', "%{$keyword}%")
+                        ->orWhere('nik', 'like', "%{$keyword}%")
+                        ->orWhere('jabatan', 'like', "%{$keyword}%")
+                        ->orWhere('no_hp', 'like', "%{$keyword}%")
+                        ->orWhere('asal_instansi', 'like', "%{$keyword}%")
+                        ->orWhereHas('agenda', function ($agenda) use ($keyword) {
+                            $agenda->where('nama_agenda', 'like', "%{$keyword}%");
+                        });
+                });
+            })
+            ->latest('id_tamu')
+            ->get();
+        $totalTamu = Tamu::count();
         $agenda = Agenda::latest('id_agenda')->get();
 
-        return view('admin.tamu.index', compact('admin', 'tamu', 'agenda'));
+        return view('admin.tamu.index', compact('admin', 'tamu', 'agenda', 'keyword', 'totalTamu'));
     }
 
     public function store_Tamu(Request $request)

@@ -17,10 +17,32 @@
 
     <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
         <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Tamu</p>
-        <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $tamu->count() }}</p>
+        <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $totalTamu ?? $tamu->count() }}</p>
     </div>
 
+    <form method="GET" action="{{ route('admin.tamu.lihat') }}" class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-end">
+            <div class="flex-1">
+                <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Search</label>
+                <input
+                    id="keyword"
+                    name="keyword"
+                    value="{{ $keyword ?? request('keyword') }}"
+                    type="search"
+                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20"
+                    placeholder="Cari nama, NIK, jabatan, no HP, instansi, agenda...">
+            </div>
+            <div class="flex gap-2">
+                <button type="submit" class="h-11 rounded-xl bg-[#35635b] px-5 text-sm font-bold text-white transition hover:bg-[#2b4f49]">Cari</button>
+            </div>
+        </div>
+    </form>
+
     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
+        <div class="border-b border-gray-100 px-6 py-4">
+            <h2 class="text-base font-extrabold text-gray-800">Daftar Tamu</h2>
+            <p class="mt-1 text-xs text-gray-500">Menampilkan {{ $tamu->count() }} dari {{ $totalTamu ?? $tamu->count() }} tamu.</p>
+        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[980px]">
                 <thead>

@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Agenda;
 use App\Models\Berita;
-use App\Models\Cuaca;
 use App\Models\DataMasukan;
 use App\Models\Galeri;
 use App\Models\Logbook;
 use App\Models\QRCode;
 use App\Models\UlangTahun;
+use App\Models\VideoPublik;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -43,8 +43,9 @@ class PublicPageController extends Controller
         $totalGaleri = $this->queryOrDefault(fn () => Galeri::count(), 0);
         $ulangTahun = $this->queryOrDefault(fn () => UlangTahun::tampilkanUlangTahunPegawai(), collect());
         $ulangTahunHariIni = $ulangTahun->first(fn ($item) => $item->tanggal?->format('m-d') === $today->format('m-d'));
-        $cuaca = $this->queryOrDefault(fn () => Cuaca::latest()->first());
         $masukan = $this->queryOrDefault(fn () => DataMasukan::latest('id_datamasukan')->take(5)->get(), collect());
+        $videoTerbaru = $this->queryOrDefault(fn () => VideoPublik::latest()->latest('id_video')->first());
+        $youtubeEmbedUrl = $videoTerbaru?->youtube_embed_url ?? $this->defaultYoutubeEmbedUrl();
 
         return view('publik.index', compact(
             'agendaHariIni',
@@ -58,8 +59,9 @@ class PublicPageController extends Controller
             'totalGaleri',
             'ulangTahun',
             'ulangTahunHariIni',
-            'cuaca',
-            'masukan'
+            'masukan',
+            'videoTerbaru',
+            'youtubeEmbedUrl'
         ));
     }
 
@@ -131,12 +133,14 @@ class PublicPageController extends Controller
 
     public function video()
     {
-        $youtubeEmbedUrl = 'https://www.youtube.com/embed/videoseries?list=UUJlX_73GqPvJlerJFN4cRgA';
+        $videoList = $this->queryOrDefault(fn () => VideoPublik::latest()->latest('id_video')->get(), collect());
+        $videoUtama = $videoList->first();
+        $youtubeEmbedUrl = $videoUtama?->youtube_embed_url ?? $this->defaultYoutubeEmbedUrl();
         $youtubeChannelUrl = 'https://www.youtube.com/channel/UCJlX_73GqPvJlerJFN4cRgA';
         $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::latest('tanggal')->latest('waktu')->take(6)->get(), collect());
         $beritaTerbaru = $this->queryOrDefault(fn () => Berita::latest('tanggal')->latest('id_berita')->take(6)->get(), collect());
 
-        return view('publik.video', compact('youtubeEmbedUrl', 'youtubeChannelUrl', 'agendaTerbaru', 'beritaTerbaru'));
+        return view('publik.video', compact('youtubeEmbedUrl', 'youtubeChannelUrl', 'videoUtama', 'videoList', 'agendaTerbaru', 'beritaTerbaru'));
     }
 
     public function ulangTahun()
@@ -167,8 +171,6 @@ class PublicPageController extends Controller
 
     public function cuacaApi()
     {
-        $fallback = $this->queryOrDefault(fn () => Cuaca::latest('id_cuaca')->first());
-
         try {
             $response = Http::timeout(8)->get('https://api.open-meteo.com/v1/forecast', [
                 'latitude' => -6.481,
@@ -217,22 +219,22 @@ class PublicPageController extends Controller
         } catch (\Throwable) {
             return response()->json([
                 'success' => false,
-                'source' => 'Database fallback',
-                'location' => $fallback?->lokasi ?? 'Cibinong, Kabupaten Bogor',
-                'updated_at' => optional($fallback?->updated_at)->toIso8601String() ?? now()->toIso8601String(),
+                'source' => 'Open-Meteo',
+                'location' => 'Cibinong, Kabupaten Bogor',
+                'updated_at' => now()->toIso8601String(),
                 'current' => [
-                    'temperature' => is_numeric($fallback?->suhu) ? (float) $fallback->suhu : $fallback?->suhu,
+                    'temperature' => null,
                     'apparent_temperature' => null,
-                    'humidity' => $fallback?->kelembapan,
+                    'humidity' => null,
                     'weather_code' => null,
-                    'condition' => $fallback?->kondisi ?? 'Data API belum tersedia',
+                    'condition' => 'Data API belum tersedia',
                     'wind_speed' => null,
                     'wind_direction' => null,
                     'precipitation' => null,
                     'cloud_cover' => null,
                 ],
                 'daily' => [],
-                'message' => 'API cuaca belum bisa diakses, menampilkan data cuaca terakhir dari database.',
+                'message' => 'API cuaca belum bisa diakses.',
             ]);
         }
     }
@@ -347,6 +349,11 @@ class PublicPageController extends Controller
     private function nowWib(): Carbon
     {
         return Carbon::now(self::PUBLIC_TIMEZONE);
+    }
+
+    private function defaultYoutubeEmbedUrl(): string
+    {
+        return 'https://www.youtube.com/embed/videoseries?list=UUJlX_73GqPvJlerJFN4cRgA';
     }
 
     private function weatherCodeLabel(mixed $code): string

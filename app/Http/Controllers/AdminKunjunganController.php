@@ -8,12 +8,55 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminKunjunganController extends Controller
 {
-    public function daftarKunjungan()
+    public function daftarKunjungan(Request $request)
     {
         $admin = Auth::guard('admin')->user();
-        $kunjungan = Kunjungan::latest('id_kunjungan')->get();
+        $keyword = trim((string) $request->query('keyword', ''));
+        $pihakDitujuFilter = (string) $request->query('pihak_dituju', 'semua');
+        $keperluanFilter = (string) $request->query('keperluan', 'semua');
+        $tanggalFilter = (string) $request->query('tanggal', '');
 
-        return view('admin.kunjungan.index', compact('admin', 'kunjungan'));
+        $kunjungan = Kunjungan::query()
+            ->when($keyword !== '', function ($query) use ($keyword) {
+                $query->where(function ($search) use ($keyword) {
+                    $search->where('nama_pengunjung', 'like', "%{$keyword}%")
+                        ->orWhere('nama_pejabat', 'like', "%{$keyword}%")
+                        ->orWhere('asal_instansi', 'like', "%{$keyword}%")
+                        ->orWhere('nomorhp_pengunjung', 'like', "%{$keyword}%")
+                        ->orWhere('email_pengunjung', 'like', "%{$keyword}%")
+                        ->orWhere('keperluan', 'like', "%{$keyword}%");
+                });
+            })
+            ->when($pihakDitujuFilter !== 'semua', fn ($query) => $query->where('nama_pejabat', $pihakDitujuFilter))
+            ->when($keperluanFilter !== 'semua', fn ($query) => $query->where('keperluan', $keperluanFilter))
+            ->when($tanggalFilter !== '', fn ($query) => $query->whereDate('tanggal_kunjungan', $tanggalFilter))
+            ->latest('id_kunjungan')
+            ->get();
+        $totalKunjungan = Kunjungan::count();
+        $pihakDitujuOptions = Kunjungan::query()
+            ->whereNotNull('nama_pejabat')
+            ->where('nama_pejabat', '!=', '')
+            ->distinct()
+            ->orderBy('nama_pejabat')
+            ->pluck('nama_pejabat');
+        $keperluanOptions = Kunjungan::query()
+            ->whereNotNull('keperluan')
+            ->where('keperluan', '!=', '')
+            ->distinct()
+            ->orderBy('keperluan')
+            ->pluck('keperluan');
+
+        return view('admin.kunjungan.index', compact(
+            'admin',
+            'kunjungan',
+            'totalKunjungan',
+            'keyword',
+            'pihakDitujuFilter',
+            'keperluanFilter',
+            'tanggalFilter',
+            'pihakDitujuOptions',
+            'keperluanOptions'
+        ));
     }
 
     public function kelola_Kunjungan(Request $request)

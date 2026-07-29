@@ -17,10 +17,55 @@
 
     <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
         <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Pegawai</p>
-        <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $pegawai->count() }}</p>
+        <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $totalPegawai ?? $pegawai->count() }}</p>
     </div>
 
+    <form method="GET" action="{{ route('admin.pegawai.lihat') }}" class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+        <div class="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px_220px] lg:items-end">
+            <div>
+                <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Search</label>
+                <input
+                    id="keyword"
+                    name="keyword"
+                    value="{{ $keyword ?? request('keyword') }}"
+                    type="search"
+                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20"
+                    placeholder="Cari nama, NIP, jabatan, bidang, no HP, email...">
+            </div>
+            <div>
+                <label for="bidang-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Bidang</label>
+                <select
+                    id="bidang-filter"
+                    name="bidang"
+                    onchange="this.form.submit()"
+                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <option value="semua" @selected(($bidangFilter ?? 'semua') === 'semua')>Semua Bidang</option>
+                    @foreach (($bidangOptions ?? collect()) as $bidang)
+                        <option value="{{ $bidang }}" @selected(($bidangFilter ?? 'semua') === $bidang)>{{ $bidang }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label for="jabatan-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Jabatan</label>
+                <select
+                    id="jabatan-filter"
+                    name="jabatan"
+                    onchange="this.form.submit()"
+                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <option value="semua" @selected(($jabatanFilter ?? 'semua') === 'semua')>Semua Jabatan</option>
+                    @foreach (($jabatanOptions ?? collect()) as $jabatan)
+                        <option value="{{ $jabatan }}" @selected(($jabatanFilter ?? 'semua') === $jabatan)>{{ $jabatan }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </form>
+
     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
+        <div class="border-b border-gray-100 px-6 py-4">
+            <h2 class="text-base font-extrabold text-gray-800">Daftar Pegawai</h2>
+            <p class="mt-1 text-xs text-gray-500">Menampilkan {{ $pegawai->count() }} dari {{ $totalPegawai ?? $pegawai->count() }} pegawai.</p>
+        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[1040px]">
                 <thead>
