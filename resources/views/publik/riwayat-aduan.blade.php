@@ -84,6 +84,7 @@
                             <th class="p-3 rounded-l-xl">Nama Pengadu</th>
                             <th class="p-3">Isi Aduan</th>
                             <th class="p-3">Email</th>
+                            <th class="p-3">Balasan Admin</th>
                             <th class="p-3 text-center">Status</th>
                             <th class="p-3 text-right rounded-r-xl">Tanggal</th>
                         </tr>
@@ -94,6 +95,9 @@
                                 <td class="p-3 font-bold text-gray-900 whitespace-nowrap">{{ $aduan->nama_pengadu }}</td>
                                 <td class="p-3 text-gray-500 min-w-[260px]">{{ $aduan->isi_aduan }}</td>
                                 <td class="p-3 text-gray-500 min-w-[180px]">{{ $maskEmail($aduan->email) }}</td>
+                                <td class="p-3 text-gray-500 min-w-[220px]">
+                                    {{ $aduan->balasan_admin ? \Illuminate\Support\Str::limit($aduan->balasan_admin, 90) : 'Belum ada balasan' }}
+                                </td>
                                 <td class="p-3 text-center">
                                     <span class="{{ $statusClass($aduan->status) }} font-bold px-3 py-1 rounded-full text-[10px]">{{ $aduan->status ?? 'Pending' }}</span>
                                 </td>
@@ -101,7 +105,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="p-8 text-center text-gray-500">Belum ada aduan di database.</td>
+                                <td colspan="6" class="p-8 text-center text-gray-500">Belum ada aduan di database.</td>
                             </tr>
                         @endforelse
                     </tbody>

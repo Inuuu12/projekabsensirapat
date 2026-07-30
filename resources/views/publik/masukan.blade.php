@@ -81,12 +81,27 @@
                     <!-- Email Input -->
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-gray-700">Email *</label>
-                        <input type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" 
-                               class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                        <div class="flex flex-col gap-2 sm:flex-row">
+                            <input id="aduan-email" type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com"
+                                   class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                            <button id="send-otp-button" type="button" class="shrink-0 rounded-2xl bg-ijo-tua px-5 py-3 text-xs font-bold text-white transition-colors hover:bg-ijo-semitua">
+                                Kirim OTP
+                            </button>
+                        </div>
                         <p class="text-[10px] text-gray-400 flex items-center space-x-1 pt-0.5">
                             <span>🔒</span>
                             <span>Email akan disamarkan otomatis saat ditampilkan ke publik</span>
                         </p>
+                    </div>
+
+                    <p id="otp-status" class="hidden text-[10px] font-bold"></p>
+
+                    <!-- OTP Input -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-gray-700">Masukkan OTP *</label>
+                        <input id="aduan-otp" type="text" name="otp" value="{{ old('otp') }}" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="6 digit kode OTP"
+                               class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                        <p class="text-[10px] text-gray-400 pt-0.5">Kode OTP dikirim ke email dan berlaku 10 menit.</p>
                     </div>
 
                     <!-- No HP Input -->
@@ -228,6 +243,54 @@
 
     <!-- Memanggil Footer Publik -->
     @include('publik.layout_publik.footer') 
+
+    <script>
+        const otpButton = document.getElementById('send-otp-button');
+        const otpEmail = document.getElementById('aduan-email');
+        const otpStatus = document.getElementById('otp-status');
+        const csrfToken = document.querySelector('input[name="_token"]')?.value;
+
+        function showOtpStatus(message, isSuccess = false) {
+            if (!otpStatus) return;
+            otpStatus.textContent = message;
+            otpStatus.classList.remove('hidden', 'text-red-600', 'text-ijo-tua');
+            otpStatus.classList.add(isSuccess ? 'text-ijo-tua' : 'text-red-600');
+        }
+
+        otpButton?.addEventListener('click', async () => {
+            const email = otpEmail?.value.trim();
+
+            if (!email) {
+                showOtpStatus('Isi email terlebih dahulu.');
+                otpEmail?.focus();
+                return;
+            }
+
+            otpButton.disabled = true;
+            otpButton.textContent = 'Mengirim...';
+            showOtpStatus('Mengirim kode OTP...', true);
+
+            try {
+                const response = await fetch('{{ route('publik.aduan.otp') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    body: JSON.stringify({ email }),
+                });
+                const payload = await response.json();
+
+                showOtpStatus(payload.message || 'Gagal mengirim OTP.', response.ok && payload.success);
+            } catch (error) {
+                showOtpStatus('Gagal mengirim OTP. Periksa koneksi atau konfigurasi email.');
+            } finally {
+                otpButton.disabled = false;
+                otpButton.textContent = 'Kirim OTP';
+            }
+        });
+    </script>
 
 </body>
 </html>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Agenda;
 use App\Models\Berita;
 use App\Models\DataMasukan;
-use App\Models\Galeri;
+use App\Models\DokumenNotulen;
 use App\Models\Logbook;
 use App\Models\QRCode;
 use App\Models\UlangTahun;
@@ -39,8 +39,8 @@ class PublicPageController extends Controller
             ? $today->translatedFormat('l, d F Y') . ' • ' . $totalAgendaHariIni . ' kegiatan terjadwal'
             : 'Belum ada agenda hari ini, menampilkan agenda terdekat dari database';
         $beritaTerbaru = $this->queryOrDefault(fn () => Berita::latest('tanggal')->latest('id_berita')->take(3)->get(), collect());
-        $galeri = $this->queryOrDefault(fn () => Galeri::latest('tanggal')->latest('id_galeri')->take(3)->get(), collect());
-        $totalGaleri = $this->queryOrDefault(fn () => Galeri::count(), 0);
+        $galeri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri()->take(3), collect());
+        $totalGaleri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri()->count(), 0);
         $ulangTahun = $this->queryOrDefault(fn () => UlangTahun::tampilkanUlangTahunPegawai(), collect());
         $ulangTahunHariIni = $ulangTahun->first(fn ($item) => $item->tanggal?->format('m-d') === $today->format('m-d'));
         $masukan = $this->queryOrDefault(fn () => DataMasukan::latest('id_datamasukan')->take(5)->get(), collect());
@@ -126,7 +126,7 @@ class PublicPageController extends Controller
 
     public function galeri()
     {
-        $galeri = $this->queryOrDefault(fn () => Galeri::latest('tanggal')->latest('id_galeri')->get(), collect());
+        $galeri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri(), collect());
 
         return view('publik.galeri', compact('galeri'));
     }
@@ -317,6 +317,16 @@ class PublicPageController extends Controller
         } catch (QueryException) {
             return $default;
         }
+    }
+
+    private function dokumentasiAgendaGaleri()
+    {
+        return DokumenNotulen::with('agenda')
+            ->where('jenis_dokumen', 'dokumentasi')
+            ->latest('id_dokumen')
+            ->get()
+            ->filter(fn ($item) => in_array(strtolower(pathinfo((string) $item->file_path, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp'], true))
+            ->values();
     }
 
     private function agendaPresensi(Request $request): ?Agenda

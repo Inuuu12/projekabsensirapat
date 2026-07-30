@@ -119,6 +119,7 @@ Route::post('/kehadiran/scan-qr', [KehadiranController::class, 'scan_QR']);
 Route::post('/kehadiran/verifikasi-fr', [KehadiranController::class, 'verifikasi_FaceRecognition']);
 
 // Fitur pengaduan masyarakat
+Route::post('/aduan/otp', [UserController::class, 'kirimOtpAduan'])->name('publik.aduan.otp');
 Route::post('/aduan/kirim', [UserController::class, 'kirimAduan'])->name('publik.aduan.kirim');
 Route::get('/aduan/cek/{id}', [UserController::class, 'cekStatusAduan']);
 

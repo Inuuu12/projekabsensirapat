@@ -183,9 +183,9 @@
                     <a href="{{ route('publik.galeri') }}" class="text-xs font-bold text-ijo-tua hover:underline">Lihat Semua &rarr;</a>
                 </div>
                 <div class="grid grid-cols-2 gap-3 h-[240px] lg:h-auto lg:flex-1">
-                    <div class="bg-ijo-muda rounded-2xl h-full shadow-sm bg-cover bg-center" style="background-image: url('{{ $imageUrl($galeriItems->get(0)?->gambar, 'foto/Agendahariini.png') }}')"></div>
+                    <div class="bg-ijo-muda rounded-2xl h-full shadow-sm bg-cover bg-center" style="background-image: url('{{ $imageUrl($galeriItems->get(0)?->file_path ?? $galeriItems->get(0)?->gambar, 'foto/Agendahariini.png') }}')"></div>
                     <div class="space-y-3 h-full flex flex-col">
-                        <div class="bg-ijo-semitua rounded-2xl flex-1 shadow-sm bg-cover bg-center" style="background-image: url('{{ $imageUrl($galeriItems->get(1)?->gambar, 'foto/Kunjunganlogo.png') }}')"></div>
+                        <div class="bg-ijo-semitua rounded-2xl flex-1 shadow-sm bg-cover bg-center" style="background-image: url('{{ $imageUrl($galeriItems->get(1)?->file_path ?? $galeriItems->get(1)?->gambar, 'foto/Kunjunganlogo.png') }}')"></div>
                         <div class="bg-ijo-tua rounded-2xl flex-1 shadow-sm flex items-center justify-center text-white font-bold text-sm">
                             {{ $galeriItems->count() > 2 ? '+' . ($galeriItems->count() - 2) . ' Foto' : ($galeriItems->isEmpty() ? 'Belum ada foto' : $galeriItems->count() . ' Foto') }}
                         </div>
@@ -295,6 +295,7 @@
                         <tr class="bg-gray-100 text-gray-500 uppercase text-[10px] tracking-wider">
                             <th class="p-3 rounded-l-xl">NAMA PENGADU</th>
                             <th class="p-3">ISI ADUAN</th>
+                            <th class="p-3">BALASAN ADMIN</th>
                             <th class="p-3 text-center">STATUS</th>
                             <th class="p-3 text-right rounded-r-xl">TANGGAL</th>
                         </tr>
@@ -304,6 +305,7 @@
                             <tr class="home-aduan-row cursor-pointer hover:bg-gray-50/80 transition" data-aduan-id="{{ $aduan->id_datamasukan }}" title="Klik untuk melihat detail aduan">
                                 <td class="p-3 font-bold text-gray-900">{{ $aduan->nama_pengadu }}</td>
                                 <td class="p-3 text-gray-500">{{ \Illuminate\Support\Str::limit($aduan->isi_aduan, 55) }}</td>
+                                <td class="p-3 text-gray-500">{{ $aduan->balasan_admin ? \Illuminate\Support\Str::limit($aduan->balasan_admin, 55) : 'Belum ada balasan' }}</td>
                                 <td class="p-3 text-center">
                                     <span class="{{ $statusClass($aduan->status) }} font-bold px-3 py-1 rounded-full text-[10px]">{{ $aduan->status ?? 'Pending' }}</span>
                                 </td>
@@ -311,7 +313,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="p-5 text-center text-gray-500">Belum ada aduan di database.</td>
+                                <td colspan="5" class="p-5 text-center text-gray-500">Belum ada aduan di database.</td>
                             </tr>
                         @endforelse
                     </tbody>

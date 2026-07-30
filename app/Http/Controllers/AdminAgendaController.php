@@ -98,8 +98,7 @@ class AdminAgendaController extends Controller
         $ruang = RuangRapat::find($agenda->id_ruangrapat);
         $dokumen = DokumenNotulen::where('id_agenda', $agenda->id_agenda)
             ->latest('id_dokumen')
-            ->get()
-            ->keyBy('jenis_dokumen');
+            ->get();
         $pesertaHadir = DB::table('app_md_kehadiran')
             ->join('app_md_peserta', 'app_md_kehadiran.id_peserta', '=', 'app_md_peserta.id_peserta')
             ->where('app_md_kehadiran.id_agenda', $agenda->id_agenda)
@@ -113,32 +112,50 @@ class AdminAgendaController extends Controller
     public function upload_DokumenAgenda($id, Request $request)
     {
         $agenda = Agenda::findOrFail($id);
-        $validated = $request->validate([
-            'jenis_dokumen' => 'required|in:notulen,dokumentasi',
-            'dokumen' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,webp|max:5120',
-        ]);
+        $jenisDokumen = (string) $request->input('jenis_dokumen');
+        $validated = $request->validate($jenisDokumen === 'dokumentasi'
+            ? [
+                'jenis_dokumen' => 'required|in:dokumentasi',
+                'dokumen' => 'required|array',
+                'dokumen.*' => 'file|mimes:jpg,jpeg,png,webp|max:5120',
+            ]
+            : [
+                'jenis_dokumen' => 'required|in:notulen',
+                'dokumen' => 'required|file|mimes:pdf,doc,docx|max:5120',
+            ]);
 
-        $dokumenLama = DokumenNotulen::where('id_agenda', $agenda->id_agenda)
-            ->where('jenis_dokumen', $validated['jenis_dokumen'])
-            ->first();
+        $files = $request->file('dokumen');
+        $files = is_array($files) ? $files : [$files];
 
-        if ($dokumenLama && Storage::disk('public')->exists($dokumenLama->file_path)) {
-            Storage::disk('public')->delete($dokumenLama->file_path);
+        if ($validated['jenis_dokumen'] === 'notulen' && count($files) > 1) {
+            return back()->withErrors(['dokumen' => 'Notulen hanya boleh satu file.'])->withInput();
         }
 
-        $file = $request->file('dokumen');
-        $path = $file->store('agenda-dokumen', 'public');
+        if ($validated['jenis_dokumen'] === 'notulen') {
+            $dokumenLama = DokumenNotulen::where('id_agenda', $agenda->id_agenda)
+                ->where('jenis_dokumen', $validated['jenis_dokumen'])
+                ->first();
 
-        DokumenNotulen::uploadDokumen([
-            'id_agenda' => $agenda->id_agenda,
-            'jenis_dokumen' => $validated['jenis_dokumen'],
-            'nama_file' => $file->getClientOriginalName(),
-            'file_path' => $path,
-        ]);
+            if ($dokumenLama && Storage::disk('public')->exists($dokumenLama->file_path)) {
+                Storage::disk('public')->delete($dokumenLama->file_path);
+            }
+        }
+
+        foreach ($files as $file) {
+            $path = $file->store('agenda-dokumen', 'public');
+
+            DokumenNotulen::uploadDokumen([
+                'id_agenda' => $agenda->id_agenda,
+                'jenis_dokumen' => $validated['jenis_dokumen'],
+                'nama_file' => $file->getClientOriginalName(),
+                'file_path' => $path,
+            ]);
+        }
 
         $label = $validated['jenis_dokumen'] === 'notulen' ? 'Notulen' : 'Dokumentasi';
+        $jumlah = count($files);
 
-        return back()->with('success', $label . ' agenda berhasil diunggah.');
+        return back()->with('success', $label . ' agenda berhasil diunggah' . ($jumlah > 1 ? " ({$jumlah} file)." : '.'));
     }
 
     public function hapus_DokumenAgenda($id, $dokumenId)

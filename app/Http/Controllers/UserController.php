@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use App\Models\Agenda; // Pastikan model agenda merujuk ke tabel tunggal 'agenda'
 
 class UserController extends Controller
 {
+    private const ADUAN_OTP_SESSION_KEY = 'aduan_otp';
+    private const ADUAN_OTP_TTL_MINUTES = 10;
+    private const ADUAN_OTP_RESEND_SECONDS = 60;
+
     // 1. CLASS BERANDA
     public function TampilkanPengumuman()
     {
@@ -60,15 +67,67 @@ class UserController extends Controller
     }
 
     // 3. CLASS ADUAN
+    public function kirimOtpAduan(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email|max:255',
+        ]);
+
+        $email = strtolower($validated['email']);
+        $existingOtp = session(self::ADUAN_OTP_SESSION_KEY);
+        $now = now();
+
+        if (
+            ($existingOtp['email'] ?? null) === $email
+            && ($existingOtp['sent_at'] ?? 0) > $now->copy()->subSeconds(self::ADUAN_OTP_RESEND_SECONDS)->timestamp
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'OTP sudah dikirim. Tunggu 60 detik sebelum meminta kode baru.',
+            ], 429);
+        }
+
+        $otp = (string) random_int(100000, 999999);
+
+        try {
+            Mail::raw(
+                "Kode OTP masukan SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::ADUAN_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta kode OTP.",
+                function ($message) use ($email) {
+                    $message->to($email)->subject('Kode OTP Masukan SIRAPI');
+                }
+            );
+        } catch (\Throwable) {
+            return response()->json([
+                'success' => false,
+                'message' => 'OTP gagal dikirim. Periksa konfigurasi email aplikasi.',
+            ], 500);
+        }
+
+        session()->put(self::ADUAN_OTP_SESSION_KEY, [
+            'email' => $email,
+            'otp_hash' => Hash::make($otp),
+            'expires_at' => $now->copy()->addMinutes(self::ADUAN_OTP_TTL_MINUTES)->timestamp,
+            'sent_at' => $now->timestamp,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kode OTP sudah dikirim ke email Anda.',
+        ]);
+    }
+
     public function kirimAduan(Request $request)
     {
         $validated = $request->validate([
             'nama_pengadu' => 'required|string|max:255',
             'nomor_pengadu' => 'required|string|max:30',
             'email' => 'required|email|max:255',
+            'otp' => 'required|digits:6',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'isi_aduan'    => 'required|string',
         ]);
+
+        $this->validateAduanOtp($validated['email'], $validated['otp']);
 
         if ($request->hasFile('foto')) {
             $validated['foto'] = $request->file('foto')->store('aduan', 'public');
@@ -84,6 +143,8 @@ class UserController extends Controller
             'created_at'   => now(),
             'updated_at'   => now(),
         ]);
+
+        session()->forget(self::ADUAN_OTP_SESSION_KEY);
 
         if (! $request->wantsJson()) {
             return back()->with('success', 'Aduan berhasil dikirim!');
@@ -105,6 +166,38 @@ class UserController extends Controller
         }
 
         return response()->json(['success' => true, 'status' => $aduan->status]);
+    }
+
+    private function validateAduanOtp(string $email, string $otp): void
+    {
+        $otpSession = session(self::ADUAN_OTP_SESSION_KEY);
+        $normalizedEmail = strtolower($email);
+
+        if (! $otpSession) {
+            throw ValidationException::withMessages([
+                'otp' => 'Silakan kirim OTP ke email terlebih dahulu.',
+            ]);
+        }
+
+        if (($otpSession['email'] ?? null) !== $normalizedEmail) {
+            throw ValidationException::withMessages([
+                'otp' => 'Email tidak sama dengan email yang menerima OTP.',
+            ]);
+        }
+
+        if (($otpSession['expires_at'] ?? 0) < now()->timestamp) {
+            session()->forget(self::ADUAN_OTP_SESSION_KEY);
+
+            throw ValidationException::withMessages([
+                'otp' => 'Kode OTP sudah kedaluwarsa. Silakan minta OTP baru.',
+            ]);
+        }
+
+        if (! Hash::check($otp, $otpSession['otp_hash'] ?? '')) {
+            throw ValidationException::withMessages([
+                'otp' => 'Kode OTP tidak valid.',
+            ]);
+        }
     }
 
     // 4. CLASS NON_PEGAWAI (TAMU EXSTERNAL)

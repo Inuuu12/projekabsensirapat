@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Berita;
+use App\Models\DokumenNotulen;
 use App\Models\Galeri;
 use App\Models\UlangTahun;
 use App\Models\VideoPublik;
@@ -17,7 +18,7 @@ class AdminPublikController extends Controller
     {
         $admin = Auth::guard('admin')->user();
         $berita = Berita::latest('tanggal')->latest('id_berita')->get();
-        $galeri = Galeri::latest('tanggal')->latest('id_galeri')->get();
+        $galeri = $this->dokumentasiAgendaGaleri();
         $ulangTahun = UlangTahun::orderByRaw('MONTH(tanggal), DAY(tanggal)')->get();
         $video = VideoPublik::latest()->latest('id_video')->get();
 
@@ -228,5 +229,15 @@ class AdminPublikController extends Controller
         }
 
         return 'https://www.youtube.com/embed/' . $videoId;
+    }
+
+    private function dokumentasiAgendaGaleri()
+    {
+        return DokumenNotulen::with('agenda')
+            ->where('jenis_dokumen', 'dokumentasi')
+            ->latest('id_dokumen')
+            ->get()
+            ->filter(fn ($item) => in_array(strtolower(pathinfo((string) $item->file_path, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp'], true))
+            ->values();
     }
 }

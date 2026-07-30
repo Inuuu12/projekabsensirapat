@@ -68,10 +68,10 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse ($galeriItems as $foto)
                 <article class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-                    <div class="aspect-[4/3] bg-ijo-sangatmuda bg-cover bg-center" style="background-image: url('{{ $imageUrl($foto->gambar) }}')"></div>
+                    <div class="aspect-[4/3] bg-ijo-sangatmuda bg-cover bg-center" style="background-image: url('{{ $imageUrl($foto->file_path ?? $foto->gambar) }}')"></div>
                     <div class="p-4 flex items-center justify-between">
-                        <span class="text-xs font-bold text-gray-900">Dokumentasi Kegiatan</span>
-                        <span class="text-[11px] text-gray-400 font-mono">{{ $foto->tanggal?->translatedFormat('d M Y') ?? '-' }}</span>
+                        <span class="truncate text-xs font-bold text-gray-900">{{ $foto->agenda?->nama_agenda ?? 'Dokumentasi Kegiatan' }}</span>
+                        <span class="ml-3 shrink-0 text-[11px] text-gray-400 font-mono">{{ optional($foto->agenda?->tanggal ?? $foto->tanggal ?? $foto->created_at)->translatedFormat('d M Y') ?? '-' }}</span>
                     </div>
                 </article>
             @empty

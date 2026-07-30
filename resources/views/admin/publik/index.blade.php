@@ -21,6 +21,9 @@
 
         return asset('storage/' . $path);
     };
+    $galleryImagePath = fn ($item) => $item->file_path ?? $item->gambar ?? null;
+    $galleryDate = fn ($item) => $item->agenda?->tanggal ?? $item->tanggal ?? $item->created_at ?? null;
+    $galleryTitle = fn ($item) => $item->agenda?->nama_agenda ?? 'Dokumentasi Agenda';
 @endphp
 
 <div class="max-w-[1400px] mx-auto space-y-6">
@@ -46,15 +49,15 @@
                     <img src="{{ asset('foto/Beritalogo.png') }}" alt="Berita" class="h-full w-full object-contain">
                 </span>
             </button>
-            <button type="button" onclick="openPublicModal('modal-tambah-galeri')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50">
+            <a href="{{ route('admin.agenda.lihat') }}" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50">
                 <span>
                     <span class="block text-sm font-extrabold text-gray-800">Galeri</span>
-                    <span class="mt-1 block text-xs font-medium text-gray-500">Tambah foto galeri</span>
+                    <span class="mt-1 block text-xs font-medium text-gray-500">Unggah dokumentasi agenda</span>
                 </span>
                 <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 p-2">
                     <img src="{{ asset('foto/Galerilogo.png') }}" alt="Galeri" class="h-full w-full object-contain">
                 </span>
-            </button>
+            </a>
             <button type="button" onclick="openPublicModal('modal-tambah-ulang-tahun')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50">
                 <span>
                     <span class="block text-sm font-extrabold text-gray-800">Ulang Tahun</span>
@@ -121,29 +124,39 @@
         </section>
 
         <section class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100">
-                <h2 class="text-base font-extrabold text-gray-800">Galeri Publik</h2>
-                <p class="text-xs text-gray-500 mt-1">{{ $galeri->count() }} foto di database.</p>
+            <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
+                <div>
+                    <h2 class="text-base font-extrabold text-gray-800">Galeri Publik</h2>
+                    <p class="text-xs text-gray-500 mt-1">{{ $galeri->count() }} dokumentasi agenda.</p>
+                </div>
+                @if ($galeri->count() > 6)
+                    <button type="button" onclick="openPublicModal('modal-semua-galeri')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
+                        Selengkapnya
+                    </button>
+                @endif
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-3 p-4">
                 @forelse ($galeri->take(6) as $item)
                     <div class="rounded-xl border border-gray-100 overflow-hidden">
-                        <div class="aspect-[4/3] bg-gray-100 bg-cover bg-center" style="background-image: url('{{ $imageUrl($item->gambar, 'foto/Agendahariini.png') }}')"></div>
+                        <div class="aspect-[4/3] bg-gray-100 bg-cover bg-center" style="background-image: url('{{ $imageUrl($galleryImagePath($item), 'foto/Agendahariini.png') }}')"></div>
+                        <div class="border-b border-gray-100 px-3 py-2">
+                            <p class="truncate text-xs font-bold text-gray-800">{{ $galleryTitle($item) }}</p>
+                            <p class="mt-0.5 text-[10px] text-gray-500">{{ optional($galleryDate($item))->translatedFormat('d M Y') ?? '-' }}</p>
+                        </div>
                         <div class="flex justify-center gap-2 p-2">
                             <button
                                 type="button"
                                 onclick="openEditGaleri(this)"
-                                data-action="{{ route('admin.publik.galeri.update', $item->id_galeri) }}"
-                                data-tanggal="{{ $item->tanggal?->format('Y-m-d') }}"
+                                data-action="{{ route('admin.agenda.dokumen.store', $item->id_agenda) }}"
                                 class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
-                                title="Edit Foto">
+                                title="Ganti Dokumentasi">
                                 <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
                             </button>
-                            <form method="POST" action="{{ route('admin.publik.galeri.destroy', $item->id_galeri) }}">
+                            <form method="POST" action="{{ route('admin.agenda.dokumen.destroy', [$item->id_agenda, $item->id_dokumen]) }}">
                                 @csrf
                                 @method('DELETE')
-                                <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Foto">
+                                <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Dokumentasi">
                                     <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                     <span class="sr-only">Hapus</span>
                                 </button>
@@ -236,6 +249,54 @@
                 @endforelse
             </div>
         </section>
+    </div>
+</div>
+
+<div id="modal-semua-galeri" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <div>
+                <h3 class="text-lg font-bold">Semua Dokumentasi Agenda</h3>
+                <p class="mt-0.5 text-xs text-white/70">{{ $galeri->count() }} foto dari dokumentasi agenda</p>
+            </div>
+            <button type="button" onclick="closePublicModal('modal-semua-galeri')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal semua galeri">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="grid grid-cols-1 gap-4 overflow-y-auto p-5 sm:grid-cols-2 lg:grid-cols-3">
+            @forelse ($galeri as $item)
+                <div class="overflow-hidden rounded-xl border border-gray-100">
+                    <div class="aspect-[4/3] bg-gray-100 bg-cover bg-center" style="background-image: url('{{ $imageUrl($galleryImagePath($item), 'foto/Agendahariini.png') }}')"></div>
+                    <div class="border-b border-gray-100 px-3 py-2">
+                        <p class="truncate text-xs font-bold text-gray-800">{{ $galleryTitle($item) }}</p>
+                        <p class="mt-0.5 text-[10px] text-gray-500">{{ optional($galleryDate($item))->translatedFormat('d M Y') ?? '-' }}</p>
+                    </div>
+                    <div class="flex justify-center gap-2 p-2">
+                        <button
+                            type="button"
+                            onclick="openEditGaleri(this)"
+                            data-action="{{ route('admin.agenda.dokumen.store', $item->id_agenda) }}"
+                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                            title="Ganti Dokumentasi">
+                            <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                            <span class="sr-only">Edit</span>
+                        </button>
+                        <form method="POST" action="{{ route('admin.agenda.dokumen.destroy', [$item->id_agenda, $item->id_dokumen]) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Dokumentasi">
+                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                <span class="sr-only">Hapus</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <p class="p-6 text-sm text-gray-500 sm:col-span-2 lg:col-span-3">Belum ada dokumentasi agenda.</p>
+            @endforelse
+        </div>
     </div>
 </div>
 
@@ -438,15 +499,12 @@
         </div>
         <form id="form-edit-galeri" method="POST" enctype="multipart/form-data" class="flex min-h-0 flex-1 flex-col">
             @csrf
-            @method('PUT')
             <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
+                <input type="hidden" name="jenis_dokumen" value="dokumentasi">
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Tanggal</label>
-                    <input id="edit-galeri-tanggal" type="date" name="tanggal" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-                </div>
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Ganti Foto</label>
-                    <input type="file" name="gambar" accept="image/*" class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Unggah Dokumentasi</label>
+                    <input type="file" name="dokumen[]" accept=".jpg,.jpeg,.png,.webp" multiple required class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                    <p class="mt-2 text-xs text-gray-500">Bisa pilih lebih dari satu gambar. Hapus dokumentasi lama satu per satu dari galeri jika tidak diperlukan.</p>
                 </div>
             </div>
             <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
@@ -551,7 +609,7 @@
 
     function openEditGaleri(button) {
         document.getElementById('form-edit-galeri').action = button.dataset.action;
-        document.getElementById('edit-galeri-tanggal').value = button.dataset.tanggal || '';
+        closePublicModal('modal-semua-galeri');
         openPublicModal('modal-edit-galeri');
     }
 

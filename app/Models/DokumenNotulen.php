@@ -20,6 +20,15 @@ class DokumenNotulen extends Model
 
     public static function uploadDokumen(array $data): self
     {
+        if (($data['jenis_dokumen'] ?? null) === 'dokumentasi') {
+            return self::create([
+                'id_agenda' => $data['id_agenda'],
+                'jenis_dokumen' => $data['jenis_dokumen'],
+                'nama_file' => $data['nama_file'],
+                'file_path' => $data['file_path'],
+            ]);
+        }
+
         return self::updateOrCreate(
             [
                 'id_agenda' => $data['id_agenda'],

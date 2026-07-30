@@ -7,7 +7,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] tracking-tight">Data Pegawai</h1>
-            <p class="text-xs sm:text-sm text-gray-500 mt-1">Data pegawai langsung dibaca dari database.</p>
+            <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola dan pantau informasi seluruh pegawai di sini.</p>
         </div>
         <button onclick="openModal('modal-tambah-pegawai')" class="bg-[#22C55E] hover:bg-[#16A34A] text-white font-bold py-2.5 px-5 rounded-xl transition shadow-xs self-start sm:self-auto">
             <span class="text-lg leading-none">+</span>
