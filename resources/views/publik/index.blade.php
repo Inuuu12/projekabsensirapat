@@ -144,7 +144,7 @@
                         <div class="space-y-2">
                             <div class="flex items-center justify-between text-xs text-gray-300">
                                 <span>{{ substr((string) $agenda->waktu, 0, 5) ?: '-' }} WIB</span>
-                                <span class="bg-white/20 text-white text-[10px] font-medium px-2 py-0.5 rounded-full">{{ $agenda->statusAgenda?->nama_status ?? 'Terjadwal' }}</span>
+                                <span class="bg-white/20 text-white text-[10px] font-medium px-2 py-0.5 rounded-full">{{ $agenda->status_label }}</span>
                             </div>
                             <h4 class="font-bold text-sm leading-snug">{{ $agenda->nama_agenda }}</h4>
                             <p class="text-xs text-gray-300">{{ $agenda->lokasi ?? '-' }}</p>

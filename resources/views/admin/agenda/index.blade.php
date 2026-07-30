@@ -88,11 +88,10 @@
                     @forelse ($agenda as $item)
                         @php
                             $itemRuang = $ruang->firstWhere('id_ruangrapat', $item->id_ruangrapat);
-                            $itemStatus = $statusAgenda->firstWhere('id_statusagenda', $item->id_statusagenda);
                         @endphp
                         <tr class="hover:bg-gray-50/80 transition">
                             <td class="px-6 py-4 font-bold text-[#35635b]">{{ $item->nama_agenda }}</td>
-                            <td class="px-6 py-4 text-gray-700 whitespace-nowrap">{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
+                            <td class="px-6 py-4 text-gray-700 whitespace-nowrap">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
                             <td class="px-6 py-4 text-gray-700 whitespace-nowrap">
                                 {{ substr((string) $item->waktu, 0, 5) }}{{ $item->waktu_selesai ? ' - ' . substr((string) $item->waktu_selesai, 0, 5) : '' }}
                             </td>
@@ -120,8 +119,8 @@
                             <td class="px-6 py-4 text-gray-700 whitespace-nowrap">{{ $item->lokasi ?: ($itemRuang->nama_ruang ?? '-') }}</td>
                             
                             <td class="px-6 py-4">
-                                <span class="bg-[#35635b]/10 text-[#35635b] text-xs font-bold px-2.5 py-1 rounded-lg whitespace-nowrap">
-                                    {{ $itemStatus->nama_status ?? 'Scheduled' }}
+                                <span class="inline-flex rounded-lg border px-2.5 py-1 text-xs font-bold whitespace-nowrap {{ $item->status_badge_class }}">
+                                    {{ $item->status_label }}
                                 </span>
                             </td>
 
@@ -143,7 +142,6 @@
                                         data-kuota="{{ $item->kuota }}"
                                         data-lokasi="{{ $item->lokasi }}"
                                         data-ruang="{{ $item->id_ruangrapat }}"
-                                        data-status="{{ $item->id_statusagenda }}"
                                         data-statusqr="{{ $item->status_qr }}"
                                         data-statusfr="{{ (int) $item->status_fr }}"
                                         class="w-7 h-7 rounded-lg bg-green-50 p-1.5 hover:bg-green-100 transition flex items-center justify-center cursor-pointer"
@@ -278,7 +276,6 @@
         if(document.getElementById('edit-kuota')) document.getElementById('edit-kuota').value = button.dataset.kuota || '';
         if(document.getElementById('edit-lokasi')) document.getElementById('edit-lokasi').value = button.dataset.lokasi || '';
         if(document.getElementById('edit-id_ruangrapat')) document.getElementById('edit-id_ruangrapat').value = button.dataset.ruang || '';
-        if(document.getElementById('edit-id_statusagenda')) document.getElementById('edit-id_statusagenda').value = button.dataset.status || '';
         if(document.getElementById('edit-status_qr')) document.getElementById('edit-status_qr').value = button.dataset.statusqr || 'nonaktif';
         if(document.getElementById('edit-status_fr')) document.getElementById('edit-status_fr').value = button.dataset.statusfr === '1' ? '1' : '0';
         setAgendaFileLabel('edit-', '');

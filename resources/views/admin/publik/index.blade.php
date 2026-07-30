@@ -88,7 +88,7 @@
                         <div class="w-16 h-16 rounded-xl bg-gray-100 bg-cover bg-center shrink-0" style="background-image: url('{{ $imageUrl($item->gambar) }}')"></div>
                         <div class="min-w-0 flex-1">
                             <h3 class="text-sm font-bold text-gray-900 truncate">{{ $item->judul }}</h3>
-                            <p class="text-xs text-gray-500">{{ $item->tanggal?->format('d M Y') }} &bull; {{ $item->sumber }}</p>
+                            <p class="text-xs text-gray-500">{{ $item->tanggal?->translatedFormat('d M Y') }} &bull; {{ $item->sumber }}</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <button
@@ -166,7 +166,7 @@
                     <div class="p-4 flex items-center justify-between gap-4">
                         <div>
                             <h3 class="text-sm font-bold text-gray-900">{{ $item->nama }}</h3>
-                            <p class="text-xs text-gray-500">{{ $item->tanggal?->format('d M') }}</p>
+                            <p class="text-xs text-gray-500">{{ $item->tanggal?->translatedFormat('d M') }}</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <button
@@ -206,7 +206,7 @@
                     <div class="p-4 flex items-center justify-between gap-4">
                         <div class="min-w-0">
                             <h3 class="text-sm font-bold text-gray-900 truncate">{{ $item->judul }}</h3>
-                            <p class="text-xs text-gray-500">{{ optional($item->created_at)->format('d M Y') }} &bull; YouTube</p>
+                            <p class="text-xs text-gray-500">{{ optional($item->created_at)->translatedFormat('d M Y') }} &bull; YouTube</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <button

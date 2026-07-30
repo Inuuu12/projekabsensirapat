@@ -71,7 +71,7 @@
                             </div>
                             <div class="flex items-center justify-between md:justify-end space-x-4 shrink-0">
                                 <div class="text-right">
-                                    <span class="bg-ijo-sangatmuda text-ijo-tua text-[10px] font-bold px-3 py-1 rounded-full inline-block">{{ $item->statusAgenda?->nama_status ?? 'Terjadwal' }}</span>
+                                    <span class="bg-ijo-sangatmuda text-ijo-tua text-[10px] font-bold px-3 py-1 rounded-full inline-block">{{ $item->status_label }}</span>
                                     <p class="text-[10px] text-gray-400 mt-1">{{ $item->kuota ?? 0 }} Peserta</p>
                                 </div>
                                 <a href="{{ route('publik.agenda.detail', $item->id_agenda) }}" class="bg-ijo-tua hover:bg-ijo-semitua text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors">

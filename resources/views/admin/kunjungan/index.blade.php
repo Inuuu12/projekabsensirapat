@@ -101,7 +101,9 @@
                             <td class="px-6 py-4 text-gray-700">{{ $item->email_pengunjung ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->keperluan }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->waktu ?? '-' }}</td>
-                            <td class="px-6 py-4 text-gray-700">{{ $item->tanggal_kunjungan }}</td>
+                            <td class="px-6 py-4 text-gray-700 whitespace-nowrap">
+                                {{ $item->tanggal_kunjungan ? \Carbon\Carbon::parse($item->tanggal_kunjungan)->translatedFormat('d M Y') : '-' }}
+                            </td>
                             <td class="px-6 py-4">
                                 <div class="flex justify-center gap-2">
                                     <button

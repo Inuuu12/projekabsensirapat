@@ -2,7 +2,6 @@
 
 <input id="{{ $prefix }}kategori_surat" name="kategori_surat" type="hidden" value="{{ old('kategori_surat', $kategoriSurat ?? 'internal') }}">
 <input id="{{ $prefix }}lokasi" name="lokasi" type="hidden" value="">
-<input id="{{ $prefix }}id_statusagenda" name="id_statusagenda" type="hidden" value="{{ $statusAgenda->first()->id_statusagenda ?? '' }}">
 <input id="{{ $prefix }}status_qr" name="status_qr" type="hidden" value="nonaktif">
 <input id="{{ $prefix }}status_fr" name="status_fr" type="hidden" value="0">
 <input id="{{ $prefix }}ditugaskan" name="ditugaskan" type="hidden" value="">

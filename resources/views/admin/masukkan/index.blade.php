@@ -47,8 +47,8 @@
 <div class="mx-auto max-w-[1500px] space-y-7 text-[#08251f]">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-            <h1 class="text-3xl font-black tracking-tight text-[#23374c] sm:text-4xl">Masukkan</h1>
-            <p class="mt-1 text-xs font-medium text-slate-500">Kelola dan tindak lanjuti keluhan pengguna.</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] tracking-tight">Masukkan</h1>
+            <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola dan tindak lanjuti keluhan pengguna.</p>
         </div>
     </div>
 

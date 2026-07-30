@@ -24,8 +24,8 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <section class="lg:col-span-7 space-y-6">
             <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-xs">
-                <span class="text-xs font-bold text-[#35635b] tracking-wider uppercase bg-[#35635b]/10 px-2.5 py-1 rounded-lg">
-                    {{ $agenda->statusAgenda->nama_status ?? 'Scheduled' }}
+                <span class="inline-flex rounded-lg border px-2.5 py-1 text-xs font-bold tracking-wider uppercase {{ $agenda->status_badge_class }}">
+                    {{ $agenda->status_label }}
                 </span>
                 <h2 class="text-xl font-extrabold text-gray-800 mt-4">{{ $agenda->nama_agenda }}</h2>
 

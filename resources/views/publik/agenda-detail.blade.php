@@ -56,7 +56,7 @@
             <div class="space-y-3 border-b border-gray-200/60 pb-6">
                 <div>
                     <span class="bg-ijo-sangatmuda text-ijo-tua text-[10px] font-bold px-3 py-1 rounded-full uppercase inline-block mb-2">
-                        {{ $agendaAktif->statusAgenda?->nama_status ?? 'Terjadwal' }}
+                        {{ $agendaAktif->status_label }}
                     </span>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight">
                         {{ $agendaAktif->nama_agenda }}

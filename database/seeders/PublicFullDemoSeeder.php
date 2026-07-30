@@ -18,7 +18,7 @@ class PublicFullDemoSeeder extends Seeder
         $this->ensureDemoImages();
 
         $ruangId = $this->ensureRuangRapat('Ruang Command Center', 80, 'Ruang rapat publik dan koordinasi layanan digital.');
-        $statusId = $this->ensureStatusAgenda('Aktif');
+        $statusId = $this->ensureStatusAgenda('Mendatang');
         $adminId = DB::table('app_md_admin')->where('username', 'admin')->value('id_admin');
 
         $agendaRows = [

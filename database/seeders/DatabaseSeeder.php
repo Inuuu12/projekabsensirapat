@@ -22,15 +22,12 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        DB::table('app_md_statusagenda')->updateOrInsert(
-            ['nama_status' => 'Aktif'],
-            ['created_at' => $now, 'updated_at' => $now],
-        );
-
-        DB::table('app_md_statusagenda')->updateOrInsert(
-            ['nama_status' => 'Selesai'],
-            ['created_at' => $now, 'updated_at' => $now],
-        );
+        foreach (['Mendatang', 'Berlangsung', 'Selesai'] as $statusAgenda) {
+            DB::table('app_md_statusagenda')->updateOrInsert(
+                ['nama_status' => $statusAgenda],
+                ['created_at' => $now, 'updated_at' => $now],
+            );
+        }
 
         DB::table('app_md_statusmasukan')->updateOrInsert(
             ['nama_status' => 'Menunggu'],
@@ -119,7 +116,7 @@ class DatabaseSeeder extends Seeder
 
         $idAdmin = DB::table('app_md_admin')->where('username', 'admin')->value('id_admin');
         $idRuangUtama = DB::table('app_md_ruangrapat')->where('nama_ruang', 'Ruang Rapat Utama')->value('id_ruangrapat');
-        $idStatusAktif = DB::table('app_md_statusagenda')->where('nama_status', 'Aktif')->value('id_statusagenda');
+        $idStatusMendatang = DB::table('app_md_statusagenda')->where('nama_status', 'Mendatang')->value('id_statusagenda');
         $idPesertaPegawai = DB::table('app_md_peserta')->where('email', 'andi.saputra@bappenda.test')->value('id_peserta');
 
         DB::table('app_md_agenda')->updateOrInsert(
@@ -132,7 +129,7 @@ class DatabaseSeeder extends Seeder
                 'status_fr' => true,
                 'status_qr' => 'aktif',
                 'id_ruangrapat' => $idRuangUtama,
-                'id_statusagenda' => $idStatusAktif,
+                'id_statusagenda' => $idStatusMendatang,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],

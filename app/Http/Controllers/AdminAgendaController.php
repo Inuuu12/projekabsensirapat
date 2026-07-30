@@ -30,7 +30,7 @@ class AdminAgendaController extends Controller
             'status_fr' => 'nullable|boolean',
             'status_qr' => 'nullable|string|max:50',
             'id_ruangrapat' => 'required|exists:app_md_ruangrapat,id_ruangrapat',
-            'id_statusagenda' => 'required|exists:app_md_statusagenda,id_statusagenda',
+            'id_statusagenda' => 'nullable|exists:app_md_statusagenda,id_statusagenda',
         ]);
 
         if ($request->hasFile('lampiran')) {
@@ -39,6 +39,7 @@ class AdminAgendaController extends Controller
 
         $validated['status_fr'] = $request->boolean('status_fr');
         $validated['status_qr'] = $validated['status_qr'] ?? 'nonaktif';
+        $validated['id_statusagenda'] = $this->statusAgendaIdFor($validated);
 
         $agenda = Agenda::create($validated);
 
@@ -82,19 +83,18 @@ class AdminAgendaController extends Controller
 
         $admin = Auth::guard('admin')->user();
         $ruang = RuangRapat::latest('id_ruangrapat')->get();
-        $statusAgenda = StatusAgenda::latest('id_statusagenda')->get();
         $agendaStats = Agenda::query()
             ->selectRaw('kategori_surat, COUNT(*) as total')
             ->groupBy('kategori_surat')
             ->pluck('total', 'kategori_surat');
 
-        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'statusAgenda', 'kategoriSurat', 'agendaStats'));
+        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'kategoriSurat', 'agendaStats'));
     }
 
     public function detail_Agenda(Request $request, ?int $id = null)
     {
         $agendaId = $id ?? $request->query('id');
-        $agenda = Agenda::with('statusAgenda')->findOrFail($agendaId);
+        $agenda = Agenda::findOrFail($agendaId);
         $ruang = RuangRapat::find($agenda->id_ruangrapat);
         $dokumen = DokumenNotulen::where('id_agenda', $agenda->id_agenda)
             ->latest('id_dokumen')
@@ -244,7 +244,7 @@ class AdminAgendaController extends Controller
             'status_fr' => 'nullable|boolean',
             'status_qr' => 'nullable|string|max:50',
             'id_ruangrapat' => 'required|exists:app_md_ruangrapat,id_ruangrapat',
-            'id_statusagenda' => 'required|exists:app_md_statusagenda,id_statusagenda',
+            'id_statusagenda' => 'nullable|exists:app_md_statusagenda,id_statusagenda',
         ]);
 
         if ($request->hasFile('lampiran')) {
@@ -253,6 +253,7 @@ class AdminAgendaController extends Controller
 
         $validated['status_fr'] = $request->boolean('status_fr');
         $validated['status_qr'] = $validated['status_qr'] ?? 'nonaktif';
+        $validated['id_statusagenda'] = $this->statusAgendaIdFor($validated);
 
         $agenda = Agenda::findOrFail($id);
         $agenda->update($validated);
@@ -269,5 +270,16 @@ class AdminAgendaController extends Controller
         Agenda::findOrFail($id)->delete();
 
         return back()->with('success', 'Agenda berhasil dihapus.');
+    }
+
+    private function statusAgendaIdFor(array $agenda): int
+    {
+        $status = Agenda::resolveStatusLabel(
+            $agenda['tanggal'],
+            $agenda['waktu'],
+            $agenda['waktu_selesai'] ?? null,
+        );
+
+        return StatusAgenda::firstOrCreate(['nama_status' => $status])->id_statusagenda;
     }
 }
