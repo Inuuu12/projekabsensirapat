@@ -28,7 +28,7 @@
 
             <a href="{{ route('publik.masukan') }}" 
                class="ml-2 px-4 py-2 bg-oren-utama hover:bg-oren-tua text-white font-bold rounded-xl shadow-sm transition-colors">
-                Masukan
+                Aduan
             </a>
         </nav>
 

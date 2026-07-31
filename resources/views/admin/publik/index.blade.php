@@ -210,9 +210,16 @@
         </section>
 
         <section class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100">
-                <h2 class="text-base font-extrabold text-gray-800">Video Publik</h2>
-                <p class="text-xs text-gray-500 mt-1">{{ $video->count() }} video di database.</p>
+            <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
+                <div>
+                    <h2 class="text-base font-extrabold text-gray-800">Video Publik</h2>
+                    <p class="text-xs text-gray-500 mt-1">{{ $video->count() }} video di database.</p>
+                </div>
+                @if ($video->count() > 6)
+                    <button type="button" onclick="openPublicModal('modal-semua-video')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
+                        Selengkapnya
+                    </button>
+                @endif
             </div>
             <div class="divide-y divide-gray-100">
                 @forelse ($video->take(6) as $item)
@@ -295,6 +302,68 @@
                 </div>
             @empty
                 <p class="p-6 text-sm text-gray-500 sm:col-span-2 lg:col-span-3">Belum ada dokumentasi agenda.</p>
+            @endforelse
+        </div>
+    </div>
+</div>
+
+<div id="modal-semua-video" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <div>
+                <h3 class="text-lg font-bold">Semua Video Publik</h3>
+                <p class="mt-0.5 text-xs text-white/70">{{ $video->count() }} video di database</p>
+            </div>
+            <button type="button" onclick="closePublicModal('modal-semua-video')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal semua video">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="grid grid-cols-1 gap-4 overflow-y-auto p-5 lg:grid-cols-2">
+            @forelse ($video as $item)
+                <div class="overflow-hidden rounded-xl border border-gray-100">
+                    <div class="aspect-video bg-gray-100">
+                        <iframe
+                            src="{{ $item->youtube_embed_url }}"
+                            title="{{ $item->judul }}"
+                            class="h-full w-full"
+                            loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="border-b border-gray-100 px-4 py-3">
+                        <h4 class="truncate text-sm font-bold text-gray-900">{{ $item->judul }}</h4>
+                        <p class="mt-1 text-xs text-gray-500">{{ optional($item->created_at)->translatedFormat('d M Y') }} &bull; YouTube</p>
+                        @if ($item->deskripsi)
+                            <p class="mt-2 line-clamp-2 text-xs text-gray-600">{{ $item->deskripsi }}</p>
+                        @endif
+                    </div>
+                    <div class="flex justify-center gap-2 p-3">
+                        <button
+                            type="button"
+                            onclick="openEditVideo(this)"
+                            data-action="{{ route('admin.publik.video.update', $item->id_video) }}"
+                            data-judul="{{ $item->judul }}"
+                            data-deskripsi="{{ $item->deskripsi }}"
+                            data-url="{{ $item->youtube_url }}"
+                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                            title="Edit Video">
+                            <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                            <span class="sr-only">Edit</span>
+                        </button>
+                        <form method="POST" action="{{ route('admin.publik.video.destroy', $item->id_video) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Video">
+                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                <span class="sr-only">Hapus</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <p class="p-6 text-sm text-gray-500 lg:col-span-2">Belum ada data video.</p>
             @endforelse
         </div>
     </div>
@@ -625,6 +694,7 @@
         document.getElementById('edit-video-judul').value = button.dataset.judul || '';
         document.getElementById('edit-video-deskripsi').value = button.dataset.deskripsi || '';
         document.getElementById('edit-video-url').value = button.dataset.url || '';
+        closePublicModal('modal-semua-video');
         openPublicModal('modal-edit-video');
     }
 </script>

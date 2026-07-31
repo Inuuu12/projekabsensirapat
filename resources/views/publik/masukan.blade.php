@@ -29,18 +29,18 @@
     <!-- Memanggil Navbar Publik -->
     @include('publik.layout_publik.navbarpublik') 
 
-    <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-8 space-y-6">
+    <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-8 space-y-8">
 
         <!-- Breadcrumb & Header Section -->
         <div class="space-y-2">
             <nav class="text-xs text-gray-500 flex items-center space-x-2">
                 <a href="/publik" class="hover:underline">Beranda</a>
                 <span>/</span>
-                <span class="text-gray-800 font-semibold">Feedback</span>
+                <span class="text-gray-800 font-semibold">Aduan & Feedback</span>
             </nav>
 
             <div>
-                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Sampaikan Masukan Anda</h1>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Sampaikan Masukan / Aduan Anda</h1>
                 <p class="text-xs text-gray-500 mt-1">Laporkan kendala pelaksanaan rapat atau masalah teknis aplikasi di lingkungan Diskominfo</p>
             </div>
         </div>
@@ -52,7 +52,7 @@
             <div class="lg:col-span-8 bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm space-y-6">
                 
                 <div class="border-b border-gray-100 pb-4">
-                    <h2 class="text-base font-bold text-gray-900">Ajukan Masukan Baru</h2>
+                    <h2 class="text-base font-bold text-gray-900">Ajukan Aduan Baru</h2>
                     <p class="text-xs text-gray-400 mt-0.5">Semua kolom wajib diisi</p>
                 </div>
 
@@ -115,7 +115,7 @@
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-gray-700">Kategori Masalah *</label>
                         <div class="relative">
-                            <select required class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3 text-gray-600 appearance-none focus:outline-none transition-all cursor-pointer">
+                            <select name="kategori" required class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3 text-gray-600 appearance-none focus:outline-none transition-all cursor-pointer">
                                 <option value="" disabled selected>Pilih kategori masalah</option>
                                 <option value="rapat">Kendala Pelaksanaan Rapat</option>
                                 <option value="aplikasi">Masalah Teknis Aplikasi</option>
@@ -130,7 +130,7 @@
 
                     <!-- Isi Masukan Textarea -->
                     <div class="space-y-1.5">
-                        <label class="block text-xs font-bold text-gray-700">Isi Masukan *</label>
+                        <label class="block text-xs font-bold text-gray-700">Isi Masukan / Aduan *</label>
                         <textarea rows="4" name="isi_aduan" required placeholder="Jelaskan detail masalah yang Anda alami, contoh: ruang rapat bentrok jadwal, atau aplikasi SIAP Bogor gagal login sejak pagi ini..." 
                                   class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl p-4 text-gray-800 placeholder-gray-400 focus:outline-none transition-all resize-none">{{ old('isi_aduan') }}</textarea>
                     </div>
@@ -153,7 +153,7 @@
                     <!-- Submit Button -->
                     <div class="pt-2">
                         <button type="submit" class="w-full bg-ijo-tua hover:bg-ijo-semitua text-white font-bold text-xs py-3.5 rounded-2xl transition-colors flex items-center justify-center space-x-2 shadow-md">
-                            <span>Kirim Feedback</span>
+                            <span>Kirim Aduan / Feedback</span>
                             <span>&rarr;</span>
                         </button>
                     </div>
@@ -237,6 +237,130 @@
 
             </div>
 
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SEKSI BARU: DAFTAR ADUAN & REPLIES / TANGGAPAN ADMIN      -->
+        <!-- ========================================================= -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm space-y-6">
+            <div class="border-b border-gray-100 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <div>
+                    <h2 class="text-lg font-bold text-gray-900">Daftar Masukan & Aduan Publik</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Daftar riwayat aduan publik beserta status tanggapan dari tim admin</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                @if(isset($aduans) && count($aduans) > 0)
+                    @foreach($aduans as $aduan)
+                        <div class="border border-gray-100 rounded-2xl p-5 bg-[#FBFBFA] space-y-3 transition-all hover:border-ijo-muda/40">
+                            
+                            <!-- Header Aduan: Nama, Email Samaran, Tanggal, & Badge Status -->
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200/60 pb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-full bg-ijo-sangatmuda text-ijo-tua font-bold flex items-center justify-center text-xs">
+                                        {{ strtoupper(substr($aduan->nama_pengadu ?? 'A', 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-gray-900">{{ $aduan->nama_pengadu ?? 'Anonim' }}</p>
+                                        <p class="text-[10px] text-gray-400 font-mono">
+                                            {{ isset($aduan->email) ? Str::mask($aduan->email, '*', 2, 5) : '***@email.com' }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[10px] text-gray-400">
+                                        {{ isset($aduan->created_at) ? $aduan->created_at->format('d M Y, H:i') : 'Baru saja' }}
+                                    </span>
+                                    
+                                    <!-- Badge Status Balasan -->
+                                    @if(isset($aduan->tanggapan) || isset($aduan->reply) || (isset($aduan->status) && $aduan->status == 'selesai'))
+                                        <span class="bg-ijo-sangatmuda text-ijo-tua text-[10px] font-bold px-2.5 py-1 rounded-full border border-ijo-muda/30">
+                                            ✓ Sudah Dibalas
+                                        </span>
+                                    @else
+                                        <span class="bg-oren-muda text-oren-tua text-[10px] font-bold px-2.5 py-1 rounded-full border border-oren-utama/30">
+                                            ⏳ Menunggu Balasan
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Isi Aduan -->
+                            <div>
+                                <p class="text-xs text-gray-700 leading-relaxed">
+                                    {{ $aduan->isi_aduan ?? $aduan->masukan ?? 'Tidak ada pesan' }}
+                                </p>
+                                @if(isset($aduan->foto) && $aduan->foto)
+                                    <div class="mt-2">
+                                        <a href="{{ asset('storage/' . $aduan->foto) }}" target="_blank" class="text-[11px] text-ijo-semitua hover:underline font-semibold flex items-center space-x-1">
+                                            <span>🖼️ Lihat Lampiran Foto</span>
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- BOX TANGGAPAN / REPLY ADMIN -->
+                            @if(isset($aduan->tanggapan) || isset($aduan->reply))
+                                <div class="mt-3 pt-3 border-t border-dashed border-gray-200">
+                                    <div class="bg-ijo-sangatmuda/40 border border-ijo-muda/30 rounded-xl p-4 space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-xs">🛡️</span>
+                                                <span class="text-xs font-bold text-ijo-tua">Tanggapan Admin / Tim Diskominfo</span>
+                                            </div>
+                                            <span class="text-[10px] text-gray-400">
+                                                {{ isset($aduan->updated_at) ? $aduan->updated_at->format('d M Y, H:i') : '' }}
+                                            </span>
+                                        </div>
+                                        <p class="text-xs text-gray-800 leading-relaxed">
+                                            {{ $aduan->tanggapan ?? $aduan->reply }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
+
+                        </div>
+                    @endforeach
+                @else
+                    <!-- Tampilan Statis Dummy (Jika Data dari Controller Belum Ada/Kosong) -->
+                    <div class="border border-gray-100 rounded-2xl p-5 bg-[#FBFBFA] space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200/60 pb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-full bg-ijo-sangatmuda text-ijo-tua font-bold flex items-center justify-center text-xs">
+                                    B
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-900">Budi Santoso</p>
+                                    <p class="text-[10px] text-gray-400 font-mono">bu***@email.com</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[10px] text-gray-400">10 Mins ago</span>
+                                <span class="bg-ijo-sangatmuda text-ijo-tua text-[10px] font-bold px-2.5 py-1 rounded-full">
+                                    ✓ Sudah Dibalas
+                                </span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-700">
+                            Mohon bantuannya, saat mencoba login aplikasi SIAP Bogor selalu muncul notifikasi error 'Koneksi Server Terputus'.
+                        </p>
+                        <!-- Reply Admin -->
+                        <div class="mt-3 pt-3 border-t border-dashed border-gray-200">
+                            <div class="bg-ijo-sangatmuda/40 border border-ijo-muda/30 rounded-xl p-4 space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs">🛡️</span>
+                                    <span class="text-xs font-bold text-ijo-tua">Tanggapan Admin Diskominfo</span>
+                                </div>
+                                <p class="text-xs text-gray-800 leading-relaxed">
+                                    Halo Pak Budi, terima kasih atas laporannya. Kendala server server sudah kami tangani oleh tim IT Diskominfo per jam 10.15 WIB. Silakan dicoba login kembali secara berkala.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
         </div>
 
     </main>
