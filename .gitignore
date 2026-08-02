@@ -45,3 +45,17 @@ Thumbs.db
 /face-service/embeddings/*.pkl
 memori.md
 /image/
+
+# Mengabaikan foto/dummy hasil unggahan ke public/uploads
+/public/uploads/
+
+# Mengabaikan file multimedia atau archive berukuran besar
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.sql
+*.tar.gz
+*.zip
+*.rar
+*.iso
