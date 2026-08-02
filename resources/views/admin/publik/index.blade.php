@@ -81,9 +81,16 @@
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <section class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100">
-                <h2 class="text-base font-extrabold text-gray-800">Berita Publik</h2>
-                <p class="text-xs text-gray-500 mt-1">{{ $berita->count() }} berita di database.</p>
+            <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
+                <div>
+                    <h2 class="text-base font-extrabold text-gray-800">Berita Publik</h2>
+                    <p class="text-xs text-gray-500 mt-1">{{ $berita->count() }} berita di database.</p>
+                </div>
+                @if ($berita->count() > 6)
+                    <button type="button" onclick="openPublicModal('modal-semua-berita')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
+                        Selengkapnya
+                    </button>
+                @endif
             </div>
             <div class="divide-y divide-gray-100">
                 @forelse ($berita->take(6) as $item)
@@ -170,9 +177,16 @@
         </section>
 
         <section class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100">
-                <h2 class="text-base font-extrabold text-gray-800">Ulang Tahun Publik</h2>
-                <p class="text-xs text-gray-500 mt-1">{{ $ulangTahun->count() }} data di database.</p>
+            <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
+                <div>
+                    <h2 class="text-base font-extrabold text-gray-800">Ulang Tahun Publik</h2>
+                    <p class="text-xs text-gray-500 mt-1">{{ $ulangTahun->count() }} data di database.</p>
+                </div>
+                @if ($ulangTahun->count() > 6)
+                    <button type="button" onclick="openPublicModal('modal-semua-ulang-tahun')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
+                        Selengkapnya
+                    </button>
+                @endif
             </div>
             <div class="divide-y divide-gray-100">
                 @forelse ($ulangTahun->take(6) as $item)
@@ -302,6 +316,107 @@
                 </div>
             @empty
                 <p class="p-6 text-sm text-gray-500 sm:col-span-2 lg:col-span-3">Belum ada dokumentasi agenda.</p>
+            @endforelse
+        </div>
+    </div>
+</div>
+
+<div id="modal-semua-berita" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <div>
+                <h3 class="text-lg font-bold">Semua Berita Publik</h3>
+                <p class="mt-0.5 text-xs text-white/70">{{ $berita->count() }} berita di database</p>
+            </div>
+            <button type="button" onclick="closePublicModal('modal-semua-berita')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal semua berita">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="grid grid-cols-1 gap-4 overflow-y-auto p-5 sm:grid-cols-2 lg:grid-cols-3">
+            @forelse ($berita as $item)
+                <div class="flex items-center gap-4 overflow-hidden rounded-xl border border-gray-100 p-3">
+                    <div class="h-16 w-16 shrink-0 rounded-lg bg-gray-100 bg-cover bg-center" style="background-image: url('{{ $imageUrl($item->gambar) }}')"></div>
+                    <div class="min-w-0 flex-1">
+                        <h4 class="truncate text-sm font-bold text-gray-900">{{ $item->judul }}</h4>
+                        <p class="mt-1 text-[10px] text-gray-500">{{ $item->tanggal?->translatedFormat('d M Y') }} &bull; {{ $item->sumber }}</p>
+                    </div>
+                    <div class="flex flex-col justify-center gap-1">
+                        <button
+                            type="button"
+                            onclick="openEditBerita(this)"
+                            data-action="{{ route('admin.publik.berita.update', $item->id_berita) }}"
+                            data-judul="{{ $item->judul }}"
+                            data-isi="{{ $item->isi_berita }}"
+                            data-tanggal="{{ $item->tanggal?->format('Y-m-d') }}"
+                            data-sumber="{{ $item->sumber }}"
+                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                            title="Edit Berita">
+                            <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                            <span class="sr-only">Edit</span>
+                        </button>
+                        <form method="POST" action="{{ route('admin.publik.berita.destroy', $item->id_berita) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Berita">
+                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                <span class="sr-only">Hapus</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <p class="p-6 text-sm text-gray-500 sm:col-span-2 lg:col-span-3">Belum ada berita publik.</p>
+            @endforelse
+        </div>
+    </div>
+</div>
+
+<div id="modal-semua-ulang-tahun" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <div>
+                <h3 class="text-lg font-bold">Semua Ulang Tahun Publik</h3>
+                <p class="mt-0.5 text-xs text-white/70">{{ $ulangTahun->count() }} data di database</p>
+            </div>
+            <button type="button" onclick="closePublicModal('modal-semua-ulang-tahun')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal semua ulang tahun">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="grid grid-cols-1 gap-4 overflow-y-auto p-5 sm:grid-cols-2 lg:grid-cols-3">
+            @forelse ($ulangTahun as $item)
+                <div class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 p-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-900">{{ $item->nama }}</h3>
+                        <p class="text-xs text-gray-500">{{ $item->tanggal?->translatedFormat('d M') }}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button
+                            type="button"
+                            onclick="openEditUlangTahun(this)"
+                            data-action="{{ route('admin.publik.ulang-tahun.update', $item->id_ulangtahun) }}"
+                            data-nama="{{ $item->nama }}"
+                            data-tanggal="{{ $item->tanggal?->format('Y-m-d') }}"
+                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                            title="Edit Ulang Tahun">
+                            <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                            <span class="sr-only">Edit</span>
+                        </button>
+                        <form method="POST" action="{{ route('admin.publik.ulang-tahun.destroy', $item->id_ulangtahun) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Ulang Tahun">
+                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                <span class="sr-only">Hapus</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <p class="p-6 text-sm text-gray-500 sm:col-span-2 lg:col-span-3">Belum ada data ulang tahun.</p>
             @endforelse
         </div>
     </div>

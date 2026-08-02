@@ -52,7 +52,7 @@
         <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 6h4m-7 4h10m-9 9h8a3 3 0 003-3v-5a2 2 0 00-2-2H7a2 2 0 00-2 2v5a3 3 0 003 3zM9 9V7a3 3 0 016 0v2"></path>
         </svg>
-        <input id="{{ $prefix }}bidang" name="bidang" type="text" placeholder="Contoh: Sekertariat" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+        <input id="{{ $prefix }}bidang" name="bidang" type="text" placeholder="Contoh: Sekretariat" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
     </div>
 </div>
 

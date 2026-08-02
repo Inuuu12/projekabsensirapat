@@ -76,7 +76,7 @@
                 </article>
             @empty
                 <div class="lg:col-span-3 sm:col-span-2 bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center">
-                    <h3 class="font-bold text-gray-900">Belum ada foto di database</h3>
+                    <h3 class="font-bold text-gray-900">Belum ada foto</h3>
                     <p class="text-xs text-gray-500 mt-2">Galeri akan tampil setelah admin menambahkan dokumentasi.</p>
                 </div>
             @endforelse
