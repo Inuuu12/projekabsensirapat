@@ -145,30 +145,60 @@
     </div>
 </div>
 
-<div id="modal-tambah-kunjungan" class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
-        <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Tambah Kunjungan Baru</h3>
-        <form method="POST" action="{{ route('admin.kunjungan.store') }}" class="space-y-4">
+<div id="modal-tambah-kunjungan" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <h3 class="text-lg font-bold">Tambah Kunjungan</h3>
+            <button type="button" onclick="closeModal('modal-tambah-kunjungan')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </div>
+
+        <form id="form-tambah-kunjungan" method="POST" action="{{ route('admin.kunjungan.store') }}" class="flex min-h-0 flex-1 flex-col">
             @csrf
-            @include('admin.kunjungan.form-fields')
-            <div class="flex justify-end gap-3 pt-3 border-t">
-                <button type="button" onclick="closeModal('modal-tambah-kunjungan')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] rounded-xl">Simpan</button>
+            <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
+                @include('admin.kunjungan.form-fields')
+            </div>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <button type="button" onclick="closeModal('modal-tambah-kunjungan')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h12l2 2v12H5zM8 5v6h8V5M9 18h6"></path>
+                    </svg>
+                    Simpan
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-<div id="modal-edit-kunjungan" class="fixed inset-0 z-50 bg-black/50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
-        <h3 class="text-lg font-bold text-gray-800 border-b pb-3">Edit Kunjungan</h3>
-        <form id="form-edit-kunjungan" method="POST" class="space-y-4">
+<div id="modal-edit-kunjungan" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <h3 class="text-lg font-bold">Edit Kunjungan</h3>
+            <button type="button" onclick="closeModal('modal-edit-kunjungan')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </div>
+
+        <form id="form-edit-kunjungan" method="POST" class="flex min-h-0 flex-1 flex-col">
             @csrf
             @method('PUT')
-            @include('admin.kunjungan.form-fields', ['prefix' => 'edit-'])
-            <div class="flex justify-end gap-3 pt-3 border-t">
-                <button type="button" onclick="closeModal('modal-edit-kunjungan')" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] rounded-xl">Simpan</button>
+            <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
+                @include('admin.kunjungan.form-fields', ['prefix' => 'edit-'])
+            </div>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <button type="button" onclick="closeModal('modal-edit-kunjungan')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h12l2 2v12H5zM8 5v6h8V5M9 18h6"></path>
+                    </svg>
+                    Simpan
+                </button>
             </div>
         </form>
     </div>
@@ -188,7 +218,9 @@
 
     function openEditKunjungan(button) {
         document.getElementById('form-edit-kunjungan').action = button.dataset.action;
-        document.getElementById('edit-nama_pejabat').value = button.dataset.pejabat || '';
+        const pejabatVal = button.dataset.pejabat || '';
+        if (document.getElementById('edit-nama_pegawai')) document.getElementById('edit-nama_pegawai').value = pejabatVal;
+        if (document.getElementById('edit-nama_pejabat')) document.getElementById('edit-nama_pejabat').value = pejabatVal;
         document.getElementById('edit-nama_pengunjung').value = button.dataset.pengunjung || '';
         document.getElementById('edit-asal_instansi').value = button.dataset.instansi || '';
         document.getElementById('edit-nomorhp_pengunjung').value = button.dataset.nomor || '';

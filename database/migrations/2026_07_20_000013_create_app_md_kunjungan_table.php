@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('app_md_kunjungan', function (Blueprint $table) {
             $table->id('id_kunjungan');
-            $table->string('nama_pejabat')->nullable();
+            $table->string('nama_pegawai')->nullable();
             $table->string('nama_pengunjung')->nullable();
             $table->string('asal_instansi')->nullable();
             $table->string('nomorhp_pengunjung')->nullable();

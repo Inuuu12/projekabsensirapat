@@ -126,6 +126,25 @@
             </a>
         </div>
 
+        <!-- Banner Kunjungan Pejabat -->
+        <div class="bg-white rounded-3xl p-5 md:p-6 border border-gray-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6 hover:shadow-md transition-all">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-ijo-sangatmuda text-ijo-tua flex items-center justify-center shrink-0 shadow-inner">
+                    <svg class="w-6 h-6 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-extrabold text-gray-900 text-sm md:text-base leading-snug">Ingin Bertemu Kami?</h3>
+                    <p class="text-xs text-gray-500 mt-0.5">Daftarkan kunjungan Anda</p>
+                </div>
+            </div>
+            <a href="{{ route('publik.form-kunjungan') }}" class="w-full md:w-auto inline-flex items-center justify-center space-x-2 text-xs md:text-sm font-bold text-white bg-ijo-tua hover:bg-ijo-semitua px-6 py-3 rounded-full transition-all shadow-sm shrink-0 group">
+                <span>Isi Form Kunjungan </span>
+                <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+            </a>
+        </div>
+
         <!-- 3. Section Agenda Hari Ini -->
         <section class="space-y-4">
             <div class="flex items-center justify-between">

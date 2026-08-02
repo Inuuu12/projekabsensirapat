@@ -13,6 +13,7 @@ class Kunjungan extends Model
     protected $primaryKey = 'id_kunjungan';
 
     protected $fillable = [
+        'nama_pegawai',
         'nama_pejabat',
         'nama_pengunjung',
         'asal_instansi',
@@ -23,4 +24,14 @@ class Kunjungan extends Model
         'tanggal_kunjungan',
         'id_admin',
     ];
+
+    public function getNamaPegawaiAttribute($value)
+    {
+        return $value ?? $this->attributes['nama_pejabat'] ?? null;
+    }
+
+    public function getNamaPejabatAttribute($value)
+    {
+        return $value ?? $this->attributes['nama_pegawai'] ?? null;
+    }
 }

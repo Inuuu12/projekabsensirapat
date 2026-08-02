@@ -16,35 +16,39 @@ class AdminKunjunganController extends Controller
         $keperluanFilter = (string) $request->query('keperluan', 'semua');
         $tanggalFilter = (string) $request->query('tanggal', '');
 
+        $hasNamaPegawai = \Illuminate\Support\Facades\Schema::hasColumn('app_md_kunjungan', 'nama_pegawai');
+        $colPegawai = $hasNamaPegawai ? 'nama_pegawai' : 'nama_pejabat';
+
         $kunjungan = Kunjungan::query()
-            ->when($keyword !== '', function ($query) use ($keyword) {
-                $query->where(function ($search) use ($keyword) {
+            ->when($keyword !== '', function ($query) use ($keyword, $colPegawai) {
+                $query->where(function ($search) use ($keyword, $colPegawai) {
                     $search->where('nama_pengunjung', 'like', "%{$keyword}%")
-                        ->orWhere('nama_pejabat', 'like', "%{$keyword}%")
+                        ->orWhere($colPegawai, 'like', "%{$keyword}%")
                         ->orWhere('asal_instansi', 'like', "%{$keyword}%")
                         ->orWhere('nomorhp_pengunjung', 'like', "%{$keyword}%")
                         ->orWhere('email_pengunjung', 'like', "%{$keyword}%")
                         ->orWhere('keperluan', 'like', "%{$keyword}%");
                 });
             })
-            ->when($pihakDitujuFilter !== 'semua', fn ($query) => $query->where('nama_pejabat', $pihakDitujuFilter))
+            ->when($pihakDitujuFilter !== 'semua', fn ($query) => $query->where($colPegawai, $pihakDitujuFilter))
             ->when($keperluanFilter !== 'semua', fn ($query) => $query->where('keperluan', $keperluanFilter))
             ->when($tanggalFilter !== '', fn ($query) => $query->whereDate('tanggal_kunjungan', $tanggalFilter))
             ->latest('id_kunjungan')
             ->get();
         $totalKunjungan = Kunjungan::count();
         $pihakDitujuOptions = Kunjungan::query()
-            ->whereNotNull('nama_pejabat')
-            ->where('nama_pejabat', '!=', '')
+            ->whereNotNull($colPegawai)
+            ->where($colPegawai, '!=', '')
             ->distinct()
-            ->orderBy('nama_pejabat')
-            ->pluck('nama_pejabat');
+            ->orderBy($colPegawai)
+            ->pluck($colPegawai);
         $keperluanOptions = Kunjungan::query()
             ->whereNotNull('keperluan')
             ->where('keperluan', '!=', '')
             ->distinct()
             ->orderBy('keperluan')
             ->pluck('keperluan');
+        $pegawaiList = \App\Models\Pegawai::orderBy('nama_pegawai')->get();
 
         return view('admin.kunjungan.index', compact(
             'admin',
@@ -55,20 +59,25 @@ class AdminKunjunganController extends Controller
             'keperluanFilter',
             'tanggalFilter',
             'pihakDitujuOptions',
-            'keperluanOptions'
+            'keperluanOptions',
+            'pegawaiList'
         ));
     }
 
     public function kelola_Kunjungan(Request $request)
     {
+        $namaPegawai = $request->input('nama_pegawai') ?: $request->input('nama_pejabat');
+        $request->merge(['nama_pegawai' => $namaPegawai, 'nama_pejabat' => $namaPegawai]);
+
         $validated = $request->validate([
+            'nama_pegawai' => 'nullable|string|max:255',
             'nama_pejabat' => 'nullable|string|max:255',
             'nama_pengunjung' => 'nullable|string|max:255',
             'asal_instansi' => 'nullable|string|max:255',
             'nomorhp_pengunjung' => 'nullable|string|max:30',
-            'email_pengunjung' => 'nullable|email|max:255|unique:app_md_kunjungan,email_pengunjung',
+            'email_pengunjung' => 'nullable|email|max:255',
             'keperluan' => 'required|string',
-            'waktu' => 'nullable|date_format:H:i',
+            'waktu' => 'nullable',
             'tanggal_kunjungan' => 'required|date',
         ]);
         $validated['id_admin'] = Auth::guard('admin')->id();
@@ -83,14 +92,18 @@ class AdminKunjunganController extends Controller
 
     public function update_Kunjungan($id, Request $request)
     {
+        $namaPegawai = $request->input('nama_pegawai') ?: $request->input('nama_pejabat');
+        $request->merge(['nama_pegawai' => $namaPegawai, 'nama_pejabat' => $namaPegawai]);
+
         $validated = $request->validate([
+            'nama_pegawai' => 'nullable|string|max:255',
             'nama_pejabat' => 'nullable|string|max:255',
             'nama_pengunjung' => 'nullable|string|max:255',
             'asal_instansi' => 'nullable|string|max:255',
             'nomorhp_pengunjung' => 'nullable|string|max:30',
-            'email_pengunjung' => 'nullable|email|max:255|unique:app_md_kunjungan,email_pengunjung,' . $id . ',id_kunjungan',
+            'email_pengunjung' => 'nullable|email|max:255',
             'keperluan' => 'required|string',
-            'waktu' => 'nullable|date_format:H:i',
+            'waktu' => 'nullable',
             'tanggal_kunjungan' => 'required|date',
         ]);
 
