@@ -1,6 +1,6 @@
 @extends('admin.layout.app')
 
-@section('title', 'Pengaduan')
+@section('title', 'Masukkan')
 
 @section('content')
 @php
