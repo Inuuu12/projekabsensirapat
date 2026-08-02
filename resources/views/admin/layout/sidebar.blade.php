@@ -78,7 +78,7 @@
             <!-- Masukkan / Aduan -->
             <a href="{{ route('admin.masukkan.lihat') }}" class="flex items-center px-4 py-3 rounded-xl transition-colors {{ request()->routeIs('admin.masukkan.lihat') ? 'bg-[#2b4f49] font-bold text-white shadow-sm' : 'hover:bg-[#2b4f49]/60 text-white/90' }}">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                <span>Masukkan</span>
+                <span>Pengaduan</span>
             </a>
 
             <!-- Konten Publik -->

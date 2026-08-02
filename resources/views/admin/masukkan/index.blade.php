@@ -1,6 +1,6 @@
 @extends('admin.layout.app')
 
-@section('title', 'Masukkan')
+@section('title', 'Pengaduan')
 
 @section('content')
 @php
@@ -47,7 +47,7 @@
 <div class="mx-auto max-w-[1500px] space-y-7 text-[#08251f]">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] tracking-tight">Masukkan</h1>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] tracking-tight">Pengaduan</h1>
             <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola dan tindak lanjuti keluhan pengguna.</p>
         </div>
     </div>
@@ -203,7 +203,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center text-slate-500">Belum ada data masukkan.</td>
+                            <td colspan="8" class="px-6 py-12 text-center text-slate-500">Belum ada data pengaduan.</td>
                         </tr>
                     @endforelse
                 </tbody>
