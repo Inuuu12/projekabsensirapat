@@ -91,7 +91,7 @@
 
                     <div class="flex items-center space-x-3">
                         <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-xs">☎️</div>
-                        <p>(021) 875-xxxx</p>
+                        <p>(021) xxxx-xxxx</p>
                     </div>
 
                     <div class="flex items-center space-x-3">
