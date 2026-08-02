@@ -1,7 +1,15 @@
-@php($prefix = $prefix ?? '')
-<div>
-    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Pihak Dituju</label>
-    <input id="{{ $prefix }}nama_pejabat" name="nama_pejabat" type="text" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
+@php
+    $prefix = isset($prefix) ? $prefix : '';
+@endphp
+<div class="sm:col-span-2">
+    <label for="{{ $prefix }}nama_pegawai" class="block text-xs font-bold text-gray-700 uppercase mb-1">Pihak Dituju *</label>
+    <select id="{{ $prefix }}nama_pegawai" name="nama_pegawai" required class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none bg-white">
+        <option value="">-- Pilih Pihak Dituju --</option>
+        @foreach ($pegawaiList ?? [] as $p)
+            <option value="{{ $p->nama_pegawai }}">{{ $p->nama_pegawai }} {{ $p->jabatan ? "({$p->jabatan})" : ($p->bidang ? "({$p->bidang})" : '') }}</option>
+        @endforeach
+    </select>
+    <input type="hidden" id="{{ $prefix }}nama_pejabat" name="nama_pejabat">
 </div>
 <div>
     <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama Pengunjung</label>

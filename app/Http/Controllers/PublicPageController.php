@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use App\Models\Agenda;
 use App\Models\Berita;
 use App\Models\DataMasukan;
 use App\Models\DokumenNotulen;
+use App\Models\Kunjungan;
 use App\Models\Logbook;
+use App\Models\Pegawai;
 use App\Models\QRCode;
 use App\Models\UlangTahun;
 use App\Models\VideoPublik;
@@ -266,6 +269,56 @@ class PublicPageController extends Controller
         $agenda = $this->agendaPresensi($request);
 
         return view('publik.presensi-tamu', compact('agenda'));
+    }
+
+    public function formKunjungan()
+    {
+        $pegawaiList = $this->queryOrDefault(fn () => Pegawai::orderBy('nama_pegawai')->get(), collect());
+
+        return view('publik.form-kunjungan', compact('pegawaiList'));
+    }
+
+    public function simpanKunjungan(Request $request)
+    {
+        $namaPegawai = $request->input('nama_pegawai') ?: $request->input('nama_pejabat');
+        $request->merge(['nama_pegawai' => $namaPegawai]);
+
+        $validated = $request->validate([
+            'nama_pegawai' => 'required|string|max:255',
+            'nama_pengunjung' => 'required|string|max:255',
+            'asal_instansi' => 'required|string|max:255',
+            'nomorhp_pengunjung' => 'required|string|max:30',
+            'email_pengunjung' => 'required|email|max:255',
+            'keperluan' => 'required|string',
+        ], [
+            'nama_pegawai.required' => 'Pilih pihak / pegawai yang ingin Anda tuju.',
+            'nama_pengunjung.required' => 'Nama lengkap tamu wajib diisi.',
+            'asal_instansi.required' => 'Instansi / asal wajib diisi.',
+            'nomorhp_pengunjung.required' => 'No. HP / WhatsApp wajib diisi.',
+            'email_pengunjung.required' => 'Alamat email wajib diisi.',
+            'email_pengunjung.email' => 'Format email tidak valid.',
+            'keperluan.required' => 'Keperluan kunjungan wajib diisi.',
+        ]);
+
+        $now = $this->nowWib();
+        $validated['nama_pejabat'] = $validated['nama_pegawai'];
+        $validated['tanggal_kunjungan'] = $now->toDateString();
+        $validated['waktu'] = $now->format('H:i:s');
+        $validated['id_admin'] = $this->queryOrDefault(fn () => Admin::first()?->id_admin);
+
+        try {
+            Kunjungan::create($validated);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                // If legacy DB schema unique index exists on email_pengunjung, fallback
+                $validated['email_pengunjung'] = $validated['email_pengunjung'] . '.' . time();
+                Kunjungan::create($validated);
+            } else {
+                throw $e;
+            }
+        }
+
+        return back()->with('success', 'Form kunjungan Anda telah berhasil dikirim. Terima kasih!');
     }
 
     public function qrHadir(Agenda $agenda)
