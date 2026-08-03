@@ -11,8 +11,13 @@ return new class extends Migration
         Schema::create('app_md_agenda', function (Blueprint $table) {
             $table->id('id_agenda');
             $table->string('nama_agenda');
+            $table->string('kategori_surat', 20)->default('internal');
+            $table->string('asal_surat')->nullable();
+            $table->string('ditugaskan')->nullable();
+            $table->string('lampiran')->nullable();
             $table->date('tanggal');
             $table->time('waktu');
+            $table->time('waktu_selesai')->nullable();
             $table->integer('kuota')->nullable();
             $table->string('lokasi');
             $table->boolean('status_fr')->nullable();

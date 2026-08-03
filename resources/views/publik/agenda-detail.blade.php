@@ -35,6 +35,8 @@
             $lampiranUrl = $agendaAktif?->lampiran
                 ? (filter_var($agendaAktif->lampiran, FILTER_VALIDATE_URL) ? $agendaAktif->lampiran : asset('storage/' . ltrim($agendaAktif->lampiran, '/')))
                 : null;
+            $lampiranExtension = strtolower(pathinfo((string) $agendaAktif?->lampiran, PATHINFO_EXTENSION));
+            $lampiranPreviewable = in_array($lampiranExtension, ['pdf', 'jpg', 'jpeg', 'png'], true);
         @endphp
 
         <div class="space-y-3">
@@ -84,13 +86,13 @@
                     <div class="space-y-3">
                         <h3 class="text-sm font-bold text-gray-900">Lampiran</h3>
                         @if ($lampiranUrl)
-                            <a href="{{ $lampiranUrl }}" target="_blank" rel="noopener" class="bg-white rounded-2xl p-3 border border-gray-100 shadow-sm flex items-center space-x-3 hover:border-gray-300 transition-colors">
+                            <button type="button" id="open-lampiran-modal" class="w-full bg-white rounded-2xl p-3 border border-gray-100 shadow-sm flex items-center space-x-3 text-left hover:border-gray-300 transition-colors">
                                 <div class="w-10 h-10 rounded-xl bg-oren-muda text-oren-tua font-bold text-[10px] flex items-center justify-center shrink-0 uppercase">FILE</div>
                                 <div class="overflow-hidden">
                                     <h5 class="text-xs font-bold text-gray-900 truncate">{{ basename($agendaAktif->lampiran) }}</h5>
-                                    <p class="text-[10px] text-gray-400">Buka lampiran agenda</p>
+                                    <p class="text-[10px] text-gray-400">Lihat lampiran agenda</p>
                                 </div>
-                            </a>
+                            </button>
                         @else
                             <p class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-xs text-gray-500">Belum ada lampiran untuk agenda ini.</p>
                         @endif
@@ -145,6 +147,59 @@
         @endif
     </main>
 
+    @if ($lampiranUrl)
+        <div id="lampiran-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
+            <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+                <div class="flex items-center justify-between gap-4 bg-ijo-tua px-5 py-4 text-white sm:px-6">
+                    <div class="min-w-0">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-white/70">Lampiran Agenda</p>
+                        <h3 class="truncate text-sm font-extrabold">{{ basename($agendaAktif->lampiran) }}</h3>
+                    </div>
+                    <button type="button" id="close-lampiran-modal" class="inline-flex h-9 shrink-0 items-center justify-center rounded-lg bg-white/10 px-4 text-xs font-bold text-white transition hover:bg-white/20">
+                        Kembali
+                    </button>
+                </div>
+
+                <div class="min-h-0 flex-1 bg-gray-100 p-3 sm:p-4">
+                    @if ($lampiranPreviewable)
+                        <iframe src="{{ $lampiranUrl }}" title="Lampiran {{ $agendaAktif->nama_agenda }}" class="h-[70vh] w-full rounded-xl border border-gray-200 bg-white"></iframe>
+                    @else
+                        <div class="flex h-[45vh] flex-col items-center justify-center rounded-xl bg-white p-6 text-center">
+                            <h4 class="text-sm font-extrabold text-gray-900">Preview tidak tersedia</h4>
+                            <p class="mt-2 max-w-md text-xs text-gray-500">Format file ini tidak bisa ditampilkan langsung di halaman. Gunakan tombol unduh untuk melihat lampiran.</p>
+                            <a href="{{ $lampiranUrl }}" download class="mt-4 rounded-xl bg-ijo-tua px-5 py-2.5 text-xs font-bold text-white transition hover:bg-ijo-semitua">Unduh Lampiran</a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    @endif
+
     @include('publik.layout_publik.footer')
+    @if ($lampiranUrl)
+        <script>
+            const lampiranModal = document.getElementById('lampiran-modal');
+            const openLampiranModal = document.getElementById('open-lampiran-modal');
+            const closeLampiranModal = document.getElementById('close-lampiran-modal');
+
+            function hideLampiranModal() {
+                lampiranModal?.classList.add('hidden');
+                lampiranModal?.classList.remove('flex');
+            }
+
+            openLampiranModal?.addEventListener('click', () => {
+                lampiranModal?.classList.remove('hidden');
+                lampiranModal?.classList.add('flex');
+            });
+
+            closeLampiranModal?.addEventListener('click', hideLampiranModal);
+
+            lampiranModal?.addEventListener('click', (event) => {
+                if (event.target === lampiranModal) {
+                    hideLampiranModal();
+                }
+            });
+        </script>
+    @endif
 </body>
 </html>
