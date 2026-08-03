@@ -156,6 +156,10 @@ Route::get('/publik/agenda', [PublicPageController::class, 'agenda'])->name('pub
 
 Route::get('/publik/agenda/detail/{id?}', [PublicPageController::class, 'agendaDetail'])->name('publik.agenda.detail');
 
+Route::get('/publik/agenda/{id}/lampiran/file', [PublicPageController::class, 'fileLampiranAgenda'])->name('publik.agenda.lampiran.file');
+
+Route::get('/publik/agenda/{id}/lampiran', [PublicPageController::class, 'lampiranAgenda'])->name('publik.agenda.lampiran');
+
 Route::get('/publik/agenda-detail/{id?}', [PublicPageController::class, 'agendaDetail'])->name('publik.agenda-detail');
 
 Route::redirect('/publik/index-v2', '/')->name('publik.index-v2');

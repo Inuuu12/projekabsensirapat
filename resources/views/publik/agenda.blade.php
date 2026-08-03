@@ -42,7 +42,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Semua Agenda Kegiatan</h1>
-                    <p class="text-xs text-gray-500 mt-1">Jadwal kegiatan Diskominfo Kabupaten Bogor dari database</p>
+                    <p class="text-xs text-gray-500 mt-1">Informasi lengkap kegiatan dan agenda seluruh perangkat daerah Kabupaten Bogor</p>
                 </div>
 
                 <form method="GET" action="{{ route('publik.agenda') }}" class="relative w-full md:w-72">

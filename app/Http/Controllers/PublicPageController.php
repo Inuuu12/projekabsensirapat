@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class PublicPageController extends Controller
 {
@@ -92,6 +93,48 @@ class PublicPageController extends Controller
             : Agenda::orderBy('tanggal')->orderBy('waktu')->first());
 
         return view('publik.agenda-detail', compact('agenda'));
+    }
+
+    public function lampiranAgenda(int $id)
+    {
+        $agenda = Agenda::findOrFail($id);
+        $lampiran = trim((string) $agenda->lampiran);
+
+        abort_if($lampiran === '', 404);
+
+        $path = $this->publicStoragePath($lampiran);
+
+        if ($path === null) {
+            return redirect()->away($lampiran);
+        }
+
+        abort_if(str_contains($path, '..') || ! Storage::disk('public')->exists($path), 404);
+
+        $fileUrl = route('publik.agenda.lampiran.file', $agenda->id_agenda, false);
+        $fileName = basename($path);
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true);
+        $isPdf = $extension === 'pdf';
+
+        return view('publik.agenda-lampiran', compact('agenda', 'fileUrl', 'fileName', 'extension', 'isImage', 'isPdf'));
+    }
+
+    public function fileLampiranAgenda(int $id)
+    {
+        $agenda = Agenda::findOrFail($id);
+        $lampiran = trim((string) $agenda->lampiran);
+
+        abort_if($lampiran === '', 404);
+
+        $path = $this->publicStoragePath($lampiran);
+
+        if ($path === null) {
+            return redirect()->away($lampiran);
+        }
+
+        abort_if(str_contains($path, '..') || ! Storage::disk('public')->exists($path), 404);
+
+        return Storage::disk('public')->response($path, basename($path));
     }
 
     public function berita(Request $request)
@@ -392,6 +435,34 @@ class PublicPageController extends Controller
             ->orderBy('tanggal')
             ->orderBy('waktu')
             ->first());
+    }
+
+    private function publicStoragePath(string $path): ?string
+    {
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            $urlPath = parse_url($path, PHP_URL_PATH);
+
+            if (! is_string($urlPath) || $urlPath === '') {
+                return null;
+            }
+
+            $path = rawurldecode($urlPath);
+
+            if (! str_starts_with(ltrim($path, '/'), 'storage/')) {
+                return null;
+            }
+        }
+
+        $path = str_replace('\\', '/', trim($path));
+        $path = ltrim($path, '/');
+
+        foreach (['storage/', 'public/'] as $prefix) {
+            if (str_starts_with($path, $prefix)) {
+                $path = substr($path, strlen($prefix));
+            }
+        }
+
+        return ltrim($path, '/') ?: null;
     }
 
     private function qrWindow(Agenda $agenda): array
