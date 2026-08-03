@@ -30,7 +30,7 @@
                     value="{{ $keyword ?? request('keyword') }}"
                     type="search"
                     class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20"
-                    placeholder="Cari nama, NIP, jabatan, bidang, no HP, email...">
+                    placeholder="Cari nama, NIP, tanggal lahir, jabatan, bidang, no HP, email...">
             </div>
             <div>
                 <label for="bidang-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Bidang</label>
@@ -67,12 +67,13 @@
             <p class="mt-1 text-xs text-gray-500">Menampilkan {{ $pegawai->count() }} dari {{ $totalPegawai ?? $pegawai->count() }} pegawai.</p>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[1040px]">
+            <table class="w-full text-left min-w-[1160px]">
                 <thead>
                     <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider">
                         <th class="px-6 py-4">Foto</th>
                         <th class="px-6 py-4">Nama</th>
                         <th class="px-6 py-4">NIP</th>
+                        <th class="px-6 py-4">Tanggal Lahir</th>
                         <th class="px-6 py-4">Jabatan</th>
                         <th class="px-6 py-4">Bidang</th>
                         <th class="px-6 py-4">No HP</th>
@@ -97,6 +98,7 @@
                             </td>
                             <td class="px-6 py-4 font-bold text-[#35635b]">{{ $item->nama_pegawai }}</td>
                             <td class="px-6 py-4 font-semibold text-gray-700">{{ $item->nip }}</td>
+                            <td class="px-6 py-4 text-gray-700">{{ $item->tanggal_lahir?->format('d/m/Y') ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->jabatan }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->bidang ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->nomor_hp }}</td>
@@ -110,6 +112,7 @@
                                         data-foto-url="{{ $item->foto ? asset('storage/' . $item->foto) : '' }}"
                                         data-nama="{{ $item->nama_pegawai }}"
                                         data-nip="{{ $item->nip }}"
+                                        data-tanggal-lahir="{{ $item->tanggal_lahir?->format('Y-m-d') }}"
                                         data-jabatan="{{ $item->jabatan }}"
                                         data-bidang="{{ $item->bidang }}"
                                         data-nomor="{{ $item->nomor_hp }}"
@@ -132,7 +135,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-8 text-center text-gray-500">Belum ada data pegawai.</td>
+                            <td colspan="9" class="px-6 py-8 text-center text-gray-500">Belum ada data pegawai.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -221,6 +224,7 @@
         document.getElementById('edit-foto').value = '';
         document.getElementById('edit-nama_pegawai').value = button.dataset.nama;
         document.getElementById('edit-nip').value = button.dataset.nip;
+        document.getElementById('edit-tanggal_lahir').value = button.dataset.tanggalLahir || '';
         document.getElementById('edit-jabatan').value = button.dataset.jabatan;
         document.getElementById('edit-bidang').value = button.dataset.bidang || '';
         document.getElementById('edit-nomor_hp').value = button.dataset.nomor;

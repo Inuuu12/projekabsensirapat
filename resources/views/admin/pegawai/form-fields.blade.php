@@ -37,12 +37,38 @@
 </div>
 
 <div>
+    <label class="mb-1.5 block text-xs font-semibold text-gray-900">Tanggal Lahir</label>
+    <div class="relative">
+        <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7V4m8 3V4M5 10h14M7 20h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v11a2 2 0 002 2z"></path>
+        </svg>
+        <input id="{{ $prefix }}tanggal_lahir" name="tanggal_lahir" type="date" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+    </div>
+</div>
+
+<div>
     <label class="mb-1.5 block text-xs font-semibold text-gray-900">Jabatan</label>
     <div class="relative">
         <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 6h4m-7 4h10m-9 9h8a3 3 0 003-3v-5a2 2 0 00-2-2H7a2 2 0 00-2 2v5a3 3 0 003 3zM9 9V7a3 3 0 016 0v2"></path>
         </svg>
-        <input id="{{ $prefix }}jabatan" name="jabatan" type="text" required placeholder="Contoh: Analis Kebijakan" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+        <select id="{{ $prefix }}jabatan" name="jabatan" required class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+            <option value="">Pilih Jabatan</option>
+            <optgroup label="Struktural">
+                <option value="Kepala Dinas">Kepala Dinas</option>
+                <option value="Sekretaris Dinas">Sekretaris Dinas</option>
+                <option value="Kepala Bidang">Kepala Bidang</option>
+                <option value="Kepala Subag/Seksi">Kepala Subag/Seksi</option>
+                <option value="Kepala UPT">Kepala UPT</option>
+                <option value="Kepala TU UPT">Kepala TU UPT</option>
+            </optgroup>
+            <optgroup label="Jabatan Fungsional">
+                <option value="Sub Koordinator">Sub Koordinator</option>
+                <option value="Pranata Komputer Ahli Muda">Pranata Komputer Ahli Muda</option>
+                <option value="Pranata Komputer Pertama">Pranata Komputer Pertama</option>
+                <option value="Pelaksana">Pelaksana</option>
+            </optgroup>
+        </select>
     </div>
 </div>
 
@@ -52,7 +78,15 @@
         <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 6h4m-7 4h10m-9 9h8a3 3 0 003-3v-5a2 2 0 00-2-2H7a2 2 0 00-2 2v5a3 3 0 003 3zM9 9V7a3 3 0 016 0v2"></path>
         </svg>
-        <input id="{{ $prefix }}bidang" name="bidang" type="text" placeholder="Contoh: Sekretariat" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+        <select id="{{ $prefix }}bidang" name="bidang" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+            <option value="">Pilih Bidang</option>
+            <option value="Sekretariat">Sekretariat</option>
+            <option value="Bidang Pengelolaan Informasi dan Komunikasi Publik">Bidang Pengelolaan Informasi dan Komunikasi Publik</option>
+            <option value="Bidang Aplikasi Informatika">Bidang Aplikasi Informatika</option>
+            <option value="Bidang Infrastruktur Teknologi">Bidang Infrastruktur Teknologi</option>
+            <option value="Bidang Persandian dan Statistik">Bidang Persandian dan Statistik</option>
+            <option value="UPT Radio dan Televisi">UPT Radio dan Televisi</option>
+        </select>
     </div>
 </div>
 

@@ -29,7 +29,7 @@
 <div class="max-w-[1400px] mx-auto space-y-6">
     <div>
         <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] tracking-tight">Konten Publik</h1>
-        <p class="text-xs sm:text-sm text-gray-500 mt-1">Data di halaman ini langsung tampil di folder publik karena memakai tabel database yang sama.</p>
+        <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola dan publikasikan informasi berita, galeri, ucapan ulang tahun, serta video ke portal publik.</p>
     </div>
 
     <section class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5">
@@ -58,15 +58,6 @@
                     <img src="{{ asset('foto/Galerilogo.png') }}" alt="Galeri" class="h-full w-full object-contain">
                 </span>
             </a>
-            <button type="button" onclick="openPublicModal('modal-tambah-ulang-tahun')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50">
-                <span>
-                    <span class="block text-sm font-extrabold text-gray-800">Ulang Tahun</span>
-                    <span class="mt-1 block text-xs font-medium text-gray-500">Tambah data pegawai</span>
-                </span>
-                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50 p-2">
-                    <img src="{{ asset('foto/Ulangtahun.png') }}" alt="Ulang Tahun" class="h-full w-full object-contain">
-                </span>
-            </button>
             <button type="button" onclick="openPublicModal('modal-tambah-video')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50">
                 <span>
                     <span class="block text-sm font-extrabold text-gray-800">Video</span>
@@ -180,7 +171,7 @@
             <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
                 <div>
                     <h2 class="text-base font-extrabold text-gray-800">Ulang Tahun Publik</h2>
-                    <p class="text-xs text-gray-500 mt-1">{{ $ulangTahun->count() }} data di database.</p>
+                    <p class="text-xs text-gray-500 mt-1">{{ $ulangTahun->count() }} pegawai memiliki tanggal lahir.</p>
                 </div>
                 @if ($ulangTahun->count() > 6)
                     <button type="button" onclick="openPublicModal('modal-semua-ulang-tahun')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
@@ -195,30 +186,10 @@
                             <h3 class="text-sm font-bold text-gray-900">{{ $item->nama }}</h3>
                             <p class="text-xs text-gray-500">{{ $item->tanggal?->translatedFormat('d M') }}</p>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button
-                                type="button"
-                                onclick="openEditUlangTahun(this)"
-                                data-action="{{ route('admin.publik.ulang-tahun.update', $item->id_ulangtahun) }}"
-                                data-nama="{{ $item->nama }}"
-                                data-tanggal="{{ $item->tanggal?->format('Y-m-d') }}"
-                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
-                                title="Edit Ulang Tahun">
-                                <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
-                                <span class="sr-only">Edit</span>
-                            </button>
-                            <form method="POST" action="{{ route('admin.publik.ulang-tahun.destroy', $item->id_ulangtahun) }}">
-                                @csrf
-                                @method('DELETE')
-                                <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Ulang Tahun">
-                                    <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
-                                    <span class="sr-only">Hapus</span>
-                                </button>
-                            </form>
-                        </div>
+                        <a href="{{ route('admin.pegawai.lihat') }}" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">Data Pegawai</a>
                     </div>
                 @empty
-                    <p class="p-6 text-sm text-gray-500">Belum ada data ulang tahun.</p>
+                    <p class="p-6 text-sm text-gray-500">Belum ada pegawai yang memiliki tanggal lahir.</p>
                 @endforelse
             </div>
         </section>
@@ -378,7 +349,7 @@
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <div>
                 <h3 class="text-lg font-bold">Semua Ulang Tahun Publik</h3>
-                <p class="mt-0.5 text-xs text-white/70">{{ $ulangTahun->count() }} data di database</p>
+                <p class="mt-0.5 text-xs text-white/70">{{ $ulangTahun->count() }} pegawai memiliki tanggal lahir</p>
             </div>
             <button type="button" onclick="closePublicModal('modal-semua-ulang-tahun')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal semua ulang tahun">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -393,30 +364,10 @@
                         <h3 class="text-sm font-bold text-gray-900">{{ $item->nama }}</h3>
                         <p class="text-xs text-gray-500">{{ $item->tanggal?->translatedFormat('d M') }}</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button
-                            type="button"
-                            onclick="openEditUlangTahun(this)"
-                            data-action="{{ route('admin.publik.ulang-tahun.update', $item->id_ulangtahun) }}"
-                            data-nama="{{ $item->nama }}"
-                            data-tanggal="{{ $item->tanggal?->format('Y-m-d') }}"
-                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
-                            title="Edit Ulang Tahun">
-                            <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
-                            <span class="sr-only">Edit</span>
-                        </button>
-                        <form method="POST" action="{{ route('admin.publik.ulang-tahun.destroy', $item->id_ulangtahun) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Ulang Tahun">
-                                <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
-                                <span class="sr-only">Hapus</span>
-                            </button>
-                        </form>
-                    </div>
+                    <a href="{{ route('admin.pegawai.lihat') }}" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">Data Pegawai</a>
                 </div>
             @empty
-                <p class="p-6 text-sm text-gray-500 sm:col-span-2 lg:col-span-3">Belum ada data ulang tahun.</p>
+                <p class="p-6 text-sm text-gray-500 sm:col-span-2 lg:col-span-3">Belum ada pegawai yang memiliki tanggal lahir.</p>
             @endforelse
         </div>
     </div>
@@ -558,40 +509,6 @@
     </div>
 </div>
 
-<div id="modal-tambah-ulang-tahun" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
-        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
-            <h3 class="text-lg font-bold">Tambah Ulang Tahun</h3>
-            <button type="button" onclick="closePublicModal('modal-tambah-ulang-tahun')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal tambah ulang tahun">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
-                </svg>
-            </button>
-        </div>
-        <form method="POST" action="{{ route('admin.publik.ulang-tahun.store') }}" enctype="multipart/form-data" class="flex min-h-0 flex-1 flex-col">
-            @csrf
-            <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Nama Pegawai</label>
-                    <input name="nama" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10" placeholder="Nama pegawai">
-                </div>
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Tanggal</label>
-                    <input type="date" name="tanggal" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-                </div>
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Foto</label>
-                    <input type="file" name="gambar" accept="image/*" class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-                </div>
-            </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closePublicModal('modal-tambah-ulang-tahun')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">Simpan</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <div id="modal-tambah-video" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
     <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
@@ -699,41 +616,6 @@
     </div>
 </div>
 
-<div id="modal-edit-ulang-tahun" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
-        <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
-            <h3 class="text-lg font-bold">Edit Ulang Tahun</h3>
-            <button type="button" onclick="closePublicModal('modal-edit-ulang-tahun')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal edit ulang tahun">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
-                </svg>
-            </button>
-        </div>
-        <form id="form-edit-ulang-tahun" method="POST" enctype="multipart/form-data" class="flex min-h-0 flex-1 flex-col">
-            @csrf
-            @method('PUT')
-            <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Nama Pegawai</label>
-                    <input id="edit-ulang-tahun-nama" name="nama" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-                </div>
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Tanggal</label>
-                    <input id="edit-ulang-tahun-tanggal" type="date" name="tanggal" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-                </div>
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Ganti Foto</label>
-                    <input type="file" name="gambar" accept="image/*" class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-                </div>
-            </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closePublicModal('modal-edit-ulang-tahun')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">Simpan</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <div id="modal-edit-video" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
     <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
@@ -795,13 +677,6 @@
         document.getElementById('form-edit-galeri').action = button.dataset.action;
         closePublicModal('modal-semua-galeri');
         openPublicModal('modal-edit-galeri');
-    }
-
-    function openEditUlangTahun(button) {
-        document.getElementById('form-edit-ulang-tahun').action = button.dataset.action;
-        document.getElementById('edit-ulang-tahun-nama').value = button.dataset.nama || '';
-        document.getElementById('edit-ulang-tahun-tanggal').value = button.dataset.tanggal || '';
-        openPublicModal('modal-edit-ulang-tahun');
     }
 
     function openEditVideo(button) {

@@ -20,6 +20,6 @@ class UlangTahun extends Model
 
     public static function tampilkanUlangTahunPegawai()
     {
-        return self::orderByRaw('MONTH(tanggal), DAY(tanggal)')->get();
+        return Pegawai::ulangTahunPegawai();
     }
 }

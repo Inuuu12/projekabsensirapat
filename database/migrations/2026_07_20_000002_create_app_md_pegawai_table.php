@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('foto')->nullable();
             $table->string('nama_pegawai');
             $table->string('nip')->unique();
+            $table->date('tanggal_lahir')->nullable();
             $table->string('jabatan');
             $table->string('bidang')->nullable();
             $table->string('nomor_hp');

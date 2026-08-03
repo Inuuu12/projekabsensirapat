@@ -114,8 +114,8 @@
                     </article>
                 @empty
                     <div class="lg:col-span-4 sm:col-span-2 bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center">
-                        <h3 class="font-bold text-gray-900">Belum ada data ulang tahun di database</h3>
-                        <p class="text-xs text-gray-500 mt-2">Data akan tampil setelah admin menambahkan ulang tahun pegawai.</p>
+                        <h3 class="font-bold text-gray-900">Belum ada data ulang tahun pegawai</h3>
+                        <p class="text-xs text-gray-500 mt-2">Data akan tampil setelah tanggal lahir pegawai diisi oleh admin.</p>
                     </div>
                 @endforelse
             </div>

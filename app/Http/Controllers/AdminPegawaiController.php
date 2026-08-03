@@ -21,6 +21,7 @@ class AdminPegawaiController extends Controller
                 $query->where(function ($search) use ($keyword) {
                     $search->where('nama_pegawai', 'like', "%{$keyword}%")
                         ->orWhere('nip', 'like', "%{$keyword}%")
+                        ->orWhere('tanggal_lahir', 'like', "%{$keyword}%")
                         ->orWhere('jabatan', 'like', "%{$keyword}%")
                         ->orWhere('bidang', 'like', "%{$keyword}%")
                         ->orWhere('nomor_hp', 'like', "%{$keyword}%")
@@ -62,6 +63,7 @@ class AdminPegawaiController extends Controller
         $validated = $request->validate([
             'nama_pegawai' => 'required|string|max:255',
             'nip' => 'required|string|max:255|unique:app_md_pegawai,nip',
+            'tanggal_lahir' => 'nullable|date',
             'jabatan' => 'required|string|max:255',
             'bidang' => 'nullable|string|max:255',
             'nomor_hp' => 'required|string|max:30',
@@ -85,6 +87,7 @@ class AdminPegawaiController extends Controller
         $validated = $request->validate([
             'nama_pegawai' => 'required|string|max:255',
             'nip' => 'required|string|max:255|unique:app_md_pegawai,nip,' . $id . ',id_pegawai',
+            'tanggal_lahir' => 'nullable|date',
             'jabatan' => 'required|string|max:255',
             'bidang' => 'nullable|string|max:255',
             'nomor_hp' => 'required|string|max:30',

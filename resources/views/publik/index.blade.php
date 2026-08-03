@@ -117,7 +117,7 @@
                                 {{ $ulangTahunUtama?->nama ? $ulangTahunUtama->nama . ($ulangTahunHariIni ? ' berulang tahun hari ini!' : ' berulang tahun terdekat') : 'Belum ada data ulang tahun' }}
                             </h3>
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">{{ $ulangTahunUtama?->tanggal?->translatedFormat('d F') ?? 'Data akan tampil setelah diisi admin' }}</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ $ulangTahunUtama?->tanggal?->translatedFormat('d F') ?? 'Data akan tampil setelah tanggal lahir pegawai diisi' }}</p>
                     </div>
                 </div>
                 <div class="flex flex-col items-end space-y-2 shrink-0">
@@ -281,7 +281,7 @@
                                 <span class="text-[10px] font-bold text-oren-tua">{{ $pegawai->tanggal?->translatedFormat('d M') ?? '-' }}</span>
                             </div>
                         @empty
-                            <p class="rounded-2xl bg-gray-50 p-3 text-xs text-gray-500">Belum ada data ulang tahun di database.</p>
+                            <p class="rounded-2xl bg-gray-50 p-3 text-xs text-gray-500">Belum ada pegawai yang memiliki tanggal lahir.</p>
                         @endforelse
                     </div>
                 </div>

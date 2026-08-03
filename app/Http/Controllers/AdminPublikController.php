@@ -19,7 +19,7 @@ class AdminPublikController extends Controller
         $admin = Auth::guard('admin')->user();
         $berita = Berita::latest('tanggal')->latest('id_berita')->get();
         $galeri = $this->dokumentasiAgendaGaleri();
-        $ulangTahun = UlangTahun::orderByRaw('MONTH(tanggal), DAY(tanggal)')->get();
+        $ulangTahun = UlangTahun::tampilkanUlangTahunPegawai();
         $video = VideoPublik::latest()->latest('id_video')->get();
 
         return view('admin.publik.index', compact('admin', 'berita', 'galeri', 'ulangTahun', 'video'));
@@ -107,47 +107,6 @@ class AdminPublikController extends Controller
         Galeri::findOrFail($id)->delete();
 
         return back()->with('success', 'Foto galeri berhasil dihapus.');
-    }
-
-    public function storeUlangTahun(Request $request)
-    {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'tanggal' => 'required|date',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-        ]);
-
-        $validated['gambar'] = $request->hasFile('gambar')
-            ? $this->storePublicImage($request, 'gambar', 'ulang-tahun')
-            : 'foto/Pegawailogo.png';
-
-        UlangTahun::create($validated);
-
-        return back()->with('success', 'Data ulang tahun berhasil ditambahkan.');
-    }
-
-    public function updateUlangTahun(Request $request, int $id)
-    {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'tanggal' => 'required|date',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
-        ]);
-
-        if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $this->storePublicImage($request, 'gambar', 'ulang-tahun');
-        }
-
-        UlangTahun::findOrFail($id)->update($validated);
-
-        return back()->with('success', 'Data ulang tahun berhasil diperbarui.');
-    }
-
-    public function destroyUlangTahun(int $id)
-    {
-        UlangTahun::findOrFail($id)->delete();
-
-        return back()->with('success', 'Data ulang tahun berhasil dihapus.');
     }
 
     public function storeVideo(Request $request)
