@@ -6,6 +6,7 @@
 
 <div class="col-span-full flex flex-col items-center py-2 sm:py-3">
     <input id="{{ $prefix }}foto" name="foto" type="file" accept="image/*" class="hidden" data-photo-input="{{ $prefix }}">
+    <input type="hidden" id="{{ $prefix }}hapus_foto" name="hapus_foto" value="0">
     <label for="{{ $prefix }}foto" class="relative flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-[#7b8d86] bg-white text-[#6f7d78] transition hover:border-[#35635b] hover:text-[#35635b]">
         <img id="{{ $prefix }}foto-preview" src="" alt="Preview foto" class="hidden h-full w-full rounded-full object-cover">
         <svg id="{{ $prefix }}foto-icon" class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,7 +18,10 @@
             </svg>
         </span>
     </label>
-    <p class="mt-3 text-xs font-medium text-gray-600">Unggah Foto</p>
+    <div class="flex gap-2 mt-3 items-center">
+        <label for="{{ $prefix }}foto" class="cursor-pointer text-xs font-medium text-gray-600 hover:text-[#35635b]">Unggah Foto</label>
+        <button type="button" class="text-xs font-medium text-red-500 hover:text-red-700 hidden" id="{{ $prefix }}btn-hapus-foto" onclick="removePhoto('{{ $prefix }}')">Hapus Foto</button>
+    </div>
 </div>
 
 <div>

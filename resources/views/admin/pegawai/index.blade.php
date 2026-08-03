@@ -20,111 +20,55 @@
         <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $totalPegawai ?? $pegawai->count() }}</p>
     </div>
 
-    <form method="GET" action="{{ route('admin.pegawai.lihat') }}" class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
-        <div class="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px_220px] lg:items-end">
-            <div>
-                <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Search</label>
-                <input
-                    id="keyword"
-                    name="keyword"
-                    value="{{ $keyword ?? request('keyword') }}"
-                    type="search"
-                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20"
-                    placeholder="Cari nama, NIP, tanggal lahir, jabatan, bidang, no HP, email...">
-            </div>
-            <div>
-                <label for="bidang-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Bidang</label>
-                <select
-                    id="bidang-filter"
-                    name="bidang"
-                    onchange="this.form.submit()"
-                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                    <option value="semua" @selected(($bidangFilter ?? 'semua') === 'semua')>Semua Bidang</option>
-                    @foreach (($bidangOptions ?? collect()) as $bidang)
-                        <option value="{{ $bidang }}" @selected(($bidangFilter ?? 'semua') === $bidang)>{{ $bidang }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label for="jabatan-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Jabatan</label>
-                <select
-                    id="jabatan-filter"
-                    name="jabatan"
-                    onchange="this.form.submit()"
-                    class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                    <option value="semua" @selected(($jabatanFilter ?? 'semua') === 'semua')>Semua Jabatan</option>
-                    @foreach (($jabatanOptions ?? collect()) as $jabatan)
-                        <option value="{{ $jabatan }}" @selected(($jabatanFilter ?? 'semua') === $jabatan)>{{ $jabatan }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-    </form>
 
-    <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <section class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
-            <div class="flex flex-col gap-1">
-                <h2 class="text-base font-extrabold text-gray-800">Master Bidang</h2>
-                <p class="text-xs text-gray-500">Opsi bidang untuk form tambah dan edit pegawai.</p>
-            </div>
 
-            <form method="POST" action="{{ route('admin.pegawai.bidang.store') }}" class="mt-4 flex flex-col gap-3 sm:flex-row">
-                @csrf
-                <input name="nama_bidang" required class="h-10 min-w-0 flex-1 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama bidang baru">
-                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35]">Tambah</button>
-            </form>
 
-            <div class="mt-4 flex flex-wrap gap-2">
-                @forelse (($bidangMaster ?? collect()) as $bidang)
-                    <form method="POST" action="{{ route('admin.pegawai.bidang.destroy', $bidang->id_bidang) }}" class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5">
-                        @csrf
-                        @method('DELETE')
-                        <span class="text-xs font-semibold text-gray-700">{{ $bidang->nama_bidang }}</span>
-                        <button type="submit" class="text-xs font-black text-red-500" title="Hapus bidang">x</button>
-                    </form>
-                @empty
-                    <p class="text-xs text-gray-500">Belum ada master bidang.</p>
-                @endforelse
-            </div>
-        </section>
-
-        <section class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
-            <div class="flex flex-col gap-1">
-                <h2 class="text-base font-extrabold text-gray-800">Master Jabatan</h2>
-                <p class="text-xs text-gray-500">Opsi jabatan untuk form tambah dan edit pegawai.</p>
-            </div>
-
-            <form method="POST" action="{{ route('admin.pegawai.jabatan.store') }}" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_180px_auto]">
-                @csrf
-                <input name="nama_jabatan" required class="h-10 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama jabatan baru">
-                <select name="kategori" class="h-10 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                    <option value="Struktural">Struktural</option>
-                    <option value="Jabatan Fungsional">Jabatan Fungsional</option>
-                    <option value="Lainnya">Lainnya</option>
-                </select>
-                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35]">Tambah</button>
-            </form>
-
-            <div class="mt-4 flex flex-wrap gap-2">
-                @forelse (($jabatanMaster ?? collect()) as $jabatan)
-                    <form method="POST" action="{{ route('admin.pegawai.jabatan.destroy', $jabatan->id_jabatan) }}" class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5">
-                        @csrf
-                        @method('DELETE')
-                        <span class="text-xs font-semibold text-gray-700">{{ $jabatan->nama_jabatan }}</span>
-                        <span class="text-[10px] font-bold text-gray-400">{{ $jabatan->kategori ?: 'Lainnya' }}</span>
-                        <button type="submit" class="text-xs font-black text-red-500" title="Hapus jabatan">x</button>
-                    </form>
-                @empty
-                    <p class="text-xs text-gray-500">Belum ada master jabatan.</p>
-                @endforelse
-            </div>
-        </section>
-    </div>
 
     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
-        <div class="border-b border-gray-100 px-6 py-4">
-            <h2 class="text-base font-extrabold text-gray-800">Daftar Pegawai</h2>
-            <p class="mt-1 text-xs text-gray-500">Menampilkan {{ $pegawai->count() }} dari {{ $totalPegawai ?? $pegawai->count() }} pegawai.</p>
+        <div class="border-b border-gray-100 px-6 py-5 flex flex-col gap-4">
+            <div>
+            <div>
+                <h2 class="text-base font-extrabold text-gray-800">Daftar Pegawai</h2>
+                <p id="text-count-pegawai" class="mt-1 text-xs text-gray-500">Menampilkan {{ $pegawai->count() }} dari {{ $totalPegawai ?? $pegawai->count() }} pegawai.</p>
+            </div>
+            <form id="form-search-pegawai" method="GET" action="{{ route('admin.pegawai.lihat') }}" class="w-full">
+                <div class="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px_220px] lg:items-end">
+                    <div>
+                        <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Search</label>
+                        <input
+                            id="keyword"
+                            name="keyword"
+                            value="{{ $keyword ?? request('keyword') }}"
+                            type="search"
+                            class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20"
+                            placeholder="Cari nama, NIP, tanggal lahir, jabatan, bidang, no HP, email...">
+                    </div>
+                    <div>
+                        <label for="bidang-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Bidang</label>
+                        <select
+                            id="bidang-filter"
+                            name="bidang"
+                            class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            <option value="semua" @selected(($bidangFilter ?? 'semua') === 'semua')>Semua Bidang</option>
+                            @foreach (($bidangOptions ?? collect()) as $bidang)
+                                <option value="{{ $bidang }}" @selected(($bidangFilter ?? 'semua') === $bidang)>{{ $bidang }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="jabatan-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Jabatan</label>
+                        <select
+                            id="jabatan-filter"
+                            name="jabatan"
+                            class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            <option value="semua" @selected(($jabatanFilter ?? 'semua') === 'semua')>Semua Jabatan</option>
+                            @foreach (($jabatanOptions ?? collect()) as $jabatan)
+                                <option value="{{ $jabatan }}" @selected(($jabatanFilter ?? 'semua') === $jabatan)>{{ $jabatan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[1160px]">
@@ -151,9 +95,7 @@
          alt="{{ $item->nama_pegawai }}" 
          class="w-10 h-10 rounded-full object-cover border border-gray-200">
 @else
-    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-400">
-        N/A
-    </div>
+    <img src="{{ asset('foto/profile.png') }}" alt="{{ $item->nama_pegawai }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
 @endif
                             </td>
                             <td class="px-6 py-4 font-bold text-[#35635b]">{{ $item->nama_pegawai }}</td>
@@ -201,6 +143,129 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <section class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+            <div class="flex flex-col gap-1">
+                <h2 class="text-base font-extrabold text-gray-800">Master Bidang</h2>
+                <p class="text-xs text-gray-500">Opsi bidang untuk form tambah dan edit pegawai.</p>
+            </div>
+
+            <form method="POST" action="{{ route('admin.pegawai.bidang.store') }}" class="mt-4 flex flex-col gap-3 sm:flex-row">
+                @csrf
+                <input name="nama_bidang" required class="h-10 min-w-0 flex-1 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama bidang baru">
+                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35]">Tambah</button>
+            </form>
+
+            <div class="mt-5">
+                <div class="relative mb-3">
+                    <input type="text" id="search-bidang" placeholder="Cari bidang..." class="w-full h-9 rounded-lg border border-gray-200 pl-8 pr-3 text-xs text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <svg class="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <table class="w-full text-left text-xs text-gray-500">
+                        <thead class="bg-gray-50 text-gray-700 uppercase">
+                            <tr>
+                                <th class="px-4 py-3 font-bold w-12">No</th>
+                                <th class="px-4 py-3 font-bold">Nama Bidang</th>
+                                <th class="px-4 py-3 font-bold text-center w-20">Aksi</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="container-bidang" class="max-h-56 overflow-y-auto custom-scrollbar bg-white">
+                        <table class="w-full text-left text-xs text-gray-500">
+                            <tbody class="divide-y divide-gray-200">
+                                @forelse (($bidangMaster ?? collect()) as $index => $bidang)
+                                    <tr class="item-bidang hover:bg-gray-50 transition" data-name="{{ strtolower($bidang->nama_bidang) }}">
+                                        <td class="px-4 py-3 w-12 text-center">{{ $index + 1 }}</td>
+                                        <td class="px-4 py-3 font-medium text-gray-800">{{ $bidang->nama_bidang }}</td>
+                                        <td class="px-4 py-3 w-20 text-center">
+                                            <form method="POST" action="{{ route('admin.pegawai.bidang.destroy', $bidang->id_bidang) }}" class="inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded hover:bg-red-100 transition" title="Hapus bidang">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="px-4 py-4 text-center text-xs text-gray-500">Belum ada master bidang.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+            <div class="flex flex-col gap-1">
+                <h2 class="text-base font-extrabold text-gray-800">Master Jabatan</h2>
+                <p class="text-xs text-gray-500">Opsi jabatan untuk form tambah dan edit pegawai.</p>
+            </div>
+
+            <form method="POST" action="{{ route('admin.pegawai.jabatan.store') }}" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_180px_auto]">
+                @csrf
+                <input name="nama_jabatan" required class="h-10 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama jabatan baru">
+                <select name="kategori" class="h-10 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <option value="Struktural">Struktural</option>
+                    <option value="Jabatan Fungsional">Jabatan Fungsional</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35]">Tambah</button>
+            </form>
+
+            <div class="mt-5">
+                <div class="relative mb-3">
+                    <input type="text" id="search-jabatan" placeholder="Cari jabatan..." class="w-full h-9 rounded-lg border border-gray-200 pl-8 pr-3 text-xs text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <svg class="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <table class="w-full text-left text-xs text-gray-500">
+                        <thead class="bg-gray-50 text-gray-700 uppercase">
+                            <tr>
+                                <th class="px-4 py-3 font-bold w-12">No</th>
+                                <th class="px-4 py-3 font-bold">Nama Jabatan</th>
+                                <th class="px-4 py-3 font-bold w-32">Kategori</th>
+                                <th class="px-4 py-3 font-bold text-center w-20">Aksi</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="container-jabatan" class="max-h-56 overflow-y-auto custom-scrollbar bg-white">
+                        <table class="w-full text-left text-xs text-gray-500">
+                            <tbody class="divide-y divide-gray-200">
+                                @forelse (($jabatanMaster ?? collect()) as $index => $jabatan)
+                                    <tr class="item-jabatan hover:bg-gray-50 transition" data-name="{{ strtolower($jabatan->nama_jabatan . ' ' . $jabatan->kategori) }}">
+                                        <td class="px-4 py-3 w-12 text-center">{{ $index + 1 }}</td>
+                                        <td class="px-4 py-3 font-medium text-gray-800">{{ $jabatan->nama_jabatan }}</td>
+                                        <td class="px-4 py-3 w-32"><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600">{{ $jabatan->kategori ?: 'Lainnya' }}</span></td>
+                                        <td class="px-4 py-3 w-20 text-center">
+                                            <form method="POST" action="{{ route('admin.pegawai.jabatan.destroy', $jabatan->id_jabatan) }}" class="inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded hover:bg-red-100 transition" title="Hapus jabatan">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="px-4 py-4 text-center text-xs text-gray-500">Belum ada master jabatan.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 </div>
 <div id="modal-tambah-pegawai" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
@@ -296,32 +361,149 @@
     function setPegawaiPhotoPreview(prefix, url) {
         const preview = document.getElementById(prefix + 'foto-preview');
         const icon = document.getElementById(prefix + 'foto-icon');
-        if (!preview || !icon) return;
+        const hapusBtn = document.getElementById(prefix + 'btn-hapus-foto');
 
         if (url) {
             preview.src = url;
             preview.classList.remove('hidden');
-            icon.classList.add('hidden');
-            return;
+            if (icon) icon.classList.add('hidden');
+            if (hapusBtn) hapusBtn.classList.remove('hidden');
+        } else {
+            preview.src = '{{ asset("foto/profile.png") }}';
+            preview.classList.remove('hidden');
+            if (icon) icon.classList.add('hidden');
+            if (hapusBtn) hapusBtn.classList.add('hidden');
         }
-
-        preview.removeAttribute('src');
-        preview.classList.add('hidden');
-        icon.classList.remove('hidden');
     }
 
-    document.querySelectorAll('[data-photo-input]').forEach((input) => {
-        input.addEventListener('change', function () {
-            const file = this.files && this.files[0];
-            const prefix = this.dataset.photoInput || '';
+    function removePhoto(prefix) {
+        const input = document.getElementById(prefix + 'foto');
+        const hapusInput = document.getElementById(prefix + 'hapus_foto');
+        
+        if (input) input.value = '';
+        
+        setPegawaiPhotoPreview(prefix, '');
+        
+        if (hapusInput) hapusInput.value = '1';
+    }
 
-            if (!file) {
+    document.querySelectorAll('input[type="file"][data-photo-input]').forEach(input => {
+        input.addEventListener('change', function(e) {
+            const prefix = this.dataset.photoInput;
+            const file = this.files[0];
+            const hapusInput = document.getElementById(prefix + 'hapus_foto');
+            if (hapusInput) hapusInput.value = '0';
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    setPegawaiPhotoPreview(prefix, e.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
                 setPegawaiPhotoPreview(prefix, '');
-                return;
             }
-
-            setPegawaiPhotoPreview(prefix, URL.createObjectURL(file));
         });
+    });
+
+    const masterState = {
+        bidang: { expanded: false },
+        jabatan: { expanded: false }
+    };
+
+    function initMasterList(type) {
+        const searchInput = document.getElementById(`search-${type}`);
+        if (searchInput) {
+            searchInput.addEventListener('input', () => renderMasterList(type));
+        }
+        renderMasterList(type);
+    }
+
+    function renderMasterList(type) {
+        const searchInput = document.getElementById(`search-${type}`);
+        const container = document.getElementById(`container-${type}`);
+        
+        if (!container) return;
+        
+        const items = container.querySelectorAll(`.item-${type}`);
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        
+        items.forEach((item) => {
+            const name = item.dataset.name || '';
+            if (name.includes(searchTerm)) {
+                item.style.display = 'table-row';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    function initLiveSearch() {
+        const form = document.getElementById('form-search-pegawai');
+        const searchInput = document.getElementById('keyword');
+        const bidangFilter = document.getElementById('bidang-filter');
+        const jabatanFilter = document.getElementById('jabatan-filter');
+        const tableBody = document.querySelector('table tbody');
+        const countText = document.getElementById('text-count-pegawai');
+        
+        if (!form || !searchInput || !tableBody) return;
+
+        let debounceTimer;
+
+        function fetchResults() {
+            const url = new URL(form.action);
+            const params = new URLSearchParams(new FormData(form));
+            url.search = params.toString();
+
+            // Update URL in browser without reload
+            window.history.replaceState({}, '', url);
+
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                const newTbody = doc.querySelector('table tbody');
+                if (newTbody) {
+                    tableBody.innerHTML = newTbody.innerHTML;
+                }
+
+                const newCount = doc.getElementById('text-count-pegawai');
+                if (countText && newCount) {
+                    countText.innerHTML = newCount.innerHTML;
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', function(e) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fetchResults, 300);
+        });
+
+        // Prevent form submission on enter
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+
+        if(bidangFilter) {
+            bidangFilter.addEventListener('change', fetchResults);
+        }
+        if(jabatanFilter) {
+            jabatanFilter.addEventListener('change', fetchResults);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initMasterList('bidang');
+        initMasterList('jabatan');
+        initLiveSearch();
     });
 </script>
 @endpush

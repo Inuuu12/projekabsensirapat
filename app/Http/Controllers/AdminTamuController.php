@@ -78,6 +78,12 @@ class AdminTamuController extends Controller
 
         // Simpan foto baru ke array $validated
         $validated['foto_selfie'] = $request->file('foto_selfie')->store('tamu', 'public');
+        
+    } elseif ($request->input('hapus_foto_selfie') == '1') {
+        if ($tamu->foto_selfie && Storage::disk('public')->exists($tamu->foto_selfie)) {
+            Storage::disk('public')->delete($tamu->foto_selfie);
+        }
+        $validated['foto_selfie'] = null;
     } else {
         // Hapus key foto_selfie agar tidak menimpa foto lama dengan NULL jika user tidak upload foto baru
         unset($validated['foto_selfie']);

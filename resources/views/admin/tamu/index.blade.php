@@ -20,7 +20,7 @@
         <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $totalTamu ?? $tamu->count() }}</p>
     </div>
 
-    <form method="GET" action="{{ route('admin.tamu.lihat') }}" class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+    <form id="form-search-tamu" method="GET" action="{{ route('admin.tamu.lihat') }}" class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
         <div class="flex flex-col gap-3 lg:flex-row lg:items-end">
             <div class="flex-1">
                 <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Search</label>
@@ -32,16 +32,13 @@
                     class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20"
                     placeholder="Cari nama, NIK, jabatan, no HP, instansi, agenda...">
             </div>
-            <div class="flex gap-2">
-                <button type="submit" class="h-11 rounded-xl bg-[#35635b] px-5 text-sm font-bold text-white transition hover:bg-[#2b4f49]">Cari</button>
-            </div>
         </div>
     </form>
 
     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
         <div class="border-b border-gray-100 px-6 py-4">
             <h2 class="text-base font-extrabold text-gray-800">Daftar Tamu</h2>
-            <p class="mt-1 text-xs text-gray-500">Menampilkan {{ $tamu->count() }} dari {{ $totalTamu ?? $tamu->count() }} tamu.</p>
+            <p id="text-count-tamu" class="mt-1 text-xs text-gray-500">Menampilkan {{ $tamu->count() }} dari {{ $totalTamu ?? $tamu->count() }} tamu.</p>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[980px]">
@@ -66,9 +63,7 @@
                                          alt="{{ $item->nama }}" 
                                          class="w-10 h-10 rounded-full object-cover border border-gray-200">
                                 @else
-                                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-400">
-                                        N/A
-                                    </div>
+                                    <img src="{{ asset('foto/profile.png') }}" alt="{{ $item->nama }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
                                 @endif
                             </td>
                         
@@ -210,32 +205,106 @@
     function setTamuPhotoPreview(prefix, url) {
         const preview = document.getElementById(prefix + 'foto_selfie-preview');
         const icon = document.getElementById(prefix + 'foto_selfie-icon');
-        if (!preview || !icon) return;
+        const hapusBtn = document.getElementById(prefix + 'btn-hapus-foto_selfie');
 
         if (url) {
             preview.src = url;
             preview.classList.remove('hidden');
-            icon.classList.add('hidden');
-            return;
+            if (icon) icon.classList.add('hidden');
+            if (hapusBtn) hapusBtn.classList.remove('hidden');
+        } else {
+            preview.src = '{{ asset("foto/profile.png") }}';
+            preview.classList.remove('hidden');
+            if (icon) icon.classList.add('hidden');
+            if (hapusBtn) hapusBtn.classList.add('hidden');
         }
-
-        preview.removeAttribute('src');
-        preview.classList.add('hidden');
-        icon.classList.remove('hidden');
     }
 
-    document.querySelectorAll('[data-tamu-photo-input]').forEach((input) => {
-        input.addEventListener('change', function () {
-            const file = this.files && this.files[0];
-            const prefix = this.dataset.tamuPhotoInput || '';
+    function removeTamuPhoto(prefix) {
+        const input = document.getElementById(prefix + 'foto_selfie');
+        const hapusInput = document.getElementById(prefix + 'hapus_foto_selfie');
+        
+        if (input) input.value = '';
+        
+        setTamuPhotoPreview(prefix, '');
+        
+        if (hapusInput) hapusInput.value = '1';
+    }
 
-            if (!file) {
+    document.querySelectorAll('input[type="file"][data-tamu-photo-input]').forEach(input => {
+        input.addEventListener('change', function(e) {
+            const prefix = this.dataset.tamuPhotoInput;
+            const file = this.files[0];
+            const hapusInput = document.getElementById(prefix + 'hapus_foto_selfie');
+            if (hapusInput) hapusInput.value = '0';
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    setTamuPhotoPreview(prefix, e.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
                 setTamuPhotoPreview(prefix, '');
-                return;
             }
-
-            setTamuPhotoPreview(prefix, URL.createObjectURL(file));
         });
+    });
+
+    function initLiveSearchTamu() {
+        const form = document.getElementById('form-search-tamu');
+        const searchInput = document.getElementById('keyword');
+        const tableBody = document.querySelector('table tbody');
+        const countText = document.getElementById('text-count-tamu');
+        
+        if (!form || !searchInput || !tableBody) return;
+
+        let debounceTimer;
+
+        function fetchResults() {
+            const url = new URL(form.action);
+            const params = new URLSearchParams(new FormData(form));
+            url.search = params.toString();
+
+            // Update URL in browser without reload
+            window.history.replaceState({}, '', url);
+
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                const newTbody = doc.querySelector('table tbody');
+                if (newTbody) {
+                    tableBody.innerHTML = newTbody.innerHTML;
+                }
+
+                const newCount = doc.getElementById('text-count-tamu');
+                if (countText && newCount) {
+                    countText.innerHTML = newCount.innerHTML;
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', function(e) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fetchResults, 300);
+        });
+
+        // Prevent form submission on enter
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initLiveSearchTamu();
     });
 </script>
 @endpush

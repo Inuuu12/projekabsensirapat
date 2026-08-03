@@ -125,6 +125,11 @@ class AdminPegawaiController extends Controller
             }
 
             $validated['foto'] = $request->file('foto')->store('pegawai', 'public');
+        } elseif ($request->input('hapus_foto') == '1') {
+            if ($pegawai->foto && Storage::disk('public')->exists($pegawai->foto)) {
+                Storage::disk('public')->delete($pegawai->foto);
+            }
+            $validated['foto'] = null;
         }
 
         $pegawai->update($validated);
