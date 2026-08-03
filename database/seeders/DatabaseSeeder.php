@@ -57,6 +57,38 @@ class DatabaseSeeder extends Seeder
             );
         }
 
+        foreach ([
+            'Sekretariat',
+            'Bidang Pengelolaan Informasi dan Komunikasi Publik',
+            'Bidang Aplikasi Informatika',
+            'Bidang Infrastruktur Teknologi',
+            'Bidang Persandian dan Statistik',
+            'UPT Radio dan Televisi',
+        ] as $bidang) {
+            DB::table('app_md_bidang')->updateOrInsert(
+                ['nama_bidang' => $bidang],
+                ['created_at' => $now, 'updated_at' => $now],
+            );
+        }
+
+        foreach ([
+            ['nama_jabatan' => 'Kepala Dinas', 'kategori' => 'Struktural'],
+            ['nama_jabatan' => 'Sekretaris Dinas', 'kategori' => 'Struktural'],
+            ['nama_jabatan' => 'Kepala Bidang', 'kategori' => 'Struktural'],
+            ['nama_jabatan' => 'Kepala Subag/Seksi', 'kategori' => 'Struktural'],
+            ['nama_jabatan' => 'Kepala UPT', 'kategori' => 'Struktural'],
+            ['nama_jabatan' => 'Kepala TU UPT', 'kategori' => 'Struktural'],
+            ['nama_jabatan' => 'Sub Koordinator', 'kategori' => 'Jabatan Fungsional'],
+            ['nama_jabatan' => 'Pranata Komputer Ahli Muda', 'kategori' => 'Jabatan Fungsional'],
+            ['nama_jabatan' => 'Pranata Komputer Pertama', 'kategori' => 'Jabatan Fungsional'],
+            ['nama_jabatan' => 'Pelaksana', 'kategori' => 'Jabatan Fungsional'],
+        ] as $jabatan) {
+            DB::table('app_md_jabatan')->updateOrInsert(
+                ['nama_jabatan' => $jabatan['nama_jabatan']],
+                $jabatan + ['created_at' => $now, 'updated_at' => $now],
+            );
+        }
+
         $pegawai = [
             [
                 'nip' => '198801012010011001',

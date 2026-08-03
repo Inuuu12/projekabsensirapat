@@ -97,6 +97,10 @@ Route::prefix('admin')->group(function () {
         Route::put('/ruang/{id}', [AdminRuangController::class, 'update_Ruang'])->name('admin.ruang.update');
         Route::delete('/ruang/{id}', [AdminRuangController::class, 'hapus_Ruang'])->name('admin.ruang.destroy');
 
+        Route::post('/pegawai/bidang', [AdminPegawaiController::class, 'storeBidang'])->name('admin.pegawai.bidang.store');
+        Route::delete('/pegawai/bidang/{id}', [AdminPegawaiController::class, 'destroyBidang'])->name('admin.pegawai.bidang.destroy');
+        Route::post('/pegawai/jabatan', [AdminPegawaiController::class, 'storeJabatan'])->name('admin.pegawai.jabatan.store');
+        Route::delete('/pegawai/jabatan/{id}', [AdminPegawaiController::class, 'destroyJabatan'])->name('admin.pegawai.jabatan.destroy');
         Route::post('/pegawai', [AdminPegawaiController::class, 'store_Pegawai'])->name('admin.pegawai.store');
         Route::put('/pegawai/{id}', [AdminPegawaiController::class, 'update_Pegawai'])->name('admin.pegawai.update');
         Route::delete('/pegawai/{id}', [AdminPegawaiController::class, 'hapus_Pegawai'])->name('admin.pegawai.destroy');

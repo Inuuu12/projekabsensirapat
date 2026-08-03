@@ -1,4 +1,8 @@
-@php($prefix = $prefix ?? '')
+@php
+    $prefix = $prefix ?? '';
+    $bidangMaster = collect($bidangMaster ?? []);
+    $jabatanMaster = collect($jabatanMaster ?? []);
+@endphp
 
 <div class="col-span-full flex flex-col items-center py-2 sm:py-3">
     <input id="{{ $prefix }}foto" name="foto" type="file" accept="image/*" class="hidden" data-photo-input="{{ $prefix }}">
@@ -54,20 +58,13 @@
         </svg>
         <select id="{{ $prefix }}jabatan" name="jabatan" required class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
             <option value="">Pilih Jabatan</option>
-            <optgroup label="Struktural">
-                <option value="Kepala Dinas">Kepala Dinas</option>
-                <option value="Sekretaris Dinas">Sekretaris Dinas</option>
-                <option value="Kepala Bidang">Kepala Bidang</option>
-                <option value="Kepala Subag/Seksi">Kepala Subag/Seksi</option>
-                <option value="Kepala UPT">Kepala UPT</option>
-                <option value="Kepala TU UPT">Kepala TU UPT</option>
-            </optgroup>
-            <optgroup label="Jabatan Fungsional">
-                <option value="Sub Koordinator">Sub Koordinator</option>
-                <option value="Pranata Komputer Ahli Muda">Pranata Komputer Ahli Muda</option>
-                <option value="Pranata Komputer Pertama">Pranata Komputer Pertama</option>
-                <option value="Pelaksana">Pelaksana</option>
-            </optgroup>
+            @foreach ($jabatanMaster->groupBy(fn ($jabatan) => $jabatan->kategori ?: 'Lainnya') as $kategori => $jabatanItems)
+                <optgroup label="{{ $kategori }}">
+                    @foreach ($jabatanItems as $jabatan)
+                        <option value="{{ $jabatan->nama_jabatan }}">{{ $jabatan->nama_jabatan }}</option>
+                    @endforeach
+                </optgroup>
+            @endforeach
         </select>
     </div>
 </div>
@@ -80,12 +77,9 @@
         </svg>
         <select id="{{ $prefix }}bidang" name="bidang" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
             <option value="">Pilih Bidang</option>
-            <option value="Sekretariat">Sekretariat</option>
-            <option value="Bidang Pengelolaan Informasi dan Komunikasi Publik">Bidang Pengelolaan Informasi dan Komunikasi Publik</option>
-            <option value="Bidang Aplikasi Informatika">Bidang Aplikasi Informatika</option>
-            <option value="Bidang Infrastruktur Teknologi">Bidang Infrastruktur Teknologi</option>
-            <option value="Bidang Persandian dan Statistik">Bidang Persandian dan Statistik</option>
-            <option value="UPT Radio dan Televisi">UPT Radio dan Televisi</option>
+            @foreach ($bidangMaster as $bidang)
+                <option value="{{ $bidang->nama_bidang }}">{{ $bidang->nama_bidang }}</option>
+            @endforeach
         </select>
     </div>
 </div>

@@ -61,6 +61,66 @@
         </div>
     </form>
 
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <section class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+            <div class="flex flex-col gap-1">
+                <h2 class="text-base font-extrabold text-gray-800">Master Bidang</h2>
+                <p class="text-xs text-gray-500">Opsi bidang untuk form tambah dan edit pegawai.</p>
+            </div>
+
+            <form method="POST" action="{{ route('admin.pegawai.bidang.store') }}" class="mt-4 flex flex-col gap-3 sm:flex-row">
+                @csrf
+                <input name="nama_bidang" required class="h-10 min-w-0 flex-1 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama bidang baru">
+                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35]">Tambah</button>
+            </form>
+
+            <div class="mt-4 flex flex-wrap gap-2">
+                @forelse (($bidangMaster ?? collect()) as $bidang)
+                    <form method="POST" action="{{ route('admin.pegawai.bidang.destroy', $bidang->id_bidang) }}" class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5">
+                        @csrf
+                        @method('DELETE')
+                        <span class="text-xs font-semibold text-gray-700">{{ $bidang->nama_bidang }}</span>
+                        <button type="submit" class="text-xs font-black text-red-500" title="Hapus bidang">x</button>
+                    </form>
+                @empty
+                    <p class="text-xs text-gray-500">Belum ada master bidang.</p>
+                @endforelse
+            </div>
+        </section>
+
+        <section class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+            <div class="flex flex-col gap-1">
+                <h2 class="text-base font-extrabold text-gray-800">Master Jabatan</h2>
+                <p class="text-xs text-gray-500">Opsi jabatan untuk form tambah dan edit pegawai.</p>
+            </div>
+
+            <form method="POST" action="{{ route('admin.pegawai.jabatan.store') }}" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_180px_auto]">
+                @csrf
+                <input name="nama_jabatan" required class="h-10 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama jabatan baru">
+                <select name="kategori" class="h-10 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <option value="Struktural">Struktural</option>
+                    <option value="Jabatan Fungsional">Jabatan Fungsional</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35]">Tambah</button>
+            </form>
+
+            <div class="mt-4 flex flex-wrap gap-2">
+                @forelse (($jabatanMaster ?? collect()) as $jabatan)
+                    <form method="POST" action="{{ route('admin.pegawai.jabatan.destroy', $jabatan->id_jabatan) }}" class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5">
+                        @csrf
+                        @method('DELETE')
+                        <span class="text-xs font-semibold text-gray-700">{{ $jabatan->nama_jabatan }}</span>
+                        <span class="text-[10px] font-bold text-gray-400">{{ $jabatan->kategori ?: 'Lainnya' }}</span>
+                        <button type="submit" class="text-xs font-black text-red-500" title="Hapus jabatan">x</button>
+                    </form>
+                @empty
+                    <p class="text-xs text-gray-500">Belum ada master jabatan.</p>
+                @endforelse
+            </div>
+        </section>
+    </div>
+
     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
         <div class="border-b border-gray-100 px-6 py-4">
             <h2 class="text-base font-extrabold text-gray-800">Daftar Pegawai</h2>

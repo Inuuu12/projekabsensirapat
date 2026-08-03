@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bidang;
+use App\Models\Jabatan;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,18 +35,38 @@ class AdminPegawaiController extends Controller
 
         $pegawai = $pegawaiQuery->latest('id_pegawai')->get();
         $totalPegawai = Pegawai::count();
-        $bidangOptions = Pegawai::query()
+        $bidangMaster = Bidang::orderBy('nama_bidang')->get();
+        $jabatanMaster = Jabatan::orderByRaw("
+                CASE
+                    WHEN kategori = 'Struktural' THEN 0
+                    WHEN kategori = 'Jabatan Fungsional' THEN 1
+                    ELSE 2
+                END
+            ")
+            ->orderBy('nama_jabatan')
+            ->get();
+        $bidangTerpakai = Pegawai::query()
             ->whereNotNull('bidang')
             ->where('bidang', '!=', '')
             ->distinct()
             ->orderBy('bidang')
             ->pluck('bidang');
-        $jabatanOptions = Pegawai::query()
+        $jabatanTerpakai = Pegawai::query()
             ->whereNotNull('jabatan')
             ->where('jabatan', '!=', '')
             ->distinct()
             ->orderBy('jabatan')
             ->pluck('jabatan');
+        $bidangOptions = $bidangMaster->pluck('nama_bidang')
+            ->merge($bidangTerpakai)
+            ->unique()
+            ->sort()
+            ->values();
+        $jabatanOptions = $jabatanMaster->pluck('nama_jabatan')
+            ->merge($jabatanTerpakai)
+            ->unique()
+            ->sort()
+            ->values();
 
         return view('admin.pegawai.index', compact(
             'admin',
@@ -54,7 +76,9 @@ class AdminPegawaiController extends Controller
             'bidangFilter',
             'jabatanFilter',
             'bidangOptions',
-            'jabatanOptions'
+            'jabatanOptions',
+            'bidangMaster',
+            'jabatanMaster'
         ));
     }
 
@@ -113,5 +137,54 @@ class AdminPegawaiController extends Controller
         Pegawai::findOrFail($id)->delete();
 
         return back()->with('success', 'Pegawai berhasil dihapus.');
+    }
+
+    public function storeBidang(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_bidang' => 'required|string|max:255|unique:app_md_bidang,nama_bidang',
+        ]);
+
+        Bidang::create($validated);
+
+        return back()->with('success', 'Bidang berhasil ditambahkan.');
+    }
+
+    public function destroyBidang(int $id)
+    {
+        $bidang = Bidang::findOrFail($id);
+
+        if (Pegawai::where('bidang', $bidang->nama_bidang)->exists()) {
+            return back()->with('error', 'Bidang masih digunakan pegawai.');
+        }
+
+        $bidang->delete();
+
+        return back()->with('success', 'Bidang berhasil dihapus.');
+    }
+
+    public function storeJabatan(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_jabatan' => 'required|string|max:255|unique:app_md_jabatan,nama_jabatan',
+            'kategori' => 'nullable|string|max:255',
+        ]);
+
+        Jabatan::create($validated);
+
+        return back()->with('success', 'Jabatan berhasil ditambahkan.');
+    }
+
+    public function destroyJabatan(int $id)
+    {
+        $jabatan = Jabatan::findOrFail($id);
+
+        if (Pegawai::where('jabatan', $jabatan->nama_jabatan)->exists()) {
+            return back()->with('error', 'Jabatan masih digunakan pegawai.');
+        }
+
+        $jabatan->delete();
+
+        return back()->with('success', 'Jabatan berhasil dihapus.');
     }
 }
