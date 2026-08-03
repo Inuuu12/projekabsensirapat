@@ -33,7 +33,7 @@
                 ? route('publik.presensi.pilih', ['agenda_id' => $agendaAktif->id_agenda])
                 : route('publik.presensi.pilih');
             $lampiranUrl = $agendaAktif?->lampiran
-                ? (filter_var($agendaAktif->lampiran, FILTER_VALIDATE_URL) ? $agendaAktif->lampiran : asset('storage/' . ltrim($agendaAktif->lampiran, '/')))
+                ? route('publik.agenda.lampiran', $agendaAktif->id_agenda, false)
                 : null;
         @endphp
 
@@ -132,7 +132,7 @@
                         <div class="w-8 h-8 rounded-full bg-ijo-tua text-white flex items-center justify-center text-xs">PIN</div>
                         <div>
                             <h5 class="font-bold text-xs text-gray-900">{{ $agendaAktif->lokasi ?? 'Lokasi belum diisi' }}</h5>
-                            <p class="text-[10px] text-gray-500">Lokasi agenda dari database</p>
+                            <p class="text-[10px] text-gray-500">Lokasi Pelaksanaan Kegiatan</p>
                         </div>
                     </div>
                 </aside>
