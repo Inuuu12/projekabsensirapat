@@ -20,7 +20,7 @@
         <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $totalKunjungan ?? $kunjungan->count() }}</p>
     </div>
 
-    <form method="GET" action="{{ route('admin.kunjungan.lihat') }}" class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+    <form id="form-search-kunjungan" method="GET" action="{{ route('admin.kunjungan.lihat') }}" class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
         <div class="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_220px_220px_180px] xl:items-end">
             <div>
                 <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Search</label>
@@ -37,7 +37,6 @@
                 <select
                     id="pihak-dituju-filter"
                     name="pihak_dituju"
-                    onchange="this.form.submit()"
                     class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     <option value="semua" @selected(($pihakDitujuFilter ?? 'semua') === 'semua')>Semua Pihak</option>
                     @foreach (($pihakDitujuOptions ?? collect()) as $pihakDituju)
@@ -50,7 +49,6 @@
                 <select
                     id="keperluan-filter"
                     name="keperluan"
-                    onchange="this.form.submit()"
                     class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     <option value="semua" @selected(($keperluanFilter ?? 'semua') === 'semua')>Semua Keperluan</option>
                     @foreach (($keperluanOptions ?? collect()) as $keperluan)
@@ -65,7 +63,6 @@
                     name="tanggal"
                     value="{{ $tanggalFilter ?? request('tanggal') }}"
                     type="date"
-                    onchange="this.form.submit()"
                     class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
             </div>
         </div>
@@ -74,7 +71,7 @@
     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
         <div class="border-b border-gray-100 px-6 py-4">
             <h2 class="text-base font-extrabold text-gray-800">Daftar Kunjungan</h2>
-            <p class="mt-1 text-xs text-gray-500">Menampilkan {{ $kunjungan->count() }} dari {{ $totalKunjungan ?? $kunjungan->count() }} kunjungan.</p>
+            <p id="text-count-kunjungan" class="mt-1 text-xs text-gray-500">Menampilkan {{ $kunjungan->count() }} dari {{ $totalKunjungan ?? $kunjungan->count() }} kunjungan.</p>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[1040px]">
@@ -109,6 +106,7 @@
                                     <button
                                         type="button"
                                         onclick="openEditKunjungan(this)"
+                                        data-id="{{ $item->id_kunjungan }}"
                                         data-action="{{ route('admin.kunjungan.update', $item->id_kunjungan) }}"
                                         data-pejabat="{{ $item->nama_pejabat }}"
                                         data-pengunjung="{{ $item->nama_pengunjung }}"
@@ -158,6 +156,13 @@
 
         <form id="form-tambah-kunjungan" method="POST" action="{{ route('admin.kunjungan.store') }}" class="flex min-h-0 flex-1 flex-col">
             @csrf
+            @if ($errors->any() && !old('_method'))
+                <div class="px-5 pt-4 sm:px-6">
+                    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                        {{ $errors->first() }}
+                    </div>
+                </div>
+            @endif
             <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
                 @include('admin.kunjungan.form-fields')
             </div>
@@ -188,6 +193,14 @@
         <form id="form-edit-kunjungan" method="POST" class="flex min-h-0 flex-1 flex-col">
             @csrf
             @method('PUT')
+            <input type="hidden" id="edit-id_kunjungan" name="id_kunjungan">
+            @if ($errors->any() && old('_method') === 'PUT')
+                <div class="px-5 pt-4 sm:px-6">
+                    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                        {{ $errors->first() }}
+                    </div>
+                </div>
+            @endif
             <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
                 @include('admin.kunjungan.form-fields', ['prefix' => 'edit-'])
             </div>
@@ -218,6 +231,7 @@
 
     function openEditKunjungan(button) {
         document.getElementById('form-edit-kunjungan').action = button.dataset.action;
+        document.getElementById('edit-id_kunjungan').value = button.dataset.id;
         const pejabatVal = button.dataset.pejabat || '';
         if (document.getElementById('edit-nama_pegawai')) document.getElementById('edit-nama_pegawai').value = pejabatVal;
         if (document.getElementById('edit-nama_pejabat')) document.getElementById('edit-nama_pejabat').value = pejabatVal;
@@ -230,6 +244,106 @@
         document.getElementById('edit-tanggal_kunjungan').value = button.dataset.tanggal || '';
         openModal('modal-edit-kunjungan');
     }
+
+    function initLiveSearch() {
+        const form = document.getElementById('form-search-kunjungan');
+        const searchInput = document.getElementById('keyword');
+        const pihakFilter = document.getElementById('pihak-dituju-filter');
+        const keperluanFilter = document.getElementById('keperluan-filter');
+        const tanggalFilter = document.getElementById('tanggal-filter');
+        const tableBody = document.querySelector('table tbody');
+        const countText = document.getElementById('text-count-kunjungan');
+        
+        if (!form || !searchInput || !tableBody) return;
+
+        let debounceTimer;
+
+        function fetchResults() {
+            const url = new URL(form.action);
+            const params = new URLSearchParams(new FormData(form));
+            url.search = params.toString();
+
+            // Update URL in browser without reload
+            window.history.replaceState({}, '', url);
+
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                const newTbody = doc.querySelector('table tbody');
+                if (newTbody) {
+                    tableBody.innerHTML = newTbody.innerHTML;
+                }
+
+                const newCount = doc.getElementById('text-count-kunjungan');
+                if (countText && newCount) {
+                    countText.innerHTML = newCount.innerHTML;
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', function(e) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fetchResults, 300);
+        });
+
+        // Prevent form submission on enter
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+
+        if(pihakFilter) {
+            pihakFilter.addEventListener('change', fetchResults);
+        }
+        if(keperluanFilter) {
+            keperluanFilter.addEventListener('change', fetchResults);
+        }
+        if(tanggalFilter) {
+            tanggalFilter.addEventListener('change', fetchResults);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initLiveSearch();
+
+        @if($errors->any())
+            @if(old('_method') === 'PUT')
+                const editId = "{{ old('id_kunjungan') }}";
+                const editBtn = document.querySelector(`button[data-id="${editId}"]`);
+                if (editBtn) {
+                    openEditKunjungan(editBtn);
+                    document.getElementById('edit-nama_pegawai').value = @json(old('nama_pegawai'));
+                    document.getElementById('edit-nama_pejabat').value = @json(old('nama_pejabat'));
+                    document.getElementById('edit-nama_pengunjung').value = @json(old('nama_pengunjung'));
+                    document.getElementById('edit-asal_instansi').value = @json(old('asal_instansi'));
+                    document.getElementById('edit-nomorhp_pengunjung').value = @json(old('nomorhp_pengunjung'));
+                    document.getElementById('edit-email_pengunjung').value = @json(old('email_pengunjung'));
+                    document.getElementById('edit-keperluan').value = @json(old('keperluan'));
+                    document.getElementById('edit-waktu').value = @json(old('waktu'));
+                    document.getElementById('edit-tanggal_kunjungan').value = @json(old('tanggal_kunjungan'));
+                }
+            @else
+                openModal('modal-tambah-kunjungan');
+                document.getElementById('nama_pegawai').value = @json(old('nama_pegawai'));
+                document.getElementById('nama_pejabat').value = @json(old('nama_pejabat'));
+                document.getElementById('nama_pengunjung').value = @json(old('nama_pengunjung'));
+                document.getElementById('asal_instansi').value = @json(old('asal_instansi'));
+                document.getElementById('nomorhp_pengunjung').value = @json(old('nomorhp_pengunjung'));
+                document.getElementById('email_pengunjung').value = @json(old('email_pengunjung'));
+                document.getElementById('keperluan').value = @json(old('keperluan'));
+                document.getElementById('waktu').value = @json(old('waktu'));
+                document.getElementById('tanggal_kunjungan').value = @json(old('tanggal_kunjungan'));
+            @endif
+        @endif
+    });
 </script>
 @endpush
 @endsection

@@ -19,11 +19,11 @@ class PegawaiController extends Controller
     {
         $validatedData = $request->validate([
             'nama_pegawai'    => 'required|string|max:255',
-            'nip'             => 'required|string|max:50|unique:app_md_pegawai,nip', // nip harus unik
+            'nip'             => 'required|string|max:18|regex:/^[0-9]+$/|unique:app_md_pegawai,nip', // nip harus unik
             'tanggal_lahir'   => 'nullable|date',
             'jabatan'         => 'required|string|max:255',
             'bidang'          => 'nullable|string|max:255',
-            'nomor_hp'        => 'nullable|string|max:20',
+            'nomor_hp'        => 'nullable|string|max:13',
             'email'           => 'nullable|email|max:255',
         ], [
             // Kustomisasi pesan error (opsional)
@@ -40,11 +40,11 @@ class PegawaiController extends Controller
     {
         $validatedData = $request->validate([
             'nama_pegawai'    => 'required|string|max:255',
-            'nip'     => 'required|string|max:50|unique:app_md_pegawai,nip,' . $pegawai->id_pegawai . ',id_pegawai',// nip harus unik, kecuali untu
+            'nip'     => 'required|string|max:18|regex:/^[0-9]+$/|unique:app_md_pegawai,nip,' . $pegawai->id_pegawai . ',id_pegawai',// nip harus unik, kecuali untu
             'tanggal_lahir'   => 'nullable|date',
             'jabatan' => 'required|string|max:255',
             'bidang'  => 'required|string|max:255',
-            'nomor_hp'   => 'required|string|max:20',
+            'nomor_hp'   => 'required|string|max:13',
             'email'   => 'required|email|max:255',
         ]);
         $pegawai->update($validatedData);

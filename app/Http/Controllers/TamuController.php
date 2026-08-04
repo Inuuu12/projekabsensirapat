@@ -27,7 +27,7 @@ class TamuController extends Controller
             'nama_tamu' => 'required|string|max:255',
             'instansi'  => 'required|string|max:255',
             'keperluan' => 'required|string|max:255',
-            'nomor_hp'  => 'nullable|string|max:20',
+            'nomor_hp'  => 'nullable|string|max:13|regex:/^[0-9]+$/',
             'email'     => 'nullable|email|max:255',
         ]);
 
@@ -45,7 +45,7 @@ class TamuController extends Controller
             'nama_tamu' => 'required|string|max:255',
             'instansi'  => 'required|string|max:255',
             'keperluan' => 'required|string|max:255',
-            'nomor_hp'  => 'nullable|string|max:20',
+            'nomor_hp'  => 'nullable|string|max:13|regex:/^[0-9]+$/',
             'email'     => 'nullable|email|max:255',
         ]);
 

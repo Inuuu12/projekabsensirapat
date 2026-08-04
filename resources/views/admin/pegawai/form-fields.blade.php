@@ -40,7 +40,7 @@
         <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 7h6M9 11h6M9 15h3M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"></path>
         </svg>
-        <input id="{{ $prefix }}nip" name="nip" type="text" required placeholder="Masukkan Nomor Induk Pegawai" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+        <input id="{{ $prefix }}nip" name="nip" type="text" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Masukkan Nomor Induk Pegawai" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
     </div>
 </div>
 
@@ -89,7 +89,7 @@
 </div>
 
 <div>
-    <label class="mb-1.5 block text-xs font-semibold text-gray-900">Email</label>
+    <label class="mb-1.5 block text-xs font-semibold text-gray-900">Email <span class="text-red-500">*</span></label>
     <div class="relative">
         <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16v12H4zM4 7l8 6 8-6"></path>
@@ -99,11 +99,21 @@
 </div>
 
 <div>
+    <label class="mb-1.5 block text-xs font-semibold text-gray-900">Password</label>
+    <div class="relative">
+        <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+        </svg>
+        <input id="{{ $prefix }}password" name="password" type="password" placeholder="{{ $prefix ? 'Biarkan kosong jika tidak ingin mengubah' : 'Kosongkan untuk password default (pegawai123)' }}" minlength="8" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-10 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+    </div>
+</div>
+
+<div>
     <label class="mb-1.5 block text-xs font-semibold text-gray-900">Kontak</label>
     <div class="relative">
         <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 4h10a1 1 0 011 1v14a1 1 0 01-1 1H7a1 1 0 01-1-1V5a1 1 0 011-1zM10 18h4M9 7h6v8H9z"></path>
         </svg>
-        <input id="{{ $prefix }}nomor_hp" name="nomor_hp" type="text" required placeholder="Masukkan No telp" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+        <input id="{{ $prefix }}nomor_hp" name="nomor_hp" type="text" required pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Masukkan No telp" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
     </div>
 </div>

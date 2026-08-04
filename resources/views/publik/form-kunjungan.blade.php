@@ -176,7 +176,7 @@
                 <!-- No. HP / WhatsApp -->
                 <div>
                     <label class="block text-xs md:text-sm font-bold text-gray-900 mb-1.5">No. HP / WhatsApp *</label>
-                    <input type="text" name="nomorhp_pengunjung" value="{{ old('nomorhp_pengunjung') }}" placeholder="08xx-xxxx-xxxx" required
+                    <input type="text" name="nomorhp_pengunjung" value="{{ old('nomorhp_pengunjung') }}" placeholder="08xx-xxxx-xxxx" required pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                            class="w-full bg-[#F3F2ED] border-0 rounded-2xl p-4 text-xs md:text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-ijo-tua focus:bg-white transition-all">
                 </div>
 

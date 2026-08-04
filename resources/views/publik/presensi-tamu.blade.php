@@ -91,7 +91,7 @@
                     <!-- 3. NIK (Nomer Induk Karyawan) -->
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-gray-800">NIK (Nomor Induk Karyawan/Pegawai) *</label>
-                        <input type="text" name="nik" value="{{ old('nik') }}" required placeholder="Masukkan NIK/NIP karyawan" class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                        <input type="text" name="nik" value="{{ old('nik') }}" required pattern="[0-9]+" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Masukkan NIK/NIP karyawan" class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
                     </div>
 
                     <!-- 4. Jabatan -->
@@ -103,7 +103,7 @@
                     <!-- 5. No. HP / WhatsApp -->
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-gray-800">No. HP / WhatsApp *</label>
-                        <input type="text" name="no_hp" value="{{ old('no_hp') }}" required placeholder="08xx-xxxx-xxxx" class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                        <input type="text" name="no_hp" value="{{ old('no_hp') }}" required pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="08xx-xxxx-xxxx" class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
                     </div>
 
                     <!-- 6. Asal Instansi -->

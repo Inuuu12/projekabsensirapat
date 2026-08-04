@@ -70,10 +70,10 @@
                 </div>
             </form>
         </div>
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto overflow-y-auto max-h-[450px] custom-scrollbar">
             <table class="w-full text-left min-w-[1160px]">
-                <thead>
-                    <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider">
+                <thead class="sticky top-0 z-10">
+                    <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider outline outline-1 outline-[#35635b]">
                         <th class="px-6 py-4">Foto</th>
                         <th class="px-6 py-4">Nama</th>
                         <th class="px-6 py-4">NIP</th>
@@ -110,6 +110,7 @@
                                     <button
                                         type="button"
                                         onclick="openEditPegawai(this)"
+                                        data-id="{{ $item->id_pegawai }}"
                                         data-action="{{ route('admin.pegawai.update', $item->id_pegawai) }}"
                                         data-foto-url="{{ $item->foto ? asset('storage/' . $item->foto) : '' }}"
                                         data-nama="{{ $item->nama_pegawai }}"
@@ -281,6 +282,13 @@
 
         <form id="form-tambah-pegawai" method="POST" action="{{ route('admin.pegawai.store') }}" enctype="multipart/form-data" class="flex min-h-0 flex-1 flex-col">
             @csrf
+            @if ($errors->any() && !old('_method'))
+                <div class="px-5 pt-4 sm:px-6">
+                    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                        {{ $errors->first() }}
+                    </div>
+                </div>
+            @endif
             <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
                 @include('admin.pegawai.form-fields')
             </div>
@@ -311,6 +319,14 @@
         <form id="form-edit-pegawai" method="POST" enctype="multipart/form-data" class="flex min-h-0 flex-1 flex-col">
             @csrf
             @method('PUT')
+            <input type="hidden" id="edit-id_pegawai" name="id_pegawai">
+            @if ($errors->any() && old('_method') === 'PUT')
+                <div class="px-5 pt-4 sm:px-6">
+                    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                        {{ $errors->first() }}
+                    </div>
+                </div>
+            @endif
             <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
                 @include('admin.pegawai.form-fields', ['prefix' => 'edit-'])
             </div>
@@ -346,6 +362,7 @@
 
     function openEditPegawai(button) {
         document.getElementById('form-edit-pegawai').action = button.dataset.action;
+        document.getElementById('edit-id_pegawai').value = button.dataset.id;
         document.getElementById('edit-foto').value = '';
         document.getElementById('edit-nama_pegawai').value = button.dataset.nama;
         document.getElementById('edit-nip').value = button.dataset.nip;
@@ -504,6 +521,32 @@
         initMasterList('bidang');
         initMasterList('jabatan');
         initLiveSearch();
+
+        @if($errors->any())
+            @if(old('_method') === 'PUT')
+                const editId = "{{ old('id_pegawai') }}";
+                const editBtn = document.querySelector(`button[data-id="${editId}"]`);
+                if (editBtn) {
+                    openEditPegawai(editBtn);
+                    document.getElementById('edit-nama_pegawai').value = @json(old('nama_pegawai'));
+                    document.getElementById('edit-nip').value = @json(old('nip'));
+                    document.getElementById('edit-tanggal_lahir').value = @json(old('tanggal_lahir'));
+                    document.getElementById('edit-jabatan').value = @json(old('jabatan'));
+                    document.getElementById('edit-bidang').value = @json(old('bidang'));
+                    document.getElementById('edit-nomor_hp').value = @json(old('nomor_hp'));
+                    document.getElementById('edit-email').value = @json(old('email'));
+                }
+            @else
+                openModal('modal-tambah-pegawai');
+                document.getElementById('nama_pegawai').value = @json(old('nama_pegawai'));
+                document.getElementById('nip').value = @json(old('nip'));
+                document.getElementById('tanggal_lahir').value = @json(old('tanggal_lahir'));
+                document.getElementById('jabatan').value = @json(old('jabatan'));
+                document.getElementById('bidang').value = @json(old('bidang'));
+                document.getElementById('nomor_hp').value = @json(old('nomor_hp'));
+                document.getElementById('email').value = @json(old('email'));
+            @endif
+        @endif
     });
 </script>
 @endpush

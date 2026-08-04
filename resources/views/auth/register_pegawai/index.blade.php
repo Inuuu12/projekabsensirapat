@@ -62,7 +62,7 @@
 
                 <label>
                     <span class="text-xs font-extrabold uppercase text-gray-500">NIP</span>
-                    <input type="text" name="nip" value="{{ old('nip') }}" required
+                    <input type="text" name="nip" value="{{ old('nip') }}" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] px-4 text-sm font-semibold outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
                         placeholder="Nomor induk pegawai">
                 </label>
@@ -97,7 +97,7 @@
 
                 <label>
                     <span class="text-xs font-extrabold uppercase text-gray-500">No. HP</span>
-                    <input type="text" name="nomor_hp" value="{{ old('nomor_hp') }}" required
+                    <input type="text" name="nomor_hp" value="{{ old('nomor_hp') }}" required pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] px-4 text-sm font-semibold outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
                         placeholder="08xxxxxxxxxx">
                 </label>
@@ -111,7 +111,7 @@
 
                 <label>
                     <span class="text-xs font-extrabold uppercase text-gray-500">Password</span>
-                    <input type="password" name="password" required
+                    <input type="password" name="password" required minlength="8"
                         class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] px-4 text-sm font-semibold outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
                         placeholder="Minimal 8 karakter">
                 </label>

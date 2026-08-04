@@ -40,9 +40,9 @@ class AdminTamuController extends Controller
         $validated = $request->validate([
             'foto_selfie' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'nama' => 'required|string|max:255',
-            'nik' => 'nullable|string|max:50',
+            'nik' => 'nullable|string|max:16|regex:/^[0-9]+$/',
             'jabatan' => 'nullable|string|max:255',
-            'no_hp' => 'required|string|max:30',
+            'no_hp' => 'required|string|max:13|regex:/^[0-9]+$/',
             'asal_instansi' => 'required|string|max:255',
             'id_agenda' => 'required|exists:app_md_agenda,id_agenda',
         ]);
@@ -62,9 +62,9 @@ class AdminTamuController extends Controller
     $validated = $request->validate([
         'foto_selfie'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         'nama'          => 'required|string|max:255',
-        'nik'           => 'nullable|string|max:50',
+        'nik'           => 'nullable|string|max:16|regex:/^[0-9]+$/',
         'jabatan'       => 'nullable|string|max:255',
-        'no_hp'         => 'required|string|max:30',
+        'no_hp'         => 'required|string|max:13|regex:/^[0-9]+$/',
         'asal_instansi' => 'required|string|max:255',
         'id_agenda'     => 'required|exists:app_md_agenda,id_agenda',
     ]);

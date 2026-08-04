@@ -36,7 +36,7 @@
         <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 7h6M9 11h6M9 15h3M7 3h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"></path>
         </svg>
-        <input id="{{ $prefix }}nik" name="nik" type="text" placeholder="Masukkan NIK" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+        <input id="{{ $prefix }}nik" name="nik" type="text" pattern="[0-9]+" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Masukkan NIK" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
     </div>
 </div>
 
@@ -56,7 +56,7 @@
         <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 4h10a1 1 0 011 1v14a1 1 0 01-1 1H7a1 1 0 01-1-1V5a1 1 0 011-1zM10 18h4M9 7h6v8H9z"></path>
         </svg>
-        <input id="{{ $prefix }}no_hp" name="no_hp" type="text" required placeholder="Masukkan No telp" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+        <input id="{{ $prefix }}no_hp" name="no_hp" type="text" required pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Masukkan No telp" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
     </div>
 </div>
 

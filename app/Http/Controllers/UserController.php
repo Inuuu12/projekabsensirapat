@@ -210,7 +210,7 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'nama'          => 'required|string',
-            'no_hp'         => 'required|string',
+            'no_hp'         => 'required|string|max:13|regex:/^[0-9]+$/',
             'asal_instansi' => 'required|string',
             'id_agenda'     => 'required|integer',
             'foto_selfie'   => 'nullable|string',      // Menerima file path atau base64 string

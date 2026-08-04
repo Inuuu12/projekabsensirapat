@@ -107,7 +107,7 @@
                             </div>
                             <input type="text" name="username" id="username" value="{{ old('username') }}" required autofocus
                                 class="block w-full pl-10 pr-3 py-2.5 text-sm bg-gray-50/50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal focus:border-transparent placeholder-gray-400 text-gray-900 transition duration-150"
-                                placeholder="Masukkan username admin">
+                                placeholder="Masukkan username Admin">
                         </div>
                     </div>
 

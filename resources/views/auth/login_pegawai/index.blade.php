@@ -87,7 +87,7 @@
 
                 <p class="text-center text-sm font-semibold text-gray-500">
                     Belum punya akun?
-                    <a href="{{ route('pegawai.register') }}" class="font-extrabold text-[#27364A] hover:text-sirapi-green">Daftar pegawai</a>
+                    <a href="{{ route('pegawai.register') }}" class="font-extrabold text-[#27364A] hover:text-sirapi-green">Daftar Sekarang!</a>
                 </p>
             </form>
         </section>

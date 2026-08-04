@@ -333,7 +333,7 @@ class PublicPageController extends Controller
             'nama_pegawai' => 'required|string|max:255',
             'nama_pengunjung' => 'required|string|max:255',
             'asal_instansi' => 'required|string|max:255',
-            'nomorhp_pengunjung' => 'required|string|max:30',
+            'nomorhp_pengunjung' => 'required|string|max:13|regex:/^[0-9]+$/',
             'email_pengunjung' => 'required|email|max:255',
             'keperluan' => 'required|string',
         ], [

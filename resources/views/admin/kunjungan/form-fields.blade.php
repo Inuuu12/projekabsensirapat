@@ -22,7 +22,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
         <label class="block text-xs font-bold text-gray-700 uppercase mb-1">No HP</label>
-        <input id="{{ $prefix }}nomorhp_pengunjung" name="nomorhp_pengunjung" type="text" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
+        <input id="{{ $prefix }}nomorhp_pengunjung" name="nomorhp_pengunjung" type="text" pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full border border-gray-300 rounded-xl p-2.5 text-sm focus:border-[#35635b] outline-none">
     </div>
     <div>
         <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email</label>

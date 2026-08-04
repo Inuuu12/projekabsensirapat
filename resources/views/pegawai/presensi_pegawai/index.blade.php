@@ -224,7 +224,7 @@
 
                 <label>
                     <span class="text-xs font-extrabold uppercase text-gray-500">NIP</span>
-                    <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" required class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
+                    <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
                 </label>
 
                 <label>
@@ -249,7 +249,7 @@
 
                 <label>
                     <span class="text-xs font-extrabold uppercase text-gray-500">No. HP</span>
-                    <input type="text" name="nomor_hp" value="{{ old('nomor_hp', $pegawai->nomor_hp) }}" class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
+                    <input type="text" name="nomor_hp" value="{{ old('nomor_hp', $pegawai->nomor_hp) }}" pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
                 </label>
 
                 <label>

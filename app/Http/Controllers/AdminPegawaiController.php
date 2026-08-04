@@ -86,20 +86,21 @@ class AdminPegawaiController extends Controller
     {
         $validated = $request->validate([
             'nama_pegawai' => 'required|string|max:255',
-            'nip' => 'required|string|max:255|unique:app_md_pegawai,nip',
+            'nip' => 'required|string|max:18|regex:/^[0-9]+$/|unique:app_md_pegawai,nip',
             'tanggal_lahir' => 'nullable|date',
             'jabatan' => 'required|string|max:255',
             'bidang' => 'nullable|string|max:255',
-            'nomor_hp' => 'required|string|max:30',
+            'nomor_hp' => 'required|string|max:13|regex:/^[0-9]+$/',
             'email' => 'required|email|max:255|unique:app_md_pegawai,email',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'password' => 'nullable|string|min:8',
         ]);
 
         if ($request->hasFile('foto')) {
             $validated['foto'] = $request->file('foto')->store('pegawai', 'public');
         }
 
-        $validated['password'] = 'pegawai123';
+        $validated['password'] = $request->filled('password') ? $request->password : 'pegawai123';
 
         Pegawai::create($validated);
 
@@ -112,13 +113,14 @@ class AdminPegawaiController extends Controller
 
         $validated = $request->validate([
             'nama_pegawai' => 'required|string|max:255',
-            'nip' => 'required|string|max:255|unique:app_md_pegawai,nip,' . $id . ',id_pegawai',
+            'nip' => 'required|string|max:18|regex:/^[0-9]+$/|unique:app_md_pegawai,nip,' . $id . ',id_pegawai',
             'tanggal_lahir' => 'nullable|date',
             'jabatan' => 'required|string|max:255',
             'bidang' => 'nullable|string|max:255',
-            'nomor_hp' => 'required|string|max:30',
+            'nomor_hp' => 'required|string|max:13|regex:/^[0-9]+$/',
             'email' => 'required|email|max:255|unique:app_md_pegawai,email,' . $id . ',id_pegawai',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'password' => 'nullable|string|min:8',
         ]);
 
         if ($request->hasFile('foto')) {
@@ -132,6 +134,12 @@ class AdminPegawaiController extends Controller
                 Storage::disk('public')->delete($pegawai->foto);
             }
             $validated['foto'] = null;
+        }
+
+        if ($request->filled('password')) {
+            $validated['password'] = $request->password;
+        } else {
+            unset($validated['password']);
         }
 
         $pegawai->update($validated);
