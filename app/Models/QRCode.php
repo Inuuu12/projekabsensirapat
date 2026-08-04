@@ -22,7 +22,7 @@ class QRCode extends Model
     {
         return self::updateOrCreate(
             ['id_agenda' => $idAgenda],
-            ['qr_codepath' => route('publik.presensi.qr.hadir', ['agenda' => $idAgenda])]
+            ['qr_codepath' => route('pegawai.presensi.index', ['agenda_id' => $idAgenda])]
         );
     }
 }

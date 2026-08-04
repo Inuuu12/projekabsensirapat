@@ -14,6 +14,7 @@ use App\Http\Controllers\AdminPublikController;
 use App\Http\Controllers\AdminRuangController;
 use App\Http\Controllers\AdminTamuController;
 use App\Http\Controllers\KehadiranController;
+use App\Http\Controllers\PegawaiAuthController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\UserController;
 
@@ -119,6 +120,21 @@ Route::prefix('admin')->group(function () {
 Route::post('/kehadiran/scan-qr', [KehadiranController::class, 'scan_QR']);
 Route::post('/kehadiran/verifikasi-fr', [KehadiranController::class, 'verifikasi_FaceRecognition']);
 
+// ROUTE GRUP PEGAWAI
+Route::prefix('pegawai')->group(function () {
+    Route::get('/login', [PegawaiAuthController::class, 'showLoginForm'])->name('pegawai.login');
+    Route::post('/login', [PegawaiAuthController::class, 'login'])->name('pegawai.login.submit');
+    Route::get('/daftar', [PegawaiAuthController::class, 'showRegisterForm'])->name('pegawai.register');
+    Route::post('/daftar', [PegawaiAuthController::class, 'register'])->name('pegawai.register.submit');
+
+    Route::middleware('auth:pegawai')->group(function () {
+        Route::get('/presensi', [PegawaiAuthController::class, 'presensi'])->name('pegawai.presensi.index');
+        Route::post('/presensi', [PegawaiAuthController::class, 'simpanPresensi'])->name('pegawai.presensi.submit');
+        Route::put('/profil', [PegawaiAuthController::class, 'updateProfil'])->name('pegawai.profil.update');
+        Route::post('/logout', [PegawaiAuthController::class, 'logout'])->name('pegawai.logout');
+    });
+});
+
 // Fitur pengaduan masyarakat
 Route::post('/aduan/otp', [UserController::class, 'kirimOtpAduan'])->name('publik.aduan.otp');
 Route::post('/aduan/kirim', [UserController::class, 'kirimAduan'])->name('publik.aduan.kirim');
@@ -190,7 +206,9 @@ Route::get('/publik/berita-detail/{id?}', [PublicPageController::class, 'beritaD
 
 Route::get('/publik/presensi-pilih', [PublicPageController::class, 'presensiPilih'])->name('publik.presensi.pilih');
 
-Route::get('/publik/presensi-pegawai', [PublicPageController::class, 'presensiPegawai'])->name('publik.presensi.pegawai');
+Route::get('/publik/presensi-pegawai', function (\Illuminate\Http\Request $request) {
+    return redirect()->route('pegawai.presensi.index', $request->only('agenda_id'));
+})->name('publik.presensi.pegawai');
 
 Route::get('/publik/presensi-tamu', [PublicPageController::class, 'presensiTamu'])->name('publik.presensi.tamu');
 

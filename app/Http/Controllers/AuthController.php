@@ -10,7 +10,7 @@ class AuthController
     //halaman form login 
     public function showLoginForm()
     {
-        return view('auth.login');
+        return view('auth.login_admin.index');
     }
     //memproses data dari form login
     public function login(Request $request)

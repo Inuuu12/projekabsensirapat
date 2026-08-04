@@ -8,6 +8,8 @@
     $dokumentasiItems = $dokumen->where('jenis_dokumen', 'dokumentasi')->values();
     $waktuMulai = substr((string) $agenda->waktu, 0, 5);
     $waktuSelesai = $agenda->waktu_selesai ? substr((string) $agenda->waktu_selesai, 0, 5) : null;
+    $qrPayload = $qrCode?->qr_codepath;
+    $qrImageUrl = $qrPayload ? 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' . urlencode($qrPayload) : null;
 @endphp
 
 <div class="max-w-[1400px] mx-auto space-y-6">
@@ -110,7 +112,39 @@
             </div>
         </section>
 
-        <section class="lg:col-span-5 bg-white border border-gray-100 rounded-2xl p-6 shadow-xs">
+        <section class="lg:col-span-5 space-y-6">
+            <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-xs">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-sm font-bold text-gray-800 tracking-wide uppercase">QR Presensi Pegawai</h2>
+                        <p class="mt-1 text-xs text-gray-500">QR ini mengarah ke halaman presensi pegawai untuk agenda ini.</p>
+                    </div>
+                    <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agenda->status_qr === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500' }}">
+                        {{ $agenda->status_qr === 'aktif' ? 'Aktif' : 'Nonaktif' }}
+                    </span>
+                </div>
+
+                @if ($qrImageUrl)
+                    <div class="mt-5 flex flex-col items-center gap-4">
+                        <img src="{{ $qrImageUrl }}" alt="QR Presensi {{ $agenda->nama_agenda }}" class="h-56 w-56 rounded-xl border border-gray-100 bg-white p-3">
+                        <div class="w-full rounded-xl bg-gray-50 p-3">
+                            <p class="break-all text-[11px] font-semibold text-gray-500">{{ $qrPayload }}</p>
+                        </div>
+                        <a href="{{ $qrPayload }}" target="_blank" rel="noopener" class="inline-flex w-full items-center justify-center rounded-lg bg-[#35635b] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#2b4f49]">
+                            Buka Halaman Presensi
+                        </a>
+                    </div>
+                @else
+                    <div class="mt-5 rounded-xl border border-dashed border-gray-200 bg-gray-50 p-5 text-center">
+                        <p class="text-xs font-semibold text-gray-500">QR belum dibuat untuk agenda ini.</p>
+                        <a href="{{ url('/admin/agenda/' . $agenda->id_agenda . '/generate-qr') }}" class="mt-4 inline-flex items-center justify-center rounded-lg bg-[#35635b] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#2b4f49]">
+                            Generate QR
+                        </a>
+                    </div>
+                @endif
+            </div>
+
+            <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-xs">
             <div class="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
                 <h2 class="text-sm font-bold text-gray-800 tracking-wide uppercase">Peserta Hadir</h2>
                 <span class="bg-[#35635b] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $pesertaHadir->count() }} Hadir</span>
@@ -139,6 +173,7 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
             </div>
         </section>
     </div>

@@ -99,6 +99,7 @@ class AdminAgendaController extends Controller
         $dokumen = DokumenNotulen::where('id_agenda', $agenda->id_agenda)
             ->latest('id_dokumen')
             ->get();
+        $qrCode = QRCode::where('id_agenda', $agenda->id_agenda)->first();
         $pesertaHadir = DB::table('app_md_kehadiran')
             ->join('app_md_peserta', 'app_md_kehadiran.id_peserta', '=', 'app_md_peserta.id_peserta')
             ->where('app_md_kehadiran.id_agenda', $agenda->id_agenda)
@@ -106,7 +107,7 @@ class AdminAgendaController extends Controller
             ->latest('app_md_kehadiran.created_at')
             ->get();
 
-        return view('admin.agenda.detail', compact('agenda', 'ruang', 'dokumen', 'pesertaHadir'));
+        return view('admin.agenda.detail', compact('agenda', 'ruang', 'dokumen', 'qrCode', 'pesertaHadir'));
     }
 
     public function upload_DokumenAgenda($id, Request $request)

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\QRCode;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -98,6 +99,7 @@ class DatabaseSeeder extends Seeder
                 'bidang' => 'Sekretariat',
                 'nomor_hp' => '081234567890',
                 'email' => 'andi.saputra@bappenda.test',
+                'password' => Hash::make('pegawai123'),
             ],
             [
                 'nip' => '199002022015032002',
@@ -107,6 +109,7 @@ class DatabaseSeeder extends Seeder
                 'bidang' => 'Bidang Pengelolaan Informasi dan Komunikasi Publik',
                 'nomor_hp' => '081234567891',
                 'email' => 'siti.aminah@bappenda.test',
+                'password' => Hash::make('pegawai123'),
             ],
             [
                 'nip' => '199503032020121003',
@@ -116,6 +119,7 @@ class DatabaseSeeder extends Seeder
                 'bidang' => 'Bidang Aplikasi Informatika',
                 'nomor_hp' => '081234567892',
                 'email' => 'budi.santoso@bappenda.test',
+                'password' => Hash::make('pegawai123'),
             ],
         ];
 
@@ -218,14 +222,7 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        DB::table('app_md_qrcode')->updateOrInsert(
-            ['id_agenda' => $idAgenda],
-            [
-                'qr_codepath' => "qrcodes/agenda-{$idAgenda}.png",
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-        );
+        QRCode::generateQR((int) $idAgenda);
 
         DB::table('app_md_logbook')->updateOrInsert(
             ['catatan' => 'Seeder: agenda awal dibuat.'],

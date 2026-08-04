@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use App\Models\Agenda; // Pastikan model agenda merujuk ke tabel tunggal 'agenda'
+use App\Models\QRCode;
 
 class UserController extends Controller
 {
@@ -58,11 +59,15 @@ class UserController extends Controller
 
     public function tampilkanQrKode($id)
     {
-        // Mendapatkan / simulasi path gambar QR code untuk agenda tertentu
+        $qrCode = QRCode::where('id_agenda', $id)->first();
+
         return response()->json([
-            'success' => true,
+            'success' => (bool) $qrCode,
             'id_agenda' => $id,
-            'qr_code_url' => url("/storage/qrcodes/agenda-{$id}.png")
+            'qr_code_url' => $qrCode?->qr_codepath,
+            'qr_image_url' => $qrCode
+                ? 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($qrCode->qr_codepath)
+                : null,
         ]);
     }
 

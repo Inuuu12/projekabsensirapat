@@ -91,8 +91,11 @@ class PublicPageController extends Controller
         $agenda = $this->queryOrDefault(fn () => $id
             ? Agenda::findOrFail($id)
             : Agenda::orderBy('tanggal')->orderBy('waktu')->first());
+        $qrCode = $agenda
+            ? $this->queryOrDefault(fn () => QRCode::where('id_agenda', $agenda->id_agenda)->first())
+            : null;
 
-        return view('publik.agenda-detail', compact('agenda'));
+        return view('publik.agenda-detail', compact('agenda', 'qrCode'));
     }
 
     public function lampiranAgenda(int $id)

@@ -37,6 +37,8 @@
                 : null;
             $lampiranExtension = strtolower(pathinfo((string) $agendaAktif?->lampiran, PATHINFO_EXTENSION));
             $lampiranPreviewable = in_array($lampiranExtension, ['pdf', 'jpg', 'jpeg', 'png'], true);
+            $qrPayload = $qrCode?->qr_codepath;
+            $qrImageUrl = $qrPayload ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayload) : null;
         @endphp
 
         <div class="space-y-3">
@@ -122,13 +124,28 @@
                         </div>
                     </div>
 
-                    <a href="{{ $presensiUrl }}" class="bg-ijo-tua text-white rounded-3xl p-5 shadow-md flex items-center space-x-4 hover:bg-ijo-semitua transition-colors">
-                        <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-xl shrink-0">QR</div>
-                        <div>
-                            <h4 class="font-bold text-sm">Generate QR Presensi</h4>
-                            <p class="text-[10px] text-gray-200 mt-0.5">Pilih Pegawai atau Tamu &rarr;</p>
+                    <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-900">QR Presensi Pegawai</h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Scan untuk masuk ke presensi agenda ini.</p>
+                            </div>
+                            <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'bg-ijo-sangatmuda text-ijo-tua' : 'bg-gray-100 text-gray-500' }}">
+                                {{ $agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'Aktif' : 'Belum aktif' }}
+                            </span>
                         </div>
-                    </a>
+
+                        @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrl)
+                            <a href="{{ $qrPayload }}" class="block rounded-2xl border border-gray-100 bg-gray-50 p-4 text-center transition hover:border-ijo-tua">
+                                <img src="{{ $qrImageUrl }}" alt="QR Presensi {{ $agendaAktif->nama_agenda }}" class="mx-auto h-56 w-56 rounded-xl bg-white p-3">
+                                <span class="mt-3 inline-flex rounded-xl bg-ijo-tua px-4 py-2 text-xs font-bold text-white">Buka Presensi Pegawai</span>
+                            </a>
+                        @else
+                            <div class="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-5 text-center">
+                                <p class="text-xs font-semibold text-gray-500">QR presensi pegawai belum diaktifkan admin untuk agenda ini.</p>
+                            </div>
+                        @endif
+                    </div>
 
                     <div class="bg-ijo-sangatmuda/60 rounded-3xl p-6 border border-ijo-sangatmuda text-center space-y-2 flex flex-col items-center justify-center min-h-[140px]">
                         <div class="w-8 h-8 rounded-full bg-ijo-tua text-white flex items-center justify-center text-xs">PIN</div>

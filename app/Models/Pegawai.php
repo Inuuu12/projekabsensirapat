@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Carbon\Carbon;
 
-class Pegawai extends Model
+class Pegawai extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'app_md_pegawai';
     protected $primaryKey = 'id_pegawai';
@@ -22,10 +23,16 @@ class Pegawai extends Model
         'bidang',
         'nomor_hp',
         'email',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
     ];
 
     protected $casts = [
         'tanggal_lahir' => 'date',
+        'password' => 'hashed',
     ];
 
     public function getNamaAttribute(): ?string

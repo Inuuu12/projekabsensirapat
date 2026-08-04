@@ -99,6 +99,8 @@ class AdminPegawaiController extends Controller
             $validated['foto'] = $request->file('foto')->store('pegawai', 'public');
         }
 
+        $validated['password'] = 'pegawai123';
+
         Pegawai::create($validated);
 
         return back()->with('success', 'Data pegawai berhasil ditambahkan!');

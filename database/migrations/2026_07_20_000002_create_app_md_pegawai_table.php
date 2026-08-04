@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('bidang')->nullable();
             $table->string('nomor_hp');
             $table->string('email')->unique();
+            $table->string('password')->nullable();
             $table->timestamps();
         });
     }
