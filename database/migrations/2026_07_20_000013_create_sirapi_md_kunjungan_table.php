@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_kunjungan', function (Blueprint $table) {
+        Schema::create('sirapi_md_kunjungan', function (Blueprint $table) {
             $table->id('id_kunjungan');
             $table->string('nama_pegawai')->nullable();
             $table->string('nama_pejabat')->nullable();
@@ -21,12 +21,12 @@ return new class extends Migration
             $table->date('tanggal_kunjungan');
             $table->timestamps();
 
-            $table->foreignId('id_admin')->constraide('app_md_admin', 'id_admin')->cascadeonDelete('');
+            $table->foreignId('id_admin')->constraide('sirapi_md_admin', 'id_admin')->cascadeonDelete('');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_kunjungan');
+        Schema::dropIfExists('sirapi_md_kunjungan');
     }
 };

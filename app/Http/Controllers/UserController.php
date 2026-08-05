@@ -27,8 +27,8 @@ class UserController extends Controller
 
     public function TampilkanRingkasan()
     {
-        $totalAgenda = DB::table('app_md_agenda')->count();
-        $totalAduan = DB::table('app_md_datamasukan')->count();
+        $totalAgenda = DB::table('sirapi_md_agenda')->count();
+        $totalAduan = DB::table('sirapi_md_datamasukan')->count();
 
         return response()->json([
             'success' => true,
@@ -42,14 +42,14 @@ class UserController extends Controller
     // 2. CLASS AGENDA RAPAT PUBLIK
     public function listAgenda()
     {
-        $agenda = DB::table('app_md_agenda')->select('id_agenda', 'nama_agenda', 'tanggal', 'waktu', 'lokasi')->get();
+        $agenda = DB::table('sirapi_md_agenda')->select('id_agenda', 'nama_agenda', 'tanggal', 'waktu', 'lokasi')->get();
         return response()->json(['success' => true, 'data' => $agenda]);
     }
 
     public function CariAgenda(Request $request)
     {
         $keyword = $request->query('keyword');
-        $agenda = DB::table('app_md_agenda')
+        $agenda = DB::table('sirapi_md_agenda')
             ->where('nama_agenda', 'like', "%{$keyword}%")
             ->orWhere('lokasi', 'like', "%{$keyword}%")
             ->get();
@@ -138,7 +138,7 @@ class UserController extends Controller
             $validated['foto'] = $request->file('foto')->store('aduan', 'public');
         }
 
-        $idAduan = DB::table('app_md_datamasukan')->insertGetId([
+        $idAduan = DB::table('sirapi_md_datamasukan')->insertGetId([
             'nama_pengadu' => $validated['nama_pengadu'],
             'nomor_pengadu' => $validated['nomor_pengadu'],
             'email' => $validated['email'],
@@ -164,7 +164,7 @@ class UserController extends Controller
 
     public function cekStatusAduan($id)
     {
-        $aduan = DB::table('app_md_datamasukan')->where('id_datamasukan', $id)->first();
+        $aduan = DB::table('sirapi_md_datamasukan')->where('id_datamasukan', $id)->first();
 
         if (!$aduan) {
             return response()->json(['success' => false, 'message' => 'Data aduan tidak ditemukan.'], 404);
@@ -219,7 +219,7 @@ class UserController extends Controller
 
         unset($validated['tanda_tangan']);
 
-        $idTamu = DB::table('app_md_tamu')->insertGetId(array_merge($validated, [
+        $idTamu = DB::table('sirapi_md_tamu')->insertGetId(array_merge($validated, [
             'created_at' => now(),
             'updated_at' => now()
         ]));

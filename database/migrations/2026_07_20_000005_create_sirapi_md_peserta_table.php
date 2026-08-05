@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_peserta', function (Blueprint $table) {
+        Schema::create('sirapi_md_peserta', function (Blueprint $table) {
             $table->id('id_peserta');
             $table->string('nama');
             $table->string('jabatan');
@@ -22,6 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_peserta');
+        Schema::dropIfExists('sirapi_md_peserta');
     }
 };

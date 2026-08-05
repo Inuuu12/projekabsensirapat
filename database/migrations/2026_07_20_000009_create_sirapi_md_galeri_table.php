@@ -8,19 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::hasTable('app_md_bidang')) {
-            return;
-        }
-
-        Schema::create('app_md_bidang', function (Blueprint $table) {
-            $table->id('id_bidang');
-            $table->string('nama_bidang')->unique();
+        Schema::create('sirapi_md_galeri', function (Blueprint $table) {
+            $table->id('id_galeri');
+            $table->date('tanggal');
+            $table->string('gambar');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_bidang');
+        Schema::dropIfExists('sirapi_md_galeri');
     }
 };

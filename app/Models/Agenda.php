@@ -14,7 +14,7 @@ class Agenda extends Model
     public const STATUS_BERLANGSUNG = 'Berlangsung';
     public const STATUS_SELESAI = 'Selesai';
 
-    protected $table = 'app_md_agenda';
+    protected $table = 'sirapi_md_agenda';
     protected $primaryKey = 'id_agenda';
 
     protected $fillable = [

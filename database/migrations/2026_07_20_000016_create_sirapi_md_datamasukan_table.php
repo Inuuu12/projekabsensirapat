@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_datamasukan', function (Blueprint $table) {
+        Schema::create('sirapi_md_datamasukan', function (Blueprint $table) {
             $table->bigIncrements('id_datamasukan');
             $table->string('nama_pengadu');
             $table->string('nomor_pengadu');
@@ -19,12 +19,12 @@ return new class extends Migration
             $table->string('status');
             $table->timestamps();
 
-            $table->foreignid('id_admin')->nullable()->constraide('app_md_admin','id_admin')->cascadeondelete('');
+            $table->foreignid('id_admin')->nullable()->constraide('sirapi_md_admin','id_admin')->cascadeondelete('');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_datamasukan');
+        Schema::dropIfExists('sirapi_md_datamasukan');
     }
 };

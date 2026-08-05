@@ -9,7 +9,7 @@ class UlangTahun extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_md_ulangtahun';
+    protected $table = 'sirapi_md_ulangtahun';
     protected $primaryKey = 'id_ulangtahun';
     protected $fillable = ['nama', 'tanggal', 'gambar'];
 

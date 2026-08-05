@@ -9,7 +9,7 @@ class VideoPublik extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_md_video';
+    protected $table = 'sirapi_md_video';
     protected $primaryKey = 'id_video';
     protected $fillable = ['judul', 'deskripsi', 'youtube_url', 'youtube_embed_url'];
 }

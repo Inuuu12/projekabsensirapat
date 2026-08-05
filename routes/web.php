@@ -124,12 +124,15 @@ Route::post('/kehadiran/verifikasi-fr', [KehadiranController::class, 'verifikasi
 Route::prefix('pegawai')->group(function () {
     Route::get('/login', [PegawaiAuthController::class, 'showLoginForm'])->name('pegawai.login');
     Route::post('/login', [PegawaiAuthController::class, 'login'])->name('pegawai.login.submit');
+    Route::post('/password/otp', [PegawaiAuthController::class, 'kirimOtpLupaPassword'])->name('pegawai.password.otp');
+    Route::post('/password/reset', [PegawaiAuthController::class, 'resetPassword'])->name('pegawai.password.reset');
     Route::get('/daftar', [PegawaiAuthController::class, 'showRegisterForm'])->name('pegawai.register');
     Route::post('/daftar', [PegawaiAuthController::class, 'register'])->name('pegawai.register.submit');
 
     Route::middleware('auth:pegawai')->group(function () {
         Route::get('/presensi', [PegawaiAuthController::class, 'presensi'])->name('pegawai.presensi.index');
         Route::post('/presensi', [PegawaiAuthController::class, 'simpanPresensi'])->name('pegawai.presensi.submit');
+        Route::post('/profil/password-otp', [PegawaiAuthController::class, 'kirimOtpPassword'])->name('pegawai.profil.password-otp');
         Route::put('/profil', [PegawaiAuthController::class, 'updateProfil'])->name('pegawai.profil.update');
         Route::post('/logout', [PegawaiAuthController::class, 'logout'])->name('pegawai.logout');
     });

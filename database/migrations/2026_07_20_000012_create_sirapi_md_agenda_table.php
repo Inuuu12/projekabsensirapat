@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_agenda', function (Blueprint $table) {
+        Schema::create('sirapi_md_agenda', function (Blueprint $table) {
             $table->id('id_agenda');
             $table->string('nama_agenda');
             $table->string('kategori_surat', 20)->default('internal');
@@ -24,13 +24,13 @@ return new class extends Migration
             $table->string('status_qr')->nullable();
             $table->timestamps();
 
-            $table->foreignId('id_ruangrapat')->constrained('app_md_ruangrapat','id_ruangrapat')->cascadeonDelete('');
-            $table->foreignId('id_statusagenda')->constrained('app_md_statusagenda','id_statusagenda')->cascadeonDelete('');
+            $table->foreignId('id_ruangrapat')->constrained('sirapi_md_ruangrapat','id_ruangrapat')->cascadeonDelete('');
+            $table->foreignId('id_statusagenda')->constrained('sirapi_md_statusagenda','id_statusagenda')->cascadeonDelete('');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_agenda');
+        Schema::dropIfExists('sirapi_md_agenda');
     }
 };

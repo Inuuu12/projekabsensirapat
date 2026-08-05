@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_qrcode', function (Blueprint $table) {
+        Schema::create('sirapi_md_qrcode', function (Blueprint $table) {
             $table->id('id_qrcode');
             $table->string('qr_codepath');
             $table->timestamps();
 
-            $table->foreignId('id_agenda')->constrained('app_md_agenda','id_agenda')->cascadeonDelete('');
+            $table->foreignId('id_agenda')->constrained('sirapi_md_agenda','id_agenda')->cascadeonDelete('');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_qrcode');
+        Schema::dropIfExists('sirapi_md_qrcode');
     }
 };

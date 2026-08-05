@@ -9,7 +9,7 @@ class DokumenNotulen extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_md_dokumen_notulen';
+    protected $table = 'sirapi_md_dokumen_notulen';
     protected $primaryKey = 'id_dokumen';
     protected $fillable = ['id_agenda', 'jenis_dokumen', 'nama_file', 'file_path'];
 

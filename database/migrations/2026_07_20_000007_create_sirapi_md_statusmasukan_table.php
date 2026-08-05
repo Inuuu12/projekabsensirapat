@@ -8,17 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_ulangtahun', function (Blueprint $table) {
-            $table->id('id_ulangtahun');
-            $table->string('nama');
-            $table->date('tanggal');
-            $table->string('gambar');
+        Schema::create('sirapi_md_statusmasukan', function (Blueprint $table) {
+            $table->id('id_statusmasukan');
+            $table->string('nama_status');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_ulangtahun');
+        Schema::dropIfExists('sirapi_md_statusmasukan');
     }
 };

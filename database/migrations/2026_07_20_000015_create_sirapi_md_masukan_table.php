@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_masukan', function (Blueprint $table) {
+        Schema::create('sirapi_md_masukan', function (Blueprint $table) {
             $table->id('id_masukan');
             $table->string('email')->unique();
             $table->string('no_hp');
@@ -20,12 +20,12 @@ return new class extends Migration
             $table->dateTime('waktu_selesai');
             $table->timestamps();
 
-            $table->foreignId('id_statusmasukan')->constrained('app_md_statusmasukan', 'id_statusmasukan')->cascadeonDelete('');
+            $table->foreignId('id_statusmasukan')->constrained('sirapi_md_statusmasukan', 'id_statusmasukan')->cascadeonDelete('');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_masukan');
+        Schema::dropIfExists('sirapi_md_masukan');
     }
 };

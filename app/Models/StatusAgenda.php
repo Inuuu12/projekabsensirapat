@@ -9,7 +9,7 @@ class StatusAgenda extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_md_statusagenda';
+    protected $table = 'sirapi_md_statusagenda';
     protected $primaryKey = 'id_statusagenda';
     protected $fillable = ['nama_status'];
 

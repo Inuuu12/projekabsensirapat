@@ -10,7 +10,7 @@ class Tamu extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_md_tamu';
+    protected $table = 'sirapi_md_tamu';
     protected $primaryKey = 'id_tamu';
 
     protected $fillable = [

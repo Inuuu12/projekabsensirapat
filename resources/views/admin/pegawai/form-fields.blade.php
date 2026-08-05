@@ -99,16 +99,6 @@
 </div>
 
 <div>
-    <label class="mb-1.5 block text-xs font-semibold text-gray-900">Password</label>
-    <div class="relative">
-        <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-        </svg>
-        <input id="{{ $prefix }}password" name="password" type="password" placeholder="{{ $prefix ? 'Biarkan kosong jika tidak ingin mengubah' : 'Kosongkan untuk password default (pegawai123)' }}" minlength="8" class="h-11 w-full rounded-lg border border-[#b9c9c1] bg-[#f4faf7] pl-10 pr-10 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-    </div>
-</div>
-
-<div>
     <label class="mb-1.5 block text-xs font-semibold text-gray-900">Kontak</label>
     <div class="relative">
         <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

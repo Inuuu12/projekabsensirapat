@@ -44,7 +44,7 @@ class AdminTamuController extends Controller
             'jabatan' => 'nullable|string|max:255',
             'no_hp' => 'required|string|max:13|regex:/^[0-9]+$/',
             'asal_instansi' => 'required|string|max:255',
-            'id_agenda' => 'required|exists:app_md_agenda,id_agenda',
+            'id_agenda' => 'required|exists:sirapi_md_agenda,id_agenda',
         ]);
         if ($request->hasFile('foto_selfie')) {
             $validated['foto_selfie'] = $request->file('foto_selfie')->store('tamu', 'public');
@@ -66,7 +66,7 @@ class AdminTamuController extends Controller
         'jabatan'       => 'nullable|string|max:255',
         'no_hp'         => 'required|string|max:13|regex:/^[0-9]+$/',
         'asal_instansi' => 'required|string|max:255',
-        'id_agenda'     => 'required|exists:app_md_agenda,id_agenda',
+        'id_agenda'     => 'required|exists:sirapi_md_agenda,id_agenda',
     ]);
 
     // 2. PROSES UPLOAD FOTO JIKA ADA FILE BARU

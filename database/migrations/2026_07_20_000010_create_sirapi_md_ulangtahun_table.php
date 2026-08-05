@@ -8,8 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_galeri', function (Blueprint $table) {
-            $table->id('id_galeri');
+        Schema::create('sirapi_md_ulangtahun', function (Blueprint $table) {
+            $table->id('id_ulangtahun');
+            $table->string('nama');
             $table->date('tanggal');
             $table->string('gambar');
             $table->timestamps();
@@ -18,6 +19,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_galeri');
+        Schema::dropIfExists('sirapi_md_ulangtahun');
     }
 };

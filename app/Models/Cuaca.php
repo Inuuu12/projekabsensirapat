@@ -9,7 +9,7 @@ class Cuaca extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_md_cuaca';
+    protected $table = 'sirapi_md_cuaca';
     protected $primaryKey = 'id_cuaca';
     protected $fillable = ['lokasi', 'isi_berita', 'suhu', 'kondisi', 'kelembapan'];
 

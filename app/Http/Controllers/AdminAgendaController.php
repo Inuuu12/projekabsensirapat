@@ -29,8 +29,8 @@ class AdminAgendaController extends Controller
             'lokasi' => 'required|string|max:255',
             'status_fr' => 'nullable|boolean',
             'status_qr' => 'nullable|string|max:50',
-            'id_ruangrapat' => 'required|exists:app_md_ruangrapat,id_ruangrapat',
-            'id_statusagenda' => 'nullable|exists:app_md_statusagenda,id_statusagenda',
+            'id_ruangrapat' => 'required|exists:sirapi_md_ruangrapat,id_ruangrapat',
+            'id_statusagenda' => 'nullable|exists:sirapi_md_statusagenda,id_statusagenda',
         ]);
 
         if ($request->hasFile('lampiran')) {
@@ -100,11 +100,11 @@ class AdminAgendaController extends Controller
             ->latest('id_dokumen')
             ->get();
         $qrCode = QRCode::where('id_agenda', $agenda->id_agenda)->first();
-        $pesertaHadir = DB::table('app_md_kehadiran')
-            ->join('app_md_peserta', 'app_md_kehadiran.id_peserta', '=', 'app_md_peserta.id_peserta')
-            ->where('app_md_kehadiran.id_agenda', $agenda->id_agenda)
-            ->select('app_md_peserta.nama', 'app_md_peserta.jabatan', 'app_md_kehadiran.created_at')
-            ->latest('app_md_kehadiran.created_at')
+        $pesertaHadir = DB::table('sirapi_md_kehadiran')
+            ->join('sirapi_md_peserta', 'sirapi_md_kehadiran.id_peserta', '=', 'sirapi_md_peserta.id_peserta')
+            ->where('sirapi_md_kehadiran.id_agenda', $agenda->id_agenda)
+            ->select('sirapi_md_peserta.nama', 'sirapi_md_peserta.jabatan', 'sirapi_md_kehadiran.created_at')
+            ->latest('sirapi_md_kehadiran.created_at')
             ->get();
 
         return view('admin.agenda.detail', compact('agenda', 'ruang', 'dokumen', 'qrCode', 'pesertaHadir'));
@@ -261,8 +261,8 @@ class AdminAgendaController extends Controller
             'lokasi' => 'required|string|max:255',
             'status_fr' => 'nullable|boolean',
             'status_qr' => 'nullable|string|max:50',
-            'id_ruangrapat' => 'required|exists:app_md_ruangrapat,id_ruangrapat',
-            'id_statusagenda' => 'nullable|exists:app_md_statusagenda,id_statusagenda',
+            'id_ruangrapat' => 'required|exists:sirapi_md_ruangrapat,id_ruangrapat',
+            'id_statusagenda' => 'nullable|exists:sirapi_md_statusagenda,id_statusagenda',
         ]);
 
         if ($request->hasFile('lampiran')) {

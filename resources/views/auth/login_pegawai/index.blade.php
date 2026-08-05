@@ -77,7 +77,7 @@
                         </button>
                     </label>
                     <div class="mt-3 text-right">
-                        <a href="#" class="text-sm font-bold text-[#27364A] hover:text-sirapi-green">Lupa kata sandi?</a>
+                        <button type="button" data-open-forgot class="text-sm font-bold text-[#27364A] hover:text-sirapi-green">Lupa kata sandi?</button>
                     </div>
                 </div>
 
@@ -93,11 +93,80 @@
         </section>
     </main>
 
+    <div data-forgot-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 px-5">
+        <section class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-extrabold text-sirapi-ink">Reset Kata Sandi</h2>
+                    <p class="mt-1 text-sm font-medium text-gray-500">Kirim OTP ke email pegawai, lalu masukkan password baru.</p>
+                </div>
+                <button type="button" data-close-forgot class="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700" aria-label="Tutup">
+                    <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+            </div>
+
+            <form action="{{ route('pegawai.password.otp') }}" method="POST" class="mt-6 space-y-3">
+                @csrf
+                <label class="block">
+                    <span class="text-xs font-extrabold uppercase text-gray-500">Email Pegawai</span>
+                    <input name="reset_email" type="email" value="{{ old('reset_email') }}" required data-reset-email-input class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green" placeholder="nama@bogorkab.go.id">
+                </label>
+                <button type="submit" class="h-11 w-full rounded-xl border border-sirapi-green px-4 text-sm font-extrabold text-sirapi-green transition hover:bg-sirapi-green hover:text-white">Kirim OTP</button>
+            </form>
+
+            <form action="{{ route('pegawai.password.reset') }}" method="POST" class="mt-5 grid grid-cols-1 gap-3">
+                @csrf
+                <input name="reset_email" type="hidden" value="{{ old('reset_email') }}" data-reset-email-hidden>
+                <label>
+                    <span class="text-xs font-extrabold uppercase text-gray-500">Kode OTP</span>
+                    <input name="otp" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
+                </label>
+                <label>
+                    <span class="text-xs font-extrabold uppercase text-gray-500">Password Baru</span>
+                    <input name="password" type="password" required minlength="8" class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
+                </label>
+                <label>
+                    <span class="text-xs font-extrabold uppercase text-gray-500">Konfirmasi Password</span>
+                    <input name="password_confirmation" type="password" required minlength="8" class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
+                </label>
+                <button type="submit" class="mt-1 h-11 rounded-xl bg-sirapi-green px-4 text-sm font-extrabold text-white transition hover:bg-sirapi-greenSoft">Simpan Password Baru</button>
+            </form>
+        </section>
+    </div>
+
     <script>
         lucide.createIcons();
 
         const toggle = document.querySelector('[data-password-toggle]');
         const password = document.getElementById('password');
+        const forgotModal = document.querySelector('[data-forgot-modal]');
+        const openForgotButton = document.querySelector('[data-open-forgot]');
+        const closeForgotButton = document.querySelector('[data-close-forgot]');
+        const resetEmailInput = document.querySelector('[data-reset-email-input]');
+        const resetEmailHidden = document.querySelector('[data-reset-email-hidden]');
+
+        function openForgotModal() {
+            forgotModal?.classList.remove('hidden');
+            forgotModal?.classList.add('flex');
+        }
+
+        function closeForgotModal() {
+            forgotModal?.classList.add('hidden');
+            forgotModal?.classList.remove('flex');
+        }
+
+        openForgotButton?.addEventListener('click', openForgotModal);
+        closeForgotButton?.addEventListener('click', closeForgotModal);
+        resetEmailInput?.addEventListener('input', () => {
+            if (resetEmailHidden) {
+                resetEmailHidden.value = resetEmailInput.value;
+            }
+        });
+        forgotModal?.addEventListener('click', (event) => {
+            if (event.target === forgotModal) {
+                closeForgotModal();
+            }
+        });
 
         toggle?.addEventListener('click', () => {
             const hidden = password.type === 'password';
@@ -107,6 +176,10 @@
                 : '<i data-lucide="eye-off" class="h-5 w-5"></i>';
             lucide.createIcons();
         });
+
+        @if (session('forgot_open') || old('reset_email'))
+            openForgotModal();
+        @endif
     </script>
 </body>
 </html>

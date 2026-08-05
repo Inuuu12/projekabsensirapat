@@ -44,6 +44,12 @@
                 </div>
             @endif
 
+            @if (session('warning'))
+                <div class="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-700">
+                    {{ session('warning') }}
+                </div>
+            @endif
+
             @if ($errors->any())
                 <div class="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
                     {{ $errors->first() }}

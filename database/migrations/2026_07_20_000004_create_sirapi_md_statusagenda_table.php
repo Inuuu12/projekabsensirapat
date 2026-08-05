@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_statusagenda', function (Blueprint $table) {
+        Schema::create('sirapi_md_statusagenda', function (Blueprint $table) {
             $table->id('id_statusagenda');
             $table->string('nama_status');
             $table->timestamps();
@@ -17,6 +17,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_statusagenda');
+        Schema::dropIfExists('sirapi_md_statusagenda');
     }
 };

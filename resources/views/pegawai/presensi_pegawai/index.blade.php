@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Presensi Pegawai - SIRAPI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -267,6 +268,15 @@
                     <input type="password" name="password_confirmation" class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
                 </label>
 
+                <div>
+                    <span class="text-xs font-extrabold uppercase text-gray-500">OTP Password</span>
+                    <div class="mt-2 flex gap-2">
+                        <input type="text" name="password_otp" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" class="h-11 min-w-0 flex-1 rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
+                        <button type="button" data-send-password-otp class="h-11 shrink-0 rounded-xl bg-sirapi-green px-4 text-xs font-extrabold text-white transition hover:bg-sirapi-green2">Kirim OTP</button>
+                    </div>
+                    <p data-password-otp-status class="mt-2 hidden text-xs font-bold"></p>
+                </div>
+
                 <div class="flex justify-end gap-3 sm:col-span-2">
                     <button type="button" data-close-profile class="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-extrabold text-gray-600 transition hover:bg-gray-50">Batal</button>
                     <button type="submit" class="rounded-xl bg-sirapi-green px-5 py-2.5 text-sm font-extrabold text-white transition hover:bg-sirapi-green2">Simpan</button>
@@ -284,6 +294,16 @@
         const toggleProfileMenuButton = document.querySelector('[data-toggle-profile-menu]');
         const openProfileButtons = document.querySelectorAll('[data-open-profile]');
         const closeProfileButtons = document.querySelectorAll('[data-close-profile]');
+        const sendPasswordOtpButton = document.querySelector('[data-send-password-otp]');
+        const passwordOtpStatus = document.querySelector('[data-password-otp-status]');
+
+        function showPasswordOtpStatus(message, isSuccess) {
+            if (!passwordOtpStatus) return;
+
+            passwordOtpStatus.textContent = message;
+            passwordOtpStatus.classList.remove('hidden', 'text-red-600', 'text-sirapi-green');
+            passwordOtpStatus.classList.add(isSuccess ? 'text-sirapi-green' : 'text-red-600');
+        }
 
         function closeProfileDropdown() {
             profileDropdown?.classList.add('hidden');
@@ -314,6 +334,32 @@
         profileModal.addEventListener('click', (event) => {
             if (event.target === profileModal) {
                 closeProfileModal();
+            }
+        });
+
+        sendPasswordOtpButton?.addEventListener('click', async () => {
+            sendPasswordOtpButton.disabled = true;
+            sendPasswordOtpButton.textContent = 'Mengirim...';
+            showPasswordOtpStatus('Mengirim kode OTP...', true);
+
+            try {
+                const response = await fetch('{{ route('pegawai.profil.password-otp') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    },
+                    body: JSON.stringify({}),
+                });
+                const data = await response.json();
+
+                showPasswordOtpStatus(data.message || 'Kode OTP sudah dikirim.', response.ok && data.success);
+            } catch (error) {
+                showPasswordOtpStatus('OTP gagal dikirim. Coba lagi nanti.', false);
+            } finally {
+                sendPasswordOtpButton.disabled = false;
+                sendPasswordOtpButton.textContent = 'Kirim OTP';
             }
         });
 

@@ -12,7 +12,7 @@ class Admin extends Authenticatable
     use HasFactory, Notifiable;
 
     //table
-    protected $table = 'app_md_admin';
+    protected $table = 'sirapi_md_admin';
 
     //primary key
     protected $primaryKey = 'id_admin';

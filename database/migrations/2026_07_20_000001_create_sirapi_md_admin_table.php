@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_facerecog', function (Blueprint $table) {
-            $table->id('id_facerecog');
+        Schema::create('sirapi_md_admin', function (Blueprint $table) {
+            $table->id('id_admin');
+            $table->string('username');
             $table->string('nama');
+            $table->string('password');
             $table->timestamps();
-
-            $table->foreignId('id_peserta')->constrained('app_md_peserta', 'id_peserta')->cascadeonDelete('');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_facerecog');
+        Schema::dropIfExists('sirapi_md_admin');
     }
 };

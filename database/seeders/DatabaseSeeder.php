@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $now = now();
 
-        DB::table('app_md_admin')->updateOrInsert(
+        DB::table('sirapi_md_admin')->updateOrInsert(
             ['username' => 'admin'],
             [
                 'nama' => 'Administrator',
@@ -24,26 +24,11 @@ class DatabaseSeeder extends Seeder
         );
 
         foreach (['Mendatang', 'Berlangsung', 'Selesai'] as $statusAgenda) {
-            DB::table('app_md_statusagenda')->updateOrInsert(
+            DB::table('sirapi_md_statusagenda')->updateOrInsert(
                 ['nama_status' => $statusAgenda],
                 ['created_at' => $now, 'updated_at' => $now],
             );
         }
-
-        DB::table('app_md_statusmasukan')->updateOrInsert(
-            ['nama_status' => 'Menunggu'],
-            ['created_at' => $now, 'updated_at' => $now],
-        );
-
-        DB::table('app_md_statusmasukan')->updateOrInsert(
-            ['nama_status' => 'Diproses'],
-            ['created_at' => $now, 'updated_at' => $now],
-        );
-
-        DB::table('app_md_statusmasukan')->updateOrInsert(
-            ['nama_status' => 'Selesai'],
-            ['created_at' => $now, 'updated_at' => $now],
-        );
 
         $ruangan = [
             ['nama_ruang' => 'Ruang Rapat Utama', 'kapasitas' => 40, 'keterangan' => 'Ruang rapat utama lantai 2.'],
@@ -52,7 +37,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($ruangan as $item) {
-            DB::table('app_md_ruangrapat')->updateOrInsert(
+            DB::table('sirapi_md_ruangrapat')->updateOrInsert(
                 ['nama_ruang' => $item['nama_ruang']],
                 $item + ['created_at' => $now, 'updated_at' => $now],
             );
@@ -66,7 +51,7 @@ class DatabaseSeeder extends Seeder
             'Bidang Persandian dan Statistik',
             'UPT Radio dan Televisi',
         ] as $bidang) {
-            DB::table('app_md_bidang')->updateOrInsert(
+            DB::table('sirapi_md_bidang')->updateOrInsert(
                 ['nama_bidang' => $bidang],
                 ['created_at' => $now, 'updated_at' => $now],
             );
@@ -84,7 +69,7 @@ class DatabaseSeeder extends Seeder
             ['nama_jabatan' => 'Pranata Komputer Pertama', 'kategori' => 'Jabatan Fungsional'],
             ['nama_jabatan' => 'Pelaksana', 'kategori' => 'Jabatan Fungsional'],
         ] as $jabatan) {
-            DB::table('app_md_jabatan')->updateOrInsert(
+            DB::table('sirapi_md_jabatan')->updateOrInsert(
                 ['nama_jabatan' => $jabatan['nama_jabatan']],
                 $jabatan + ['created_at' => $now, 'updated_at' => $now],
             );
@@ -124,7 +109,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($pegawai as $item) {
-            DB::table('app_md_pegawai')->updateOrInsert(
+            DB::table('sirapi_md_pegawai')->updateOrInsert(
                 ['nip' => $item['nip']],
                 $item + ['created_at' => $now, 'updated_at' => $now],
             );
@@ -150,18 +135,18 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($peserta as $item) {
-            DB::table('app_md_peserta')->updateOrInsert(
+            DB::table('sirapi_md_peserta')->updateOrInsert(
                 ['email' => $item['email']],
                 $item + ['created_at' => $now, 'updated_at' => $now],
             );
         }
 
-        $idAdmin = DB::table('app_md_admin')->where('username', 'admin')->value('id_admin');
-        $idRuangUtama = DB::table('app_md_ruangrapat')->where('nama_ruang', 'Ruang Rapat Utama')->value('id_ruangrapat');
-        $idStatusMendatang = DB::table('app_md_statusagenda')->where('nama_status', 'Mendatang')->value('id_statusagenda');
-        $idPesertaPegawai = DB::table('app_md_peserta')->where('email', 'andi.saputra@bappenda.test')->value('id_peserta');
+        $idAdmin = DB::table('sirapi_md_admin')->where('username', 'admin')->value('id_admin');
+        $idRuangUtama = DB::table('sirapi_md_ruangrapat')->where('nama_ruang', 'Ruang Rapat Utama')->value('id_ruangrapat');
+        $idStatusMendatang = DB::table('sirapi_md_statusagenda')->where('nama_status', 'Mendatang')->value('id_statusagenda');
+        $idPesertaPegawai = DB::table('sirapi_md_peserta')->where('email', 'andi.saputra@bappenda.test')->value('id_peserta');
 
-        DB::table('app_md_agenda')->updateOrInsert(
+        DB::table('sirapi_md_agenda')->updateOrInsert(
             ['nama_agenda' => 'Rapat Koordinasi Evaluasi PAD'],
             [
                 'tanggal' => now()->toDateString(),
@@ -177,9 +162,9 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        $idAgenda = DB::table('app_md_agenda')->where('nama_agenda', 'Rapat Koordinasi Evaluasi PAD')->value('id_agenda');
+        $idAgenda = DB::table('sirapi_md_agenda')->where('nama_agenda', 'Rapat Koordinasi Evaluasi PAD')->value('id_agenda');
 
-        DB::table('app_md_tamu')->updateOrInsert(
+        DB::table('sirapi_md_tamu')->updateOrInsert(
             ['nik' => '3201010101010001'],
             [
                 'nama' => 'Rina Lestari',
@@ -193,7 +178,7 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        DB::table('app_md_kunjungan')->updateOrInsert(
+        DB::table('sirapi_md_kunjungan')->updateOrInsert(
             ['email_pengunjung' => 'rina.lestari@example.test'],
             [
                 'nama_pejabat' => 'Administrator',
@@ -208,7 +193,7 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        DB::table('app_md_datamasukan')->updateOrInsert(
+        DB::table('sirapi_md_datamasukan')->updateOrInsert(
             ['email' => 'warga@example.test'],
             [
                 'nama_pengadu' => 'Warga Bogor',
@@ -224,7 +209,7 @@ class DatabaseSeeder extends Seeder
 
         QRCode::generateQR((int) $idAgenda);
 
-        DB::table('app_md_logbook')->updateOrInsert(
+        DB::table('sirapi_md_logbook')->updateOrInsert(
             ['catatan' => 'Seeder: agenda awal dibuat.'],
             [
                 'Id_agenda' => $idAgenda,
@@ -234,9 +219,9 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        $idLog = DB::table('app_md_logbook')->where('catatan', 'Seeder: agenda awal dibuat.')->value('id_log');
+        $idLog = DB::table('sirapi_md_logbook')->where('catatan', 'Seeder: agenda awal dibuat.')->value('id_log');
 
-        DB::table('app_md_kehadiran')->updateOrInsert(
+        DB::table('sirapi_md_kehadiran')->updateOrInsert(
             [
                 'id_peserta' => $idPesertaPegawai,
                 'id_agenda' => $idAgenda,
@@ -248,7 +233,7 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        DB::table('app_md_berita')->updateOrInsert(
+        DB::table('sirapi_md_berita')->updateOrInsert(
             ['judul' => 'Informasi Agenda BAPPENDA'],
             [
                 'isi_berita' => 'Agenda rapat BAPPENDA dapat dipantau melalui sistem e-Agenda.',
@@ -260,7 +245,7 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        DB::table('app_md_galeri')->updateOrInsert(
+        DB::table('sirapi_md_galeri')->updateOrInsert(
             ['gambar' => 'galeri/rapat-koordinasi.jpg'],
             [
                 'tanggal' => now()->toDateString(),
@@ -269,7 +254,7 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        DB::table('app_md_ulangtahun')->updateOrInsert(
+        DB::table('sirapi_md_ulangtahun')->updateOrInsert(
             ['nama' => 'Andi Saputra'],
             [
                 'tanggal' => now()->startOfYear()->addMonths(2)->addDays(14)->toDateString(),
@@ -279,7 +264,7 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        DB::table('app_md_cuaca')->updateOrInsert(
+        DB::table('sirapi_md_cuaca')->updateOrInsert(
             ['lokasi' => 'Kabupaten Bogor'],
             [
                 'isi_berita' => 'Cuaca cerah berawan di sekitar pusat pemerintahan.',

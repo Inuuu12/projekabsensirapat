@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bidang extends Model
 {
-    protected $table = 'app_md_bidang';
+    protected $table = 'sirapi_md_bidang';
     protected $primaryKey = 'id_bidang';
 
     protected $fillable = [

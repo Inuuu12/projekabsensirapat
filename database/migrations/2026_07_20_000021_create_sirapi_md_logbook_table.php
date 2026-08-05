@@ -8,18 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_logbook', function (Blueprint $table) {
+        Schema::create('sirapi_md_logbook', function (Blueprint $table) {
             $table->id('id_log');
             $table->text('catatan');
             $table->dateTime('waktu_isi');
             $table->timestamps();
 
-            $table->foreignId('Id_agenda')->constrained('app_md_agenda','id_agenda')->cascadeonDelete('');
+            $table->foreignId('Id_agenda')->constrained('sirapi_md_agenda','id_agenda')->cascadeonDelete('');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_logbook');
+        Schema::dropIfExists('sirapi_md_logbook');
     }
 };

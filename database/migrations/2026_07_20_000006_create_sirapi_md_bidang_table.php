@@ -8,17 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_admin', function (Blueprint $table) {
-            $table->id('id_admin');
-            $table->string('username');
-            $table->string('nama');
-            $table->string('password');
+        if (Schema::hasTable('sirapi_md_bidang')) {
+            return;
+        }
+
+        Schema::create('sirapi_md_bidang', function (Blueprint $table) {
+            $table->id('id_bidang');
+            $table->string('nama_bidang')->unique();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_admin');
+        Schema::dropIfExists('sirapi_md_bidang');
     }
 };

@@ -7,7 +7,9 @@ use App\Models\Jabatan;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AdminPegawaiController extends Controller
 {
@@ -86,25 +88,36 @@ class AdminPegawaiController extends Controller
     {
         $validated = $request->validate([
             'nama_pegawai' => 'required|string|max:255',
-            'nip' => 'required|string|max:18|regex:/^[0-9]+$/|unique:app_md_pegawai,nip',
+            'nip' => 'required|string|max:18|regex:/^[0-9]+$/|unique:sirapi_md_pegawai,nip',
             'tanggal_lahir' => 'nullable|date',
             'jabatan' => 'required|string|max:255',
             'bidang' => 'nullable|string|max:255',
             'nomor_hp' => 'required|string|max:13|regex:/^[0-9]+$/',
-            'email' => 'required|email|max:255|unique:app_md_pegawai,email',
+            'email' => 'required|email|max:255|unique:sirapi_md_pegawai,email',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'password' => 'nullable|string|min:8',
         ]);
 
         if ($request->hasFile('foto')) {
             $validated['foto'] = $request->file('foto')->store('pegawai', 'public');
         }
 
-        $validated['password'] = $request->filled('password') ? $request->password : 'pegawai123';
+        $defaultPassword = Str::password(12);
+        $validated['password'] = $defaultPassword;
 
         Pegawai::create($validated);
 
-        return back()->with('success', 'Data pegawai berhasil ditambahkan!');
+        try {
+            Mail::raw(
+                "Akun pegawai SIRAPI Anda sudah dibuat.\n\nEmail: {$validated['email']}\nPassword sementara: {$defaultPassword}\n\nSilakan login dan ubah password dari menu profil.",
+                function ($message) use ($validated) {
+                    $message->to($validated['email'])->subject('Akun Pegawai SIRAPI');
+                }
+            );
+        } catch (\Throwable) {
+            return back()->with('warning', 'Data pegawai berhasil ditambahkan, tetapi email password gagal dikirim. Periksa konfigurasi email aplikasi.');
+        }
+
+        return back()->with('success', 'Data pegawai berhasil ditambahkan. Password sementara sudah dikirim ke email pegawai.');
     }
 
     public function update_Pegawai($id, Request $request)
@@ -113,14 +126,13 @@ class AdminPegawaiController extends Controller
 
         $validated = $request->validate([
             'nama_pegawai' => 'required|string|max:255',
-            'nip' => 'required|string|max:18|regex:/^[0-9]+$/|unique:app_md_pegawai,nip,' . $id . ',id_pegawai',
+            'nip' => 'required|string|max:18|regex:/^[0-9]+$/|unique:sirapi_md_pegawai,nip,' . $id . ',id_pegawai',
             'tanggal_lahir' => 'nullable|date',
             'jabatan' => 'required|string|max:255',
             'bidang' => 'nullable|string|max:255',
             'nomor_hp' => 'required|string|max:13|regex:/^[0-9]+$/',
-            'email' => 'required|email|max:255|unique:app_md_pegawai,email,' . $id . ',id_pegawai',
+            'email' => 'required|email|max:255|unique:sirapi_md_pegawai,email,' . $id . ',id_pegawai',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'password' => 'nullable|string|min:8',
         ]);
 
         if ($request->hasFile('foto')) {
@@ -134,12 +146,6 @@ class AdminPegawaiController extends Controller
                 Storage::disk('public')->delete($pegawai->foto);
             }
             $validated['foto'] = null;
-        }
-
-        if ($request->filled('password')) {
-            $validated['password'] = $request->password;
-        } else {
-            unset($validated['password']);
         }
 
         $pegawai->update($validated);
@@ -157,7 +163,7 @@ class AdminPegawaiController extends Controller
     public function storeBidang(Request $request)
     {
         $validated = $request->validate([
-            'nama_bidang' => 'required|string|max:255|unique:app_md_bidang,nama_bidang',
+            'nama_bidang' => 'required|string|max:255|unique:sirapi_md_bidang,nama_bidang',
         ]);
 
         Bidang::create($validated);
@@ -181,7 +187,7 @@ class AdminPegawaiController extends Controller
     public function storeJabatan(Request $request)
     {
         $validated = $request->validate([
-            'nama_jabatan' => 'required|string|max:255|unique:app_md_jabatan,nama_jabatan',
+            'nama_jabatan' => 'required|string|max:255|unique:sirapi_md_jabatan,nama_jabatan',
             'kategori' => 'nullable|string|max:255',
         ]);
 

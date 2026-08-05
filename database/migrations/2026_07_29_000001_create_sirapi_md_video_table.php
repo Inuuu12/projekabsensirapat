@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_video', function (Blueprint $table) {
+        Schema::create('sirapi_md_video', function (Blueprint $table) {
             $table->id('id_video');
             $table->string('judul');
             $table->text('deskripsi')->nullable();
@@ -20,6 +20,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_video');
+        Schema::dropIfExists('sirapi_md_video');
     }
 };

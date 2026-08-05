@@ -52,14 +52,14 @@ class KehadiranController extends Controller
     public function verifikasi_FaceRecognition(Request $request)
     {
         $validated = $request->validate([
-            'id_agenda' => 'required|integer|exists:app_md_agenda,id_agenda',
-            'id_peserta' => 'nullable|integer|exists:app_md_peserta,id_peserta',
+            'id_agenda' => 'required|integer|exists:sirapi_md_agenda,id_agenda',
+            'id_peserta' => 'nullable|integer|exists:sirapi_md_peserta,id_peserta',
             'catatan' => 'nullable|string|max:1000',
         ]);
 
         $now = now();
 
-        $idLog = DB::table('app_md_logbook')->insertGetId([
+        $idLog = DB::table('sirapi_md_logbook')->insertGetId([
             'Id_agenda' => $validated['id_agenda'],
             'catatan' => $validated['catatan'] ?? 'Verifikasi face recognition berhasil.',
             'waktu_isi' => $now,
@@ -68,7 +68,7 @@ class KehadiranController extends Controller
         ]);
 
         if (! empty($validated['id_peserta'])) {
-            DB::table('app_md_kehadiran')->updateOrInsert(
+            DB::table('sirapi_md_kehadiran')->updateOrInsert(
                 [
                     'id_agenda' => $validated['id_agenda'],
                     'id_peserta' => $validated['id_peserta'],

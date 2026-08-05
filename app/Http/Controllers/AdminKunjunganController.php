@@ -16,7 +16,7 @@ class AdminKunjunganController extends Controller
         $keperluanFilter = (string) $request->query('keperluan', 'semua');
         $tanggalFilter = (string) $request->query('tanggal', '');
 
-        $hasNamaPegawai = \Illuminate\Support\Facades\Schema::hasColumn('app_md_kunjungan', 'nama_pegawai');
+        $hasNamaPegawai = \Illuminate\Support\Facades\Schema::hasColumn('sirapi_md_kunjungan', 'nama_pegawai');
         $colPegawai = $hasNamaPegawai ? 'nama_pegawai' : 'nama_pejabat';
 
         $kunjungan = Kunjungan::query()

@@ -9,7 +9,7 @@ class DataMasukan extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_md_datamasukan';
+    protected $table = 'sirapi_md_datamasukan';
     protected $primaryKey = 'id_datamasukan';
 
     protected $fillable = [

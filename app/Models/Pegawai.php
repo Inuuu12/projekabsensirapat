@@ -11,7 +11,7 @@ class Pegawai extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'app_md_pegawai';
+    protected $table = 'sirapi_md_pegawai';
     protected $primaryKey = 'id_pegawai';
 
     protected $fillable = [

@@ -9,7 +9,7 @@ class Logbook extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_md_logbook';
+    protected $table = 'sirapi_md_logbook';
     protected $primaryKey = 'id_log';
 
     protected $fillable = [

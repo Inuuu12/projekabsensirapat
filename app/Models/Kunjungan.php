@@ -9,7 +9,7 @@ class Kunjungan extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_md_kunjungan';
+    protected $table = 'sirapi_md_kunjungan';
     protected $primaryKey = 'id_kunjungan';
 
     protected $fillable = [

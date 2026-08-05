@@ -8,19 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('app_md_berita', function (Blueprint $table) {
-            $table->id('id_berita');
-            $table->string('judul');
+        Schema::create('sirapi_md_cuaca', function (Blueprint $table) {
+            $table->id('id_cuaca');
+            $table->string('lokasi');
             $table->text('isi_berita');
-            $table->date('tanggal');
-            $table->string('gambar');
-            $table->string('sumber');
+            $table->string('suhu');
+            $table->string('kondisi');
+            $table->string('kelembapan');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('app_md_berita');
+        Schema::dropIfExists('sirapi_md_cuaca');
     }
 };

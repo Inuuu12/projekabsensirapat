@@ -9,7 +9,7 @@ class QRCode extends Model
 {
     use HasFactory;
 
-    protected $table = 'app_md_qrcode';
+    protected $table = 'sirapi_md_qrcode';
     protected $primaryKey = 'id_qrcode';
     protected $fillable = ['id_agenda', 'qr_codepath'];
 
