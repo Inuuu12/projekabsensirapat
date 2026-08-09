@@ -68,7 +68,7 @@
                         </span>
                         <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus
                             class="h-12 w-full rounded-lg border border-[#DDE3DF] bg-white pl-12 pr-4 text-sm font-medium text-gray-800 shadow-sm outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
-                            placeholder="nama@bogorkab.go.id">
+                            placeholder="Masukkan email anda">
                     </div>
                 </div>
 
@@ -118,7 +118,7 @@
                 @csrf
                 <label class="block">
                     <span class="text-xs font-extrabold uppercase text-gray-500">Email Pegawai</span>
-                    <input name="reset_email" type="email" value="{{ old('reset_email') }}" required data-reset-email-input class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green" placeholder="nama@bogorkab.go.id">
+                    <input name="reset_email" type="email" value="{{ old('reset_email') }}" required data-reset-email-input class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green" placeholder="Masukkan email anda">
                 </label>
                 <button type="submit" class="h-11 w-full rounded-xl border border-sirapi-green px-4 text-sm font-extrabold text-sirapi-green transition hover:bg-sirapi-green hover:text-white">Kirim OTP</button>
             </form>

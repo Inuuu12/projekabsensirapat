@@ -106,7 +106,7 @@
                     <span class="text-xs font-extrabold uppercase text-gray-500">Email</span>
                     <input type="email" name="email" value="{{ old('email') }}" required
                         class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] px-4 text-sm font-semibold outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
-                        placeholder="nama@bogorkab.go.id">
+                        placeholder="Masukkan email anda">
                 </label>
 
                 <label>
