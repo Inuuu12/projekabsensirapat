@@ -78,8 +78,8 @@
                 
                 <!-- Header Form -->
                 <div class="text-center space-y-2">
-                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Selamat Datang</h2>
-                    <p class="text-sm text-gray-500 font-medium">Silakan login menggunakan akun resmi Anda.</p>
+                    <h2 class="text-2xl md:text-4xl font-bold text-[#27364A] tracking-tight">Selamat Datang</h2>
+                    <p class="text-sm font-semibold text-[#27364A]">Silakan login menggunakan email resmi Anda.</p>
                 </div>
 
                 <!-- Alert Error Validation -->

@@ -38,8 +38,13 @@
         </div>
     </header>
 
-    <main class="flex min-h-[calc(100vh-240px)] items-start justify-center px-6 pt-44">
+    <main class="flex min-h-[calc(100vh-240px)] items-start justify-center px-6 pt-16 pb-12">
         <section class="w-full max-w-[356px]">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-extrabold text-[#2A3547] tracking-tight">Selamat Datang</h2>
+                <p class="mt-2 text-[15px] font-bold text-[#2A3547]">Silakan login menggunakan email resmi Anda.</p>
+            </div>
+
             @if (session('status'))
                 <div class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
                     {{ session('status') }}
@@ -55,17 +60,21 @@
             <form action="{{ route('pegawai.login.submit') }}" method="POST" class="space-y-7">
                 @csrf
 
-                <label for="email" class="relative block">
-                    <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[#8B9490]">
-                        <i data-lucide="mail" class="h-5 w-5"></i>
-                    </span>
-                    <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus
-                        class="h-12 w-full rounded-lg border border-[#DDE3DF] bg-white pl-12 pr-4 text-sm font-medium text-gray-800 shadow-sm outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
-                        placeholder="nama@bogorkab.go.id">
-                </label>
+                <div>
+                    <label for="email" class="block text-left text-sm font-bold text-[#2A3547] mb-1.5">Email</label>
+                    <div class="relative block">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[#8B9490]">
+                            <i data-lucide="mail" class="h-5 w-5"></i>
+                        </span>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus
+                            class="h-12 w-full rounded-lg border border-[#DDE3DF] bg-white pl-12 pr-4 text-sm font-medium text-gray-800 shadow-sm outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
+                            placeholder="nama@bogorkab.go.id">
+                    </div>
+                </div>
 
                 <div>
-                    <label for="password" class="relative block">
+                    <label for="password" class="block text-left text-sm font-bold text-[#2A3547] mb-1.5">Kata sandi</label>
+                    <div class="relative block">
                         <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[#8B9490]">
                             <i data-lucide="lock-keyhole" class="h-5 w-5"></i>
                         </span>
@@ -75,14 +84,14 @@
                         <button type="button" data-password-toggle class="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-[#8B9490] transition hover:text-sirapi-green" aria-label="Tampilkan kata sandi">
                             <i data-lucide="eye-off" class="h-5 w-5"></i>
                         </button>
-                    </label>
+                    </div>
                     <div class="mt-3 text-right">
-                        <button type="button" data-open-forgot class="text-sm font-bold text-[#27364A] hover:text-sirapi-green">Lupa kata sandi?</button>
+                        <button type="button" data-open-forgot class="text-sm font-bold text-[#2A3547] hover:text-sirapi-green">Lupa kata sandi?</button>
                     </div>
                 </div>
 
-                <button type="submit" class="h-12 w-full rounded-lg bg-sirapi-green text-sm font-extrabold text-white shadow-sm transition hover:bg-sirapi-greenSoft focus:outline-none focus:ring-2 focus:ring-sirapi-green/25">
-                    Login Pegawai
+                <button type="submit" class="h-12 w-full rounded-lg bg-[#D8A01A] hover:bg-[#C28E13] text-sm font-extrabold text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-[#D8A01A]/25">
+                    Masuk
                 </button>
 
                 <p class="text-center text-sm font-semibold text-gray-500">
