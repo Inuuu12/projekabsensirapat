@@ -133,7 +133,7 @@ Route::prefix('pegawai')->group(function () {
     // Halaman presensi pegawai (jika belum login, langsung ke face recognition tanpa paksa login)
     Route::get('/presensi', function (\Illuminate\Http\Request $request) {
         if (! Auth::guard('pegawai')->check()) {
-            return redirect()->route('publik.presensi.pegawai.wajah', array_filter(['agenda_id' => $request->query('agenda_id')]));
+            return redirect()->route('publik.presensi.pegawai', array_filter(['agenda_id' => $request->query('agenda_id')]));
         }
         return app(\App\Http\Controllers\PegawaiAuthController::class)->presensi($request);
     })->name('pegawai.presensi.index');
