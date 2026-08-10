@@ -60,6 +60,10 @@ class PegawaiAuthController extends Controller
                 return redirect()->route('pegawai.presensi.index', ['agenda_id' => $request->input('agenda_id')]);
             }
 
+            if ($request->filled('agenda_id')) {
+                return redirect()->route('pegawai.presensi.index', ['agenda_id' => $request->input('agenda_id')]);
+            }
+
             return redirect()->intended(route('pegawai.presensi.index'));
         }
 

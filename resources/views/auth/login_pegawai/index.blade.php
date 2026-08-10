@@ -59,7 +59,7 @@
 
             <form action="{{ route('pegawai.login.submit') }}" method="POST" class="space-y-7">
                 @csrf
-                @if(request('agenda_id'))
+                @if (request('agenda_id'))
                     <input type="hidden" name="agenda_id" value="{{ request('agenda_id') }}">
                 @endif
 
