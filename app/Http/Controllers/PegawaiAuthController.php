@@ -26,10 +26,14 @@ class PegawaiAuthController extends Controller
     private const PASSWORD_OTP_RESEND_SECONDS = 60;
     private const FORGOT_PASSWORD_OTP_SESSION_KEY = 'pegawai_forgot_password_otp';
 
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
         if (Auth::guard('pegawai')->check()) {
-            return redirect()->route('pegawai.presensi.index');
+            return redirect()->route('pegawai.presensi.index', array_filter(['agenda_id' => $request->query('agenda_id')]));
+        }
+
+        if ($request->has('agenda_id')) {
+            return redirect()->route('publik.presensi.pegawai.wajah', ['agenda_id' => $request->query('agenda_id')]);
         }
 
         return view('auth.login_pegawai.index');
@@ -180,7 +184,7 @@ class PegawaiAuthController extends Controller
         $kehadiran = $agenda ? $this->kehadiranPegawai($agenda->id_agenda, $pegawai->email) : null;
         [$bidangOptions, $jabatanOptions] = $this->masterPegawaiOptions();
 
-        return view('pegawai.presensi_pegawai.index', compact('pegawai', 'agenda', 'dokumen', 'kehadiran', 'bidangOptions', 'jabatanOptions'));
+        return view('pegawai.presensi.index', compact('pegawai', 'agenda', 'dokumen', 'kehadiran', 'bidangOptions', 'jabatanOptions'));
     }
 
     public function simpanPresensi(Request $request)
@@ -588,9 +592,16 @@ class PegawaiAuthController extends Controller
             );
         });
 
+        $pegawaiModel = Pegawai::find($pegawai->id_pegawai);
+        if ($pegawaiModel) {
+            Auth::guard('pegawai')->login($pegawaiModel);
+            $request->session()->regenerate();
+        }
+
         return response()->json([
             'success' => true,
             'message' => "Presensi Wajah berhasil untuk {$pegawai->nama_pegawai}!",
+            'redirect_url' => route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda]),
         ]);
     }
 }

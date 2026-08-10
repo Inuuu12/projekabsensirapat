@@ -208,116 +208,170 @@
         </section>
     </main>
 
-    <div data-profile-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 px-4 py-6">
-        <section class="max-h-full w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
-            <div class="flex items-center justify-between gap-4">
+    <!-- Edit Profile Modal (Gaya Admin Popup) -->
+    <div data-profile-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
+        <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+            <!-- Header Popup Admin Style -->
+            <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
                 <div>
-                    <h2 class="text-lg font-extrabold">Edit Profil</h2>
-                    <p class="mt-1 text-xs font-medium text-gray-500">{{ $pegawai->email }}</p>
+                    <h3 class="text-lg font-bold text-white">Edit Profil Pegawai</h3>
+                    <p class="text-xs text-white/80 font-medium">{{ $pegawai->email }}</p>
                 </div>
-                <button type="button" data-close-profile class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition hover:bg-gray-200" title="Tutup">
+                <button type="button" data-close-profile class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" title="Tutup">
                     <i data-lucide="x" class="h-5 w-5"></i>
                 </button>
             </div>
 
-            @if ($errors->any() && ! $errors->has('presensi'))
-                <div class="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-                    {{ $errors->first() }}
-                </div>
-            @endif
-
-            <form action="{{ route('pegawai.profil.update') }}" method="POST" enctype="multipart/form-data" class="mt-6 grid gap-4 sm:grid-cols-2">
+            <form action="{{ route('pegawai.profil.update') }}" method="POST" enctype="multipart/form-data" class="flex min-h-0 flex-1 flex-col">
                 @csrf
                 @method('PUT')
 
-                <label class="sm:col-span-2">
-                    <span class="text-xs font-extrabold uppercase text-gray-500">Foto</span>
-                    <input type="file" name="foto" accept="image/*" class="mt-2 block w-full rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium">
-                </label>
-
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500">Nama</span>
-                    <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai', $pegawai->nama_pegawai) }}" required class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                </label>
-
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500">NIP</span>
-                    <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                </label>
-
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500">Jabatan</span>
-                    <select name="jabatan" required class="mt-2 h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                        <option value="">Pilih jabatan</option>
-                        @foreach ($jabatanOptions->merge([$pegawai->jabatan])->filter()->unique() as $jabatan)
-                            <option value="{{ $jabatan }}" @selected(old('jabatan', $pegawai->jabatan) === $jabatan)>{{ $jabatan }}</option>
-                        @endforeach
-                    </select>
-                </label>
-
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500">Bidang</span>
-                    <select name="bidang" class="mt-2 h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                        <option value="">Pilih bidang</option>
-                        @foreach ($bidangOptions->merge([$pegawai->bidang])->filter()->unique() as $bidang)
-                            <option value="{{ $bidang }}" @selected(old('bidang', $pegawai->bidang) === $bidang)>{{ $bidang }}</option>
-                        @endforeach
-                    </select>
-                </label>
-
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500">No. HP</span>
-                    <input type="text" name="nomor_hp" value="{{ old('nomor_hp', $pegawai->nomor_hp) }}" pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                </label>
-
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500">Email</span>
-                    <input type="email" name="email" value="{{ old('email', $pegawai->email) }}" required class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                </label>
-
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500">Password Baru</span>
-                    <input type="password" name="password" class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                </label>
-
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500">Konfirmasi Password</span>
-                    <input type="password" name="password_confirmation" class="mt-2 h-11 w-full rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                </label>
-
-                <div>
-                    <span class="text-xs font-extrabold uppercase text-gray-500">OTP Password</span>
-                    <div class="mt-2 flex gap-2">
-                        <input type="text" name="password_otp" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" class="h-11 min-w-0 flex-1 rounded-xl border border-gray-200 px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                        <button type="button" data-send-password-otp class="h-11 shrink-0 rounded-xl bg-sirapi-green px-4 text-xs font-extrabold text-white transition hover:bg-sirapi-green2">Kirim OTP</button>
+                @if ($errors->any() && ! $errors->has('presensi'))
+                    <div class="px-5 pt-4 sm:px-6">
+                        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700">
+                            {{ $errors->first() }}
+                        </div>
                     </div>
-                    <p data-password-otp-status class="mt-2 hidden text-xs font-bold"></p>
+                @endif
+
+                <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
+                    <!-- Foto Profil -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Foto Profil</label>
+                        <input type="file" name="foto" accept="image/*" class="block w-full rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    </div>
+
+                    <!-- Record Wajah Box -->
+                    <div class="sm:col-span-2 rounded-xl border border-sirapi-green/20 bg-sirapi-green/5 p-3.5">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#3f8078] text-white shadow-sm">
+                                    <i data-lucide="scan-face" class="h-5 w-5"></i>
+                                </span>
+                                <div>
+                                    <span class="block text-xs font-extrabold text-[#35635b]">Record / Rekam Ulang Wajah</span>
+                                    <span class="block text-[11px] font-medium text-gray-500">Ambil ulang foto wajah untuk presensi Face Recognition</span>
+                                </div>
+                            </div>
+                            <button type="button" data-open-face class="shrink-0 rounded-xl bg-[#3f8078] px-3.5 py-2 text-xs font-extrabold text-white transition hover:bg-[#35635b]">
+                                Rekam Wajah
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Nama Pegawai -->
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Nama Lengkap *</label>
+                        <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai', $pegawai->nama_pegawai) }}" required class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    </div>
+
+                    <!-- NIP -->
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">NIP *</label>
+                        <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    </div>
+
+                    <!-- Jabatan -->
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Jabatan *</label>
+                        <select name="jabatan" required class="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            <option value="">Pilih jabatan</option>
+                            @foreach ($jabatanOptions->merge([$pegawai->jabatan])->filter()->unique() as $jabatan)
+                                <option value="{{ $jabatan }}" @selected(old('jabatan', $pegawai->jabatan) === $jabatan)>{{ $jabatan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Bidang -->
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Bidang</label>
+                        <select name="bidang" class="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            <option value="">Pilih bidang</option>
+                            @foreach ($bidangOptions->merge([$pegawai->bidang])->filter()->unique() as $bidang)
+                                <option value="{{ $bidang }}" @selected(old('bidang', $pegawai->bidang) === $bidang)>{{ $bidang }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- No HP -->
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">No. HP / WhatsApp</label>
+                        <input type="text" name="nomor_hp" value="{{ old('nomor_hp', $pegawai->nomor_hp) }}" pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Email *</label>
+                        <input type="email" name="email" value="{{ old('email', $pegawai->email) }}" required class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    </div>
+
+                    <!-- Password Baru -->
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Password Baru</label>
+                        <input type="password" name="password" placeholder="Kosongkan jika tidak diubah" class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    </div>
+
+                    <!-- Konfirmasi Password -->
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Konfirmasi Password</label>
+                        <input type="password" name="password_confirmation" placeholder="Ulangi password baru" class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    </div>
+
+                    <!-- OTP Password -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">OTP Password (Diperlukan jika ubah password)</label>
+                        <div class="flex gap-2">
+                            <input type="text" name="password_otp" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Kode OTP 6 digit" class="h-10 min-w-0 flex-1 rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            <button type="button" data-send-password-otp class="h-10 shrink-0 rounded-xl bg-[#3f8078] px-4 text-xs font-extrabold text-white transition hover:bg-[#35635b]">Kirim OTP</button>
+                        </div>
+                        <p data-password-otp-status class="mt-2 hidden text-xs font-bold"></p>
+                    </div>
                 </div>
 
-                <div class="flex justify-end gap-3 sm:col-span-2">
-                    <button type="button" data-close-profile class="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-extrabold text-gray-600 transition hover:bg-gray-50">Batal</button>
-                    <button type="submit" class="w-full rounded-xl bg-sirapi-green py-3 text-sm font-extrabold text-white transition hover:brightness-105">Simpan Perubahan</button>
+                <!-- Footer Buttons Admin Style -->
+                <div class="flex flex-col-reverse gap-3 border-t border-gray-100 bg-gray-50/50 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                    <button type="button" data-close-profile class="h-10 rounded-xl border border-gray-200 bg-white px-5 text-xs font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
+                    <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] px-5 text-xs font-bold text-white transition hover:bg-[#035f35]">
+                        <i data-lucide="save" class="h-4 w-4"></i>
+                        <span>Simpan Perubahan</span>
+                    </button>
                 </div>
             </form>
-        </section>
+        </div>
     </div>
 
-    <!-- Face Registration Modal -->
-    <div data-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 px-4 py-6">
-        <section class="max-h-full w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl relative text-center">
-            <button type="button" data-close-face class="absolute top-4 right-4 text-gray-400 hover:text-gray-700">
-                <i data-lucide="x" class="h-6 w-6"></i>
-            </button>
-            <h2 class="text-lg font-extrabold text-gray-900">Daftarkan Wajah Anda</h2>
-            <p class="text-xs text-gray-500 mt-1 mb-4">Posisikan wajah Anda di tengah kamera, lalu klik Ambil Wajah.</p>
-            
-            <div class="relative w-full aspect-[4/3] bg-gray-900 rounded-xl overflow-hidden mb-4 shadow-inner">
-                <p id="face-status" class="absolute inset-0 flex items-center justify-center text-white text-sm font-medium z-10 animate-pulse">Memuat kamera dan model...</p>
-                <video id="face-video" class="absolute top-0 left-0 w-full h-full object-cover hidden" style="transform: scaleX(-1);" autoplay muted playsinline></video>
-                <canvas id="face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
+    <!-- Face Registration Modal (Gaya Admin Popup) -->
+    <div data-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
+        <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+            <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+                <div>
+                    <h3 class="text-lg font-bold text-white">Daftarkan / Record Wajah</h3>
+                    <p class="text-xs text-white/80 font-medium">Kamera Presensi Face Recognition</p>
+                </div>
+                <button type="button" data-close-face class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" title="Tutup">
+                    <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
             </div>
 
-            <button type="button" id="btn-capture-face" class="w-full rounded-xl bg-sirapi-green py-3 text-sm font-extrabold text-white transition hover:brightness-105 hidden">
+            <div class="p-5 sm:p-6 text-center space-y-4">
+                <p class="text-xs text-gray-500 font-medium">Posisikan wajah Anda dengan jelas di tengah kamera, lalu klik tombol Ambil Wajah.</p>
+                
+                <div class="relative w-full aspect-[4/3] bg-gray-900 rounded-2xl overflow-hidden shadow-inner border border-gray-200">
+                    <p id="face-status" class="absolute inset-0 flex items-center justify-center text-white text-xs font-medium z-10 animate-pulse px-4">Memuat kamera dan model...</p>
+                    <video id="face-video" class="absolute top-0 left-0 w-full h-full object-cover hidden" style="transform: scaleX(-1);" autoplay muted playsinline></video>
+                    <canvas id="face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" data-close-face class="flex-1 h-10 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
+                    <button type="button" id="btn-capture-face" class="flex-1 inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] text-xs font-bold text-white transition hover:bg-[#035f35] hidden">
+                        <i data-lucide="scan" class="h-4 w-4"></i>
+                        <span>Ambil Wajah</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
                 <i data-lucide="scan" class="inline-block h-4 w-4 mr-1"></i> Ambil Wajah
             </button>
         </section>
@@ -397,14 +451,20 @@
                     faceapi.nets.faceRecognitionNet.loadFromUri('/models')
                 ]);
                 
-                faceStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                faceStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: "user",
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                });
                 faceVideo.srcObject = faceStream;
                 faceVideo.classList.remove('hidden');
                 faceStatus.classList.add('hidden');
                 btnCaptureFace.classList.remove('hidden');
             } catch (err) {
                 console.error(err);
-                faceStatus.innerText = "Gagal memuat kamera atau model.";
+                faceStatus.innerText = "Gagal memuat kamera. Pastikan izin kamera telah diberikan di browser HP Anda.";
             }
         }
 
@@ -594,7 +654,12 @@
         
         openProfileButtons.forEach((button) => button.addEventListener('click', openProfileModal));
         closeProfileButtons.forEach((button) => button.addEventListener('click', closeProfileModal));
-        openFaceButton?.addEventListener('click', openFaceModal);
+        document.querySelectorAll('[data-open-face]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                closeProfileModal();
+                openFaceModal();
+            });
+        });
         closeFaceButton?.addEventListener('click', closeFaceModal);
         toggleProfileMenuButton?.addEventListener('click', (event) => {
             event.stopPropagation();

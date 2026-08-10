@@ -298,16 +298,8 @@ class PublicPageController extends Controller
     public function presensiPegawai(Request $request)
     {
         $agenda = $this->agendaPresensi($request);
-        $qrCode = $agenda
-            ? $this->queryOrDefault(fn () => QRCode::where('id_agenda', $agenda->id_agenda)->first())
-            : null;
-        $qrWindow = $agenda ? $this->qrWindow($agenda) : null;
-        $qrSedangBerlangsung = $qrWindow ? $this->nowWib()->betweenIncluded($qrWindow['start'], $qrWindow['end']) : false;
-        $qrWindowLabel = $qrWindow
-            ? $qrWindow['start']->translatedFormat('d F Y H:i') . ' - ' . $qrWindow['end']->translatedFormat('H:i') . ' WIB'
-            : null;
 
-        return view('publik.presensi-pegawai', compact('agenda', 'qrCode', 'qrSedangBerlangsung', 'qrWindowLabel'));
+        return view('pegawai.presensi_wajah.index', compact('agenda'));
     }
 
     public function presensiTamu(Request $request)
@@ -519,7 +511,7 @@ class PublicPageController extends Controller
         if (!$agenda) {
             return redirect()->route('publik.presensi.pilih')->withErrors(['agenda' => 'Agenda tidak ditemukan.']);
         }
-        return view('publik.presensi-pegawai-pilih', compact('agenda'));
+        return view('pegawai.presensi_pilih.index', compact('agenda'));
     }
 
     public function presensiPegawaiWajah(Request $request)
@@ -529,6 +521,6 @@ class PublicPageController extends Controller
         if (!$agenda) {
             return redirect()->route('publik.presensi.pilih')->withErrors(['agenda' => 'Agenda tidak ditemukan.']);
         }
-        return view('publik.presensi-pegawai-wajah', compact('agenda'));
+        return view('pegawai.presensi_wajah.index', compact('agenda'));
     }
 }

@@ -125,13 +125,19 @@
 
             // Start Camera
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: "user",
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                });
                 video.srcObject = stream;
                 video.classList.remove('hidden');
                 statusText.classList.add('hidden');
             } catch (err) {
                 console.error(err);
-                statusText.innerText = "Tidak dapat mengakses kamera.";
+                statusText.innerText = "Tidak dapat mengakses kamera. Pastikan izin kamera sudah diizinkan di browser HP Anda.";
                 return;
             }
 
@@ -208,8 +214,8 @@
                         successOverlay.classList.add('hidden');
                     } else {
                         setTimeout(() => {
-                            window.location.href = "{{ route('publik.presensi.pilih', $routeParams) }}";
-                        }, 3000);
+                            window.location.href = result.redirect_url || "{{ route('pegawai.presensi.index', $routeParams) }}";
+                        }, 2500);
                     }
                 } catch (e) {
                     alert('Terjadi kesalahan koneksi.');

@@ -130,8 +130,15 @@ Route::prefix('pegawai')->group(function () {
     Route::get('/daftar', [PegawaiAuthController::class, 'showRegisterForm'])->name('pegawai.register');
     Route::post('/daftar', [PegawaiAuthController::class, 'register'])->name('pegawai.register.submit');
 
+    // Halaman presensi pegawai (jika belum login, langsung ke face recognition tanpa paksa login)
+    Route::get('/presensi', function (\Illuminate\Http\Request $request) {
+        if (! Auth::guard('pegawai')->check()) {
+            return redirect()->route('publik.presensi.pegawai.wajah', array_filter(['agenda_id' => $request->query('agenda_id')]));
+        }
+        return app(\App\Http\Controllers\PegawaiAuthController::class)->presensi($request);
+    })->name('pegawai.presensi.index');
+
     Route::middleware('auth:pegawai')->group(function () {
-        Route::get('/presensi', [PegawaiAuthController::class, 'presensi'])->name('pegawai.presensi.index');
         Route::post('/presensi', [PegawaiAuthController::class, 'simpanPresensi'])->name('pegawai.presensi.submit');
         Route::post('/profil/password-otp', [PegawaiAuthController::class, 'kirimOtpPassword'])->name('pegawai.profil.password-otp');
         Route::put('/profil', [PegawaiAuthController::class, 'updateProfil'])->name('pegawai.profil.update');
