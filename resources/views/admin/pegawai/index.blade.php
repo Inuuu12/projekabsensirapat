@@ -82,6 +82,7 @@
                         <th class="px-6 py-4">Bidang</th>
                         <th class="px-6 py-4">No HP</th>
                         <th class="px-6 py-4">Email</th>
+                        <th class="px-6 py-4">Data Wajah</th>
                         <th class="px-6 py-4 text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -106,6 +107,20 @@
                             <td class="px-6 py-4 text-gray-700">{{ $item->nomor_hp }}</td>
                             <td class="px-6 py-4 text-gray-700">{{ $item->email }}</td>
                             <td class="px-6 py-4">
+                                @if (!is_null($item->face_descriptor))
+                                    @if ($item->foto_wajah)
+                                        <div class="flex items-center gap-2">
+                                            <img src="{{ asset('storage/' . $item->foto_wajah) }}" alt="Bukti Wajah" class="w-8 h-8 rounded-lg object-cover border border-green-200 shadow-sm cursor-pointer hover:scale-150 transition-transform origin-left">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-green-100 text-green-700">Terdaftar</span>
+                                        </div>
+                                    @else
+                                        <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-green-100 text-green-700">Terdaftar</span>
+                                    @endif
+                                @else
+                                    <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-gray-100 text-gray-500">Belum</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
                                 <div class="flex justify-center gap-2">
                                     <button
                                         type="button"
@@ -125,6 +140,18 @@
                                         <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                         <span class="sr-only">Edit</span>
                                     </button>
+                                    @if (!is_null($item->face_descriptor))
+                                    <form action="{{ route('admin.pegawai.reset-wajah', $item->id_pegawai) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin mereset data wajah {{ $item->nama_pegawai }}?');">
+                                        @csrf
+                                        <button
+                                            type="submit"
+                                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-yellow-50 p-1.5 transition hover:bg-yellow-100 text-yellow-600"
+                                            title="Reset Data Wajah">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                                            <span class="sr-only">Reset Wajah</span>
+                                        </button>
+                                    </form>
+                                    @endif
                                     <button
                                         type="button"
                                         onclick="openDeleteModal('{{ route('admin.pegawai.destroy', $item->id_pegawai) }}', 'Hapus Pegawai?', 'Apakah Anda yakin ingin menghapus pegawai ini?')"
@@ -138,7 +165,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-6 py-8 text-center text-gray-500">Belum ada data pegawai.</td>
+                            <td colspan="10" class="px-6 py-8 text-center text-gray-500">Belum ada data pegawai.</td>
                         </tr>
                     @endforelse
                 </tbody>

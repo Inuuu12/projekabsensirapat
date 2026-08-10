@@ -511,4 +511,24 @@ class PublicPageController extends Controller
             default => 'Tidak diketahui',
         };
     }
+
+    public function presensiPegawaiPilih(Request $request)
+    {
+        $agendaId = $request->input('agenda_id');
+        $agenda = Agenda::find($agendaId);
+        if (!$agenda) {
+            return redirect()->route('publik.presensi.pilih')->withErrors(['agenda' => 'Agenda tidak ditemukan.']);
+        }
+        return view('publik.presensi-pegawai-pilih', compact('agenda'));
+    }
+
+    public function presensiPegawaiWajah(Request $request)
+    {
+        $agendaId = $request->input('agenda_id');
+        $agenda = Agenda::find($agendaId);
+        if (!$agenda) {
+            return redirect()->route('publik.presensi.pilih')->withErrors(['agenda' => 'Agenda tidak ditemukan.']);
+        }
+        return view('publik.presensi-pegawai-wajah', compact('agenda'));
+    }
 }

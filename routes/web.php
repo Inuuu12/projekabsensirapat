@@ -104,6 +104,7 @@ Route::prefix('admin')->group(function () {
         Route::delete('/pegawai/jabatan/{id}', [AdminPegawaiController::class, 'destroyJabatan'])->name('admin.pegawai.jabatan.destroy');
         Route::post('/pegawai', [AdminPegawaiController::class, 'store_Pegawai'])->name('admin.pegawai.store');
         Route::put('/pegawai/{id}', [AdminPegawaiController::class, 'update_Pegawai'])->name('admin.pegawai.update');
+        Route::post('/pegawai/{id}/reset-wajah', [AdminPegawaiController::class, 'resetWajah'])->name('admin.pegawai.reset-wajah');
         Route::delete('/pegawai/{id}', [AdminPegawaiController::class, 'hapus_Pegawai'])->name('admin.pegawai.destroy');
 
         Route::post('/tamu', [AdminTamuController::class, 'store_Tamu'])->name('admin.tamu.store');
@@ -134,6 +135,7 @@ Route::prefix('pegawai')->group(function () {
         Route::post('/presensi', [PegawaiAuthController::class, 'simpanPresensi'])->name('pegawai.presensi.submit');
         Route::post('/profil/password-otp', [PegawaiAuthController::class, 'kirimOtpPassword'])->name('pegawai.profil.password-otp');
         Route::put('/profil', [PegawaiAuthController::class, 'updateProfil'])->name('pegawai.profil.update');
+        Route::post('/profil/face', [PegawaiAuthController::class, 'updateFace'])->name('pegawai.profil.face');
         Route::post('/logout', [PegawaiAuthController::class, 'logout'])->name('pegawai.logout');
     });
 });
@@ -209,9 +211,10 @@ Route::get('/publik/berita-detail/{id?}', [PublicPageController::class, 'beritaD
 
 Route::get('/publik/presensi-pilih', [PublicPageController::class, 'presensiPilih'])->name('publik.presensi.pilih');
 
-Route::get('/publik/presensi-pegawai', function (\Illuminate\Http\Request $request) {
-    return redirect()->route('pegawai.presensi.index', $request->only('agenda_id'));
-})->name('publik.presensi.pegawai');
+Route::get('/publik/presensi-pegawai', [PublicPageController::class, 'presensiPegawaiPilih'])->name('publik.presensi.pegawai');
+Route::get('/publik/presensi-pegawai-wajah', [PublicPageController::class, 'presensiPegawaiWajah'])->name('publik.presensi.pegawai.wajah');
+Route::get('/api/pegawai/faces', [PegawaiAuthController::class, 'getRegisteredFaces'])->name('api.pegawai.faces');
+Route::post('/api/presensi/face', [PegawaiAuthController::class, 'simpanPresensiFace'])->name('api.presensi.face');
 
 Route::get('/publik/presensi-tamu', [PublicPageController::class, 'presensiTamu'])->name('publik.presensi.tamu');
 

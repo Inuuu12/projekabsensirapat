@@ -479,4 +479,118 @@ class PegawaiAuthController extends Controller
             return $default;
         }
     }
+
+    public function updateFace(Request $request)
+    {
+        $pegawai = Auth::guard('pegawai')->user();
+
+        $validated = $request->validate([
+            'face_descriptor' => ['required', 'string'],
+            'foto_wajah' => ['nullable', 'string'],
+        ]);
+
+        $fotoWajahPath = null;
+        if (!empty($validated['foto_wajah'])) {
+            $imageParts = explode(';base64,', $validated['foto_wajah']);
+            if (count($imageParts) == 2) {
+                $imageTypeAux = explode('image/', $imageParts[0]);
+                $imageType = $imageTypeAux[1] ?? 'jpeg';
+                $imageBase64 = base64_decode($imageParts[1]);
+                $fileName = 'face_scan_' . $pegawai->id_pegawai . '_' . time() . '.' . $imageType;
+                
+                \Storage::disk('public')->put('pegawai/' . $fileName, $imageBase64);
+                $fotoWajahPath = 'pegawai/' . $fileName;
+            }
+        }
+
+        DB::table('sirapi_md_pegawai')
+            ->where('id_pegawai', $pegawai->id_pegawai)
+            ->update([
+                'face_descriptor' => $validated['face_descriptor'],
+                'foto_wajah' => $fotoWajahPath,
+                'foto' => $fotoWajahPath,
+                'updated_at' => now(),
+            ]);
+
+        return response()->json(['success' => true, 'message' => 'Data wajah berhasil didaftarkan.']);
+    }
+
+    public function getRegisteredFaces()
+    {
+        $pegawai = DB::table('sirapi_md_pegawai')
+            ->whereNotNull('face_descriptor')
+            ->select('id_pegawai', 'nama_pegawai', 'face_descriptor')
+            ->get();
+
+        return response()->json($pegawai);
+    }
+
+    public function simpanPresensiFace(Request $request)
+    {
+        $validated = $request->validate([
+            'id_pegawai' => 'required|integer',
+            'id_agenda' => 'required|integer',
+        ]);
+
+        $pegawai = DB::table('sirapi_md_pegawai')->where('id_pegawai', $validated['id_pegawai'])->first();
+        $agenda = Agenda::find($validated['id_agenda']);
+
+        if (! $pegawai || ! $agenda) {
+            return response()->json(['success' => false, 'message' => 'Data tidak valid.'], 400);
+        }
+
+        $now = Carbon::now(self::TIMEZONE);
+
+        DB::transaction(function () use ($agenda, $pegawai, $now) {
+            $pesertaData = [
+                'nama' => $pegawai->nama_pegawai,
+                'jabatan' => $pegawai->jabatan ?: '-',
+                'instansi' => $pegawai->bidang ?: 'Diskominfo Kabupaten Bogor',
+                'jenis_peserta' => 'pegawai',
+                'nomor_hp' => $pegawai->nomor_hp ?: '-',
+                'email' => $pegawai->email,
+                'updated_at' => $now,
+            ];
+
+            $peserta = DB::table('sirapi_md_peserta')
+                ->where('email', $pegawai->email)
+                ->where('jenis_peserta', 'pegawai')
+                ->first();
+
+            if ($peserta) {
+                DB::table('sirapi_md_peserta')
+                    ->where('id_peserta', $peserta->id_peserta)
+                    ->update($pesertaData);
+                $idPeserta = $peserta->id_peserta;
+            } else {
+                $pesertaData['created_at'] = $now;
+                $idPeserta = DB::table('sirapi_md_peserta')->insertGetId($pesertaData);
+            }
+
+            $idLog = DB::table('sirapi_md_logbook')->insertGetId([
+                'Id_agenda' => $agenda->id_agenda,
+                'catatan' => 'Hadir lewat Scan Wajah (Face Recognition).',
+                'waktu_isi' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+
+            DB::table('sirapi_md_kehadiran')->updateOrInsert(
+                [
+                    'id_agenda' => $agenda->id_agenda,
+                    'id_peserta' => $idPeserta,
+                ],
+                [
+                    'id_log' => $idLog,
+                    'updated_at' => $now,
+                    'created_at' => $now,
+                ],
+            );
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => "Presensi Wajah berhasil untuk {$pegawai->nama_pegawai}!",
+        ]);
+    }
 }

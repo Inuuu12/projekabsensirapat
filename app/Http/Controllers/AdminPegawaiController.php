@@ -208,4 +208,18 @@ class AdminPegawaiController extends Controller
 
         return back()->with('success', 'Jabatan berhasil dihapus.');
     }
+
+    public function resetWajah(int $id)
+    {
+        $pegawai = Pegawai::findOrFail($id);
+        
+        \DB::table('sirapi_md_pegawai')
+            ->where('id_pegawai', $id)
+            ->update([
+                'face_descriptor' => null,
+                'updated_at' => now(),
+            ]);
+
+        return back()->with('success', "Data wajah {$pegawai->nama_pegawai} berhasil direset.");
+    }
 }

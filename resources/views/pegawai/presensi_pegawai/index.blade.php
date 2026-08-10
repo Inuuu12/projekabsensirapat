@@ -85,6 +85,10 @@
                         <i data-lucide="user-pen" class="h-4 w-4 text-sirapi-green"></i>
                         <span>Edit Profil</span>
                     </button>
+                    <button type="button" data-open-face class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-bold transition hover:bg-gray-50">
+                        <i data-lucide="scan-face" class="h-4 w-4 text-sirapi-green"></i>
+                        <span>Daftarkan Wajah</span>
+                    </button>
                     <form action="{{ route('pegawai.logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-bold text-red-600 transition hover:bg-red-50">
@@ -148,18 +152,31 @@
                     </div>
                 </div>
             @else
-                <form action="{{ route('pegawai.presensi.submit', $routeParams) }}" method="POST" class="w-full max-w-[445px]">
-                    @csrf
-                    <button type="submit" class="flex min-h-[96px] w-full items-center gap-5 rounded-2xl bg-gradient-to-r from-sirapi-green to-sirapi-green2 px-6 text-left text-white shadow-sm transition hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-sirapi-green/20">
+                @if (empty($pegawai->face_descriptor))
+                    <button type="button" data-open-face class="flex min-h-[96px] w-full max-w-[445px] items-center gap-5 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 px-6 text-left text-white shadow-sm transition hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-orange-500/20">
+                        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15">
+                            <i data-lucide="scan-face" class="h-7 w-7"></i>
+                        </span>
+                        <span>
+                            <span class="block text-base font-extrabold">Daftarkan Wajah Dulu</span>
+                            <span class="mt-1 block text-xs font-medium text-white/90">Wajib mendaftarkan wajah sebelum presensi</span>
+                        </span>
+                    </button>
+                @else
+                    <button type="button" data-open-presensi-face class="flex min-h-[96px] w-full max-w-[445px] items-center gap-5 rounded-2xl bg-gradient-to-r from-sirapi-green to-sirapi-green2 px-6 text-left text-white shadow-sm transition hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-sirapi-green/20">
                         <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15">
                             <i data-lucide="scan-line" class="h-7 w-7"></i>
                         </span>
                         <span>
-                            <span class="block text-base font-extrabold">Presensi</span>
-                            <span class="mt-1 block text-xs font-medium text-white/80">Tekan untuk mencatat kehadiran</span>
+                            <span class="block text-base font-extrabold">Presensi (Scan Wajah)</span>
+                            <span class="mt-1 block text-xs font-medium text-white/80">Tekan untuk mulai scan wajah</span>
                         </span>
                     </button>
-                </form>
+                    <!-- Hidden form to submit presensi later -->
+                    <form id="form-presensi" action="{{ route('pegawai.presensi.submit', $routeParams) }}" method="POST" class="hidden">
+                        @csrf
+                    </form>
+                @endif
             @endif
         </section>
 
@@ -279,12 +296,51 @@
 
                 <div class="flex justify-end gap-3 sm:col-span-2">
                     <button type="button" data-close-profile class="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-extrabold text-gray-600 transition hover:bg-gray-50">Batal</button>
-                    <button type="submit" class="rounded-xl bg-sirapi-green px-5 py-2.5 text-sm font-extrabold text-white transition hover:bg-sirapi-green2">Simpan</button>
+                    <button type="submit" class="w-full rounded-xl bg-sirapi-green py-3 text-sm font-extrabold text-white transition hover:brightness-105">Simpan Perubahan</button>
                 </div>
             </form>
         </section>
     </div>
 
+    <!-- Face Registration Modal -->
+    <div data-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 px-4 py-6">
+        <section class="max-h-full w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl relative text-center">
+            <button type="button" data-close-face class="absolute top-4 right-4 text-gray-400 hover:text-gray-700">
+                <i data-lucide="x" class="h-6 w-6"></i>
+            </button>
+            <h2 class="text-lg font-extrabold text-gray-900">Daftarkan Wajah Anda</h2>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Posisikan wajah Anda di tengah kamera, lalu klik Ambil Wajah.</p>
+            
+            <div class="relative w-full aspect-[4/3] bg-gray-900 rounded-xl overflow-hidden mb-4 shadow-inner">
+                <p id="face-status" class="absolute inset-0 flex items-center justify-center text-white text-sm font-medium z-10 animate-pulse">Memuat kamera dan model...</p>
+                <video id="face-video" class="absolute top-0 left-0 w-full h-full object-cover hidden" style="transform: scaleX(-1);" autoplay muted playsinline></video>
+                <canvas id="face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
+            </div>
+
+            <button type="button" id="btn-capture-face" class="w-full rounded-xl bg-sirapi-green py-3 text-sm font-extrabold text-white transition hover:brightness-105 hidden">
+                <i data-lucide="scan" class="inline-block h-4 w-4 mr-1"></i> Ambil Wajah
+            </button>
+        </section>
+    </div>
+
+    <!-- Presensi Face Scan Modal -->
+    <div data-presensi-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 px-4 py-6">
+        <section class="max-h-full w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl relative text-center">
+            <button type="button" data-close-presensi-face class="absolute top-4 right-4 text-gray-400 hover:text-gray-700">
+                <i data-lucide="x" class="h-6 w-6"></i>
+            </button>
+            <h2 class="text-lg font-extrabold text-gray-900">Scan Wajah Presensi</h2>
+            <p class="text-xs text-gray-500 mt-1 mb-4">Posisikan wajah Anda hingga sistem mengenali Anda.</p>
+            
+            <div class="relative w-full aspect-[4/3] bg-gray-900 rounded-xl overflow-hidden mb-4 shadow-inner">
+                <p id="presensi-face-status" class="absolute inset-0 flex items-center justify-center text-white text-sm font-medium z-10 animate-pulse">Memuat kamera dan model...</p>
+                <video id="presensi-face-video" class="absolute top-0 left-0 w-full h-full object-cover hidden" style="transform: scaleX(-1);" autoplay muted playsinline></video>
+                <canvas id="presensi-face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ asset('js/face-api.min.js') }}"></script>
     <script>
         lucide.createIcons();
 
@@ -320,8 +376,226 @@
             profileModal.classList.remove('flex');
         }
 
+        const faceModal = document.querySelector('[data-face-modal]');
+        const openFaceButton = document.querySelector('[data-open-face]');
+        const closeFaceButton = document.querySelector('[data-close-face]');
+        const faceVideo = document.getElementById('face-video');
+        const faceOverlay = document.getElementById('face-overlay');
+        const faceStatus = document.getElementById('face-status');
+        const btnCaptureFace = document.getElementById('btn-capture-face');
+        let faceStream = null;
+
+        async function openFaceModal() {
+            closeProfileDropdown();
+            faceModal.classList.remove('hidden');
+            faceModal.classList.add('flex');
+            
+            try {
+                await Promise.all([
+                    faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+                    faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+                    faceapi.nets.faceRecognitionNet.loadFromUri('/models')
+                ]);
+                
+                faceStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                faceVideo.srcObject = faceStream;
+                faceVideo.classList.remove('hidden');
+                faceStatus.classList.add('hidden');
+                btnCaptureFace.classList.remove('hidden');
+            } catch (err) {
+                console.error(err);
+                faceStatus.innerText = "Gagal memuat kamera atau model.";
+            }
+        }
+
+        function closeFaceModal() {
+            faceModal.classList.add('hidden');
+            faceModal.classList.remove('flex');
+            if (faceStream) {
+                faceStream.getTracks().forEach(track => track.stop());
+                faceStream = null;
+            }
+            faceVideo.classList.add('hidden');
+            btnCaptureFace.classList.add('hidden');
+            faceStatus.classList.remove('hidden');
+            faceStatus.innerText = "Memuat kamera dan model...";
+            const ctx = faceOverlay.getContext('2d');
+            ctx.clearRect(0, 0, faceOverlay.width, faceOverlay.height);
+        }
+
+        btnCaptureFace.addEventListener('click', async () => {
+            btnCaptureFace.disabled = true;
+            btnCaptureFace.innerHTML = 'Memproses...';
+
+            const detection = await faceapi.detectSingleFace(faceVideo, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
+                                           .withFaceLandmarks()
+                                           .withFaceDescriptor();
+
+            if (!detection) {
+                alert("Wajah tidak terdeteksi. Pastikan wajah terlihat jelas di kamera.");
+                btnCaptureFace.disabled = false;
+                btnCaptureFace.innerHTML = '<i data-lucide="scan" class="inline-block h-4 w-4 mr-1"></i> Ambil Wajah';
+                lucide.createIcons();
+                return;
+            }
+
+            // Draw box on overlay
+            const displaySize = { width: faceVideo.videoWidth, height: faceVideo.videoHeight };
+            faceapi.matchDimensions(faceOverlay, displaySize);
+            const resizedDetection = faceapi.resizeResults(detection, displaySize);
+            const ctx = faceOverlay.getContext('2d');
+            ctx.clearRect(0, 0, faceOverlay.width, faceOverlay.height);
+            faceapi.draw.drawDetections(faceOverlay, resizedDetection);
+
+            const descriptorArray = Array.from(detection.descriptor);
+            
+            // Capture image
+            const captureCanvas = document.createElement('canvas');
+            captureCanvas.width = faceVideo.videoWidth;
+            captureCanvas.height = faceVideo.videoHeight;
+            const captureCtx = captureCanvas.getContext('2d');
+            captureCtx.drawImage(faceVideo, 0, 0, captureCanvas.width, captureCanvas.height);
+            const dataUrl = captureCanvas.toDataURL('image/jpeg');
+
+            try {
+                const response = await fetch('{{ route('pegawai.profil.face') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ 
+                        face_descriptor: JSON.stringify(descriptorArray),
+                        foto_wajah: dataUrl
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert(data.message);
+                    closeFaceModal();
+                    window.location.reload(); // Reload to update button state
+                } else {
+                    alert("Gagal menyimpan data wajah.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Terjadi kesalahan.");
+            } finally {
+                btnCaptureFace.disabled = false;
+                btnCaptureFace.innerHTML = '<i data-lucide="scan" class="inline-block h-4 w-4 mr-1"></i> Ambil Wajah';
+                lucide.createIcons();
+            }
+        });
+
+        const presensiModal = document.querySelector('[data-presensi-face-modal]');
+        const openPresensiBtn = document.querySelector('[data-open-presensi-face]');
+        const closePresensiBtn = document.querySelector('[data-close-presensi-face]');
+        const presensiVideo = document.getElementById('presensi-face-video');
+        const presensiOverlay = document.getElementById('presensi-face-overlay');
+        const presensiStatus = document.getElementById('presensi-face-status');
+        let presensiStream = null;
+        let presensiDetectionInterval = null;
+        let isPresensiScanning = true;
+
+        @if (!empty($pegawai->face_descriptor))
+        const myDescriptor = new Float32Array(JSON.parse(`{!! $pegawai->face_descriptor !!}`));
+        const myLabeledDescriptor = new faceapi.LabeledFaceDescriptors('me', [myDescriptor]);
+        const presensiFaceMatcher = new faceapi.FaceMatcher([myLabeledDescriptor], 0.45);
+        @endif
+
+        async function openPresensiModal() {
+            presensiModal.classList.remove('hidden');
+            presensiModal.classList.add('flex');
+            isPresensiScanning = true;
+            
+            try {
+                await Promise.all([
+                    faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+                    faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+                    faceapi.nets.faceRecognitionNet.loadFromUri('/models')
+                ]);
+                
+                presensiStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                presensiVideo.srcObject = presensiStream;
+                presensiVideo.classList.remove('hidden');
+                presensiStatus.classList.add('hidden');
+                
+                presensiVideo.addEventListener('play', startPresensiDetection);
+            } catch (err) {
+                console.error(err);
+                presensiStatus.innerText = "Gagal memuat kamera atau model.";
+            }
+        }
+
+        function closePresensiModal() {
+            presensiModal.classList.add('hidden');
+            presensiModal.classList.remove('flex');
+            isPresensiScanning = false;
+            if (presensiDetectionInterval) clearInterval(presensiDetectionInterval);
+            if (presensiStream) {
+                presensiStream.getTracks().forEach(track => track.stop());
+                presensiStream = null;
+            }
+            presensiVideo.classList.add('hidden');
+            presensiStatus.classList.remove('hidden');
+            presensiStatus.innerText = "Memuat kamera dan model...";
+            presensiVideo.removeEventListener('play', startPresensiDetection);
+            const ctx = presensiOverlay.getContext('2d');
+            ctx.clearRect(0, 0, presensiOverlay.width, presensiOverlay.height);
+        }
+
+        function startPresensiDetection() {
+            const displaySize = { width: presensiVideo.videoWidth, height: presensiVideo.videoHeight };
+            faceapi.matchDimensions(presensiOverlay, displaySize);
+
+            presensiDetectionInterval = setInterval(async () => {
+                if (!isPresensiScanning) return;
+
+                const detections = await faceapi.detectAllFaces(presensiVideo, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
+                                                .withFaceLandmarks()
+                                                .withFaceDescriptors();
+                
+                const resizedDetections = faceapi.resizeResults(detections, displaySize);
+                const ctx = presensiOverlay.getContext('2d');
+                ctx.clearRect(0, 0, presensiOverlay.width, presensiOverlay.height);
+
+                for (const detection of resizedDetections) {
+                    const bestMatch = presensiFaceMatcher.findBestMatch(detection.descriptor);
+                    let labelText = "Bukan Anda";
+                    let boxColor = "red";
+
+                    if (bestMatch.label === 'me') {
+                        labelText = "Wajah Dikenali!";
+                        boxColor = "#1F7A6F"; // ijo-semitua
+                        
+                        if (isPresensiScanning && bestMatch.distance < 0.45) {
+                            isPresensiScanning = false;
+                            clearInterval(presensiDetectionInterval);
+                            presensiStatus.classList.remove('hidden');
+                            presensiStatus.innerText = "Berhasil diverifikasi! Mencatat presensi...";
+                            presensiStatus.classList.replace('bg-gray-900', 'bg-sirapi-green/80');
+                            setTimeout(() => {
+                                document.getElementById('form-presensi').submit();
+                            }, 1000);
+                        }
+                    }
+
+                    const box = detection.detection.box;
+                    const drawBox = new faceapi.draw.DrawBox(box, { label: labelText, boxColor: boxColor });
+                    drawBox.draw(presensiOverlay);
+                }
+            }, 200);
+        }
+
+        openPresensiBtn?.addEventListener('click', openPresensiModal);
+        closePresensiBtn?.addEventListener('click', closePresensiModal);
+        
         openProfileButtons.forEach((button) => button.addEventListener('click', openProfileModal));
         closeProfileButtons.forEach((button) => button.addEventListener('click', closeProfileModal));
+        openFaceButton?.addEventListener('click', openFaceModal);
+        closeFaceButton?.addEventListener('click', closeFaceModal);
         toggleProfileMenuButton?.addEventListener('click', (event) => {
             event.stopPropagation();
             profileDropdown.classList.toggle('hidden');
