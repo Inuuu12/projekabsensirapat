@@ -58,7 +58,15 @@
                 </div>
             @endif
 
-            @if ($agendaAktif)
+            @if ($agendaAktif && $agendaAktif->status_label === 'Selesai')
+                <div class="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-center space-y-3">
+                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 11 0 0118 0" /></svg>
+                    </div>
+                    <h3 class="text-base font-extrabold text-amber-900">Agenda Rapat Telah Selesai</h3>
+                    <p class="text-xs font-medium text-amber-700 leading-relaxed">Presensi untuk agenda rapat ini telah ditutup karena waktu pelaksanaan rapat telah berakhir.</p>
+                </div>
+            @elseif ($agendaAktif)
                 <form action="{{ route('publik.tamu.hadir') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     <input type="hidden" name="id_agenda" value="{{ $agendaAktif->id_agenda }}">

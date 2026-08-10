@@ -217,6 +217,15 @@ class UserController extends Controller
             'tanda_tangan'  => 'nullable|string',     // Menerima data koordinat canvas / base64 string
         ]);
 
+        $agenda = \App\Models\Agenda::find($validated['id_agenda']);
+        if ($agenda && $agenda->status_label === \App\Models\Agenda::STATUS_SELESAI) {
+            if (! $request->wantsJson()) {
+                return back()->withErrors(['agenda' => 'Agenda rapat telah selesai. Presensi sudah ditutup.']);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Agenda rapat telah selesai. Presensi sudah ditutup.'], 400);
+        }
+
         unset($validated['tanda_tangan']);
 
         $idTamu = DB::table('sirapi_md_tamu')->insertGetId(array_merge($validated, [

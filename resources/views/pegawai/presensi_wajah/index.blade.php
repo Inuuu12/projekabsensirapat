@@ -47,21 +47,31 @@
                 <p class="text-xs text-gray-500 font-medium">{{ $agendaAktif?->nama_agenda ?? 'Belum ada agenda tersedia' }}</p>
             </div>
 
-            <div class="relative w-full max-w-md mx-auto aspect-[4/3] bg-gray-900 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center" id="video-container">
-                <p id="status-text" class="text-white text-sm font-medium absolute z-10 animate-pulse">Memuat model kecerdasan buatan...</p>
-                <video id="video" class="absolute top-0 left-0 w-full h-full object-cover hidden" autoplay muted playsinline></video>
-                <canvas id="overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"></canvas>
-                
-                <div id="success-overlay" class="absolute inset-0 bg-ijo-tua/90 z-30 flex flex-col items-center justify-center text-white hidden">
-                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-ijo-tua mb-4 shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            @if ($agendaAktif && $agendaAktif->status_label === 'Selesai')
+                <div class="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-center space-y-3 my-4">
+                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 11 0 0118 0" /></svg>
                     </div>
-                    <h2 class="text-xl font-bold" id="success-name">Bagus Wihandono</h2>
-                    <p class="text-sm mt-2 font-medium">Presensi Berhasil Dicatat!</p>
+                    <h3 class="text-base font-extrabold text-amber-900">Agenda Rapat Telah Selesai</h3>
+                    <p class="text-xs font-medium text-amber-700 leading-relaxed">Presensi Face Recognition untuk agenda ini telah ditutup karena waktu pelaksanaan rapat telah berakhir.</p>
                 </div>
-            </div>
+            @else
+                <div class="relative w-full max-w-md mx-auto aspect-[4/3] bg-gray-900 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center" id="video-container">
+                    <p id="status-text" class="text-white text-sm font-medium absolute z-10 animate-pulse">Memuat model kecerdasan buatan...</p>
+                    <video id="video" class="absolute top-0 left-0 w-full h-full object-cover hidden" autoplay muted playsinline></video>
+                    <canvas id="overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"></canvas>
+                    
+                    <div id="success-overlay" class="absolute inset-0 bg-ijo-tua/90 z-30 flex flex-col items-center justify-center text-white hidden">
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-ijo-tua mb-4 shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <h2 class="text-xl font-bold" id="success-name">Bagus Wihandono</h2>
+                        <p class="text-sm mt-2 font-medium">Presensi Berhasil Dicatat!</p>
+                    </div>
+                </div>
 
-            <p class="text-xs text-gray-500">Posisikan wajah Anda di tengah kamera hingga sistem mengenali Anda.</p>
+                <p class="text-xs text-gray-500">Posisikan wajah Anda di tengah kamera hingga sistem mengenali Anda.</p>
+            @endif
         </div>
     </main>
 

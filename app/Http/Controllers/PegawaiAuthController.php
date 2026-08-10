@@ -200,6 +200,10 @@ class PegawaiAuthController extends Controller
             return back()->withErrors(['presensi' => 'Agenda presensi belum tersedia.']);
         }
 
+        if ($agenda->status_label === Agenda::STATUS_SELESAI) {
+            return back()->withErrors(['presensi' => 'Agenda rapat telah selesai. Presensi sudah ditutup.']);
+        }
+
         $now = Carbon::now(self::TIMEZONE);
 
         DB::transaction(function () use ($agenda, $pegawai, $now) {
@@ -545,6 +549,10 @@ class PegawaiAuthController extends Controller
 
         if (! $pegawai || ! $agenda) {
             return response()->json(['success' => false, 'message' => 'Data tidak valid.'], 400);
+        }
+
+        if ($agenda->status_label === Agenda::STATUS_SELESAI) {
+            return response()->json(['success' => false, 'message' => 'Agenda rapat telah selesai. Presensi sudah ditutup.'], 400);
         }
 
         $now = Carbon::now(self::TIMEZONE);

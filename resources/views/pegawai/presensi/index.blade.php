@@ -148,6 +148,11 @@
                         <p class="text-[11px] font-medium leading-tight">Tercatat pada jam {{ $hadirPada }} WIB</p>
                     </div>
                 </div>
+            @elseif ($agendaAktif->status_label === 'Selesai')
+                <div class="w-full max-w-[450px] rounded-2xl border border-amber-200 bg-amber-50 px-8 py-5 text-center">
+                    <p class="text-sm font-extrabold text-amber-800">Agenda Rapat Telah Selesai</p>
+                    <p class="mt-1 text-xs font-medium text-amber-700">Presensi untuk agenda rapat ini telah ditutup karena waktu rapat telah berakhir.</p>
+                </div>
             @else
                 @if (empty($pegawai->face_descriptor))
                     <button type="button" data-open-face class="flex min-h-[96px] w-full max-w-[445px] items-center gap-5 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 px-6 text-left text-white shadow-sm transition hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-orange-500/20">

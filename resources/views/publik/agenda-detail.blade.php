@@ -130,12 +130,20 @@
                                 <h4 class="font-bold text-sm text-gray-900">QR Presensi Pegawai</h4>
                                 <p class="text-[10px] text-gray-500 mt-0.5">Scan untuk masuk ke presensi agenda ini.</p>
                             </div>
-                            <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'bg-ijo-sangatmuda text-ijo-tua' : 'bg-gray-100 text-gray-500' }}">
-                                {{ $agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'Aktif' : 'Belum aktif' }}
+                            <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agendaAktif->status_label === 'Selesai' ? 'bg-amber-100 text-amber-800' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'bg-ijo-sangatmuda text-ijo-tua' : 'bg-gray-100 text-gray-500') }}">
+                                {{ $agendaAktif->status_label === 'Selesai' ? 'Selesai' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'Aktif' : 'Belum aktif') }}
                             </span>
                         </div>
 
-                        @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrl)
+                        @if ($agendaAktif->status_label === 'Selesai')
+                            <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-center space-y-2">
+                                <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 11 0 0118 0z" /></svg>
+                                </div>
+                                <h5 class="text-xs font-extrabold text-amber-900">Agenda Rapat Telah Selesai</h5>
+                                <p class="text-[11px] font-medium text-amber-700 leading-tight">QR Code presensi tidak lagi ditampilkan karena waktu pelaksanaan agenda rapat telah berakhir.</p>
+                            </div>
+                        @elseif ($agendaAktif->status_qr === 'aktif' && $qrImageUrl)
                             <a href="{{ $qrPayload }}" class="block rounded-2xl border border-gray-100 bg-gray-50 p-4 text-center transition hover:border-ijo-tua">
                                 <img src="{{ $qrImageUrl }}" alt="QR Presensi {{ $agendaAktif->nama_agenda }}" class="mx-auto h-56 w-56 rounded-xl bg-white p-3">
                                 <span class="mt-3 inline-flex rounded-xl bg-ijo-tua px-4 py-2 text-xs font-bold text-white">Buka Presensi Pegawai</span>

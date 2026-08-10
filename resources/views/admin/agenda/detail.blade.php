@@ -119,12 +119,20 @@
                         <h2 class="text-sm font-bold text-gray-800 tracking-wide uppercase">QR Presensi Pegawai</h2>
                         <p class="mt-1 text-xs text-gray-500">QR ini mengarah ke halaman presensi pegawai untuk agenda ini.</p>
                     </div>
-                    <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agenda->status_qr === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500' }}">
-                        {{ $agenda->status_qr === 'aktif' ? 'Aktif' : 'Nonaktif' }}
+                    <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agenda->status_label === 'Selesai' ? 'bg-amber-100 text-amber-800' : ($agenda->status_qr === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500') }}">
+                        {{ $agenda->status_label === 'Selesai' ? 'Selesai (Nonaktif)' : ($agenda->status_qr === 'aktif' ? 'Aktif' : 'Nonaktif') }}
                     </span>
                 </div>
 
-                @if ($qrImageUrl)
+                @if ($agenda->status_label === 'Selesai')
+                    <div class="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-5 text-center">
+                        <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600 mb-2">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 11 0 0118 0z" /></svg>
+                        </div>
+                        <p class="text-xs font-extrabold text-amber-900">Agenda Rapat Telah Selesai</p>
+                        <p class="mt-1 text-[11px] font-medium text-amber-700">QR Code presensi dinonaktifkan otomatis karena agenda rapat telah berakhir.</p>
+                    </div>
+                @elseif ($qrImageUrl)
                     <div class="mt-5 flex flex-col items-center gap-4">
                         <img src="{{ $qrImageUrl }}" alt="QR Presensi {{ $agenda->nama_agenda }}" class="h-56 w-56 rounded-xl border border-gray-100 bg-white p-3">
                         <div class="w-full rounded-xl bg-gray-50 p-3">
