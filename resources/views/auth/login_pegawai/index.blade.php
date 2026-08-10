@@ -59,6 +59,9 @@
 
             <form action="{{ route('pegawai.login.submit') }}" method="POST" class="space-y-7">
                 @csrf
+                @if(request('agenda_id'))
+                    <input type="hidden" name="agenda_id" value="{{ request('agenda_id') }}">
+                @endif
 
                 <div>
                     <label for="email" class="block text-left text-sm font-bold text-[#2A3547] mb-1.5">Email</label>

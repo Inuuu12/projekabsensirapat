@@ -32,10 +32,6 @@ class PegawaiAuthController extends Controller
             return redirect()->route('pegawai.presensi.index', array_filter(['agenda_id' => $request->query('agenda_id')]));
         }
 
-        if ($request->has('agenda_id')) {
-            return redirect()->route('publik.presensi.pegawai.wajah', ['agenda_id' => $request->query('agenda_id')]);
-        }
-
         return view('auth.login_pegawai.index');
     }
 
@@ -59,6 +55,10 @@ class PegawaiAuthController extends Controller
 
         if (Auth::guard('pegawai')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+            
+            if ($request->filled('agenda_id')) {
+                return redirect()->route('pegawai.presensi.index', ['agenda_id' => $request->input('agenda_id')]);
+            }
 
             return redirect()->intended(route('pegawai.presensi.index'));
         }

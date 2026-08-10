@@ -85,10 +85,7 @@
                         <i data-lucide="user-pen" class="h-4 w-4 text-sirapi-green"></i>
                         <span>Edit Profil</span>
                     </button>
-                    <button type="button" data-open-face class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-bold transition hover:bg-gray-50">
-                        <i data-lucide="scan-face" class="h-4 w-4 text-sirapi-green"></i>
-                        <span>Daftarkan Wajah</span>
-                    </button>
+
                     <form action="{{ route('pegawai.logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-bold text-red-600 transition hover:bg-red-50">

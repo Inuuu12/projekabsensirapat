@@ -55,7 +55,7 @@
                         </div>
                     </a>
 
-                    <a href="{{ route('pegawai.presensi.index', $routeParams) }}" class="border border-gray-200 bg-white hover:border-ijo-tua rounded-2xl p-5 text-center flex items-center space-x-4 cursor-pointer hover:shadow-md transition-all group">
+                    <a href="{{ route('pegawai.login', $routeParams) }}" class="border border-gray-200 bg-white hover:border-ijo-tua rounded-2xl p-5 text-center flex items-center space-x-4 cursor-pointer hover:shadow-md transition-all group">
                         <div class="w-14 h-14 rounded-full bg-gray-100 text-gray-500 group-hover:bg-ijo-tua group-hover:text-white transition-colors flex items-center justify-center text-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                         </div>
