@@ -255,6 +255,7 @@
             if (form) form.reset();
             setAgendaFileLabel('', '');
             syncAgendaRoomLocation('');
+            setDitugaskanFromValue('', '');
         }
         if (modal) modal.classList.replace('hidden', 'flex');
     }
@@ -269,7 +270,10 @@
         if(document.getElementById('edit-nama_agenda')) document.getElementById('edit-nama_agenda').value = button.dataset.nama || '';
         if(document.getElementById('edit-kategori_surat')) document.getElementById('edit-kategori_surat').value = button.dataset.kategori || 'internal';
         if(document.getElementById('edit-asal_surat')) document.getElementById('edit-asal_surat').value = button.dataset.asal || '';
-        if(document.getElementById('edit-ditugaskan')) document.getElementById('edit-ditugaskan').value = button.dataset.ditugaskan || '';
+        if(document.getElementById('edit-ditugaskan')) {
+            document.getElementById('edit-ditugaskan').value = button.dataset.ditugaskan || '';
+            setDitugaskanFromValue('edit-', button.dataset.ditugaskan || '');
+        }
         if(document.getElementById('edit-tanggal')) document.getElementById('edit-tanggal').value = button.dataset.tanggal || '';
         if(document.getElementById('edit-waktu')) document.getElementById('edit-waktu').value = button.dataset.waktu || '';
         if(document.getElementById('edit-waktu_selesai')) document.getElementById('edit-waktu_selesai').value = button.dataset.waktuselesai || '';
@@ -300,6 +304,105 @@
         if (!label) return;
         label.textContent = fileName || 'Klik atau seret file PDF ke sini';
     }
+
+    function togglePegawaiDropdown(prefix) {
+        const dropdown = document.getElementById(prefix + 'ditugaskan-dropdown');
+        if (!dropdown) return;
+        dropdown.classList.toggle('hidden');
+    }
+
+    function filterPegawaiList(prefix) {
+        const searchInput = document.getElementById(prefix + 'ditugaskan-search');
+        const filter = searchInput ? searchInput.value.toLowerCase() : '';
+        const list = document.getElementById(prefix + 'ditugaskan-list');
+        if (!list) return;
+
+        const groups = list.querySelectorAll('.bidang-group');
+        if (groups.length > 0) {
+            groups.forEach(group => {
+                let groupHasVisible = false;
+                const labels = group.querySelectorAll('label');
+                labels.forEach(label => {
+                    const text = label.textContent.toLowerCase();
+                    const matches = text.includes(filter);
+                    label.style.display = matches ? 'flex' : 'none';
+                    if (matches) groupHasVisible = true;
+                });
+                group.style.display = groupHasVisible ? 'block' : 'none';
+            });
+        } else {
+            const labels = list.querySelectorAll('label');
+            labels.forEach(label => {
+                const text = label.textContent.toLowerCase();
+                label.style.display = text.includes(filter) ? 'flex' : 'none';
+            });
+        }
+    }
+
+    function updateDitugaskanSelected(prefix) {
+        const list = document.getElementById(prefix + 'ditugaskan-list');
+        const hiddenInput = document.getElementById(prefix + 'ditugaskan');
+        const badgesContainer = document.getElementById(prefix + 'ditugaskan-selected-badges');
+        if (!list || !hiddenInput || !badgesContainer) return;
+
+        const checkedBoxes = list.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedValues = [];
+
+        badgesContainer.innerHTML = '';
+
+        if (checkedBoxes.length === 0) {
+            badgesContainer.innerHTML = '<span class="text-gray-400 text-xs italic">Klik untuk memilih pegawai...</span>';
+            hiddenInput.value = '';
+            return;
+        }
+
+        checkedBoxes.forEach(box => {
+            const val = box.value;
+            selectedValues.push(val);
+
+            const badge = document.createElement('span');
+            badge.className = 'inline-flex items-center gap-1 bg-[#35635b] text-white text-[11px] font-semibold px-2 py-0.5 rounded-md shadow-xs';
+            badge.innerHTML = `<span>${val}</span> <button type="button" class="ml-0.5 text-white/80 hover:text-white font-bold" onclick="uncheckPegawai('${prefix}', '${val.replace(/'/g, "\\'")}')">&times;</button>`;
+            badgesContainer.appendChild(badge);
+        });
+
+        hiddenInput.value = selectedValues.join(', ');
+    }
+
+    function uncheckPegawai(prefix, name) {
+        const list = document.getElementById(prefix + 'ditugaskan-list');
+        if (!list) return;
+
+        const checkbox = Array.from(list.querySelectorAll('input[type="checkbox"]')).find(cb => cb.value === name);
+        if (checkbox) {
+            checkbox.checked = false;
+            updateDitugaskanSelected(prefix);
+        }
+    }
+
+    function setDitugaskanFromValue(prefix, valueString) {
+        const list = document.getElementById(prefix + 'ditugaskan-list');
+        if (!list) return;
+
+        const names = (valueString || '').split(',').map(s => s.trim()).filter(Boolean);
+        const checkboxes = list.querySelectorAll('input[type="checkbox"]');
+
+        checkboxes.forEach(cb => {
+            cb.checked = names.includes(cb.value);
+        });
+
+        updateDitugaskanSelected(prefix);
+    }
+
+    document.addEventListener('click', function(e) {
+        ['', 'edit-'].forEach(prefix => {
+            const container = document.querySelector(`[data-multi-select-container="${prefix}"]`);
+            const dropdown = document.getElementById(prefix + 'ditugaskan-dropdown');
+            if (container && dropdown && !container.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    });
 
     document.querySelectorAll('[data-agenda-room-select]').forEach((select) => {
         select.addEventListener('change', function () {

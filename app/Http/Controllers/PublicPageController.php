@@ -41,7 +41,7 @@ class PublicPageController extends Controller
         $agendaBerandaLabel = $agendaHariIni->isNotEmpty() ? 'Agenda Hari Ini' : 'Agenda Terdekat';
         $agendaBerandaDescription = $agendaHariIni->isNotEmpty()
             ? $today->translatedFormat('l, d F Y') . ' • ' . $totalAgendaHariIni . ' kegiatan terjadwal'
-            : 'Belum ada agenda hari ini, menampilkan agenda terdekat dari database';
+            : 'Belum ada agenda hari ini, menampilkan agenda terdekat';
         $beritaTerbaru = $this->queryOrDefault(fn () => Berita::latest('tanggal')->latest('id_berita')->take(3)->get(), collect());
         $galeri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri()->take(3), collect());
         $totalGaleri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri()->count(), 0);

@@ -175,7 +175,7 @@
                     </div>
                 @empty
                     <div class="md:col-span-3 bg-white rounded-2xl p-6 border border-gray-100 text-sm font-medium text-gray-500">
-                        Belum ada agenda di database.
+                        Belum ada agenda
                     </div>
                 @endforelse
             </div>

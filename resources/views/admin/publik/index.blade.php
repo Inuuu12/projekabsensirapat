@@ -39,7 +39,7 @@
                 <p class="text-xs text-gray-500 mt-1">Pilih jenis konten publik yang ingin ditambahkan.</p>
             </div>
         </div>
-        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+        <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <button type="button" onclick="openPublicModal('modal-tambah-berita')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50">
                 <span>
                     <span class="block text-sm font-extrabold text-gray-800">Berita</span>
@@ -447,11 +447,11 @@
 </div>
 
 <div id="modal-tambah-berita" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
-            <h3 class="text-lg font-bold">Tambah Berita</h3>
-            <button type="button" onclick="closePublicModal('modal-tambah-berita')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal tambah berita">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <h3 class="text-base font-bold">Tambah Berita</h3>
+            <button type="button" onclick="closePublicModal('modal-tambah-berita')" class="flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal tambah berita">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
                 </svg>
             </button>
@@ -459,50 +459,49 @@
         <form method="POST" action="{{ route('admin.publik.berita.store') }}" enctype="multipart/form-data" class="flex min-h-0 flex-1 flex-col">
             @csrf
             <input type="hidden" name="gambar_url" id="tambah-berita-gambar-url">
-            <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
-                <!-- Auto Fetch URL Box -->
-                <div class="rounded-xl border border-[#c9ddd4] bg-[#f4faf7] p-4 space-y-2">
-                    <label class="block text-xs font-bold text-[#0e2f27] uppercase tracking-wider">🔗 Tempel Link / URL Berita (Opsional)</label>
-                    <div class="flex gap-2">
-                        <input id="fetch-berita-url" type="url" placeholder="https://bogorkab.go.id/berita/... atau link berita lain" class="h-10 flex-1 rounded-lg border border-[#c9ddd4] bg-white px-3 text-xs text-gray-800 outline-none focus:border-[#35635b]">
-                        <button type="button" onclick="fetchBeritaFromUrl()" class="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg bg-[#35635b] px-4 text-xs font-bold text-white transition hover:bg-[#284c46]">
-                            <span id="btn-fetch-text">Ambil Data</span>
-                            <span id="btn-fetch-spinner" class="hidden animate-spin">⏳</span>
-                        </button>
-                    </div>
-                    <p class="text-[11px] text-gray-500">Judul, Ringkasan, Tanggal, Gambar, dan Sumber akan terisi otomatis dari link di atas.</p>
+            <div class="space-y-4 px-5 py-6 sm:px-6">
+                <!-- Tempel Link URL Input -->
+                <div>
+                    <label class="mb-2 block text-xs font-extrabold text-[#0e2f27] uppercase tracking-wider">🔗 Tempel Link / URL Berita</label>
+                    <input name="url" id="fetch-berita-url" type="url" placeholder="https://bogorkab.go.id/berita/... atau link berita lain" class="h-11 w-full rounded-xl border border-[#c9ddd4] bg-[#f4faf7] px-4 text-xs text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                    <p class="mt-2 text-[11px] text-gray-500">Judul, Ringkasan, Tanggal, Gambar Thumbnail, dan Sumber akan otomatis diambil dan disimpan dari link di atas.</p>
                 </div>
 
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Judul Berita</label>
-                    <input name="judul" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10" placeholder="Judul berita">
-                </div>
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Isi Berita</label>
-                    <textarea name="isi_berita" required rows="4" class="w-full resize-none rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10" placeholder="Isi berita"></textarea>
-                </div>
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div>
-                        <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Tanggal</label>
-                        <input type="date" name="tanggal" value="{{ now()->toDateString() }}" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-                    </div>
-                    <div>
-                        <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Sumber</label>
-                        <input name="sumber" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10" placeholder="Sumber">
-                    </div>
-                </div>
-                <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Gambar / Thumbnail</label>
-                    <input type="file" name="gambar" accept="image/*" class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-                    <div id="tambah-berita-preview-container" class="mt-3 hidden">
-                        <p class="text-xs font-semibold text-gray-500 mb-1">Preview Gambar dari Link:</p>
-                        <img id="tambah-berita-preview" src="" alt="Preview Gambar" class="h-32 rounded-lg object-cover border border-gray-200">
+                <!-- Optional Manual Collapsible -->
+                <div class="pt-2 border-t border-gray-100">
+                    <button type="button" onclick="document.getElementById('manual-berita-fields').classList.toggle('hidden')" class="text-xs font-bold text-[#35635b] hover:underline flex items-center gap-1">
+                        <span>⚙️ Atau Input Manual (Opsional)</span>
+                    </button>
+                    
+                    <div id="manual-berita-fields" class="mt-3 space-y-4 hidden border-t border-dashed border-gray-200 pt-3">
+                        <div>
+                            <label class="mb-1 block text-xs font-bold text-[#0e2f27]">Judul Berita</label>
+                            <input name="judul" class="h-10 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 text-xs text-gray-800 outline-none focus:border-[#35635b]" placeholder="Judul berita">
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-xs font-bold text-[#0e2f27]">Isi Berita</label>
+                            <textarea name="isi_berita" rows="3" class="w-full resize-none rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 py-2 text-xs text-gray-800 outline-none focus:border-[#35635b]" placeholder="Isi berita"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="mb-1 block text-xs font-bold text-[#0e2f27]">Tanggal</label>
+                                <input type="date" name="tanggal" value="{{ now()->toDateString() }}" class="h-10 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 text-xs text-gray-800 outline-none focus:border-[#35635b]">
+                            </div>
+                            <div>
+                                <label class="mb-1 block text-xs font-bold text-[#0e2f27]">Sumber</label>
+                                <input name="sumber" class="h-10 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 text-xs text-gray-800 outline-none focus:border-[#35635b]" placeholder="Sumber">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-xs font-bold text-[#0e2f27]">Upload Gambar</label>
+                            <input type="file" name="gambar" accept="image/*" class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 py-2 text-xs text-gray-800 outline-none file:mr-3 file:rounded-md file:border-0 file:bg-[#35635b] file:px-3 file:py-1 file:text-xs file:font-bold file:text-white">
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closePublicModal('modal-tambah-berita')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">Simpan</button>
+            <div class="flex flex-col-reverse gap-2 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6 bg-gray-50">
+                <button type="button" onclick="closePublicModal('modal-tambah-berita')" class="h-10 rounded-xl px-4 text-xs font-bold text-gray-600 transition hover:bg-gray-200/60">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] px-5 text-xs font-bold text-white transition hover:bg-[#035f35]">Simpan Berita</button>
             </div>
         </form>
     </div>

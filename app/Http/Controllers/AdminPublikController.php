@@ -50,8 +50,24 @@ class AdminPublikController extends Controller
         }
     }
 
-    public function storeBerita(Request $request)
+    public function storeBerita(Request $request, NewsFetcherService $fetcher)
     {
+        if ($request->filled('url')) {
+            try {
+                $meta = $fetcher->fetchOpenGraph($request->input('url'));
+                Berita::create([
+                    'judul' => $meta['judul'],
+                    'isi_berita' => $meta['isi_berita'],
+                    'tanggal' => $meta['tanggal'],
+                    'gambar' => $meta['gambar'],
+                    'sumber' => $meta['sumber'],
+                ]);
+                return back()->with('success', 'Berita dari link berhasil ditambahkan.');
+            } catch (\Exception $e) {
+                return back()->with('error', 'Gagal mengambil berita dari link: ' . $e->getMessage());
+            }
+        }
+
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'isi_berita' => 'required|string',

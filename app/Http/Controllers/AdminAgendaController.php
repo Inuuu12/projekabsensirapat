@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agenda;
 use App\Models\DokumenNotulen;
+use App\Models\Pegawai;
 use App\Models\QRCode;
 use App\Models\RuangRapat;
 use App\Models\StatusAgenda;
@@ -90,12 +91,13 @@ class AdminAgendaController extends Controller
 
         $admin = Auth::guard('admin')->user();
         $ruang = RuangRapat::latest('id_ruangrapat')->get();
+        $pegawaiList = Pegawai::orderBy('bidang')->orderBy('nama_pegawai')->get();
         $agendaStats = Agenda::query()
             ->selectRaw('kategori_surat, COUNT(*) as total')
             ->groupBy('kategori_surat')
             ->pluck('total', 'kategori_surat');
 
-        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'kategoriSurat', 'agendaStats'));
+        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats'));
     }
 
     public function detail_Agenda(Request $request, ?int $id = null)

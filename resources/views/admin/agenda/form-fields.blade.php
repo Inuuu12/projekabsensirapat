@@ -47,9 +47,48 @@
 </div>
 
 @if ($isMasuk)
-<div>
-    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Ditugaskan Kepada</label>
-    <input id="{{ $prefix }}ditugaskan" name="ditugaskan" type="text" placeholder="Nama/Jabatan pegawai yang ditugaskan" class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+<div class="relative" data-multi-select-container="{{ $prefix }}">
+    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Ditugaskan Kepada (Pilih Pegawai)</label>
+    
+    <input id="{{ $prefix }}ditugaskan" name="ditugaskan" type="hidden" value="">
+
+    <div id="{{ $prefix }}ditugaskan-trigger" onclick="togglePegawaiDropdown('{{ $prefix }}')" class="min-h-[44px] w-full cursor-pointer rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 py-2 text-sm text-gray-800 transition focus-within:border-[#35635b] focus-within:bg-white flex flex-wrap items-center gap-1.5 justify-between">
+        <div id="{{ $prefix }}ditugaskan-selected-badges" class="flex flex-wrap items-center gap-1.5">
+            <span class="text-gray-400 text-xs italic">Klik untuk memilih pegawai...</span>
+        </div>
+        <svg class="h-4 w-4 shrink-0 text-[#61706a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </div>
+
+    <div id="{{ $prefix }}ditugaskan-dropdown" class="absolute left-0 right-0 top-full z-50 mt-1 hidden max-h-60 rounded-xl border border-gray-200 bg-white p-3 shadow-xl overflow-hidden flex flex-col">
+        <input type="text" id="{{ $prefix }}ditugaskan-search" oninput="filterPegawaiList('{{ $prefix }}')" placeholder="Cari nama atau jabatan..." class="mb-2 h-9 w-full rounded-md border border-gray-200 bg-gray-50 px-3 text-xs text-gray-800 outline-none focus:border-[#35635b] focus:bg-white">
+
+        <div id="{{ $prefix }}ditugaskan-list" class="space-y-3 overflow-y-auto max-h-48 pr-1">
+            @php($groupedPegawai = ($pegawaiList ?? collect())->groupBy(fn($p) => !empty(trim($p->bidang)) ? trim($p->bidang) : 'Lainnya / Tanpa Bidang'))
+            @forelse ($groupedPegawai as $bidangName => $items)
+                <div class="bidang-group space-y-1">
+                    <div class="sticky top-0 z-10 bg-[#e8f3ee] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-[#1e4a42] rounded-md flex items-center justify-between shadow-2xs">
+                        <span>🏢 {{ $bidangName }}</span>
+                        <span class="text-[10px] bg-white/70 px-1.5 py-0.5 rounded text-[#35635b]">{{ count($items) }} Pegawai</span>
+                    </div>
+                    @foreach ($items as $peg)
+                        <label class="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-gray-700 hover:bg-[#f4faf7] cursor-pointer transition">
+                            <input type="checkbox" value="{{ $peg->nama_pegawai }}" onchange="updateDitugaskanSelected('{{ $prefix }}')" class="h-4 w-4 rounded border-gray-300 text-[#35635b] focus:ring-[#35635b]">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-gray-900">{{ $peg->nama_pegawai }}</span>
+                                @if($peg->jabatan)
+                                    <span class="text-[10px] text-gray-500">{{ $peg->jabatan }}</span>
+                                @endif
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+            @empty
+                <p class="p-2 text-center text-xs text-gray-400">Belum ada data pegawai.</p>
+            @endforelse
+        </div>
+    </div>
 </div>
 @else
 <div>
