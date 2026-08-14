@@ -287,10 +287,12 @@
     function syncAgendaRoomLocation(prefix) {
         const select = document.getElementById(prefix + 'id_ruangrapat');
         const location = document.getElementById(prefix + 'lokasi');
-        if (!select || !location) return;
+        if (!select || select.tagName !== 'SELECT' || !location || location.type === 'text') return;
 
         const selected = select.options[select.selectedIndex];
-        location.value = selected && selected.value ? selected.text.trim() : '';
+        if (selected && selected.value) {
+            location.value = selected.text.trim();
+        }
     }
 
     function setAgendaFileLabel(prefix, fileName) {

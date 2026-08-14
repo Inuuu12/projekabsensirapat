@@ -83,7 +83,7 @@
                 </section>
             @empty
                 <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center">
-                    <h3 class="font-bold text-gray-900">Belum ada agenda di database</h3>
+                    <h3 class="font-bold text-gray-900">Belum ada agenda</h3>
                     <p class="text-xs text-gray-500 mt-2">Data agenda akan tampil di sini setelah admin menambahkan agenda.</p>
                 </div>
             @endforelse

@@ -32,7 +32,7 @@ class PublicPageController extends Controller
             ->get(), collect());
         $totalAgendaHariIni = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', $today)->count(), 0);
         $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::query()
-            ->orderByRaw('tanggal >= ? desc', [$today->toDateString()])
+            ->whereDate('tanggal', '>=', $today)
             ->orderBy('tanggal')
             ->orderBy('waktu')
             ->take(3)
@@ -71,8 +71,10 @@ class PublicPageController extends Controller
 
     public function agenda(Request $request)
     {
+        $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $keyword = $request->query('keyword');
         $agenda = $this->queryOrDefault(fn () => Agenda::query()
+            ->whereDate('tanggal', '>=', $today)
             ->when($keyword, function ($query, $keyword) {
                 $query->where(function ($search) use ($keyword) {
                     $search->where('nama_agenda', 'like', "%{$keyword}%")
@@ -88,9 +90,10 @@ class PublicPageController extends Controller
 
     public function agendaDetail(?int $id = null)
     {
+        $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $agenda = $this->queryOrDefault(fn () => $id
             ? Agenda::findOrFail($id)
-            : Agenda::orderBy('tanggal')->orderBy('waktu')->first());
+            : Agenda::whereDate('tanggal', '>=', $today)->orderBy('tanggal')->orderBy('waktu')->first());
         $qrCode = $agenda
             ? $this->queryOrDefault(fn () => QRCode::where('id_agenda', $agenda->id_agenda)->first())
             : null;
@@ -186,7 +189,8 @@ class PublicPageController extends Controller
         $videoUtama = $videoList->first();
         $youtubeEmbedUrl = $videoUtama?->youtube_embed_url ?? $this->defaultYoutubeEmbedUrl();
         $youtubeChannelUrl = 'https://www.youtube.com/channel/UCJlX_73GqPvJlerJFN4cRgA';
-        $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::latest('tanggal')->latest('waktu')->take(6)->get(), collect());
+        $today = Carbon::today(self::PUBLIC_TIMEZONE);
+        $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', '>=', $today)->orderBy('tanggal')->orderBy('waktu')->take(6)->get(), collect());
         $beritaTerbaru = $this->queryOrDefault(fn () => Berita::latest('tanggal')->latest('id_berita')->take(6)->get(), collect());
 
         return view('publik.video', compact('youtubeEmbedUrl', 'youtubeChannelUrl', 'videoUtama', 'videoList', 'agendaTerbaru', 'beritaTerbaru'));
@@ -203,7 +207,9 @@ class PublicPageController extends Controller
 
     public function masukan()
     {
-        return view('publik.masukan');
+        $aduans = $this->queryOrDefault(fn () => DataMasukan::latest('id_datamasukan')->get(), collect());
+
+        return view('publik.masukan', compact('aduans'));
     }
 
     public function petaSitus()
@@ -423,10 +429,11 @@ class PublicPageController extends Controller
     private function agendaPresensi(Request $request): ?Agenda
     {
         $id = $request->query('agenda_id');
+        $today = Carbon::today(self::PUBLIC_TIMEZONE);
 
         return $this->queryOrDefault(fn () => Agenda::query()
             ->when($id, fn ($query) => $query->whereKey($id))
-            ->orderByRaw('tanggal >= ? desc', [Carbon::today(self::PUBLIC_TIMEZONE)->toDateString()])
+            ->whereDate('tanggal', '>=', $today)
             ->orderBy('tanggal')
             ->orderBy('waktu')
             ->first());

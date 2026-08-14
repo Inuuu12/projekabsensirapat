@@ -275,13 +275,21 @@
                                     </span>
                                     
                                     <!-- Badge Status Balasan -->
-                                    @if(isset($aduan->tanggapan) || isset($aduan->reply) || (isset($aduan->status) && $aduan->status == 'selesai'))
+                                    @php
+                                        $st = strtolower(trim((string) ($aduan->status ?? 'menunggu')));
+                                        $hasReply = !empty($aduan->balasan_admin);
+                                    @endphp
+                                    @if($st === 'selesai' || ($hasReply && $st !== 'diproses'))
                                         <span class="bg-ijo-sangatmuda text-ijo-tua text-[10px] font-bold px-2.5 py-1 rounded-full border border-ijo-muda/30">
-                                            ✓ Sudah Dibalas
+                                            ✓ Selesai
+                                        </span>
+                                    @elseif($st === 'diproses' || $st === 'proses' || $st === 'di baca')
+                                        <span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2.5 py-1 rounded-full border border-blue-200">
+                                            🔄 Diproses
                                         </span>
                                     @else
                                         <span class="bg-oren-muda text-oren-tua text-[10px] font-bold px-2.5 py-1 rounded-full border border-oren-utama/30">
-                                            ⏳ Menunggu Balasan
+                                            ⏳ Menunggu
                                         </span>
                                     @endif
                                 </div>
@@ -290,9 +298,9 @@
                             <!-- Isi Aduan -->
                             <div>
                                 <p class="text-xs text-gray-700 leading-relaxed">
-                                    {{ $aduan->isi_aduan ?? $aduan->masukan ?? 'Tidak ada pesan' }}
+                                    {{ $aduan->isi_aduan ?? 'Tidak ada pesan' }}
                                 </p>
-                                @if(isset($aduan->foto) && $aduan->foto)
+                                @if(!empty($aduan->foto))
                                     <div class="mt-2">
                                         <a href="{{ asset('storage/' . $aduan->foto) }}" target="_blank" class="text-[11px] text-ijo-semitua hover:underline font-semibold flex items-center space-x-1">
                                             <span>🖼️ Lihat Lampiran Foto</span>
@@ -302,7 +310,7 @@
                             </div>
 
                             <!-- BOX TANGGAPAN / REPLY ADMIN -->
-                            @if(isset($aduan->tanggapan) || isset($aduan->reply))
+                            @if(!empty($aduan->balasan_admin))
                                 <div class="mt-3 pt-3 border-t border-dashed border-gray-200">
                                     <div class="bg-ijo-sangatmuda/40 border border-ijo-muda/30 rounded-xl p-4 space-y-2">
                                         <div class="flex items-center justify-between">
@@ -311,11 +319,11 @@
                                                 <span class="text-xs font-bold text-ijo-tua">Tanggapan Admin / Tim Diskominfo</span>
                                             </div>
                                             <span class="text-[10px] text-gray-400">
-                                                {{ isset($aduan->updated_at) ? $aduan->updated_at->format('d M Y, H:i') : '' }}
+                                                {{ isset($aduan->updated_at) ? \Carbon\Carbon::parse($aduan->updated_at)->format('d M Y, H:i') : '' }}
                                             </span>
                                         </div>
                                         <p class="text-xs text-gray-800 leading-relaxed">
-                                            {{ $aduan->tanggapan ?? $aduan->reply }}
+                                            {{ $aduan->balasan_admin }}
                                         </p>
                                     </div>
                                 </div>
@@ -324,40 +332,8 @@
                         </div>
                     @endforeach
                 @else
-                    <!-- Tampilan Statis Dummy (Jika Data dari Controller Belum Ada/Kosong) -->
-                    <div class="border border-gray-100 rounded-2xl p-5 bg-[#FBFBFA] space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200/60 pb-3">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-9 h-9 rounded-full bg-ijo-sangatmuda text-ijo-tua font-bold flex items-center justify-center text-xs">
-                                    B
-                                </div>
-                                <div>
-                                    <p class="text-xs font-bold text-gray-900">Budi Santoso</p>
-                                    <p class="text-[10px] text-gray-400 font-mono">bu***@email.com</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="text-[10px] text-gray-400">10 Mins ago</span>
-                                <span class="bg-ijo-sangatmuda text-ijo-tua text-[10px] font-bold px-2.5 py-1 rounded-full">
-                                    ✓ Sudah Dibalas
-                                </span>
-                            </div>
-                        </div>
-                        <p class="text-xs text-gray-700">
-                            Mohon bantuannya, saat mencoba login aplikasi SIAP Bogor selalu muncul notifikasi error 'Koneksi Server Terputus'.
-                        </p>
-                        <!-- Reply Admin -->
-                        <div class="mt-3 pt-3 border-t border-dashed border-gray-200">
-                            <div class="bg-ijo-sangatmuda/40 border border-ijo-muda/30 rounded-xl p-4 space-y-2">
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-xs">🛡️</span>
-                                    <span class="text-xs font-bold text-ijo-tua">Tanggapan Admin Diskominfo</span>
-                                </div>
-                                <p class="text-xs text-gray-800 leading-relaxed">
-                                    Halo Pak Budi, terima kasih atas laporannya. Kendala server server sudah kami tangani oleh tim IT Diskominfo per jam 10.15 WIB. Silakan dicoba login kembali secara berkala.
-                                </p>
-                            </div>
-                        </div>
+                    <div class="border border-dashed border-gray-200 rounded-2xl p-8 text-center bg-[#FBFBFA]">
+                        <p class="text-xs font-semibold text-gray-500">Belum ada aduan atau masukan publik yang dikirimkan.</p>
                     </div>
                 @endif
             </div>

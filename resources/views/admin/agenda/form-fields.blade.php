@@ -1,10 +1,15 @@
 @php($prefix = $prefix ?? '')
+@php($kategori = old('kategori_surat', $kategoriSurat ?? 'internal'))
+@php($isMasuk = $kategori === 'masuk')
 
-<input id="{{ $prefix }}kategori_surat" name="kategori_surat" type="hidden" value="{{ old('kategori_surat', $kategoriSurat ?? 'internal') }}">
-<input id="{{ $prefix }}lokasi" name="lokasi" type="hidden" value="">
+<input id="{{ $prefix }}kategori_surat" name="kategori_surat" type="hidden" value="{{ $kategori }}">
 <input id="{{ $prefix }}status_qr" name="status_qr" type="hidden" value="nonaktif">
 <input id="{{ $prefix }}status_fr" name="status_fr" type="hidden" value="0">
-<input id="{{ $prefix }}ditugaskan" name="ditugaskan" type="hidden" value="">
+
+@if(! $isMasuk)
+    <input id="{{ $prefix }}lokasi" name="lokasi" type="hidden" value="">
+    <input id="{{ $prefix }}ditugaskan" name="ditugaskan" type="hidden" value="">
+@endif
 
 <div>
     <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Nama Agenda</label>
@@ -25,7 +30,7 @@
         <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Waktu Mulai</label>
         <div class="relative">
             <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#3f4f49]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6v6l4 2m5-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6v6l4 2m5-2a9 9 0 11-18 0 9 11 0 0118 0z"></path>
             </svg>
             <input id="{{ $prefix }}waktu" name="waktu" type="time" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
         </div>
@@ -34,23 +39,37 @@
         <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Waktu Selesai</label>
         <div class="relative">
             <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#3f4f49]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6v6l4 2m5-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6v6l4 2m5-2a9 9 0 11-18 0 9 11 0 0118 0z"></path>
             </svg>
             <input id="{{ $prefix }}waktu_selesai" name="waktu_selesai" type="time" class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] pl-10 pr-3 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
         </div>
     </div>
 </div>
 
+@if ($isMasuk)
+<div>
+    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Ditugaskan Kepada</label>
+    <input id="{{ $prefix }}ditugaskan" name="ditugaskan" type="text" placeholder="Nama/Jabatan pegawai yang ditugaskan" class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+</div>
+@else
 <div>
     <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Kuota</label>
     <input id="{{ $prefix }}kuota" name="kuota" type="number" min="0" placeholder="Kuota agenda" class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
 </div>
+@endif
 
 <div>
     <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Asal Surat</label>
     <input id="{{ $prefix }}asal_surat" name="asal_surat" type="text" placeholder="Instansi/Bagian asal surat" class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
 </div>
 
+@if ($isMasuk)
+<div>
+    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Tempat / Lokasi Kegiatan</label>
+    <input id="{{ $prefix }}lokasi" name="lokasi" type="text" required placeholder="Contoh: Gedung Tegar Beriman / Ruang Rapat Instansi Luar" class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+    <input id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" type="hidden" value="{{ $ruang->first()->id_ruangrapat ?? 1 }}">
+</div>
+@else
 <div>
     <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Tempat</label>
     <div class="relative">
@@ -65,6 +84,7 @@
         </svg>
     </div>
 </div>
+@endif
 
 <div>
     <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Lampiran Surat Undangan</label>

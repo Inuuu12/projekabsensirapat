@@ -16,6 +16,8 @@ class AdminAgendaController extends Controller
 {
     public function kelola_Agenda(Request $request)
     {
+        $isMasuk = $request->input('kategori_surat') === 'masuk';
+
         $validated = $request->validate([
             'nama_agenda' => 'required|string|max:255',
             'kategori_surat' => 'required|in:internal,masuk,keluar',
@@ -29,9 +31,14 @@ class AdminAgendaController extends Controller
             'lokasi' => 'required|string|max:255',
             'status_fr' => 'nullable|boolean',
             'status_qr' => 'nullable|string|max:50',
-            'id_ruangrapat' => 'required|exists:sirapi_md_ruangrapat,id_ruangrapat',
+            'id_ruangrapat' => $isMasuk ? 'nullable|exists:sirapi_md_ruangrapat,id_ruangrapat' : 'required|exists:sirapi_md_ruangrapat,id_ruangrapat',
             'id_statusagenda' => 'nullable|exists:sirapi_md_statusagenda,id_statusagenda',
         ]);
+
+        if (empty($validated['id_ruangrapat'])) {
+            $defaultRuang = RuangRapat::first();
+            $validated['id_ruangrapat'] = $defaultRuang?->id_ruangrapat ?? 1;
+        }
 
         if ($request->hasFile('lampiran')) {
             $validated['lampiran'] = $request->file('lampiran')->store('agenda-lampiran', 'public');
@@ -248,6 +255,8 @@ class AdminAgendaController extends Controller
 
     public function update_Agenda($id, Request $request)
     {
+        $isMasuk = $request->input('kategori_surat') === 'masuk';
+
         $validated = $request->validate([
             'nama_agenda' => 'required|string|max:255',
             'kategori_surat' => 'required|in:internal,masuk,keluar',
@@ -261,9 +270,14 @@ class AdminAgendaController extends Controller
             'lokasi' => 'required|string|max:255',
             'status_fr' => 'nullable|boolean',
             'status_qr' => 'nullable|string|max:50',
-            'id_ruangrapat' => 'required|exists:sirapi_md_ruangrapat,id_ruangrapat',
+            'id_ruangrapat' => $isMasuk ? 'nullable|exists:sirapi_md_ruangrapat,id_ruangrapat' : 'required|exists:sirapi_md_ruangrapat,id_ruangrapat',
             'id_statusagenda' => 'nullable|exists:sirapi_md_statusagenda,id_statusagenda',
         ]);
+
+        if (empty($validated['id_ruangrapat'])) {
+            $defaultRuang = RuangRapat::first();
+            $validated['id_ruangrapat'] = $defaultRuang?->id_ruangrapat ?? 1;
+        }
 
         if ($request->hasFile('lampiran')) {
             $validated['lampiran'] = $request->file('lampiran')->store('agenda-lampiran', 'public');

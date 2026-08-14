@@ -296,12 +296,11 @@
             </div>
         </div>
 
-        <!-- 6. Section Riwayat Aduan Saya -->
+        <!-- 6. Section daftar Aduan -->
         <section class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-base font-bold text-gray-900">Riwayat Aduan Saya</h3>
-                    <p class="text-xs text-gray-500">Status diperbarui otomatis oleh admin Diskominfo</p>
+                    <h3 class="text-base font-bold text-gray-900">Daftar Aduan</h3>
                 </div>
                 <a href="{{ route('publik.riwayat-aduan') }}" class="text-xs font-semibold text-gray-700 bg-gray-200 hover:bg-gray-300 px-4 py-1.5 rounded-full transition-colors">
                     Selengkapnya
