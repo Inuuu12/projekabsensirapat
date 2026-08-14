@@ -7,6 +7,7 @@ use App\Models\DokumenNotulen;
 use App\Models\Galeri;
 use App\Models\UlangTahun;
 use App\Models\VideoPublik;
+use App\Services\NewsFetcherService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -25,6 +26,30 @@ class AdminPublikController extends Controller
         return view('admin.publik.index', compact('admin', 'berita', 'galeri', 'ulangTahun', 'video'));
     }
 
+    public function fetchLinkMeta(Request $request, NewsFetcherService $fetcher)
+    {
+        $request->validate(['url' => 'required|url']);
+
+        try {
+            $meta = $fetcher->fetchOpenGraph($request->input('url'));
+            return response()->json(['success' => true, 'data' => $meta]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
+        }
+    }
+
+    public function syncBerita(NewsFetcherService $fetcher)
+    {
+        try {
+            $count = $fetcher->syncPemkabBogorNews();
+            return back()->with('success', $count > 0 
+                ? "Berhasil menyinkronkan {$count} berita terbaru dari Pemkab Bogor & Diskominfo." 
+                : 'Daftar berita Pemkab Bogor & Diskominfo sudah versi terbaru.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menyinkronkan berita: ' . $e->getMessage());
+        }
+    }
+
     public function storeBerita(Request $request)
     {
         $validated = $request->validate([
@@ -32,14 +57,18 @@ class AdminPublikController extends Controller
             'isi_berita' => 'required|string',
             'tanggal' => 'required|date',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'gambar_url' => 'nullable|string|max:1000',
             'sumber' => 'required|string|max:255',
         ]);
 
         if ($request->hasFile('gambar')) {
             $validated['gambar'] = $this->storePublicImage($request, 'gambar', 'berita');
+        } elseif (!empty($validated['gambar_url'])) {
+            $validated['gambar'] = $validated['gambar_url'];
         } else {
             $validated['gambar'] = 'foto/Suratlogo.png';
         }
+        unset($validated['gambar_url']);
 
         Berita::create($validated);
 

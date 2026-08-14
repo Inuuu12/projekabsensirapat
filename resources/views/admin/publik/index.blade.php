@@ -77,11 +77,22 @@
                     <h2 class="text-base font-extrabold text-gray-800">Berita Publik</h2>
                     <p class="text-xs text-gray-500 mt-1">{{ $berita->count() }} berita di database.</p>
                 </div>
-                @if ($berita->count() > 6)
-                    <button type="button" onclick="openPublicModal('modal-semua-berita')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
-                        Selengkapnya
-                    </button>
-                @endif
+                <div class="flex items-center gap-2">
+                    <form method="POST" action="{{ route('admin.publik.berita.sync') }}">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg bg-[#35635b] px-3 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-[#284c46]" title="Sinkronkan berita dari Pemkab Bogor & Diskominfo">
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            <span>Sync Pemkab Bogor</span>
+                        </button>
+                    </form>
+                    @if ($berita->count() > 6)
+                        <button type="button" onclick="openPublicModal('modal-semua-berita')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
+                            Selengkapnya
+                        </button>
+                    @endif
+                </div>
             </div>
             <div class="divide-y divide-gray-100">
                 @forelse ($berita->take(6) as $item)
@@ -447,7 +458,21 @@
         </div>
         <form method="POST" action="{{ route('admin.publik.berita.store') }}" enctype="multipart/form-data" class="flex min-h-0 flex-1 flex-col">
             @csrf
+            <input type="hidden" name="gambar_url" id="tambah-berita-gambar-url">
             <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
+                <!-- Auto Fetch URL Box -->
+                <div class="rounded-xl border border-[#c9ddd4] bg-[#f4faf7] p-4 space-y-2">
+                    <label class="block text-xs font-bold text-[#0e2f27] uppercase tracking-wider">🔗 Tempel Link / URL Berita (Opsional)</label>
+                    <div class="flex gap-2">
+                        <input id="fetch-berita-url" type="url" placeholder="https://bogorkab.go.id/berita/... atau link berita lain" class="h-10 flex-1 rounded-lg border border-[#c9ddd4] bg-white px-3 text-xs text-gray-800 outline-none focus:border-[#35635b]">
+                        <button type="button" onclick="fetchBeritaFromUrl()" class="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg bg-[#35635b] px-4 text-xs font-bold text-white transition hover:bg-[#284c46]">
+                            <span id="btn-fetch-text">Ambil Data</span>
+                            <span id="btn-fetch-spinner" class="hidden animate-spin">⏳</span>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-gray-500">Judul, Ringkasan, Tanggal, Gambar, dan Sumber akan terisi otomatis dari link di atas.</p>
+                </div>
+
                 <div>
                     <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Judul Berita</label>
                     <input name="judul" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10" placeholder="Judul berita">
@@ -467,8 +492,12 @@
                     </div>
                 </div>
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Gambar</label>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Gambar / Thumbnail</label>
                     <input type="file" name="gambar" accept="image/*" class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                    <div id="tambah-berita-preview-container" class="mt-3 hidden">
+                        <p class="text-xs font-semibold text-gray-500 mb-1">Preview Gambar dari Link:</p>
+                        <img id="tambah-berita-preview" src="" alt="Preview Gambar" class="h-32 rounded-lg object-cover border border-gray-200">
+                    </div>
                 </div>
             </div>
             <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
@@ -686,6 +715,64 @@
         document.getElementById('edit-video-url').value = button.dataset.url || '';
         closePublicModal('modal-semua-video');
         openPublicModal('modal-edit-video');
+    }
+    function fetchBeritaFromUrl() {
+        const urlInput = document.getElementById('fetch-berita-url');
+        const url = urlInput ? urlInput.value.trim() : '';
+        if (!url) {
+            alert('Silakan tempelkan link/URL berita terlebih dahulu.');
+            return;
+        }
+
+        const btnText = document.getElementById('btn-fetch-text');
+        const btnSpinner = document.getElementById('btn-fetch-spinner');
+        if (btnText) btnText.textContent = 'Mengambil...';
+        if (btnSpinner) btnSpinner.classList.remove('hidden');
+
+        fetch("{{ route('admin.publik.berita.fetch-meta') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ url: url })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.data) {
+                const meta = data.data;
+                const modal = document.getElementById('modal-tambah-berita');
+                if (modal) {
+                    const inputJudul = modal.querySelector('input[name="judul"]');
+                    const inputIsi = modal.querySelector('textarea[name="isi_berita"]');
+                    const inputTanggal = modal.querySelector('input[name="tanggal"]');
+                    const inputSumber = modal.querySelector('input[name="sumber"]');
+
+                    if (inputJudul) inputJudul.value = meta.judul || '';
+                    if (inputIsi) inputIsi.value = meta.isi_berita || '';
+                    if (inputTanggal && meta.tanggal) inputTanggal.value = meta.tanggal;
+                    if (inputSumber) inputSumber.value = meta.sumber || '';
+
+                    if (meta.gambar) {
+                        const gambarUrlInput = document.getElementById('tambah-berita-gambar-url');
+                        const previewContainer = document.getElementById('tambah-berita-preview-container');
+                        const previewImg = document.getElementById('tambah-berita-preview');
+                        if (gambarUrlInput) gambarUrlInput.value = meta.gambar;
+                        if (previewImg) previewImg.src = meta.gambar;
+                        if (previewContainer) previewContainer.classList.remove('hidden');
+                    }
+                }
+            } else {
+                alert(data.message || 'Gagal mengambil data dari URL tersebut.');
+            }
+        })
+        .catch(err => {
+            alert('Terjadi kesalahan koneksi saat mengambil metadata link.');
+        })
+        .finally(() => {
+            if (btnText) btnText.textContent = 'Ambil Data';
+            if (btnSpinner) btnSpinner.classList.add('hidden');
+        });
     }
 </script>
 @endpush
