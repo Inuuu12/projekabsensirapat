@@ -105,6 +105,12 @@
             </div>
         @endif
 
+        @if (session('success'))
+            <div class="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-bold text-emerald-700">
+                {{ session('success') }}
+            </div>
+        @endif
+
         @if (session('profile_success'))
             <div class="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-bold text-emerald-700">
                 {{ session('profile_success') }}
@@ -127,10 +133,16 @@
                     <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Lokasi</p>
                     <p class="mt-1 text-sm font-extrabold">{{ $agendaAktif?->lokasi ?? '-' }}</p>
                 </div>
-                <div class="pt-3">
+                <div class="py-3">
                     <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Penyelenggara</p>
-                    <p class="mt-1 text-sm font-extrabold">{{ $agendaAktif?->asal_surat ?: $agendaAktif?->ditugaskan ?: 'Bidang Informasi Publik' }}</p>
+                    <p class="mt-1 text-sm font-extrabold">{{ $agendaAktif?->asal_surat ?: 'Bidang Informasi Publik' }}</p>
                 </div>
+                @if (strtolower((string) ($agendaAktif?->kategori_surat ?? '')) === 'masuk' && !empty($agendaAktif?->ditugaskan))
+                    <div class="pt-3">
+                        <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Ditugaskan Kepada</p>
+                        <p class="mt-1 text-sm font-extrabold">{{ $agendaAktif->ditugaskan }}</p>
+                    </div>
+                @endif
             </div>
         </section>
 
@@ -162,6 +174,16 @@
                     <p class="text-xs font-medium text-red-700 leading-relaxed">
                         Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan:<br>
                         <span class="inline-block mt-1 font-bold text-red-900 bg-red-100/80 px-3 py-1 rounded-lg">{{ $agendaAktif->ditugaskan ?: '-' }}</span>
+                    </p>
+                </div>
+            @elseif ($agendaAktif->isKuotaPenuh())
+                <div class="w-full max-w-[450px] rounded-2xl border border-red-200 bg-red-50 p-6 text-center space-y-2">
+                    <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-red-100 text-red-600">
+                        <i data-lucide="users" class="h-6 w-6"></i>
+                    </div>
+                    <p class="text-sm font-extrabold text-red-900">Kuota Presensi Penuh</p>
+                    <p class="text-xs font-medium text-red-700 leading-relaxed">
+                        Presensi untuk agenda ini telah ditutup karena kuota maksimal peserta telah terpenuhi.
                     </p>
                 </div>
             @else

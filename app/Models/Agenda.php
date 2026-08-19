@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Agenda extends Model
 {
@@ -141,5 +142,45 @@ class Agenda extends Model
         }
 
         return false;
+    }
+
+    public function totalPesertaHadir(): int
+    {
+        $kehadiranCount = DB::table('sirapi_md_kehadiran')->where('id_agenda', $this->id_agenda)->count();
+        $tamuCount = DB::table('sirapi_md_tamu')->where('id_agenda', $this->id_agenda)->count();
+
+        return $kehadiranCount + $tamuCount;
+    }
+
+    public function isKuotaPenuh(): bool
+    {
+        if (strtolower((string) ($this->kategori_surat ?? '')) === 'masuk') {
+            return false;
+        }
+
+        $kuota = (int) ($this->kuota ?? 0);
+        if ($kuota <= 0) {
+            return false;
+        }
+
+        return $this->totalPesertaHadir() >= $kuota;
+    }
+
+    public function isPegawaiSudahHadir(mixed $pegawai): bool
+    {
+        if (! $pegawai) {
+            return false;
+        }
+
+        $email = is_object($pegawai) ? ($pegawai->email ?? '') : (string) $pegawai;
+        if (! $email) {
+            return false;
+        }
+
+        return DB::table('sirapi_md_kehadiran')
+            ->join('sirapi_md_peserta', 'sirapi_md_kehadiran.id_peserta', '=', 'sirapi_md_peserta.id_peserta')
+            ->where('sirapi_md_kehadiran.id_agenda', $this->id_agenda)
+            ->where('sirapi_md_peserta.email', $email)
+            ->exists();
     }
 }

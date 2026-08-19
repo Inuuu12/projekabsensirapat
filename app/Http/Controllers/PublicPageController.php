@@ -377,11 +377,27 @@ class PublicPageController extends Controller
             ]);
         }
 
-        if (Auth::guard('pegawai')->check() && ! $agenda->canPegawaiPresensi(Auth::guard('pegawai')->user())) {
+        if (Auth::guard('pegawai')->check()) {
+            $pegawaiUser = Auth::guard('pegawai')->user();
+            if (! $agenda->canPegawaiPresensi($pegawaiUser)) {
+                return view('publik.presensi-qr-result', [
+                    'success' => false,
+                    'agenda' => $agenda,
+                    'message' => 'Presensi ditolak. Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan (' . ($agenda->ditugaskan ?: '-') . ').',
+                ]);
+            }
+            if (! $agenda->isPegawaiSudahHadir($pegawaiUser) && $agenda->isKuotaPenuh()) {
+                return view('publik.presensi-qr-result', [
+                    'success' => false,
+                    'agenda' => $agenda,
+                    'message' => 'Presensi ditolak karena kuota peserta agenda ini sudah penuh.',
+                ]);
+            }
+        } elseif ($agenda->isKuotaPenuh()) {
             return view('publik.presensi-qr-result', [
                 'success' => false,
                 'agenda' => $agenda,
-                'message' => 'Presensi ditolak. Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan (' . ($agenda->ditugaskan ?: '-') . ').',
+                'message' => 'Presensi ditolak karena kuota peserta agenda ini sudah penuh.',
             ]);
         }
 

@@ -37,6 +37,12 @@
                 <h1 class="text-xl md:text-2xl font-bold text-gray-900">Metode Presensi</h1>
                 <p class="text-xs text-gray-500 font-medium">Pegawai &bull; {{ $agendaAktif?->nama_agenda ?? 'Belum ada agenda tersedia' }}</p>
                 <p class="text-xs text-gray-400">{{ substr((string) $agendaAktif?->waktu, 0, 5) ?: '-' }} WIB &bull; {{ $agendaAktif?->lokasi ?? '-' }}</p>
+                @if (strtolower((string) ($agendaAktif?->kategori_surat ?? '')) === 'masuk' && !empty($agendaAktif?->ditugaskan))
+                    <div class="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-ijo-sangatmuda px-3 py-1 text-xs font-bold text-ijo-tua">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                        <span>Ditugaskan: {{ $agendaAktif->ditugaskan }}</span>
+                    </div>
+                @endif
             </div>
 
             <hr class="border-gray-100">
@@ -48,6 +54,14 @@
                     </div>
                     <h3 class="text-base font-extrabold text-amber-900">Agenda Rapat Telah Selesai</h3>
                     <p class="text-xs font-medium text-amber-700 leading-relaxed">Presensi untuk agenda rapat ini telah ditutup karena waktu pelaksanaan rapat telah berakhir.</p>
+                </div>
+            @elseif ($agendaAktif && $agendaAktif->isKuotaPenuh())
+                <div class="rounded-2xl border border-red-200 bg-red-50 p-6 text-center space-y-3">
+                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    </div>
+                    <h3 class="text-base font-extrabold text-red-900">Kuota Presensi Penuh</h3>
+                    <p class="text-xs font-medium text-red-700 leading-relaxed">Presensi untuk agenda ini telah ditutup karena kuota maksimal peserta telah terpenuhi.</p>
                 </div>
             @elseif ($agendaAktif)
                 <h3 class="text-xs font-bold text-gray-800">Pilih metode kehadiran</h3>

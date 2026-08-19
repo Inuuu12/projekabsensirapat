@@ -118,7 +118,17 @@
                             @if (strtolower((string) ($agendaAktif->kategori_surat ?? '')) !== 'masuk')
                                 <div class="pt-3">
                                     <p class="text-[10px] uppercase font-semibold text-gray-400">Kuota</p>
-                                    <p class="font-bold text-gray-800 mt-0.5">{{ $agendaAktif->kuota ?? 0 }} Peserta</p>
+                                    <p class="font-bold text-gray-800 mt-0.5 flex items-center justify-between">
+                                        <span>{{ $agendaAktif->kuota ?? 0 }} Peserta</span>
+                                        @if ($agendaAktif->isKuotaPenuh())
+                                            <span class="text-[10px] font-bold text-red-600 bg-red-50 px-2.5 py-0.5 rounded-full border border-red-200">Penuh</span>
+                                        @endif
+                                    </p>
+                                </div>
+                            @elseif (!empty($agendaAktif->ditugaskan))
+                                <div class="pt-3">
+                                    <p class="text-[10px] uppercase font-semibold text-gray-400">Ditugaskan Kepada</p>
+                                    <p class="font-bold text-gray-800 mt-0.5">{{ $agendaAktif->ditugaskan }}</p>
                                 </div>
                             @endif
                         </div>
@@ -132,8 +142,8 @@
                                     {{ $isSuratMasuk ? 'Presensi pegawai yang ditugaskan' : 'Pilih kategori kehadiran Anda' }}
                                 </p>
                             </div>
-                            <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agendaAktif->status_label === 'Selesai' ? 'bg-amber-100 text-amber-800' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'bg-ijo-sangatmuda text-ijo-tua' : 'bg-gray-100 text-gray-500') }}">
-                                {{ $agendaAktif->status_label === 'Selesai' ? 'Selesai' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'Aktif' : 'Belum aktif') }}
+                            <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agendaAktif->status_label === 'Selesai' ? 'bg-amber-100 text-amber-800' : ($agendaAktif->isKuotaPenuh() ? 'bg-red-100 text-red-800' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'bg-ijo-sangatmuda text-ijo-tua' : 'bg-gray-100 text-gray-500')) }}">
+                                {{ $agendaAktif->status_label === 'Selesai' ? 'Selesai' : ($agendaAktif->isKuotaPenuh() ? 'Kuota Penuh' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'Aktif' : 'Belum aktif')) }}
                             </span>
                         </div>
 
@@ -162,6 +172,14 @@
                                 </div>
                                 <h5 class="text-xs font-extrabold text-amber-900">Agenda Rapat Telah Selesai</h5>
                                 <p class="text-[11px] font-medium text-amber-700 leading-tight">Presensi tidak lagi dapat dilakukan karena waktu pelaksanaan agenda rapat telah berakhir.</p>
+                            </div>
+                        @elseif ($agendaAktif->isKuotaPenuh())
+                            <div class="rounded-2xl border border-red-200 bg-red-50 p-5 text-center space-y-2">
+                                <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                                </div>
+                                <h5 class="text-xs font-extrabold text-red-900">Kuota Presensi Penuh</h5>
+                                <p class="text-[11px] font-medium text-red-700 leading-tight">Presensi untuk agenda ini telah ditutup karena kuota maksimal peserta telah terpenuhi.</p>
                             </div>
                         @else
                             @if (! $isSuratMasuk)
