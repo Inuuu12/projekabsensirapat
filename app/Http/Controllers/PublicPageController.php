@@ -97,8 +97,14 @@ class PublicPageController extends Controller
         $qrCode = $agenda
             ? $this->queryOrDefault(fn () => QRCode::where('id_agenda', $agenda->id_agenda)->first())
             : null;
+        $dokumenList = $agenda
+            ? $this->queryOrDefault(fn () => DokumenNotulen::where('id_agenda', $agenda->id_agenda)->get(), collect())
+            : collect();
 
-        return view('publik.agenda-detail', compact('agenda', 'qrCode'));
+        $notulen = $dokumenList->firstWhere('jenis_dokumen', 'notulen');
+        $dokumentasi = $dokumenList->where('jenis_dokumen', 'dokumentasi')->values();
+
+        return view('publik.agenda-detail', compact('agenda', 'qrCode', 'notulen', 'dokumentasi'));
     }
 
     public function lampiranAgenda(int $id)

@@ -84,19 +84,69 @@
                     </div>
 
                     <div class="space-y-3">
-                        <h3 class="text-sm font-bold text-gray-900">Lampiran</h3>
+                        <h3 class="text-sm font-bold text-gray-900">Surat Undangan / Lampiran</h3>
                         @if ($lampiranUrl)
-                            <button type="button" id="open-lampiran-modal" class="w-full bg-white rounded-2xl p-3 border border-gray-100 shadow-sm flex items-center space-x-3 text-left hover:border-gray-300 transition-colors">
+                            <button type="button" id="open-lampiran-modal" class="w-full bg-white rounded-2xl p-3.5 border border-gray-100 shadow-sm flex items-center space-x-3.5 text-left hover:border-gray-300 transition-colors">
                                 <div class="w-10 h-10 rounded-xl bg-oren-muda text-oren-tua font-bold text-[10px] flex items-center justify-center shrink-0 uppercase">FILE</div>
-                                <div class="overflow-hidden">
+                                <div class="overflow-hidden min-w-0">
                                     <h5 class="text-xs font-bold text-gray-900 truncate">{{ basename($agendaAktif->lampiran) }}</h5>
-                                    <p class="text-[10px] text-gray-400">Lihat lampiran agenda</p>
+                                    <p class="text-[10px] text-gray-400 mt-0.5">Lihat file surat undangan / lampiran agenda</p>
                                 </div>
                             </button>
                         @else
-                            <p class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-xs text-gray-500">Belum ada lampiran untuk agenda ini.</p>
+                            <p class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-xs text-gray-500">Belum ada surat undangan / lampiran untuk agenda ini.</p>
                         @endif
                     </div>
+
+                    @if ($notulen)
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-sm font-bold text-gray-900 flex items-center space-x-2">
+                                    <svg class="w-4 h-4 text-ijo-tua" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    <span>Notulen Rapat</span>
+                                </h3>
+                                <span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-blue-100 uppercase">Dokumen Resmi</span>
+                            </div>
+                            <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div class="flex items-center space-x-3.5 min-w-0">
+                                    <div class="w-11 h-11 rounded-xl bg-red-50 text-red-600 font-bold text-[11px] flex items-center justify-center shrink-0 border border-red-100 uppercase">
+                                        {{ strtoupper(pathinfo($notulen->file_path, PATHINFO_EXTENSION) ?: 'PDF') }}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h5 class="text-xs font-bold text-gray-900 truncate">{{ $notulen->nama_file }}</h5>
+                                        <p class="text-[10px] text-gray-400 mt-0.5">Dokumen hasil notulensi kegiatan rapat</p>
+                                    </div>
+                                </div>
+                                <a href="{{ asset('storage/' . $notulen->file_path) }}" target="_blank" rel="noopener" class="shrink-0 inline-flex items-center justify-center space-x-1.5 bg-ijo-tua hover:bg-ijo-semitua text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition">
+                                    <span>Buka Notulen</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if ($dokumentasi && $dokumentasi->isNotEmpty())
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-sm font-bold text-gray-900 flex items-center space-x-2">
+                                    <svg class="w-4 h-4 text-ijo-tua" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <span>Dokumentasi Kegiatan</span>
+                                </h3>
+                                <span class="text-[11px] font-semibold text-gray-400">{{ $dokumentasi->count() }} Foto</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                @foreach ($dokumentasi as $item)
+                                    <div class="group relative rounded-2xl overflow-hidden border border-gray-100 bg-gray-100 shadow-sm aspect-[4/3] cursor-pointer" onclick="openDokumentasiModal('{{ asset('storage/' . $item->file_path) }}', '{{ addslashes($item->nama_file) }}')">
+                                        <img src="{{ asset('storage/' . $item->file_path) }}" alt="{{ $item->nama_file }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2.5">
+                                            <p class="text-[10px] font-bold text-white truncate">{{ $item->nama_file }}</p>
+                                            <span class="text-[9px] text-white/80 font-medium">Klik untuk memperbesar</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 </section>
 
                 <aside class="lg:col-span-5 space-y-5">
@@ -344,9 +394,41 @@
         </div>
     @endif
 
+    <!-- Modal Dokumentasi Foto Viewer -->
+    <div id="dokumentasi-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/85 p-4 backdrop-blur-xs transition-opacity" onclick="closeDokumentasiModal()">
+        <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center" onclick="event.stopPropagation()">
+            <button type="button" onclick="closeDokumentasiModal()" class="absolute -top-10 right-0 text-white/90 hover:text-white flex items-center space-x-1.5 text-xs font-bold bg-white/20 hover:bg-white/30 px-3.5 py-1.5 rounded-full transition" title="Tutup">
+                <span>Tutup</span>
+                <span class="text-base leading-none">&times;</span>
+            </button>
+            <img id="dokumentasi-modal-img" src="" alt="Dokumentasi" class="max-h-[78vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl border border-white/10 bg-black/50">
+            <p id="dokumentasi-modal-title" class="text-xs font-medium text-white/90 mt-3 text-center truncate max-w-xl"></p>
+        </div>
+    </div>
+
     @include('publik.layout_publik.footer')
 
     <script>
+        function openDokumentasiModal(imgSrc, title) {
+            const modal = document.getElementById('dokumentasi-modal');
+            const modalImg = document.getElementById('dokumentasi-modal-img');
+            const modalTitle = document.getElementById('dokumentasi-modal-title');
+            if (modal && modalImg) {
+                modalImg.src = imgSrc;
+                if (modalTitle) modalTitle.textContent = title;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeDokumentasiModal() {
+            const modal = document.getElementById('dokumentasi-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
         function switchPresensiTab(type) {
             const btnPegawai = document.getElementById('tab-btn-pegawai');
             const btnTamu = document.getElementById('tab-btn-tamu');

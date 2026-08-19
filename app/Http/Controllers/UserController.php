@@ -134,6 +134,7 @@ class UserController extends Controller
             'nomor_pengadu.required' => 'Nomor HP wajib diisi.',
             'nomor_pengadu.max' => 'Nomor HP maksimal 13 digit angka.',
             'nomor_pengadu.regex' => 'Nomor HP hanya boleh berisi angka.',
+            'otp.digits' => 'Kode OTP harus berupa 6 digit angka.',
         ]);
 
         $this->validateAduanOtp($validated['email'], $validated['otp']);
