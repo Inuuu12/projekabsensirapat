@@ -111,19 +111,23 @@ class NewsFetcherService
     }
 
     /**
-     * Sync actual individual news articles from Diskominfo & Pemkab Bogor.
+     * Sync actual individual news articles from Diskominfo, Pemkab Bogor, and Tribunnews Bogor.
      */
     public function syncPemkabBogorNews(): int
     {
         // Clean up old homepage title fallback entries
         Berita::whereIn('judul', ['Portal Resmi Kabupaten Bogor', 'Dinas Komunikasi dan Informatika'])->delete();
 
-        $articles = $this->scrapeDiskominfoArticles();
+        $diskominfoArticles = $this->scrapeDiskominfoArticles();
 
         // If live scraping returned empty, fallback to curated Diskominfo news list
-        if (empty($articles)) {
-            $articles = $this->getCuratedDiskominfoNews();
+        if (empty($diskominfoArticles)) {
+            $diskominfoArticles = $this->getCuratedDiskominfoNews();
         }
+
+        $tribunArticles = $this->scrapeTribunnewsBogorArticles(10);
+
+        $articles = array_merge($diskominfoArticles, $tribunArticles);
 
         $addedCount = 0;
 
@@ -142,6 +146,81 @@ class NewsFetcherService
         }
 
         return $addedCount;
+    }
+
+    /**
+     * Scrape live news articles from Tribunnews Bogor (bogor.tribunnews.com).
+     */
+    public function scrapeTribunnewsBogorArticles(int $limit = 15): array
+    {
+        try {
+            $response = Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            ])->timeout(12)->get('https://bogor.tribunnews.com/');
+
+            if (! $response->successful()) {
+                return [];
+            }
+
+            $html = $response->body();
+            libxml_use_internal_errors(true);
+            $doc = new \DOMDocument();
+            @$doc->loadHTML('<?xml encoding="UTF-8">' . $html);
+            libxml_clear_errors();
+
+            $xpath = new \DOMXPath($doc);
+            $cards = $xpath->query('//div[contains(@class, "listicle")] | //div[contains(@class, "p1520")] | //li[contains(@class, "pos-rel")]');
+
+            $results = [];
+            foreach ($cards as $card) {
+                if (count($results) >= $limit) {
+                    break;
+                }
+
+                $titleNode = $xpath->query('.//h3/a | .//h2/a', $card)->item(0);
+                if (! $titleNode) {
+                    continue;
+                }
+
+                $title = trim($titleNode->nodeValue);
+                $url = $titleNode->getAttribute('href');
+
+                if (empty($title) || empty($url) || str_contains($url, '/tag/')) {
+                    continue;
+                }
+
+                $imgNode = $xpath->query('.//img/@src | .//img/@data-src', $card)->item(0);
+                $img = $imgNode ? trim($imgNode->nodeValue) : '';
+
+                $snippetNode = $xpath->query('.//div[contains(@class, "txt-article")] | .//p', $card)->item(0);
+                $snippet = $snippetNode ? trim(str_replace(["\n", "\r"], ' ', $snippetNode->nodeValue)) : '';
+
+                $timeNode = $xpath->query('.//time/@title | .//time', $card)->item(0);
+                $dateStr = $timeNode ? trim($timeNode->nodeValue) : '';
+
+                $tanggal = date('Y-m-d');
+                if ($dateStr && preg_match('/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/', $dateStr, $m)) {
+                    $parsed = strtotime($dateStr);
+                    if ($parsed !== false) {
+                        $tanggal = date('Y-m-d', $parsed);
+                    }
+                }
+
+                $results[] = [
+                    'judul' => $title,
+                    'isi_berita' => $snippet ?: "Berita terkini dari Tribunnews Bogor: {$title}",
+                    'tanggal' => $tanggal,
+                    'gambar' => $img ?: 'foto/Beritalogo.png',
+                    'sumber' => 'Tribunnews Bogor',
+                ];
+            }
+
+            return $results;
+        } catch (\Exception $e) {
+            Log::warning('Scrape Tribunnews Bogor error: ' . $e->getMessage());
+            return [];
+        }
     }
 
     /**

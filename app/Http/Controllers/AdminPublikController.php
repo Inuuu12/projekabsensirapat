@@ -43,8 +43,8 @@ class AdminPublikController extends Controller
         try {
             $count = $fetcher->syncPemkabBogorNews();
             return back()->with('success', $count > 0 
-                ? "Berhasil menyinkronkan {$count} berita terbaru dari Pemkab Bogor & Diskominfo." 
-                : 'Daftar berita Pemkab Bogor & Diskominfo sudah versi terbaru.');
+                ? "Berhasil menyinkronkan {$count} berita terbaru dari Diskominfo Kab. Bogor & Tribunnews Bogor." 
+                : 'Daftar berita dari Diskominfo & Tribunnews Bogor sudah versi terbaru.');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal menyinkronkan berita: ' . $e->getMessage());
         }
