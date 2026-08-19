@@ -386,7 +386,7 @@
             <div class="flex items-center space-x-2.5">
                 <a id="admin-modal-photo-download" href="#" target="_blank" download class="text-xs text-[#0f513f] hover:text-[#083c30] font-bold px-3.5 py-2 rounded-lg hover:bg-emerald-50 border border-emerald-200 transition-colors flex items-center space-x-1.5">
                     <span>⬇️</span>
-                    <span>Unduh / Buka Gambar Asli</span>
+                    <span>Unduh Gambar</span>
                 </a>
                 <button type="button" onclick="closeAdminPhotoModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-colors cursor-pointer">
                     Tutup
