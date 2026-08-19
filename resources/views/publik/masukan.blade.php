@@ -153,8 +153,7 @@
                     <!-- Submit Button -->
                     <div class="pt-2">
                         <button type="submit" class="w-full bg-ijo-tua hover:bg-ijo-semitua text-white font-bold text-xs py-3.5 rounded-2xl transition-colors flex items-center justify-center space-x-2 shadow-md">
-                            <span>Kirim Aduan / Feedback</span>
-                            <span>&rarr;</span>
+                            <span>Kirim</span>
                         </button>
                     </div>
 

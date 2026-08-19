@@ -218,7 +218,12 @@ Route::get('/publik/index', [PublicPageController::class, 'index'])->name('publi
 
 Route::get('/publik/berita-detail/{id?}', [PublicPageController::class, 'beritaDetail'])->name('publik.berita-detail');
 
-Route::get('/publik/presensi-pilih', [PublicPageController::class, 'presensiPilih'])->name('publik.presensi.pilih');
+Route::get('/publik/presensi-pilih', function (\Illuminate\Http\Request $request) {
+    if ($agendaId = $request->query('agenda_id')) {
+        return redirect()->route('publik.agenda.detail', $agendaId);
+    }
+    return redirect()->route('publik.agenda');
+})->name('publik.presensi.pilih');
 
 Route::get('/publik/presensi-pegawai', [PublicPageController::class, 'presensiPegawaiPilih'])->name('publik.presensi.pegawai');
 Route::get('/publik/presensi-pegawai-wajah', [PublicPageController::class, 'presensiPegawaiWajah'])->name('publik.presensi.pegawai.wajah');

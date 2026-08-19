@@ -205,16 +205,27 @@ class UserController extends Controller
         }
     }
 
-    // 4. CLASS NON_PEGAWAI (TAMU EXSTERNAL)
+    // 4. CLASS NON_PEGAWAI (TAMU EKSTERNAL)
     public function inputDataTamu(Request $request)
     {
         $validated = $request->validate([
-            'nama'          => 'required|string',
+            'nama'          => 'required|string|max:255',
+            'nik'           => 'nullable|string|max:16|regex:/^[0-9]+$/',
+            'jabatan'       => 'nullable|string|max:255',
             'no_hp'         => 'required|string|max:13|regex:/^[0-9]+$/',
-            'asal_instansi' => 'required|string',
-            'id_agenda'     => 'required|integer',
-            'foto_selfie'   => 'nullable|string',      // Menerima file path atau base64 string
-            'tanda_tangan'  => 'nullable|string',     // Menerima data koordinat canvas / base64 string
+            'asal_instansi' => 'required|string|max:255',
+            'id_agenda'     => 'required|integer|exists:sirapi_md_agenda,id_agenda',
+            'foto'          => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'foto_selfie'   => 'nullable',
+            'tanda_tangan'  => 'nullable|string',
+        ], [
+            'nama.required' => 'Nama lengkap tamu wajib diisi.',
+            'no_hp.required' => 'Nomor HP / WhatsApp wajib diisi.',
+            'no_hp.regex' => 'Nomor HP hanya boleh berisi angka.',
+            'asal_instansi.required' => 'Instansi / asal wajib diisi.',
+            'id_agenda.required' => 'Agenda wajib dipilih.',
+            'foto.image' => 'File foto harus berupa gambar (JPG, PNG, WebP).',
+            'foto.max' => 'Ukuran foto maksimal 5MB.',
         ]);
 
         $agenda = \App\Models\Agenda::find($validated['id_agenda']);
@@ -226,7 +237,13 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => 'Agenda rapat telah selesai. Presensi sudah ditutup.'], 400);
         }
 
-        unset($validated['tanda_tangan']);
+        if ($request->hasFile('foto')) {
+            $validated['foto_selfie'] = $request->file('foto')->store('tamu', 'public');
+        } elseif ($request->hasFile('foto_selfie')) {
+            $validated['foto_selfie'] = $request->file('foto_selfie')->store('tamu', 'public');
+        }
+
+        unset($validated['foto'], $validated['tanda_tangan']);
 
         $idTamu = DB::table('sirapi_md_tamu')->insertGetId(array_merge($validated, [
             'created_at' => now(),

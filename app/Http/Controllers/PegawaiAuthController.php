@@ -187,8 +187,9 @@ class PegawaiAuthController extends Controller
         $dokumen = $this->dokumenAgenda($agenda);
         $kehadiran = $agenda ? $this->kehadiranPegawai($agenda->id_agenda, $pegawai->email) : null;
         [$bidangOptions, $jabatanOptions] = $this->masterPegawaiOptions();
+        $isDitugaskan = $agenda ? $agenda->canPegawaiPresensi($pegawai) : true;
 
-        return view('pegawai.presensi.index', compact('pegawai', 'agenda', 'dokumen', 'kehadiran', 'bidangOptions', 'jabatanOptions'));
+        return view('pegawai.presensi.index', compact('pegawai', 'agenda', 'dokumen', 'kehadiran', 'bidangOptions', 'jabatanOptions', 'isDitugaskan'));
     }
 
     public function simpanPresensi(Request $request)
@@ -202,6 +203,10 @@ class PegawaiAuthController extends Controller
 
         if ($agenda->status_label === Agenda::STATUS_SELESAI) {
             return back()->withErrors(['presensi' => 'Agenda rapat telah selesai. Presensi sudah ditutup.']);
+        }
+
+        if (! $agenda->canPegawaiPresensi($pegawai)) {
+            return back()->withErrors(['presensi' => 'Presensi ditolak. Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan (' . ($agenda->ditugaskan ?: '-') . ').']);
         }
 
         $now = Carbon::now(self::TIMEZONE);
@@ -553,6 +558,13 @@ class PegawaiAuthController extends Controller
 
         if ($agenda->status_label === Agenda::STATUS_SELESAI) {
             return response()->json(['success' => false, 'message' => 'Agenda rapat telah selesai. Presensi sudah ditutup.'], 400);
+        }
+
+        if (! $agenda->canPegawaiPresensi($pegawai)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Presensi ditolak. Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan (' . ($agenda->ditugaskan ?: '-') . ').'
+            ], 403);
         }
 
         $now = Carbon::now(self::TIMEZONE);

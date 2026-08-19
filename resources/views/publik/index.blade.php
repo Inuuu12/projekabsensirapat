@@ -169,7 +169,11 @@
                             <p class="text-xs text-gray-300">{{ $agenda->lokasi ?? '-' }}</p>
                         </div>
                         <div class="flex items-center justify-between border-t border-white/10 pt-3 text-xs">
-                            <span class="bg-oren-muda text-oren-tua font-bold px-3 py-1 rounded-full text-[10px]">{{ $agenda->kuota ?? 0 }} Peserta</span>
+                            @if (strtolower((string) ($agenda->kategori_surat ?? '')) !== 'masuk')
+                                <span class="bg-oren-muda text-oren-tua font-bold px-3 py-1 rounded-full text-[10px]">{{ $agenda->kuota ?? 0 }} Peserta</span>
+                            @else
+                                <span></span>
+                            @endif
                             <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-[10px] font-semibold transition-colors">Detail</a>
                         </div>
                     </div>

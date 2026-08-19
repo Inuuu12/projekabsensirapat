@@ -294,13 +294,6 @@ class PublicPageController extends Controller
         }
     }
 
-    public function presensiPilih(Request $request)
-    {
-        $agenda = $this->agendaPresensi($request);
-
-        return view('publik.presensi-pilih', compact('agenda'));
-    }
-
     public function presensiPegawai(Request $request)
     {
         $agenda = $this->agendaPresensi($request);
@@ -381,6 +374,14 @@ class PublicPageController extends Controller
                 'success' => false,
                 'agenda' => $agenda,
                 'message' => 'QR presensi hanya aktif pada ' . $qrWindow['start']->translatedFormat('d F Y H:i') . ' sampai ' . $qrWindow['end']->translatedFormat('H:i') . ' WIB.',
+            ]);
+        }
+
+        if (Auth::guard('pegawai')->check() && ! $agenda->canPegawaiPresensi(Auth::guard('pegawai')->user())) {
+            return view('publik.presensi-qr-result', [
+                'success' => false,
+                'agenda' => $agenda,
+                'message' => 'Presensi ditolak. Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan (' . ($agenda->ditugaskan ?: '-') . ').',
             ]);
         }
 
@@ -516,7 +517,7 @@ class PublicPageController extends Controller
         $agendaId = $request->input('agenda_id');
         $agenda = Agenda::find($agendaId);
         if (!$agenda) {
-            return redirect()->route('publik.presensi.pilih')->withErrors(['agenda' => 'Agenda tidak ditemukan.']);
+            return redirect()->route('publik.agenda')->withErrors(['agenda' => 'Agenda tidak ditemukan.']);
         }
         return view('pegawai.presensi_pilih.index', compact('agenda'));
     }
@@ -526,7 +527,7 @@ class PublicPageController extends Controller
         $agendaId = $request->input('agenda_id');
         $agenda = Agenda::find($agendaId);
         if (!$agenda) {
-            return redirect()->route('publik.presensi.pilih')->withErrors(['agenda' => 'Agenda tidak ditemukan.']);
+            return redirect()->route('publik.agenda')->withErrors(['agenda' => 'Agenda tidak ditemukan.']);
         }
         return view('pegawai.presensi_wajah.index', compact('agenda'));
     }

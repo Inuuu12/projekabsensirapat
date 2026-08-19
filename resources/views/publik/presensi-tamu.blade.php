@@ -30,7 +30,7 @@
 
         <div class="bg-white border border-gray-200/80 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-lg relative space-y-6">
             <div class="flex items-center justify-between">
-                <a href="{{ route('publik.presensi.pilih', $routeParams) }}" class="inline-flex items-center space-x-1.5 text-xs font-bold text-ijo-semitua hover:underline">
+                <a href="{{ $agendaAktif ? route('publik.agenda.detail', $agendaAktif->id_agenda) : route('publik.agenda') }}" class="inline-flex items-center space-x-1.5 text-xs font-bold text-ijo-semitua hover:underline">
                     <span>&larr;</span>
                     <span>Kembali</span>
                 </a>

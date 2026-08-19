@@ -90,4 +90,56 @@ class Agenda extends Model
 
         return self::STATUS_SELESAI;
     }
+
+    public function canPegawaiPresensi(mixed $pegawai): bool
+    {
+        // Jika bukan agenda surat masuk, tidak dibatasi penugasan khusus
+        if (strtolower((string) ($this->kategori_surat ?? '')) !== 'masuk') {
+            return true;
+        }
+
+        // Jika agenda surat masuk tetapi kolom ditugaskan kosong / tidak diisi, izinkan semua pegawai
+        $ditugaskanStr = trim((string) ($this->ditugaskan ?? ''));
+        if ($ditugaskanStr === '' || $ditugaskanStr === '-') {
+            return true;
+        }
+
+        if (! $pegawai) {
+            return false;
+        }
+
+        $namaPegawai = is_object($pegawai) ? ($pegawai->nama_pegawai ?? $pegawai->nama ?? '') : (string) $pegawai;
+        $nipPegawai = is_object($pegawai) ? ($pegawai->nip ?? '') : '';
+
+        // Pecah daftar nama pegawai yang ditugaskan (dipisahkan koma atau titik koma)
+        $assignedList = array_filter(array_map(
+            fn ($item) => strtolower(trim($item)),
+            preg_split('/[,;]+/', $ditugaskanStr)
+        ));
+
+        $targetName = strtolower(trim((string) $namaPegawai));
+        $targetNip = strtolower(trim((string) $nipPegawai));
+
+        if ($targetName === '' && $targetNip === '') {
+            return false;
+        }
+
+        foreach ($assignedList as $assigned) {
+            if ($assigned === '') continue;
+
+            // 1. Cocokkan NIP jika ada
+            if ($targetNip !== '' && ($assigned === $targetNip || str_contains($assigned, $targetNip))) {
+                return true;
+            }
+
+            // 2. Cocokkan nama persis atau substring
+            if ($targetName !== '') {
+                if ($assigned === $targetName || str_contains($targetName, $assigned) || str_contains($assigned, $targetName)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

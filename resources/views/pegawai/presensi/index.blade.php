@@ -153,6 +153,17 @@
                     <p class="text-sm font-extrabold text-amber-800">Agenda Rapat Telah Selesai</p>
                     <p class="mt-1 text-xs font-medium text-amber-700">Presensi untuk agenda rapat ini telah ditutup karena waktu rapat telah berakhir.</p>
                 </div>
+            @elseif (! $isDitugaskan)
+                <div class="w-full max-w-[450px] rounded-2xl border border-red-200 bg-red-50 p-6 text-center space-y-2">
+                    <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-red-100 text-red-600">
+                        <i data-lucide="shield-alert" class="h-6 w-6"></i>
+                    </div>
+                    <p class="text-sm font-extrabold text-red-900">Akses Presensi Dibatasi</p>
+                    <p class="text-xs font-medium text-red-700 leading-relaxed">
+                        Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan:<br>
+                        <span class="inline-block mt-1 font-bold text-red-900 bg-red-100/80 px-3 py-1 rounded-lg">{{ $agendaAktif->ditugaskan ?: '-' }}</span>
+                    </p>
+                </div>
             @else
                 @if (empty($pegawai->face_descriptor))
                     <button type="button" data-open-face class="flex min-h-[96px] w-full max-w-[445px] items-center gap-5 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 px-6 text-left text-white shadow-sm transition hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-orange-500/20">

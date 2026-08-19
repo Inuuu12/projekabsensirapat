@@ -29,7 +29,7 @@
         @endphp
 
         <div class="bg-white border border-gray-200/80 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-lg relative space-y-6">
-            <a href="{{ route('publik.presensi.pilih', $routeParams) }}" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 font-bold transition-colors" title="Kembali">
+            <a href="{{ $agendaAktif ? route('publik.agenda.detail', $agendaAktif->id_agenda) : route('publik.agenda') }}" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 font-bold transition-colors" title="Kembali">
                 &larr;
             </a>
 
@@ -76,7 +76,7 @@
             @endif
 
             <div class="text-center mt-6">
-                <a href="{{ route('publik.presensi.pilih', $routeParams) }}" class="text-xs font-semibold text-gray-400 hover:text-gray-600 transition-colors">Kembali ke Pilih Peserta</a>
+                <a href="{{ $agendaAktif ? route('publik.agenda.detail', $agendaAktif->id_agenda) : route('publik.agenda') }}" class="text-xs font-semibold text-gray-400 hover:text-gray-600 transition-colors">Kembali ke Detail Agenda</a>
             </div>
         </div>
     </main>

@@ -68,6 +68,15 @@
                         <h2 class="text-xl font-bold" id="success-name">Bagus Wihandono</h2>
                         <p class="text-sm mt-2 font-medium">Presensi Berhasil Dicatat!</p>
                     </div>
+
+                    <div id="error-overlay" class="absolute inset-0 bg-red-900/95 z-30 flex flex-col items-center justify-center text-white p-6 text-center hidden">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-red-600 mb-3 shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        </div>
+                        <h2 class="text-sm font-bold" id="error-name">Nama Pegawai</h2>
+                        <p class="text-xs mt-2 font-medium leading-relaxed max-w-sm" id="error-msg">Presensi Ditolak</p>
+                        <button type="button" id="retry-scan-btn" class="mt-4 px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs font-bold transition">Coba Lagi</button>
+                    </div>
                 </div>
 
                 <p class="text-xs text-gray-500">Posisikan wajah Anda di tengah kamera hingga sistem mengenali Anda.</p>
@@ -85,12 +94,24 @@
             const statusText = document.getElementById('status-text');
             const successOverlay = document.getElementById('success-overlay');
             const successName = document.getElementById('success-name');
+            const errorOverlay = document.getElementById('error-overlay');
+            const errorName = document.getElementById('error-name');
+            const errorMsg = document.getElementById('error-msg');
+            const retryScanBtn = document.getElementById('retry-scan-btn');
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             
             const agendaId = "{{ $agendaAktif?->id_agenda ?? '' }}";
             let faceMatcher = null;
             let detectionInterval = null;
             let isScanning = true;
+
+            function resumeScanning() {
+                if (errorOverlay) errorOverlay.classList.add('hidden');
+                if (successOverlay) successOverlay.classList.add('hidden');
+                isScanning = true;
+            }
+
+            retryScanBtn?.addEventListener('click', resumeScanning);
 
             // Load Models
             try {
@@ -195,7 +216,6 @@
 
             async function handleSuccess(idPegawai, namaPegawai) {
                 isScanning = false;
-                clearInterval(detectionInterval);
                 
                 // Show Success UI
                 overlay.getContext('2d').clearRect(0, 0, overlay.width, overlay.height);
@@ -219,18 +239,24 @@
                     
                     const result = await res.json();
                     if (!result.success) {
-                        alert(result.message);
-                        isScanning = true;
                         successOverlay.classList.add('hidden');
+                        if (errorOverlay && errorName && errorMsg) {
+                            errorName.innerText = namaPegawai;
+                            errorMsg.innerText = result.message || 'Presensi tidak dapat dilakukan.';
+                            errorOverlay.classList.remove('hidden');
+                        } else {
+                            alert(result.message || 'Presensi ditolak.');
+                            resumeScanning();
+                        }
                     } else {
                         setTimeout(() => {
                             window.location.href = result.redirect_url || "{{ route('pegawai.presensi.index', $routeParams) }}";
                         }, 2500);
                     }
                 } catch (e) {
-                    alert('Terjadi kesalahan koneksi.');
-                    isScanning = true;
                     successOverlay.classList.add('hidden');
+                    alert('Terjadi kesalahan koneksi.');
+                    resumeScanning();
                 }
             }
         });

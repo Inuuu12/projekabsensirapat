@@ -66,7 +66,7 @@
                 <ul class="space-y-2 text-xs font-medium text-gray-600">
                     <li><a href="{{ route('publik.masukan') }}" class="hover:text-ijo-semitua transition-colors flex items-center space-x-1.5"><span>•</span> <span>Formulir Pengaduan</span></a></li>
                     <li><a href="{{ route('publik.ulangtahun') }}" class="hover:text-ijo-semitua transition-colors flex items-center space-x-1.5"><span>•</span> <span>Informasi Ulang Tahun</span></a></li>
-                    <li><a href="{{ route('publik.presensi.pilih') }}" class="hover:text-ijo-semitua transition-colors flex items-center space-x-1.5"><span>•</span> <span>Presensi / Absensi Rapat</span></a></li>
+                    <li><a href="{{ route('publik.agenda') }}" class="hover:text-ijo-semitua transition-colors flex items-center space-x-1.5"><span>•</span> <span>Agenda & Presensi Rapat</span></a></li>
                 </ul>
             </div>
 
@@ -78,7 +78,7 @@
                 </div>
                 <hr class="border-gray-100">
                 <ul class="space-y-2 text-xs font-medium text-gray-600">
-                    <li><a href="{{ route('publik.presensi.pilih') }}" class="hover:text-ijo-semitua transition-colors flex items-center space-x-1.5"><span>•</span> <span>Pilih Role Peserta</span></a></li>
+                    <li><a href="{{ route('publik.agenda') }}" class="hover:text-ijo-semitua transition-colors flex items-center space-x-1.5"><span>•</span> <span>Daftar Agenda & Detail Presensi</span></a></li>
                     <li><a href="{{ route('publik.presensi.pegawai') }}" class="hover:text-ijo-semitua transition-colors flex items-center space-x-1.5"><span>•</span> <span>Metode Presensi Pegawai</span></a></li>
                     <li><a href="{{ route('publik.presensi.tamu') }}" class="hover:text-ijo-semitua transition-colors flex items-center space-x-1.5"><span>•</span> <span>Form Presensi Tamu Rapat</span></a></li>
                 </ul>

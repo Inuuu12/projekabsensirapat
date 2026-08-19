@@ -62,13 +62,13 @@
             <nav class="text-xs text-gray-500 flex items-center space-x-2">
                 <a href="{{ route('publik.beranda') }}" class="hover:underline">Beranda</a>
                 <span>/</span>
-                <span class="text-gray-800 font-semibold">Riwayat Aduan</span>
+                <span class="text-gray-800 font-semibold">Daftar Aduan</span>
             </nav>
 
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Riwayat Aduan Saya</h1>
-                    <p class="text-xs text-gray-500 mt-1">Status diperbarui otomatis oleh admin Diskominfo</p>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Daftar Aduan</h1>
+                    <p class="text-xs text-gray-500 mt-1">Melihat seluruh laporan aduan yang telah dikirimkan.</p>
                 </div>
                 <a href="{{ route('publik.masukan') }}" class="bg-ijo-tua hover:bg-ijo-semitua text-white text-xs font-bold px-5 py-2.5 rounded-full self-start md:self-auto">
                     Buat Aduan Baru
