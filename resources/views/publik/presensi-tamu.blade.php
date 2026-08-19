@@ -66,6 +66,14 @@
                     <h3 class="text-base font-extrabold text-amber-900">Agenda Rapat Telah Selesai</h3>
                     <p class="text-xs font-medium text-amber-700 leading-relaxed">Presensi untuk agenda rapat ini telah ditutup karena waktu pelaksanaan rapat telah berakhir.</p>
                 </div>
+            @elseif ($agendaAktif && strtolower((string) ($agendaAktif->kategori_surat ?? '')) === 'masuk')
+                <div class="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-center space-y-3">
+                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <h3 class="text-base font-extrabold text-amber-900">Agenda Surat Masuk</h3>
+                    <p class="text-xs font-medium text-amber-700 leading-relaxed">Agenda ini diadakan oleh pihak eksternal dan hanya diperuntukkan bagi kehadiran pegawai internal yang ditugaskan.</p>
+                </div>
             @elseif ($agendaAktif)
                 <form action="{{ route('publik.tamu.hadir') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                     @csrf

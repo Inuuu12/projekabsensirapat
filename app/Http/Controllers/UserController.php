@@ -237,6 +237,14 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => 'Agenda rapat telah selesai. Presensi sudah ditutup.'], 400);
         }
 
+        if ($agenda && strtolower((string) ($agenda->kategori_surat ?? '')) === 'masuk') {
+            if (! $request->wantsJson()) {
+                return back()->withErrors(['agenda' => 'Agenda surat masuk hanya diperuntukkan untuk presensi pegawai yang ditugaskan.']);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Agenda surat masuk hanya diperuntukkan untuk presensi pegawai yang ditugaskan.'], 400);
+        }
+
         if ($request->hasFile('foto')) {
             $validated['foto_selfie'] = $request->file('foto')->store('tamu', 'public');
         } elseif ($request->hasFile('foto_selfie')) {

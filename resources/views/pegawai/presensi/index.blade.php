@@ -385,10 +385,6 @@
             </div>
         </div>
     </div>
-                <i data-lucide="scan" class="inline-block h-4 w-4 mr-1"></i> Ambil Wajah
-            </button>
-        </section>
-    </div>
 
     <!-- Presensi Face Scan Modal -->
     <div data-presensi-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 px-4 py-6">

@@ -36,6 +36,7 @@
             $lampiranPreviewable = in_array($lampiranExtension, ['pdf', 'jpg', 'jpeg', 'png'], true);
             $qrPayload = $qrCode?->qr_codepath;
             $qrImageUrl = $qrPayload ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayload) : null;
+            $isSuratMasuk = strtolower((string) ($agendaAktif?->kategori_surat ?? '')) === 'masuk';
         @endphp
 
         <div class="space-y-3">
@@ -127,7 +128,9 @@
                         <div class="flex items-center justify-between gap-3">
                             <div>
                                 <h4 class="font-bold text-sm text-gray-900">Presensi Agenda</h4>
-                                <p class="text-[10px] text-gray-500 mt-0.5">Pilih kategori kehadiran Anda</p>
+                                <p class="text-[10px] text-gray-500 mt-0.5">
+                                    {{ $isSuratMasuk ? 'Presensi pegawai yang ditugaskan' : 'Pilih kategori kehadiran Anda' }}
+                                </p>
                             </div>
                             <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agendaAktif->status_label === 'Selesai' ? 'bg-amber-100 text-amber-800' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'bg-ijo-sangatmuda text-ijo-tua' : 'bg-gray-100 text-gray-500') }}">
                                 {{ $agendaAktif->status_label === 'Selesai' ? 'Selesai' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'Aktif' : 'Belum aktif') }}
@@ -161,17 +164,19 @@
                                 <p class="text-[11px] font-medium text-amber-700 leading-tight">Presensi tidak lagi dapat dilakukan karena waktu pelaksanaan agenda rapat telah berakhir.</p>
                             </div>
                         @else
-                            <!-- Tombol Pilihan Jenis Presensi -->
-                            <div class="grid grid-cols-2 gap-2 bg-[#F4F3EE] p-1.5 rounded-2xl">
-                                <button type="button" id="tab-btn-pegawai" onclick="switchPresensiTab('pegawai')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua text-white shadow-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                    <span>Presensi Pegawai</span>
-                                </button>
-                                <button type="button" id="tab-btn-tamu" onclick="switchPresensiTab('tamu')" class="py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 hover:text-gray-900 transition-all flex items-center justify-center space-x-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                    <span>Presensi Tamu</span>
-                                </button>
-                            </div>
+                            @if (! $isSuratMasuk)
+                                <!-- Tombol Pilihan Jenis Presensi (Hanya jika bukan Surat Masuk) -->
+                                <div class="grid grid-cols-2 gap-2 bg-[#F4F3EE] p-1.5 rounded-2xl">
+                                    <button type="button" id="tab-btn-pegawai" onclick="switchPresensiTab('pegawai')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua text-white shadow-sm">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                        <span>Presensi Pegawai</span>
+                                    </button>
+                                    <button type="button" id="tab-btn-tamu" onclick="switchPresensiTab('tamu')" class="py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 hover:text-gray-900 transition-all flex items-center justify-center space-x-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                        <span>Presensi Tamu</span>
+                                    </button>
+                                </div>
+                            @endif
 
                             <!-- Panel Presensi Pegawai (QR Code) -->
                             <div id="panel-presensi-pegawai" class="space-y-4">
@@ -199,72 +204,74 @@
                                 @endif
                             </div>
 
-                            <!-- Panel Presensi Tamu (Formulir Kehadiran) -->
-                            <div id="panel-presensi-tamu" class="hidden space-y-4">
-                                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                    <p class="text-[11px] font-bold text-gray-800">Formulir Kehadiran Tamu</p>
-                                    <p class="text-[10px] text-gray-500 mt-0.5">Silakan isi data kehadiran Anda di bawah ini:</p>
+                            @if (! $isSuratMasuk)
+                                <!-- Panel Presensi Tamu (Formulir Kehadiran - Hanya untuk Non-Surat Masuk) -->
+                                <div id="panel-presensi-tamu" class="hidden space-y-4">
+                                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                        <p class="text-[11px] font-bold text-gray-800">Formulir Kehadiran Tamu</p>
+                                        <p class="text-[10px] text-gray-500 mt-0.5">Silakan isi data kehadiran Anda di bawah ini:</p>
+                                    </div>
+
+                                    <form action="{{ route('publik.tamu.hadir') }}" method="POST" enctype="multipart/form-data" class="space-y-3.5">
+                                        @csrf
+                                        <input type="hidden" name="id_agenda" value="{{ $agendaAktif->id_agenda }}">
+
+                                        <!-- Foto / Swafoto -->
+                                        <div class="space-y-1">
+                                            <label class="block text-[11px] font-bold text-gray-700">Foto / Swafoto Tamu <span class="text-gray-400 font-normal">(Opsional)</span></label>
+                                            <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all relative overflow-hidden group">
+                                                <div class="flex flex-col items-center justify-center p-3 text-center" id="tamu-upload-placeholder">
+                                                    <svg class="w-6 h-6 mb-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    </svg>
+                                                    <p class="text-[11px] text-gray-600 font-semibold">Ambil / Unggah Foto</p>
+                                                    <p class="text-[9px] text-gray-400">PNG, JPG, WebP (Maks. 5MB)</p>
+                                                </div>
+                                                <img id="tamu-foto-preview" class="hidden absolute inset-0 w-full h-full object-cover rounded-2xl" />
+                                                <input type="file" name="foto" id="tamu-foto-input" accept="image/*" capture="user" class="hidden" onchange="previewTamuImage(event)" />
+                                            </label>
+                                        </div>
+
+                                        <!-- Nama Lengkap -->
+                                        <div class="space-y-1">
+                                            <label class="block text-[11px] font-bold text-gray-700">Nama Lengkap *</label>
+                                            <input type="text" name="nama" value="{{ old('nama') }}" required placeholder="Masukkan nama lengkap" class="w-full bg-gray-50 border border-gray-200 focus:border-ijo-semitua focus:bg-white text-xs rounded-xl px-3.5 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                                        </div>
+
+                                        <!-- NIK / NIP -->
+                                        <div class="space-y-1">
+                                            <label class="block text-[11px] font-bold text-gray-700">NIK / Nomor Induk <span class="text-gray-400 font-normal">(Opsional)</span></label>
+                                            <input type="text" name="nik" value="{{ old('nik') }}" pattern="[0-9]+" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Masukkan NIK/NIP" class="w-full bg-gray-50 border border-gray-200 focus:border-ijo-semitua focus:bg-white text-xs rounded-xl px-3.5 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                                        </div>
+
+                                        <!-- Jabatan -->
+                                        <div class="space-y-1">
+                                            <label class="block text-[11px] font-bold text-gray-700">Jabatan <span class="text-gray-400 font-normal">(Opsional)</span></label>
+                                            <input type="text" name="jabatan" value="{{ old('jabatan') }}" placeholder="Contoh: Kepala Bidang / Staf" class="w-full bg-gray-50 border border-gray-200 focus:border-ijo-semitua focus:bg-white text-xs rounded-xl px-3.5 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                                        </div>
+
+                                        <!-- No. HP / WhatsApp -->
+                                        <div class="space-y-1">
+                                            <label class="block text-[11px] font-bold text-gray-700">No. HP / WhatsApp *</label>
+                                            <input type="text" name="no_hp" value="{{ old('no_hp') }}" required pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="08xxxxxxxxxx" class="w-full bg-gray-50 border border-gray-200 focus:border-ijo-semitua focus:bg-white text-xs rounded-xl px-3.5 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                                        </div>
+
+                                        <!-- Instansi / Asal -->
+                                        <div class="space-y-1">
+                                            <label class="block text-[11px] font-bold text-gray-700">Instansi / Asal *</label>
+                                            <input type="text" name="asal_instansi" value="{{ old('asal_instansi') }}" required placeholder="Contoh: Dinas Kominfo / Umum" class="w-full bg-gray-50 border border-gray-200 focus:border-ijo-semitua focus:bg-white text-xs rounded-xl px-3.5 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
+                                        </div>
+
+                                        <div class="pt-2">
+                                            <button type="submit" class="w-full bg-ijo-tua hover:bg-ijo-semitua text-white font-bold text-xs py-3 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-md">
+                                                <span>Kirim Kehadiran Tamu</span>
+                                                <span>&rarr;</span>
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
-
-                                <form action="{{ route('publik.tamu.hadir') }}" method="POST" enctype="multipart/form-data" class="space-y-3.5">
-                                    @csrf
-                                    <input type="hidden" name="id_agenda" value="{{ $agendaAktif->id_agenda }}">
-
-                                    <!-- Foto / Swafoto -->
-                                    <div class="space-y-1">
-                                        <label class="block text-[11px] font-bold text-gray-700">Foto / Swafoto Tamu <span class="text-gray-400 font-normal">(Opsional)</span></label>
-                                        <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all relative overflow-hidden group">
-                                            <div class="flex flex-col items-center justify-center p-3 text-center" id="tamu-upload-placeholder">
-                                                <svg class="w-6 h-6 mb-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                </svg>
-                                                <p class="text-[11px] text-gray-600 font-semibold">Ambil / Unggah Foto</p>
-                                                <p class="text-[9px] text-gray-400">PNG, JPG, WebP (Maks. 5MB)</p>
-                                            </div>
-                                            <img id="tamu-foto-preview" class="hidden absolute inset-0 w-full h-full object-cover rounded-2xl" />
-                                            <input type="file" name="foto" id="tamu-foto-input" accept="image/*" capture="user" class="hidden" onchange="previewTamuImage(event)" />
-                                        </label>
-                                    </div>
-
-                                    <!-- Nama Lengkap -->
-                                    <div class="space-y-1">
-                                        <label class="block text-[11px] font-bold text-gray-700">Nama Lengkap *</label>
-                                        <input type="text" name="nama" value="{{ old('nama') }}" required placeholder="Masukkan nama lengkap" class="w-full bg-gray-50 border border-gray-200 focus:border-ijo-semitua focus:bg-white text-xs rounded-xl px-3.5 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
-                                    </div>
-
-                                    <!-- NIK / NIP -->
-                                    <div class="space-y-1">
-                                        <label class="block text-[11px] font-bold text-gray-700">NIK / Nomor Induk <span class="text-gray-400 font-normal">(Opsional)</span></label>
-                                        <input type="text" name="nik" value="{{ old('nik') }}" pattern="[0-9]+" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Masukkan NIK/NIP" class="w-full bg-gray-50 border border-gray-200 focus:border-ijo-semitua focus:bg-white text-xs rounded-xl px-3.5 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
-                                    </div>
-
-                                    <!-- Jabatan -->
-                                    <div class="space-y-1">
-                                        <label class="block text-[11px] font-bold text-gray-700">Jabatan <span class="text-gray-400 font-normal">(Opsional)</span></label>
-                                        <input type="text" name="jabatan" value="{{ old('jabatan') }}" placeholder="Contoh: Kepala Bidang / Staf" class="w-full bg-gray-50 border border-gray-200 focus:border-ijo-semitua focus:bg-white text-xs rounded-xl px-3.5 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
-                                    </div>
-
-                                    <!-- No. HP / WhatsApp -->
-                                    <div class="space-y-1">
-                                        <label class="block text-[11px] font-bold text-gray-700">No. HP / WhatsApp *</label>
-                                        <input type="text" name="no_hp" value="{{ old('no_hp') }}" required pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="08xxxxxxxxxx" class="w-full bg-gray-50 border border-gray-200 focus:border-ijo-semitua focus:bg-white text-xs rounded-xl px-3.5 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
-                                    </div>
-
-                                    <!-- Instansi / Asal -->
-                                    <div class="space-y-1">
-                                        <label class="block text-[11px] font-bold text-gray-700">Instansi / Asal *</label>
-                                        <input type="text" name="asal_instansi" value="{{ old('asal_instansi') }}" required placeholder="Contoh: Dinas Kominfo / Umum" class="w-full bg-gray-50 border border-gray-200 focus:border-ijo-semitua focus:bg-white text-xs rounded-xl px-3.5 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
-                                    </div>
-
-                                    <div class="pt-2">
-                                        <button type="submit" class="w-full bg-ijo-tua hover:bg-ijo-semitua text-white font-bold text-xs py-3 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-md">
-                                            <span>Kirim Kehadiran Tamu</span>
-                                            <span>&rarr;</span>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                            @endif
                         @endif
                     </div>
 
@@ -358,15 +365,18 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const hasTamuParam = urlParams.get('presensi') === 'tamu' || window.location.hash === '#presensi-tamu';
-            @if ($errors->any() || session('success'))
-                switchPresensiTab('tamu');
-            @else
-                if (hasTamuParam) {
+            const isSuratMasuk = {{ $isSuratMasuk ? 'true' : 'false' }};
+            if (!isSuratMasuk) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const hasTamuParam = urlParams.get('presensi') === 'tamu' || window.location.hash === '#presensi-tamu';
+                @if ($errors->any() || session('success'))
                     switchPresensiTab('tamu');
-                }
-            @endif
+                @else
+                    if (hasTamuParam) {
+                        switchPresensiTab('tamu');
+                    }
+                @endif
+            }
         });
     </script>
 
