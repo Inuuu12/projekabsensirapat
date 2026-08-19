@@ -115,6 +115,12 @@
                                 <p class="text-[10px] uppercase font-semibold text-gray-400">Lokasi</p>
                                 <p class="font-bold text-gray-800 mt-0.5">{{ $agendaAktif->lokasi ?? '-' }}</p>
                             </div>
+                            @if (!empty($agendaAktif->ditugaskan))
+                                <div class="pt-3">
+                                    <p class="text-[10px] uppercase font-semibold text-gray-400">Ditugaskan Kepada</p>
+                                    <p class="font-bold text-[#14524E] mt-0.5">{{ $agendaAktif->ditugaskan }}</p>
+                                </div>
+                            @endif
                             @if (strtolower((string) ($agendaAktif->kategori_surat ?? '')) !== 'masuk')
                                 <div class="pt-3">
                                     <p class="text-[10px] uppercase font-semibold text-gray-400">Kuota</p>

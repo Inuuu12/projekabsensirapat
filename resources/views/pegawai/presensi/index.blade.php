@@ -133,14 +133,17 @@
                     <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Lokasi</p>
                     <p class="mt-1 text-sm font-extrabold">{{ $agendaAktif?->lokasi ?? '-' }}</p>
                 </div>
-                <div class="py-3">
+                <div class="{{ $agendaAktif?->ditugaskan ? 'py-3' : 'pt-3' }}">
                     <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Penyelenggara</p>
                     <p class="mt-1 text-sm font-extrabold">{{ $agendaAktif?->asal_surat ?: 'Bidang Informasi Publik' }}</p>
                 </div>
-                @if (strtolower((string) ($agendaAktif?->kategori_surat ?? '')) === 'masuk' && !empty($agendaAktif?->ditugaskan))
+                @if ($agendaAktif?->ditugaskan)
                     <div class="pt-3">
                         <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Ditugaskan Kepada</p>
-                        <p class="mt-1 text-sm font-extrabold">{{ $agendaAktif->ditugaskan }}</p>
+                        <p class="mt-1 text-sm font-extrabold text-[#155B53] flex items-center gap-1.5">
+                            <i data-lucide="user-check" class="h-4 w-4 shrink-0 text-[#155B53]"></i>
+                            <span>{{ $agendaAktif->ditugaskan }}</span>
+                        </p>
                     </div>
                 @endif
             </div>
