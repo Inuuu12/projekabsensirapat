@@ -147,7 +147,7 @@ class UserController extends Controller
             'nama_pengadu' => $validated['nama_pengadu'],
             'nomor_pengadu' => $validated['nomor_pengadu'],
             'email' => $validated['email'],
-            'foto' => $validated['foto'] ?? 'aduan/default.jpg',
+            'foto' => $validated['foto'] ?? null,
             'isi_aduan'    => $validated['isi_aduan'],
             'status'       => 'Pending',
             'created_at'   => now(),

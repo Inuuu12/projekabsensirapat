@@ -54,6 +54,7 @@
                     'balasan_admin' => $aduan->balasan_admin ?: 'Belum ada balasan dari admin.',
                     'status' => $aduan->status ?? 'Pending',
                     'tanggal' => $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d F Y, H:i') : '-',
+                    'foto_url' => (!empty($aduan->foto) && $aduan->foto !== 'aduan/default.jpg' && file_exists(public_path('storage/' . $aduan->foto))) ? asset('storage/' . $aduan->foto) : null,
                 ],
             ])->all();
         @endphp
@@ -152,6 +153,15 @@
                     <p id="aduan-modal-body" class="mt-2 text-sm leading-relaxed text-gray-700 whitespace-pre-line">-</p>
                 </div>
 
+                <div id="aduan-modal-photo-container" class="hidden rounded-2xl border border-gray-100 p-5">
+                    <p class="text-[10px] uppercase font-bold text-gray-400">Lampiran Foto</p>
+                    <div class="mt-2">
+                        <a id="aduan-modal-photo-link" href="#" target="_blank" rel="noopener noreferrer">
+                            <img id="aduan-modal-photo-img" src="" alt="Lampiran Foto" class="max-h-60 rounded-xl border border-gray-200 object-contain hover:opacity-90 transition">
+                        </a>
+                    </div>
+                </div>
+
                 <div class="rounded-2xl bg-ijo-sangatmuda p-5">
                     <p class="text-[10px] uppercase font-bold text-ijo-tua/70">Balasan Admin</p>
                     <p id="aduan-modal-reply" class="mt-2 text-sm leading-relaxed text-gray-800 whitespace-pre-line">-</p>
@@ -165,6 +175,9 @@
         const aduanDetails = @json($aduanDetailItems);
         const aduanModal = document.getElementById('aduan-modal');
         const aduanModalClose = document.getElementById('aduan-modal-close');
+        const aduanModalPhotoContainer = document.getElementById('aduan-modal-photo-container');
+        const aduanModalPhotoLink = document.getElementById('aduan-modal-photo-link');
+        const aduanModalPhotoImg = document.getElementById('aduan-modal-photo-img');
 
         function setAduanText(id, value) {
             const element = document.getElementById(id);
@@ -188,6 +201,16 @@
                 setAduanText('aduan-modal-status', detail.status);
                 setAduanText('aduan-modal-body', detail.isi_aduan);
                 setAduanText('aduan-modal-reply', detail.balasan_admin);
+
+                if (detail.foto_url) {
+                    aduanModalPhotoLink.href = detail.foto_url;
+                    aduanModalPhotoImg.src = detail.foto_url;
+                    aduanModalPhotoContainer.classList.remove('hidden');
+                } else {
+                    aduanModalPhotoContainer.classList.add('hidden');
+                    aduanModalPhotoLink.href = '#';
+                    aduanModalPhotoImg.src = '';
+                }
 
                 aduanModal.classList.remove('hidden');
                 aduanModal.classList.add('flex');

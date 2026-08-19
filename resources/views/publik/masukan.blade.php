@@ -301,11 +301,19 @@
                                 <p class="text-xs text-gray-700 leading-relaxed">
                                     {{ $aduan->isi_aduan ?? 'Tidak ada pesan' }}
                                 </p>
-                                @if(!empty($aduan->foto))
-                                    <div class="mt-2">
-                                        <a href="{{ asset('storage/' . $aduan->foto) }}" target="_blank" class="text-[11px] text-ijo-semitua hover:underline font-semibold flex items-center space-x-1">
-                                            <span>🖼️ Lihat Lampiran Foto</span>
-                                        </a>
+                                @php
+                                    $hasPhoto = !empty($aduan->foto)
+                                        && $aduan->foto !== 'aduan/default.jpg'
+                                        && file_exists(public_path('storage/' . $aduan->foto));
+                                @endphp
+                                @if($hasPhoto)
+                                    <div class="mt-2.5">
+                                        <button type="button" 
+                                                onclick="openPhotoModal('{{ asset('storage/' . $aduan->foto) }}', '{{ e($aduan->nama_pengadu ?? 'Aduan Publik') }}')"
+                                                class="inline-flex items-center space-x-1.5 text-[11px] text-ijo-semitua hover:text-ijo-tua font-semibold bg-ijo-sangatmuda/60 hover:bg-ijo-sangatmuda px-3 py-1.5 rounded-xl border border-ijo-muda/30 transition-all shadow-xs cursor-pointer">
+                                            <span>🖼️</span>
+                                            <span>Lihat Lampiran Foto</span>
+                                        </button>
                                     </div>
                                 @endif
                             </div>
@@ -342,10 +350,244 @@
 
     </main>
 
+    <!-- Modal Preview Foto Lampiran Pop-Up (Larger size, Zoom Controls, Sleek Rounded Corners) -->
+    <div id="photo-preview-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-6 transition-all duration-300">
+        <div class="relative w-full max-w-5xl rounded-xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[94vh] animate-in fade-in zoom-in-95 duration-200">
+            <!-- Header Modal -->
+            <div class="bg-ijo-tua text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shrink-0 border-b border-white/10">
+                <div class="flex items-center space-x-2.5">
+                    <span class="text-base">🖼️</span>
+                    <div>
+                        <h3 class="text-xs sm:text-sm font-bold text-white leading-tight">Lampiran Foto Aduan</h3>
+                        <p id="modal-photo-author" class="text-[10px] text-white/70">Pengadu: -</p>
+                    </div>
+                </div>
+
+                <!-- Zoom Controls & Close Button -->
+                <div class="flex items-center space-x-2">
+                    <div class="flex items-center bg-white/10 rounded-lg p-1 space-x-1 border border-white/10">
+                        <button type="button" onclick="zoomOut()" class="w-7 h-7 rounded-md bg-transparent hover:bg-white/20 text-white flex items-center justify-center text-xs font-bold transition cursor-pointer" title="Perkecil (Zoom Out)">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/></svg>
+                        </button>
+                        <span id="zoom-level-badge" class="px-2 text-[11px] font-mono font-bold text-white min-w-[44px] text-center">100%</span>
+                        <button type="button" onclick="zoomIn()" class="w-7 h-7 rounded-md bg-transparent hover:bg-white/20 text-white flex items-center justify-center text-xs font-bold transition cursor-pointer" title="Perbesar (Zoom In)">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                        </button>
+                        <button type="button" onclick="resetZoom()" class="px-2 h-7 rounded-md bg-transparent hover:bg-white/20 text-white flex items-center justify-center text-[10px] font-bold transition cursor-pointer" title="Reset Zoom">
+                            Reset
+                        </button>
+                    </div>
+
+                    <button type="button" onclick="closePhotoModal()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/25 text-white flex items-center justify-center text-sm font-bold transition cursor-pointer ml-1" title="Tutup">
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            <!-- Konten Gambar (Lebar & Bersih dengan Drag/Pan Bebas ke Segala Arah) -->
+            <div id="photo-container" class="relative p-4 sm:p-6 bg-[#161d1b] flex-1 flex items-center justify-center overflow-hidden min-h-[55vh] max-h-[76vh] select-none">
+                <div class="transition-transform duration-100 ease-out origin-center flex items-center justify-center will-change-transform" id="zoom-wrapper">
+                    <img id="modal-photo-img" 
+                         src="" 
+                         alt="Lampiran Foto Aduan" 
+                         ondblclick="toggleZoom()"
+                         class="max-h-[72vh] w-auto max-w-full object-contain rounded-lg shadow-lg border border-white/10 bg-[#0e1412] cursor-grab transition-all">
+                </div>
+            </div>
+
+            <!-- Footer Modal -->
+            <div class="px-5 py-3 bg-white border-t border-gray-100 flex flex-wrap items-center justify-between gap-3 shrink-0">
+                <p class="text-[11px] text-gray-500 flex items-center space-x-1.5">
+                    <span>💡</span>
+                    <span>Gunakan tombol <span class="font-bold text-gray-700">Zoom</span> / Scroll mouse, lalu <span class="font-bold text-gray-700">drag (geser mouse)</span> bebas ke kiri, kanan, atas, bawah.</span>
+                </p>
+                <div class="flex items-center space-x-2.5">
+                    <a id="modal-photo-download" href="#" target="_blank" download class="text-xs text-ijo-semitua hover:text-ijo-tua font-bold px-3.5 py-2 rounded-lg hover:bg-ijo-sangatmuda/50 border border-ijo-muda/30 transition-colors flex items-center space-x-1.5">
+                        <span>⬇️</span>
+                        <span>Buka Gambar Asli</span>
+                    </a>
+                    <button type="button" onclick="closePhotoModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-colors cursor-pointer">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Memanggil Footer Publik -->
     @include('publik.layout_publik.footer') 
 
     <script>
+        // Pop-up Lightbox Foto & Zoom / Pan Controls
+        const photoModal = document.getElementById('photo-preview-modal');
+        const photoContainer = document.getElementById('photo-container');
+        const modalPhotoImg = document.getElementById('modal-photo-img');
+        const zoomWrapper = document.getElementById('zoom-wrapper');
+        const zoomLevelBadge = document.getElementById('zoom-level-badge');
+        const modalPhotoAuthor = document.getElementById('modal-photo-author');
+        const modalPhotoDownload = document.getElementById('modal-photo-download');
+
+        let currentZoom = 1;
+        let translateX = 0;
+        let translateY = 0;
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+
+        const minZoom = 1.0;
+        const maxZoom = 3.5;
+        const zoomStep = 0.25;
+
+        function applyTransform() {
+            if (!zoomWrapper) return;
+            zoomWrapper.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentZoom})`;
+            if (zoomLevelBadge) {
+                zoomLevelBadge.textContent = `${Math.round(currentZoom * 100)}%`;
+            }
+            if (photoContainer) {
+                if (currentZoom > 1) {
+                    photoContainer.classList.add('cursor-grab');
+                    if (isDragging) {
+                        photoContainer.classList.add('cursor-grabbing');
+                    } else {
+                        photoContainer.classList.remove('cursor-grabbing');
+                    }
+                } else {
+                    photoContainer.classList.remove('cursor-grab', 'cursor-grabbing');
+                }
+            }
+        }
+
+        function zoomIn() {
+            if (currentZoom < maxZoom) {
+                currentZoom = Math.min(maxZoom, Math.round((currentZoom + zoomStep) * 100) / 100);
+                applyTransform();
+            }
+        }
+
+        function zoomOut() {
+            if (currentZoom > minZoom) {
+                currentZoom = Math.max(minZoom, Math.round((currentZoom - zoomStep) * 100) / 100);
+                if (currentZoom <= 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+                applyTransform();
+            }
+        }
+
+        function resetZoom() {
+            currentZoom = 1;
+            translateX = 0;
+            translateY = 0;
+            applyTransform();
+        }
+
+        function toggleZoom() {
+            if (currentZoom === 1) {
+                currentZoom = 2;
+            } else {
+                currentZoom = 1;
+                translateX = 0;
+                translateY = 0;
+            }
+            applyTransform();
+        }
+
+        // Drag / Pan Logic (Mouse)
+        photoContainer?.addEventListener('mousedown', (e) => {
+            if (e.button !== 0) return;
+            if (currentZoom > 1) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                photoContainer.classList.add('cursor-grabbing');
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            applyTransform();
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                if (photoContainer) photoContainer.classList.remove('cursor-grabbing');
+            }
+        });
+
+        // Touch Drag / Pan Logic (Mobile)
+        photoContainer?.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1 && currentZoom > 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging || e.touches.length !== 1) return;
+            translateX = e.touches[0].clientX - startX;
+            translateY = e.touches[0].clientY - startY;
+            applyTransform();
+        }, { passive: true });
+
+        window.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        // Mouse Wheel Zoom
+        photoContainer?.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomIn();
+            } else {
+                zoomOut();
+            }
+        }, { passive: false });
+
+        function openPhotoModal(imgSrc, authorName) {
+            if (!photoModal || !modalPhotoImg) return;
+            resetZoom();
+            modalPhotoImg.src = imgSrc;
+            if (modalPhotoAuthor) {
+                modalPhotoAuthor.textContent = `Pengadu: ${authorName || 'Anonim'}`;
+            }
+            if (modalPhotoDownload) {
+                modalPhotoDownload.href = imgSrc;
+            }
+            photoModal.classList.remove('hidden');
+            photoModal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closePhotoModal() {
+            if (!photoModal) return;
+            photoModal.classList.add('hidden');
+            photoModal.classList.remove('flex');
+            if (modalPhotoImg) modalPhotoImg.src = '';
+            resetZoom();
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // Tutup jika klik backdrop / latar belakang hitam
+        photoModal?.addEventListener('click', (e) => {
+            if (e.target === photoModal) {
+                closePhotoModal();
+            }
+        });
+
+        // Tutup jika tombol ESC ditekan
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !photoModal?.classList.contains('hidden')) {
+                closePhotoModal();
+            }
+        });
+
         const otpButton = document.getElementById('send-otp-button');
         const otpEmail = document.getElementById('aduan-email');
         const otpStatus = document.getElementById('otp-status');

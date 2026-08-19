@@ -198,7 +198,7 @@ class DatabaseSeeder extends Seeder
             [
                 'nama_pengadu' => 'Warga Bogor',
                 'nomor_pengadu' => '081200001111',
-                'foto' => 'aduan/default.jpg',
+                'foto' => null,
                 'isi_aduan' => 'Mohon informasi jadwal rapat publik dipublikasikan lebih awal.',
                 'status' => 'Menunggu',
                 'id_admin' => $idAdmin,

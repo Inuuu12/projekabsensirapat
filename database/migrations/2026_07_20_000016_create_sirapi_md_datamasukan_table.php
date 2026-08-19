@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('nama_pengadu');
             $table->string('nomor_pengadu');
             $table->string('email');
-            $table->string('foto');
+            $table->string('foto')->nullable();
             $table->text('isi_aduan');
             $table->text('balasan_admin')->nullable();
             $table->string('status');

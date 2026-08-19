@@ -159,6 +159,12 @@
                             </td>
                             <td class="px-6 py-8">
                                 <div class="flex items-center justify-center gap-4">
+                                    @php
+                                        $hasItemPhoto = !empty($item->foto)
+                                            && $item->foto !== 'aduan/default.jpg'
+                                            && file_exists(public_path('storage/' . $item->foto));
+                                        $itemPhotoUrl = $hasItemPhoto ? asset('storage/' . $item->foto) : '';
+                                    @endphp
                                     <button
                                         type="button"
                                         onclick="openMasukkanDetail(this)"
@@ -166,6 +172,7 @@
                                         data-name="{{ $item->nama_pengadu }}"
                                         data-email="{{ $item->email }}"
                                         data-phone="{{ $item->nomor_pengadu }}"
+                                        data-photo="{{ $itemPhotoUrl }}"
                                         data-status="{{ $statusLabel($item->status) }}"
                                         data-time="{{ optional($item->created_at)->format('H:i') ?? '-' }}"
                                         data-date="{{ optional($item->created_at)->translatedFormat('d M Y') ?? '-' }}"
@@ -258,6 +265,28 @@
                 <p class="text-xs font-black uppercase tracking-wider text-slate-400">Isi Aduan</p>
                 <p id="detail-message" class="mt-2 rounded-lg bg-slate-50 p-4 leading-relaxed text-[#08251f]"></p>
             </div>
+            <div id="detail-photo-container" class="hidden">
+                <p class="text-xs font-black uppercase tracking-wider text-slate-400">Lampiran Foto</p>
+                <div class="mt-2 flex items-center gap-3">
+                    <button type="button" 
+                            id="detail-photo-btn"
+                            onclick="openAdminPhotoModal()" 
+                            class="group relative inline-block overflow-hidden rounded-lg border border-slate-200 bg-slate-50 transition hover:border-[#35635b] hover:shadow-md cursor-pointer text-left"
+                            title="Klik untuk memperbesar foto">
+                        <img id="detail-photo-img" src="" alt="Lampiran Foto" class="max-h-48 w-auto rounded-lg object-contain transition duration-200 group-hover:scale-105">
+                        <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg">
+                            <span class="rounded-md bg-white/90 px-2.5 py-1 text-xs font-bold text-[#08251f] shadow-sm flex items-center gap-1.5">
+                                <span>🔍</span>
+                                <span>Perbesar Foto</span>
+                            </span>
+                        </div>
+                    </button>
+                    <div class="text-xs text-slate-500">
+                        <p class="font-medium text-slate-700">Lampiran foto aduan</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Klik foto untuk melihat dalam ukuran penuh dengan fitur zoom & pan.</p>
+                    </div>
+                </div>
+            </div>
             <div>
                 <p class="text-xs font-black uppercase tracking-wider text-slate-400">Balasan Admin</p>
                 <p id="detail-reply" class="mt-2 rounded-lg bg-emerald-50 p-4 leading-relaxed text-[#08251f]"></p>
@@ -302,18 +331,102 @@
         </form>
     </div>
 </div>
+
+<!-- Modal Preview Foto Lampiran Pop-Up Admin (Z-Index 90 di atas modal detail) -->
+<div id="admin-photo-preview-modal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-6 transition-all duration-300">
+    <div class="relative w-full max-w-5xl rounded-xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[94vh] animate-in fade-in zoom-in-95 duration-200">
+        <!-- Header Modal -->
+        <div class="bg-[#0f513f] text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shrink-0 border-b border-white/10">
+            <div class="flex items-center space-x-2.5">
+                <span class="text-base">🖼️</span>
+                <div>
+                    <h3 class="text-xs sm:text-sm font-bold text-white leading-tight">Lampiran Foto Aduan</h3>
+                    <p id="admin-modal-photo-author" class="text-[10px] text-white/70">Pengadu: -</p>
+                </div>
+            </div>
+
+            <!-- Zoom Controls & Close Button -->
+            <div class="flex items-center space-x-2">
+                <div class="flex items-center bg-white/10 rounded-lg p-1 space-x-1 border border-white/10">
+                    <button type="button" onclick="adminZoomOut()" class="w-7 h-7 rounded-md bg-transparent hover:bg-white/20 text-white flex items-center justify-center text-xs font-bold transition cursor-pointer" title="Perkecil (Zoom Out)">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/></svg>
+                    </button>
+                    <span id="admin-zoom-level-badge" class="px-2 text-[11px] font-mono font-bold text-white min-w-[44px] text-center">100%</span>
+                    <button type="button" onclick="adminZoomIn()" class="w-7 h-7 rounded-md bg-transparent hover:bg-white/20 text-white flex items-center justify-center text-xs font-bold transition cursor-pointer" title="Perbesar (Zoom In)">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                    </button>
+                    <button type="button" onclick="adminResetZoom()" class="px-2 h-7 rounded-md bg-transparent hover:bg-white/20 text-white flex items-center justify-center text-[10px] font-bold transition cursor-pointer" title="Reset Zoom">
+                        Reset
+                    </button>
+                </div>
+
+                <button type="button" onclick="closeAdminPhotoModal()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/25 text-white flex items-center justify-center text-sm font-bold transition cursor-pointer ml-1" title="Tutup">
+                    ✕
+                </button>
+            </div>
+        </div>
+
+        <!-- Konten Gambar (Lebar & Bersih dengan Drag/Pan Bebas ke Segala Arah) -->
+        <div id="admin-photo-container" class="relative p-4 sm:p-6 bg-[#161d1b] flex-1 flex items-center justify-center overflow-hidden min-h-[55vh] max-h-[76vh] select-none">
+            <div class="transition-transform duration-100 ease-out origin-center flex items-center justify-center will-change-transform" id="admin-zoom-wrapper">
+                <img id="admin-lightbox-img" 
+                     src="" 
+                     alt="Lampiran Foto Aduan" 
+                     ondblclick="adminToggleZoom()"
+                     class="max-h-[72vh] w-auto max-w-full object-contain rounded-lg shadow-lg border border-white/10 bg-[#0e1412] cursor-grab transition-all">
+            </div>
+        </div>
+
+        <!-- Footer Modal -->
+        <div class="px-5 py-3 bg-white border-t border-gray-100 flex flex-wrap items-center justify-between gap-3 shrink-0">
+            <p class="text-[11px] text-gray-500 flex items-center space-x-1.5">
+                <span>💡</span>
+                <span>Gunakan tombol <span class="font-bold text-gray-700">Zoom</span> / Scroll mouse, lalu <span class="font-bold text-gray-700">drag (geser mouse)</span> bebas ke segala arah.</span>
+            </p>
+            <div class="flex items-center space-x-2.5">
+                <a id="admin-modal-photo-download" href="#" target="_blank" download class="text-xs text-[#0f513f] hover:text-[#083c30] font-bold px-3.5 py-2 rounded-lg hover:bg-emerald-50 border border-emerald-200 transition-colors flex items-center space-x-1.5">
+                    <span>⬇️</span>
+                    <span>Unduh / Buka Gambar Asli</span>
+                </a>
+                <button type="button" onclick="closeAdminPhotoModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-colors cursor-pointer">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
 <script>
+    let currentAdminPhotoUrl = '';
+    let currentAdminPhotoAuthor = '';
+
     function openMasukkanDetail(button) {
         const modal = document.getElementById('modal-detail-masukkan');
-        document.getElementById('detail-name').textContent = button.dataset.name || '-';
+        const authorName = button.dataset.name || '-';
+        document.getElementById('detail-name').textContent = authorName;
         document.getElementById('detail-email').textContent = button.dataset.email || '-';
         document.getElementById('detail-phone').textContent = button.dataset.phone || '-';
         document.getElementById('detail-time').textContent = `${button.dataset.time || '-'} / ${button.dataset.date || '-'}`;
         document.getElementById('detail-message').textContent = button.dataset.message || '-';
         document.getElementById('detail-reply').textContent = button.dataset.reply || 'Belum ada balasan.';
+
+        const photoContainer = document.getElementById('detail-photo-container');
+        const photoImg = document.getElementById('detail-photo-img');
+        const photoUrl = button.dataset.photo;
+
+        currentAdminPhotoUrl = photoUrl || '';
+        currentAdminPhotoAuthor = authorName;
+
+        if (photoUrl) {
+            photoImg.src = photoUrl;
+            photoContainer.classList.remove('hidden');
+        } else {
+            photoContainer.classList.add('hidden');
+            photoImg.src = '';
+        }
+
         modal.classList.replace('hidden', 'flex');
     }
 
@@ -334,5 +447,175 @@
     function closeMasukkanReply() {
         document.getElementById('modal-reply-masukkan').classList.replace('flex', 'hidden');
     }
+
+    // ==========================================
+    // ADMIN PHOTO LIGHTBOX POP-UP & ZOOM / PAN
+    // ==========================================
+    const adminPhotoModal = document.getElementById('admin-photo-preview-modal');
+    const adminPhotoContainer = document.getElementById('admin-photo-container');
+    const adminLightboxImg = document.getElementById('admin-lightbox-img');
+    const adminZoomWrapper = document.getElementById('admin-zoom-wrapper');
+    const adminZoomLevelBadge = document.getElementById('admin-zoom-level-badge');
+    const adminModalPhotoAuthor = document.getElementById('admin-modal-photo-author');
+    const adminModalPhotoDownload = document.getElementById('admin-modal-photo-download');
+
+    let adminZoom = 1;
+    let adminTranslateX = 0;
+    let adminTranslateY = 0;
+    let isAdminDragging = false;
+    let adminStartX = 0;
+    let adminStartY = 0;
+
+    const minZoom = 1.0;
+    const maxZoom = 3.5;
+    const zoomStep = 0.25;
+
+    function applyAdminTransform() {
+        if (!adminZoomWrapper) return;
+        adminZoomWrapper.style.transform = `translate(${adminTranslateX}px, ${adminTranslateY}px) scale(${adminZoom})`;
+        if (adminZoomLevelBadge) {
+            adminZoomLevelBadge.textContent = `${Math.round(adminZoom * 100)}%`;
+        }
+        if (adminPhotoContainer) {
+            if (adminZoom > 1) {
+                adminPhotoContainer.classList.add('cursor-grab');
+                if (isAdminDragging) {
+                    adminPhotoContainer.classList.add('cursor-grabbing');
+                } else {
+                    adminPhotoContainer.classList.remove('cursor-grabbing');
+                }
+            } else {
+                adminPhotoContainer.classList.remove('cursor-grab', 'cursor-grabbing');
+            }
+        }
+    }
+
+    function adminZoomIn() {
+        if (adminZoom < maxZoom) {
+            adminZoom = Math.min(maxZoom, Math.round((adminZoom + zoomStep) * 100) / 100);
+            applyAdminTransform();
+        }
+    }
+
+    function adminZoomOut() {
+        if (adminZoom > minZoom) {
+            adminZoom = Math.max(minZoom, Math.round((adminZoom - zoomStep) * 100) / 100);
+            if (adminZoom <= 1) {
+                adminTranslateX = 0;
+                adminTranslateY = 0;
+            }
+            applyAdminTransform();
+        }
+    }
+
+    function adminResetZoom() {
+        adminZoom = 1;
+        adminTranslateX = 0;
+        adminTranslateY = 0;
+        applyAdminTransform();
+    }
+
+    function adminToggleZoom() {
+        if (adminZoom === 1) {
+            adminZoom = 2;
+        } else {
+            adminZoom = 1;
+            adminTranslateX = 0;
+            adminTranslateY = 0;
+        }
+        applyAdminTransform();
+    }
+
+    // Drag / Pan Logic (Mouse)
+    adminPhotoContainer?.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        if (adminZoom > 1) {
+            isAdminDragging = true;
+            adminStartX = e.clientX - adminTranslateX;
+            adminStartY = e.clientY - adminTranslateY;
+            adminPhotoContainer.classList.add('cursor-grabbing');
+            e.preventDefault();
+        }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isAdminDragging) return;
+        adminTranslateX = e.clientX - adminStartX;
+        adminTranslateY = e.clientY - adminStartY;
+        applyAdminTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (isAdminDragging) {
+            isAdminDragging = false;
+            if (adminPhotoContainer) adminPhotoContainer.classList.remove('cursor-grabbing');
+        }
+    });
+
+    // Touch Drag (Mobile / Tablet)
+    adminPhotoContainer?.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1 && adminZoom > 1) {
+            isAdminDragging = true;
+            adminStartX = e.touches[0].clientX - adminTranslateX;
+            adminStartY = e.touches[0].clientY - adminTranslateY;
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isAdminDragging || e.touches.length !== 1) return;
+        adminTranslateX = e.touches[0].clientX - adminStartX;
+        adminTranslateY = e.touches[0].clientY - adminStartY;
+        applyAdminTransform();
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+        isAdminDragging = false;
+    });
+
+    // Mouse Wheel Zoom
+    adminPhotoContainer?.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if (e.deltaY < 0) {
+            adminZoomIn();
+        } else {
+            adminZoomOut();
+        }
+    }, { passive: false });
+
+    function openAdminPhotoModal() {
+        if (!adminPhotoModal || !adminLightboxImg || !currentAdminPhotoUrl) return;
+        adminResetZoom();
+        adminLightboxImg.src = currentAdminPhotoUrl;
+        if (adminModalPhotoAuthor) {
+            adminModalPhotoAuthor.textContent = `Pengadu: ${currentAdminPhotoAuthor || 'Anonim'}`;
+        }
+        if (adminModalPhotoDownload) {
+            adminModalPhotoDownload.href = currentAdminPhotoUrl;
+        }
+        adminPhotoModal.classList.remove('hidden');
+        adminPhotoModal.classList.add('flex');
+    }
+
+    function closeAdminPhotoModal() {
+        if (!adminPhotoModal) return;
+        adminPhotoModal.classList.add('hidden');
+        adminPhotoModal.classList.remove('flex');
+        if (adminLightboxImg) adminLightboxImg.src = '';
+        adminResetZoom();
+    }
+
+    // Tutup jika klik backdrop / latar belakang hitam
+    adminPhotoModal?.addEventListener('click', (e) => {
+        if (e.target === adminPhotoModal) {
+            closeAdminPhotoModal();
+        }
+    });
+
+    // Tutup jika tombol ESC ditekan
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !adminPhotoModal?.classList.contains('hidden')) {
+            closeAdminPhotoModal();
+        }
+    });
 </script>
 @endpush
