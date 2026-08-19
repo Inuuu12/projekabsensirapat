@@ -125,11 +125,15 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'nama_pengadu' => 'required|string|max:255',
-            'nomor_pengadu' => 'required|string|max:30',
+            'nomor_pengadu' => 'required|string|max:13|regex:/^[0-9]+$/',
             'email' => 'required|email|max:255',
             'otp' => 'required|digits:6',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'isi_aduan'    => 'required|string',
+        ], [
+            'nomor_pengadu.required' => 'Nomor HP wajib diisi.',
+            'nomor_pengadu.max' => 'Nomor HP maksimal 13 digit angka.',
+            'nomor_pengadu.regex' => 'Nomor HP hanya boleh berisi angka.',
         ]);
 
         $this->validateAduanOtp($validated['email'], $validated['otp']);

@@ -89,7 +89,7 @@
                             </button>
                         </div>
                         <p class="text-[10px] text-gray-400 flex items-center space-x-1 pt-0.5">
-                            <span>🔒</span>
+                    
                             <span>Email akan disamarkan otomatis saat ditampilkan ke publik</span>
                         </p>
                     </div>
@@ -107,7 +107,7 @@
                     <!-- No HP Input -->
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-gray-700">No. HP *</label>
-                        <input type="text" name="nomor_pengadu" value="{{ old('nomor_pengadu') }}" required placeholder="08xx-xxxx-xxxx" 
+                        <input type="text" name="nomor_pengadu" value="{{ old('nomor_pengadu') }}" required inputmode="numeric" pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)" placeholder="08xxxxxxxxxx" 
                                class="w-full bg-[#EAE8E1]/60 border border-transparent focus:border-ijo-semitua focus:bg-white text-xs rounded-2xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none transition-all">
                     </div>
 
