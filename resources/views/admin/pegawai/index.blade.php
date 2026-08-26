@@ -6,49 +6,44 @@
 <div class="max-w-[1400px] mx-auto space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] tracking-tight">Data Pegawai</h1>
-            <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola dan pantau informasi seluruh pegawai di sini.</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] dark:text-white tracking-tight">Data Pegawai</h1>
+            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300 mt-1">Kelola dan pantau informasi seluruh pegawai di sini.</p>
         </div>
-        <button onclick="openModal('modal-tambah-pegawai')" class="bg-[#22C55E] hover:bg-[#16A34A] text-white font-bold py-2.5 px-5 rounded-xl transition shadow-xs self-start sm:self-auto">
+        <button onclick="openModal('modal-tambah-pegawai')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2.5 px-5 rounded-xl transition shadow-xs self-start sm:self-auto cursor-pointer border border-transparent dark:border-[#10b981]/30">
             <span class="text-lg leading-none">+</span>
             <span>Tambah Pegawai</span>
         </button>
     </div>
 
-    <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-xs">
-        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Total Pegawai</p>
-        <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $totalPegawai ?? $pegawai->count() }}</p>
+    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs transition-colors">
+        <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Total Pegawai</p>
+        <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalPegawai ?? $pegawai->count() }}</p>
     </div>
 
-
-
-
-
-    <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
-        <div class="border-b border-gray-100 px-6 py-5 flex flex-col gap-4">
+    <div class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
+        <div class="border-b border-gray-100 dark:border-[#233a34] px-6 py-5 flex flex-col gap-4">
             <div>
-            <div>
-                <h2 class="text-base font-extrabold text-gray-800">Daftar Pegawai</h2>
-                <p id="text-count-pegawai" class="mt-1 text-xs text-gray-500">Menampilkan {{ $pegawai->count() }} dari {{ $totalPegawai ?? $pegawai->count() }} pegawai.</p>
+                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Daftar Pegawai</h2>
+                <p id="text-count-pegawai" class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $pegawai->count() }} dari {{ $totalPegawai ?? $pegawai->count() }} pegawai.</p>
             </div>
             <form id="form-search-pegawai" method="GET" action="{{ route('admin.pegawai.lihat') }}" class="w-full">
                 <div class="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px_220px] lg:items-end">
                     <div>
-                        <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Search</label>
+                        <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Search</label>
                         <input
                             id="keyword"
                             name="keyword"
                             value="{{ $keyword ?? request('keyword') }}"
                             type="search"
-                            class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20"
+                            class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
                             placeholder="Cari nama, NIP, tanggal lahir, jabatan, bidang, no HP, email...">
                     </div>
                     <div>
-                        <label for="bidang-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Bidang</label>
+                        <label for="bidang-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Bidang</label>
                         <select
                             id="bidang-filter"
                             name="bidang"
-                            class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                             <option value="semua" @selected(($bidangFilter ?? 'semua') === 'semua')>Semua Bidang</option>
                             @foreach (($bidangOptions ?? collect()) as $bidang)
                                 <option value="{{ $bidang }}" @selected(($bidangFilter ?? 'semua') === $bidang)>{{ $bidang }}</option>
@@ -56,11 +51,11 @@
                         </select>
                     </div>
                     <div>
-                        <label for="jabatan-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400">Jabatan</label>
+                        <label for="jabatan-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Jabatan</label>
                         <select
                             id="jabatan-filter"
                             name="jabatan"
-                            class="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                             <option value="semua" @selected(($jabatanFilter ?? 'semua') === 'semua')>Semua Jabatan</option>
                             @foreach (($jabatanOptions ?? collect()) as $jabatan)
                                 <option value="{{ $jabatan }}" @selected(($jabatanFilter ?? 'semua') === $jabatan)>{{ $jabatan }}</option>
@@ -73,7 +68,7 @@
         <div class="overflow-x-auto overflow-y-auto max-h-[450px] custom-scrollbar">
             <table class="w-full text-left min-w-[1160px]">
                 <thead class="sticky top-0 z-10">
-                    <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider outline outline-1 outline-[#35635b]">
+                    <tr class="bg-[#35635b] dark:bg-[#1b3832] text-white text-xs font-bold uppercase tracking-wider outline outline-1 outline-[#35635b] dark:outline-[#1b3832]">
                         <th class="px-6 py-4">Foto</th>
                         <th class="px-6 py-4">Nama</th>
                         <th class="px-6 py-4">NIP</th>
@@ -86,38 +81,37 @@
                         <th class="px-6 py-4 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 text-sm">
+                <tbody class="divide-y divide-gray-100 dark:divide-[#233a34] text-sm">
                     @forelse ($pegawai as $item)
-                        <tr class="hover:bg-gray-50/80 transition">
+                        <tr class="hover:bg-gray-50/80 dark:hover:bg-[#1b332d] transition">
                             <td class="px-6 py-4">
                                 @if (!empty($item->foto))
-    {{-- Hasil asset('storage/' . $item->foto) akan menjadi http://localhost/storage/pegawai/namafile.jpg --}}
     <img src="{{ asset('storage/' . $item->foto) }}" 
          alt="{{ $item->nama_pegawai }}" 
-         class="w-10 h-10 rounded-full object-cover border border-gray-200">
+         class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
 @else
-    <img src="{{ asset('foto/profile.png') }}" alt="{{ $item->nama_pegawai }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+    <img src="{{ asset('foto/profile.png') }}" alt="{{ $item->nama_pegawai }}" class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
 @endif
                             </td>
-                            <td class="px-6 py-4 font-bold text-[#35635b]">{{ $item->nama_pegawai }}</td>
-                            <td class="px-6 py-4 font-semibold text-gray-700">{{ $item->nip }}</td>
-                            <td class="px-6 py-4 text-gray-700">{{ $item->tanggal_lahir?->format('d/m/Y') ?? '-' }}</td>
-                            <td class="px-6 py-4 text-gray-700">{{ $item->jabatan }}</td>
-                            <td class="px-6 py-4 text-gray-700">{{ $item->bidang ?? '-' }}</td>
-                            <td class="px-6 py-4 text-gray-700">{{ $item->nomor_hp }}</td>
-                            <td class="px-6 py-4 text-gray-700">{{ $item->email }}</td>
+                            <td class="px-6 py-4 font-bold text-[#35635b] dark:text-emerald-400">{{ $item->nama_pegawai }}</td>
+                            <td class="px-6 py-4 font-semibold text-gray-700 dark:text-slate-200">{{ $item->nip }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->tanggal_lahir?->format('d/m/Y') ?? '-' }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->jabatan }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->bidang ?? '-' }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->nomor_hp }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->email }}</td>
                             <td class="px-6 py-4">
                                 @if (!is_null($item->face_descriptor))
                                     @if ($item->foto_wajah)
                                         <div class="flex items-center gap-2">
-                                            <img src="{{ asset('storage/' . $item->foto_wajah) }}" alt="Bukti Wajah" class="w-8 h-8 rounded-lg object-cover border border-green-200 shadow-sm cursor-pointer hover:scale-150 transition-transform origin-left">
-                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-green-100 text-green-700">Terdaftar</span>
+                                            <img src="{{ asset('storage/' . $item->foto_wajah) }}" alt="Bukti Wajah" class="w-8 h-8 rounded-lg object-cover border border-green-200 dark:border-emerald-800 shadow-xs cursor-pointer hover:scale-150 transition-transform origin-left">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-green-100 dark:bg-emerald-950/60 text-green-700 dark:text-emerald-300 border border-transparent dark:border-emerald-800/50">Terdaftar</span>
                                         </div>
                                     @else
-                                        <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-green-100 text-green-700">Terdaftar</span>
+                                        <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-green-100 dark:bg-emerald-950/60 text-green-700 dark:text-emerald-300 border border-transparent dark:border-emerald-800/50">Terdaftar</span>
                                     @endif
                                 @else
-                                    <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-gray-100 text-gray-500">Belum</span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Belum</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4">
@@ -135,18 +129,18 @@
                                         data-bidang="{{ $item->bidang }}"
                                         data-nomor="{{ $item->nomor_hp }}"
                                         data-email="{{ $item->email }}"
-                                        class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                                        class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                         title="Edit Pegawai">
                                         <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                         <span class="sr-only">Edit</span>
                                     </button>
                                     @if (!is_null($item->face_descriptor))
-                                    <form action="{{ route('admin.pegawai.reset-wajah', $item->id_pegawai) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin mereset data wajah {{ $item->nama_pegawai }}?');">
+                                    <form method="POST" action="{{ route('admin.pegawai.reset-wajah', $item->id_pegawai) }}" onsubmit="return confirm('Apakah Anda yakin ingin mereset data wajah pegawai ini? Pegawai harus mendaftarkan ulang wajahnya saat presensi berikutnya.');" class="inline">
                                         @csrf
                                         <button
                                             type="submit"
-                                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-yellow-50 p-1.5 transition hover:bg-yellow-100 text-yellow-600"
-                                            title="Reset Data Wajah">
+                                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-transparent dark:border-amber-900/40 p-1.5 text-amber-600 dark:text-amber-400 transition hover:bg-amber-100 dark:hover:bg-amber-900/60 cursor-pointer"
+                                            title="Reset Data Wajah (Biarkan pegawai daftar ulang wajah)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
                                             <span class="sr-only">Reset Wajah</span>
                                         </button>
@@ -155,7 +149,7 @@
                                     <button
                                         type="button"
                                         onclick="openDeleteModal('{{ route('admin.pegawai.destroy', $item->id_pegawai) }}', 'Hapus Pegawai?', 'Apakah Anda yakin ingin menghapus pegawai ini?')"
-                                        class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100"
+                                        class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer"
                                         title="Hapus Pegawai">
                                         <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                         <span class="sr-only">Hapus</span>
@@ -165,7 +159,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="10" class="px-6 py-8 text-center text-gray-500">Belum ada data pegawai.</td>
+                            <td colspan="10" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Belum ada data pegawai.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -174,27 +168,27 @@
     </div>
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <section class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+        <section class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] p-5 transition-colors">
             <div class="flex flex-col gap-1">
-                <h2 class="text-base font-extrabold text-gray-800">Master Bidang</h2>
-                <p class="text-xs text-gray-500">Opsi bidang untuk form tambah dan edit pegawai.</p>
+                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Master Bidang</h2>
+                <p class="text-xs text-gray-500 dark:text-gray-300">Opsi bidang untuk form tambah dan edit pegawai.</p>
             </div>
 
             <form method="POST" action="{{ route('admin.pegawai.bidang.store') }}" class="mt-4 flex flex-col gap-3 sm:flex-row">
                 @csrf
-                <input name="nama_bidang" required class="h-10 min-w-0 flex-1 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama bidang baru">
-                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35]">Tambah</button>
+                <input name="nama_bidang" required class="h-10 min-w-0 flex-1 rounded-lg border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama bidang baru">
+                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">Tambah</button>
             </form>
 
             <div class="mt-5">
                 <div class="relative mb-3">
-                    <input type="text" id="search-bidang" placeholder="Cari bidang..." class="w-full h-9 rounded-lg border border-gray-200 pl-8 pr-3 text-xs text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <input type="text" id="search-bidang" placeholder="Cari bidang..." class="w-full h-9 rounded-lg border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] pl-8 pr-3 text-xs text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500">
                     <svg class="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
                 
-                <div class="border border-gray-200 rounded-lg overflow-hidden">
-                    <table class="w-full text-left text-xs text-gray-500">
-                        <thead class="bg-gray-50 text-gray-700 uppercase">
+                <div class="border border-gray-200 dark:border-[#284c43] rounded-lg overflow-hidden">
+                    <table class="w-full text-left text-xs text-gray-500 dark:text-gray-300">
+                        <thead class="bg-gray-50 dark:bg-[#1b3832] text-gray-700 dark:text-white uppercase font-bold">
                             <tr>
                                 <th class="px-4 py-3 font-bold w-12">No</th>
                                 <th class="px-4 py-3 font-bold">Nama Bidang</th>
@@ -202,18 +196,18 @@
                             </tr>
                         </thead>
                     </table>
-                    <div id="container-bidang" class="max-h-56 overflow-y-auto custom-scrollbar bg-white">
-                        <table class="w-full text-left text-xs text-gray-500">
-                            <tbody class="divide-y divide-gray-200">
+                    <div id="container-bidang" class="max-h-56 overflow-y-auto custom-scrollbar bg-white dark:bg-[#152420]">
+                        <table class="w-full text-left text-xs text-gray-500 dark:text-gray-300">
+                            <tbody class="divide-y divide-gray-200 dark:divide-[#233a34]">
                                 @forelse (($bidangMaster ?? collect()) as $index => $bidang)
-                                    <tr class="item-bidang hover:bg-gray-50 transition" data-name="{{ strtolower($bidang->nama_bidang) }}">
+                                    <tr class="item-bidang hover:bg-gray-50 dark:hover:bg-[#1b332d] transition" data-name="{{ strtolower($bidang->nama_bidang) }}">
                                         <td class="px-4 py-3 w-12 text-center">{{ $index + 1 }}</td>
-                                        <td class="px-4 py-3 font-medium text-gray-800">{{ $bidang->nama_bidang }}</td>
+                                        <td class="px-4 py-3 font-medium text-gray-800 dark:text-white">{{ $bidang->nama_bidang }}</td>
                                         <td class="px-4 py-3 w-20 text-center">
                                             <form method="POST" action="{{ route('admin.pegawai.bidang.destroy', $bidang->id_bidang) }}" class="inline-block">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded hover:bg-red-100 transition" title="Hapus bidang">
+                                                <button type="submit" class="text-red-500 hover:text-red-700 p-1 bg-red-50 dark:bg-red-950/40 rounded hover:bg-red-100 dark:hover:bg-red-900/60 transition cursor-pointer" title="Hapus bidang">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                                 </button>
                                             </form>
@@ -221,7 +215,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="3" class="px-4 py-4 text-center text-xs text-gray-500">Belum ada master bidang.</td>
+                                        <td colspan="3" class="px-4 py-4 text-center text-xs text-gray-500 dark:text-gray-400">Belum ada master bidang.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -231,32 +225,32 @@
             </div>
         </section>
 
-        <section class="bg-white rounded-2xl shadow-xs border border-gray-100 p-5">
+        <section class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] p-5 transition-colors">
             <div class="flex flex-col gap-1">
-                <h2 class="text-base font-extrabold text-gray-800">Master Jabatan</h2>
-                <p class="text-xs text-gray-500">Opsi jabatan untuk form tambah dan edit pegawai.</p>
+                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Master Jabatan</h2>
+                <p class="text-xs text-gray-500 dark:text-gray-300">Opsi jabatan untuk form tambah dan edit pegawai.</p>
             </div>
 
             <form method="POST" action="{{ route('admin.pegawai.jabatan.store') }}" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_180px_auto]">
                 @csrf
-                <input name="nama_jabatan" required class="h-10 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama jabatan baru">
-                <select name="kategori" class="h-10 rounded-lg border border-gray-200 px-3 text-sm text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                <input name="nama_jabatan" required class="h-10 rounded-lg border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama jabatan baru">
+                <select name="kategori" class="h-10 rounded-lg border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     <option value="Struktural">Struktural</option>
                     <option value="Jabatan Fungsional">Jabatan Fungsional</option>
                     <option value="Lainnya">Lainnya</option>
                 </select>
-                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35]">Tambah</button>
+                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">Tambah</button>
             </form>
 
             <div class="mt-5">
                 <div class="relative mb-3">
-                    <input type="text" id="search-jabatan" placeholder="Cari jabatan..." class="w-full h-9 rounded-lg border border-gray-200 pl-8 pr-3 text-xs text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                    <input type="text" id="search-jabatan" placeholder="Cari jabatan..." class="w-full h-9 rounded-lg border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] pl-8 pr-3 text-xs text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500">
                     <svg class="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
                 
-                <div class="border border-gray-200 rounded-lg overflow-hidden">
-                    <table class="w-full text-left text-xs text-gray-500">
-                        <thead class="bg-gray-50 text-gray-700 uppercase">
+                <div class="border border-gray-200 dark:border-[#284c43] rounded-lg overflow-hidden">
+                    <table class="w-full text-left text-xs text-gray-500 dark:text-gray-300">
+                        <thead class="bg-gray-50 dark:bg-[#1b3832] text-gray-700 dark:text-white uppercase font-bold">
                             <tr>
                                 <th class="px-4 py-3 font-bold w-12">No</th>
                                 <th class="px-4 py-3 font-bold">Nama Jabatan</th>
@@ -265,19 +259,19 @@
                             </tr>
                         </thead>
                     </table>
-                    <div id="container-jabatan" class="max-h-56 overflow-y-auto custom-scrollbar bg-white">
-                        <table class="w-full text-left text-xs text-gray-500">
-                            <tbody class="divide-y divide-gray-200">
+                    <div id="container-jabatan" class="max-h-56 overflow-y-auto custom-scrollbar bg-white dark:bg-[#152420]">
+                        <table class="w-full text-left text-xs text-gray-500 dark:text-gray-300">
+                            <tbody class="divide-y divide-gray-200 dark:divide-[#233a34]">
                                 @forelse (($jabatanMaster ?? collect()) as $index => $jabatan)
-                                    <tr class="item-jabatan hover:bg-gray-50 transition" data-name="{{ strtolower($jabatan->nama_jabatan . ' ' . $jabatan->kategori) }}">
+                                    <tr class="item-jabatan hover:bg-gray-50 dark:hover:bg-[#1b332d] transition" data-name="{{ strtolower($jabatan->nama_jabatan . ' ' . $jabatan->kategori) }}">
                                         <td class="px-4 py-3 w-12 text-center">{{ $index + 1 }}</td>
-                                        <td class="px-4 py-3 font-medium text-gray-800">{{ $jabatan->nama_jabatan }}</td>
-                                        <td class="px-4 py-3 w-32"><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600">{{ $jabatan->kategori ?: 'Lainnya' }}</span></td>
+                                        <td class="px-4 py-3 font-medium text-gray-800 dark:text-white">{{ $jabatan->nama_jabatan }}</td>
+                                        <td class="px-4 py-3 w-32"><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 dark:bg-[#1a2d29] text-gray-600 dark:text-gray-300">{{ $jabatan->kategori ?: 'Lainnya' }}</span></td>
                                         <td class="px-4 py-3 w-20 text-center">
                                             <form method="POST" action="{{ route('admin.pegawai.jabatan.destroy', $jabatan->id_jabatan) }}" class="inline-block">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded hover:bg-red-100 transition" title="Hapus jabatan">
+                                                <button type="submit" class="text-red-500 hover:text-red-700 p-1 bg-red-50 dark:bg-red-950/40 rounded hover:bg-red-100 dark:hover:bg-red-900/60 transition cursor-pointer" title="Hapus jabatan">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                                 </button>
                                             </form>
@@ -285,7 +279,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="px-4 py-4 text-center text-xs text-gray-500">Belum ada master jabatan.</td>
+                                        <td colspan="4" class="px-4 py-4 text-center text-xs text-gray-500 dark:text-gray-400">Belum ada master jabatan.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -296,8 +290,9 @@
         </section>
     </div>
 </div>
+
 <div id="modal-tambah-pegawai" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <h3 class="text-lg font-bold">Tambah Pegawai</h3>
             <button type="button" onclick="closeModal('modal-tambah-pegawai')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal tambah pegawai">
@@ -311,7 +306,7 @@
             @csrf
             @if ($errors->any() && !old('_method'))
                 <div class="px-5 pt-4 sm:px-6">
-                    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                    <div class="rounded-xl border border-red-200 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm font-semibold text-red-700 dark:text-red-300">
                         {{ $errors->first() }}
                     </div>
                 </div>
@@ -319,9 +314,9 @@
             <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
                 @include('admin.pegawai.form-fields')
             </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closeModal('modal-tambah-pegawai')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <button type="button" onclick="closeModal('modal-tambah-pegawai')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h12l2 2v12H5zM8 5v6h8V5M9 18h6"></path>
                     </svg>
@@ -333,7 +328,7 @@
 </div>
 
 <div id="modal-edit-pegawai" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <h3 class="text-lg font-bold">Edit Pegawai</h3>
             <button type="button" onclick="closeModal('modal-edit-pegawai')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal edit pegawai">
@@ -349,7 +344,7 @@
             <input type="hidden" id="edit-id_pegawai" name="id_pegawai">
             @if ($errors->any() && old('_method') === 'PUT')
                 <div class="px-5 pt-4 sm:px-6">
-                    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                    <div class="rounded-xl border border-red-200 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm font-semibold text-red-700 dark:text-red-300">
                         {{ $errors->first() }}
                     </div>
                 </div>
@@ -357,9 +352,9 @@
             <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
                 @include('admin.pegawai.form-fields', ['prefix' => 'edit-'])
             </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closeModal('modal-edit-pegawai')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <button type="button" onclick="closeModal('modal-edit-pegawai')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h12l2 2v12H5zM8 5v6h8V5M9 18h6"></path>
                     </svg>

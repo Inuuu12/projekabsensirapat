@@ -10,9 +10,9 @@
             theme: {
                 extend: {
                     colors: {
-                        'ijo-tua': '#14524E',
-                        'ijo-semitua': '#1F7A6F',
-                        'ijo-sangatmuda': '#DCF1E6',
+                        'ijo-tua': '#35635b',
+                        'ijo-semitua': '#2b4f49',
+                        'ijo-sangatmuda': '#e3eeea',
                     }
                 }
             }

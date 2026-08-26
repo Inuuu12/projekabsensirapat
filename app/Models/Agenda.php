@@ -56,10 +56,10 @@ class Agenda extends Model
     public function getStatusBadgeClassAttribute(): string
     {
         return match ($this->status_label) {
-            self::STATUS_MENDATANG => 'bg-blue-50 text-blue-700 border-blue-100',
-            self::STATUS_BERLANGSUNG => 'bg-emerald-50 text-emerald-700 border-emerald-100',
-            self::STATUS_SELESAI => 'bg-gray-100 text-gray-600 border-gray-200',
-            default => 'bg-[#35635b]/10 text-[#35635b] border-[#35635b]/10',
+            self::STATUS_MENDATANG => 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-700/50',
+            self::STATUS_BERLANGSUNG => 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700/50',
+            self::STATUS_SELESAI => 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-[#1a2e29] dark:text-slate-200 dark:border-[#35584f]',
+            default => 'bg-[#35635b]/10 text-[#35635b] border-[#35635b]/20 dark:bg-[#1a332d] dark:text-emerald-300 dark:border-emerald-500/30',
         };
     }
 

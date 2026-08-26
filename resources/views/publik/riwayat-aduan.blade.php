@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Aduan - SIRAPI</title>
+    @include('publik.layout_publik.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        'ijo-tua': '#14524E',
-                        'ijo-semitua': '#1F7A6F',
-                        'ijo-sangatmuda': '#DCF1E6',
+                        'ijo-tua': '#35635b',
+                        'ijo-semitua': '#2b4f49',
+                        'ijo-sangatmuda': '#e3eeea',
                         'oren-muda': '#FBEBD1',
                         'oren-tua': '#B87A1E',
                         'biru-muda': '#DCEEF5',
@@ -23,7 +25,7 @@
         }
     </script>
 </head>
-<body class="bg-[#F8F7F4] font-sans antialiased text-gray-800 flex flex-col min-h-screen">
+<body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
     @include('publik.layout_publik.navbarpublik')
 
     <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-8 space-y-6">
@@ -32,9 +34,9 @@
                 ? $masukan->getCollection()
                 : collect($masukan ?? []);
             $statusClass = fn ($status) => match (strtolower((string) $status)) {
-                'selesai' => 'bg-ijo-sangatmuda text-ijo-tua',
-                'diproses', 'proses' => 'bg-biru-muda text-biru-tua',
-                default => 'bg-oren-muda text-oren-tua',
+                'selesai' => 'bg-ijo-sangatmuda text-ijo-tua dark:bg-emerald-950/60 dark:text-emerald-300 dark:border dark:border-emerald-800/40',
+                'diproses', 'proses' => 'bg-biru-muda text-biru-tua dark:bg-sky-950/60 dark:text-sky-300 dark:border dark:border-sky-800/40',
+                default => 'bg-oren-muda text-oren-tua dark:bg-amber-950/60 dark:text-amber-300 dark:border dark:border-amber-700/40',
             };
             $maskEmail = function ($email) {
                 if (! $email || ! str_contains($email, '@')) {
@@ -60,28 +62,28 @@
         @endphp
 
         <div class="space-y-3">
-            <nav class="text-xs text-gray-500 flex items-center space-x-2">
+            <nav class="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2">
                 <a href="{{ route('publik.beranda') }}" class="hover:underline">Beranda</a>
                 <span>/</span>
-                <span class="text-gray-800 font-semibold">Daftar Aduan</span>
+                <span class="text-gray-800 dark:text-gray-200 font-semibold">Daftar Aduan</span>
             </nav>
 
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">Daftar Aduan</h1>
-                    <p class="text-xs text-gray-500 mt-1">Melihat seluruh laporan aduan yang telah dikirimkan.</p>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">Daftar Aduan</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Melihat seluruh laporan aduan yang telah dikirimkan.</p>
                 </div>
-                <a href="{{ route('publik.masukan') }}" class="bg-ijo-tua hover:bg-ijo-semitua text-white text-xs font-bold px-5 py-2.5 rounded-full self-start md:self-auto">
+                <a href="{{ route('publik.masukan') }}" class="bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white text-xs font-bold px-5 py-2.5 rounded-full self-start md:self-auto shadow-xs">
                     Buat Aduan Baru
                 </a>
             </div>
         </div>
 
-        <section class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-4">
+        <section class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4 transition-colors">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead>
-                        <tr class="bg-gray-100 text-gray-500 uppercase text-[10px] tracking-wider">
+                        <tr class="bg-gray-100 dark:bg-[#0f1c19] text-gray-500 dark:text-gray-300 uppercase text-[10px] tracking-wider">
                             <th class="p-3 rounded-l-xl">Nama Pengadu</th>
                             <th class="p-3">Isi Aduan</th>
                             <th class="p-3">Email</th>
@@ -90,23 +92,23 @@
                             <th class="p-3 text-right rounded-r-xl">Tanggal</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100 font-medium text-gray-700">
+                    <tbody class="divide-y divide-gray-100 dark:divide-[#233a34] font-medium text-gray-700 dark:text-gray-200">
                         @forelse ($masukanItems as $aduan)
-                            <tr class="aduan-row cursor-pointer hover:bg-gray-50/80 transition" data-aduan-id="{{ $aduan->id_datamasukan }}" title="Klik untuk melihat detail aduan">
-                                <td class="p-3 font-bold text-gray-900 whitespace-nowrap">{{ $aduan->nama_pengadu }}</td>
-                                <td class="p-3 text-gray-500 min-w-[260px]">{{ $aduan->isi_aduan }}</td>
-                                <td class="p-3 text-gray-500 min-w-[180px]">{{ $maskEmail($aduan->email) }}</td>
-                                <td class="p-3 text-gray-500 min-w-[220px]">
+                            <tr class="aduan-row cursor-pointer hover:bg-gray-50/80 dark:hover:bg-white/5 transition" data-aduan-id="{{ $aduan->id_datamasukan }}" title="Klik untuk melihat detail aduan">
+                                <td class="p-3 font-bold text-gray-900 dark:text-white whitespace-nowrap">{{ $aduan->nama_pengadu }}</td>
+                                <td class="p-3 text-gray-500 dark:text-gray-300 min-w-[260px]">{{ $aduan->isi_aduan }}</td>
+                                <td class="p-3 text-gray-500 dark:text-gray-300 min-w-[180px]">{{ $maskEmail($aduan->email) }}</td>
+                                <td class="p-3 text-gray-500 dark:text-gray-300 min-w-[220px]">
                                     {{ $aduan->balasan_admin ? \Illuminate\Support\Str::limit($aduan->balasan_admin, 90) : 'Belum ada balasan' }}
                                 </td>
                                 <td class="p-3 text-center">
                                     <span class="{{ $statusClass($aduan->status) }} font-bold px-3 py-1 rounded-full text-[10px]">{{ $aduan->status ?? 'Pending' }}</span>
                                 </td>
-                                <td class="p-3 text-right text-gray-400 whitespace-nowrap">{{ $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d M Y') : '-' }}</td>
+                                <td class="p-3 text-right text-gray-400 dark:text-gray-400 whitespace-nowrap">{{ $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d M Y') : '-' }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="p-8 text-center text-gray-500">Belum ada aduan di database.</td>
+                                <td colspan="6" class="p-8 text-center text-gray-500 dark:text-gray-400">Belum ada aduan di database.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -121,84 +123,84 @@
         </section>
     </main>
 
-    <div id="aduan-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
-        <div class="w-full max-w-2xl rounded-3xl bg-white shadow-xl overflow-hidden">
-            <div class="bg-ijo-tua text-white p-6 flex items-start justify-between gap-4">
+    <div id="aduan-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+        <div class="w-full max-w-2xl rounded-3xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
+            <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34]">
                 <div>
-                    <p class="text-xs uppercase tracking-wider text-white/70 font-bold">Detail Aduan</p>
-                    <h2 id="aduan-modal-title" class="text-xl font-extrabold mt-1">-</h2>
-                    <p id="aduan-modal-date" class="text-xs text-white/70 mt-1">-</p>
+                    <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Detail Aduan</p>
+                    <h2 id="aduan-modal-title" class="text-xl font-extrabold mt-1 text-white">-</h2>
+                    <p id="aduan-modal-date" class="text-xs text-white/70 dark:text-gray-300 mt-1">-</p>
                 </div>
-                <button type="button" id="aduan-modal-close" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-lg font-bold">x</button>
+                <button type="button" id="aduan-modal-close" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10 flex items-center justify-center text-lg font-bold cursor-pointer">x</button>
             </div>
 
             <div class="p-6 space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                    <div class="rounded-2xl bg-gray-50 p-4">
-                        <p class="text-[10px] uppercase font-bold text-gray-400">Nama</p>
-                        <p id="aduan-modal-name" class="mt-1 font-bold text-gray-900">-</p>
+                    <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4">
+                        <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Nama</p>
+                        <p id="aduan-modal-name" class="mt-1 font-bold text-gray-900 dark:text-white">-</p>
                     </div>
-                    <div class="rounded-2xl bg-gray-50 p-4">
-                        <p class="text-[10px] uppercase font-bold text-gray-400">Email</p>
-                        <p id="aduan-modal-email" class="mt-1 font-bold text-gray-900">-</p>
+                    <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4">
+                        <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Email</p>
+                        <p id="aduan-modal-email" class="mt-1 font-bold text-gray-900 dark:text-white">-</p>
                     </div>
-                    <div class="rounded-2xl bg-gray-50 p-4">
-                        <p class="text-[10px] uppercase font-bold text-gray-400">Status</p>
-                        <p id="aduan-modal-status" class="mt-1 font-bold text-gray-900">-</p>
+                    <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4">
+                        <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Status</p>
+                        <p id="aduan-modal-status" class="mt-1 font-bold text-gray-900 dark:text-white">-</p>
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-gray-100 p-5">
-                    <p class="text-[10px] uppercase font-bold text-gray-400">Isi Aduan</p>
-                    <p id="aduan-modal-body" class="mt-2 text-sm leading-relaxed text-gray-700 whitespace-pre-line">-</p>
+                <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5">
+                    <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Isi Aduan</p>
+                    <p id="aduan-modal-body" class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-200 whitespace-pre-line">-</p>
                 </div>
 
-                <div id="aduan-modal-photo-container" class="hidden rounded-2xl border border-gray-100 p-5">
-                    <p class="text-[10px] uppercase font-bold text-gray-400">Lampiran Foto</p>
+                <div id="aduan-modal-photo-container" class="hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5">
+                    <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Lampiran Foto</p>
                     <div class="mt-2 flex items-center gap-3">
                         <button type="button" 
                                 onclick="openPhotoModal(currentPhotoUrl, currentPhotoAuthor)" 
-                                class="group relative inline-block overflow-hidden rounded-xl border border-gray-200 bg-gray-50 transition hover:border-ijo-semitua hover:shadow-md cursor-pointer text-left"
+                                class="group relative inline-block overflow-hidden rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#152420] transition hover:border-ijo-semitua hover:shadow-md cursor-pointer text-left"
                                 title="Klik untuk memperbesar foto">
                             <img id="aduan-modal-photo-img" src="" alt="Lampiran Foto" class="max-h-48 w-auto rounded-xl object-contain transition duration-200 group-hover:scale-105">
                             <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl">
-                                <span class="rounded-lg bg-white/95 px-3 py-1.5 text-xs font-bold text-ijo-tua shadow-sm flex items-center gap-1.5">
+                                <span class="rounded-lg bg-white/95 dark:bg-[#0f1c19] px-3 py-1.5 text-xs font-bold text-ijo-tua dark:text-emerald-400 shadow-xs flex items-center gap-1.5 border border-transparent dark:border-[#284c43]">
                                     <span>🔍</span>
                                     <span>Perbesar Foto</span>
                                 </span>
                             </div>
                         </button>
-                        <div class="text-xs text-gray-500">
-                            <p class="font-bold text-gray-800">Lampiran foto aduan</p>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                            <p class="font-bold text-gray-800 dark:text-gray-200">Lampiran foto aduan</p>
                             <p class="text-[11px] text-gray-400 mt-0.5">Klik foto untuk melihat dalam ukuran penuh dengan fitur zoom & geser bebas.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="rounded-2xl bg-ijo-sangatmuda p-5">
-                    <p class="text-[10px] uppercase font-bold text-ijo-tua/70">Balasan Admin</p>
-                    <p id="aduan-modal-reply" class="mt-2 text-sm leading-relaxed text-gray-800 whitespace-pre-line">-</p>
+                <div class="rounded-2xl bg-ijo-sangatmuda dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-5">
+                    <p class="text-[10px] uppercase font-bold text-ijo-tua dark:text-emerald-400">Balasan Admin</p>
+                    <p id="aduan-modal-reply" class="mt-2 text-sm leading-relaxed text-gray-800 dark:text-gray-200 whitespace-pre-line">-</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Preview Foto Lampiran Pop-Up (Z-Index 90 di atas modal detail aduan) -->
-    <div id="photo-preview-modal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-6 transition-all duration-300">
-        <div class="relative w-full max-w-5xl rounded-xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[94vh] animate-in fade-in zoom-in-95 duration-200">
+    <div id="photo-preview-modal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/80 backdrop-blur-xs p-3 sm:p-6 transition-all duration-300">
+        <div class="relative w-full max-w-5xl rounded-2xl bg-white dark:bg-[#152420] shadow-2xl overflow-hidden flex flex-col max-h-[94vh] animate-in fade-in zoom-in-95 duration-200 border border-transparent dark:border-[#233a34]">
             <!-- Header Modal -->
-            <div class="bg-ijo-tua text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shrink-0 border-b border-white/10">
+            <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shrink-0 border-b border-white/10 dark:border-[#233a34]">
                 <div class="flex items-center space-x-2.5">
                     <span class="text-base">🖼️</span>
                     <div>
                         <h3 class="text-xs sm:text-sm font-bold text-white leading-tight">Lampiran Foto Aduan</h3>
-                        <p id="modal-photo-author" class="text-[10px] text-white/70">Pengadu: -</p>
+                        <p id="modal-photo-author" class="text-[10px] text-white/70 dark:text-emerald-400">Pengadu: -</p>
                     </div>
                 </div>
 
                 <!-- Zoom Controls & Close Button -->
                 <div class="flex items-center space-x-2">
-                    <div class="flex items-center bg-white/10 rounded-lg p-1 space-x-1 border border-white/10">
+                    <div class="flex items-center bg-white/10 dark:bg-white/5 rounded-lg p-1 space-x-1 border border-white/10 dark:border-[#284c43]">
                         <button type="button" onclick="zoomOut()" class="w-7 h-7 rounded-md bg-transparent hover:bg-white/20 text-white flex items-center justify-center text-xs font-bold transition cursor-pointer" title="Perkecil (Zoom Out)">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/></svg>
                         </button>
@@ -229,17 +231,17 @@
             </div>
 
             <!-- Footer Modal -->
-            <div class="px-5 py-3 bg-white border-t border-gray-100 flex flex-wrap items-center justify-between gap-3 shrink-0">
-                <p class="text-[11px] text-gray-500 flex items-center space-x-1.5">
+            <div class="px-5 py-3 bg-white dark:bg-[#152420] border-t border-gray-100 dark:border-[#233a34] flex flex-wrap items-center justify-between gap-3 shrink-0">
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 flex items-center space-x-1.5">
                     <span>💡</span>
-                    <span>Gunakan tombol <span class="font-bold text-gray-700">Zoom</span> / Scroll mouse, lalu <span class="font-bold text-gray-700">drag (geser mouse)</span> bebas ke segala arah.</span>
+                    <span>Gunakan tombol <span class="font-bold text-gray-700 dark:text-gray-200">Zoom</span> / Scroll mouse, lalu <span class="font-bold text-gray-700 dark:text-gray-200">drag (geser mouse)</span> bebas ke segala arah.</span>
                 </p>
                 <div class="flex items-center space-x-2.5">
-                    <a id="modal-photo-download" href="#" target="_blank" download class="text-xs text-ijo-semitua hover:text-ijo-tua font-bold px-3.5 py-2 rounded-lg hover:bg-ijo-sangatmuda/50 border border-ijo-muda/30 transition-colors flex items-center space-x-1.5">
+                    <a id="modal-photo-download" href="#" target="_blank" download class="text-xs text-ijo-semitua dark:text-emerald-400 hover:text-ijo-tua dark:hover:text-emerald-300 font-bold px-3.5 py-2 rounded-lg hover:bg-ijo-sangatmuda/50 dark:hover:bg-white/5 border border-ijo-muda/30 dark:border-[#284c43] transition-colors flex items-center space-x-1.5">
                         <span>⬇️</span>
                         <span>Unduh Gambar</span>
                     </a>
-                    <button type="button" onclick="closePhotoModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-colors cursor-pointer">
+                    <button type="button" onclick="closePhotoModal()" class="bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-700 dark:text-gray-200 text-xs font-bold px-4 py-2 rounded-lg transition-colors cursor-pointer">
                         Tutup
                     </button>
                 </div>

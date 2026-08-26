@@ -4,7 +4,7 @@
     $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
 @endphp
 
-<footer class="bg-ijo-tua text-white mt-auto border-t border-white/10">
+<footer class="bg-ijo-tua dark:bg-[#0f1c19] text-white mt-auto border-t border-white/10 dark:border-[#233a34] transition-colors duration-200">
     <div class="w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 pt-12 pb-8 space-y-10">
         
         <!-- MAIN FOOTER CONTENT (GRID 4 KOLOM) -->
@@ -12,14 +12,12 @@
             
             <!-- Kolom 1: Logo, Deskripsi & Sosmed (4 Cols) -->
             <div class="lg:col-span-4 space-y-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center p-1 border border-white/20 shrink-0 overflow-hidden">
-                        <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Bappenda" class="w-full h-full object-contain">
-                    </div>
-                    <div>
-                        <p class="text-[10px] tracking-widest text-ijo-sangatmuda font-semibold uppercase">{{ $regionName }}</p>
-                        <p class="text-sm font-extrabold tracking-tight">{{ $appName }}</p>
-                        <p class="text-[10px] font-semibold text-white/80">{{ $organizationName }}</p>
+                <div class="flex items-center space-x-3.5">
+                    <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo" class="w-11 h-11 object-contain shrink-0">
+                    <div class="flex flex-col justify-center">
+                        <p class="text-[9px] font-bold tracking-wider text-ijo-sangatmuda uppercase leading-tight">{{ $regionName }}</p>
+                        <h1 class="font-black text-lg leading-tight tracking-wide text-white">{{ $appName }}</h1>
+                        <p class="text-[11px] font-medium text-white/80 leading-tight">{{ $organizationName }}</p>
                     </div>
                 </div>
 
@@ -105,7 +103,7 @@
 
         <!-- BOTTOM FOOTER / COPYRIGHT BAR -->
         <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-400 gap-4">
-            <p>&copy; {{ date('Y') }} {{ $appName }} - {{ $organizationName }}. Hak cipta dilindungi.</p>
+            <p>&copy; {{ date('Y') }} {{ $appName }} - {{ $regionName }}. Hak cipta dilindungi.</p>
             
             <div class="bg-white/10 border border-white/10 px-3 py-1 rounded-full text-oren-muda font-semibold flex items-center space-x-1.5 text-[10px]">
                 <span class="w-2 h-2 rounded-full bg-oren-utama animate-pulse"></span>

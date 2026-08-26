@@ -27,10 +27,10 @@
 
     $statusBadgeClass = function ($status) use ($statusCategory) {
         return match ($statusCategory($status)) {
-            'menunggu' => 'bg-red-50 text-red-600 border-red-200',
-            'diproses' => 'bg-yellow-50 text-yellow-600 border-yellow-200',
-            'selesai' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
-            default => 'bg-gray-100 text-gray-600 border-gray-200',
+            'menunggu' => 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800/60',
+            'diproses' => 'bg-yellow-50 text-yellow-800 border-yellow-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/60',
+            'selesai' => 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60',
+            default => 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-[#1a2e29] dark:text-slate-200 dark:border-[#35584f]',
         };
     };
 
@@ -44,62 +44,62 @@
     $totalSelesai = $masukan->filter(fn ($item) => $statusCategory($item->status) === 'selesai')->count();
 @endphp
 
-<div class="mx-auto max-w-[1500px] space-y-7 text-[#08251f]">
+<div class="mx-auto max-w-[1500px] space-y-7 text-[#08251f] dark:text-slate-100">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] tracking-tight">Pengaduan</h1>
-            <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola dan tindak lanjuti keluhan pengguna.</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] dark:text-white tracking-tight">Pengaduan</h1>
+            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300 mt-1">Kelola dan tindak lanjuti keluhan pengguna.</p>
         </div>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-xs">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-200/80 p-2.5">
+        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-200/80 dark:bg-emerald-900/50 p-2.5">
                 <img src="{{ asset('foto/Total Aduan.png') }}" alt="Total Aduan" class="h-full w-full object-contain">
             </div>
             <div>
-                <p class="text-sm font-extrabold text-slate-600">Total Aduan</p>
-                <p class="mt-1 text-2xl font-black text-[#08251f]">{{ number_format($totalAduan) }}</p>
+                <p class="text-sm font-extrabold text-slate-600 dark:text-gray-300">Total Aduan</p>
+                <p class="mt-1 text-2xl font-black text-[#08251f] dark:text-emerald-400">{{ number_format($totalAduan) }}</p>
             </div>
         </div>
 
-        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-xs">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-50 p-2.5">
+        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 p-2.5">
                 <img src="{{ asset('foto/Menunggu.png') }}" alt="Menunggu" class="h-full w-full object-contain">
             </div>
             <div>
-                <p class="text-sm font-extrabold text-slate-600">Menunggu</p>
-                <p class="mt-1 text-2xl font-black text-red-600">{{ number_format($totalMenunggu) }}</p>
+                <p class="text-sm font-extrabold text-slate-600 dark:text-gray-300">Menunggu</p>
+                <p class="mt-1 text-2xl font-black text-red-600 dark:text-rose-400">{{ number_format($totalMenunggu) }}</p>
             </div>
         </div>
 
-        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-xs">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f0ed] p-2.5">
+        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f0ed] dark:bg-[#1b3832] p-2.5">
                 <img src="{{ asset('foto/process.png') }}" alt="Diproses" class="h-full w-full object-contain">
             </div>
             <div>
-                <p class="text-sm font-extrabold text-slate-600">Diproses</p>
-                <p class="mt-1 text-2xl font-black text-[#08251f]">{{ number_format($totalDiproses) }}</p>
+                <p class="text-sm font-extrabold text-slate-600 dark:text-gray-300">Diproses</p>
+                <p class="mt-1 text-2xl font-black text-[#08251f] dark:text-amber-400">{{ number_format($totalDiproses) }}</p>
             </div>
         </div>
 
-        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-xs">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f0ed] p-2.5">
+        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f0ed] dark:bg-[#1b3832] p-2.5">
                 <img src="{{ asset('foto/Selesai.png') }}" alt="Selesai" class="h-full w-full object-contain">
             </div>
             <div>
-                <p class="text-sm font-extrabold text-slate-600">Selesai</p>
-                <p class="mt-1 text-2xl font-black text-[#08251f]">{{ number_format($totalSelesai) }}</p>
+                <p class="text-sm font-extrabold text-slate-600 dark:text-gray-300">Selesai</p>
+                <p class="mt-1 text-2xl font-black text-[#08251f] dark:text-emerald-400">{{ number_format($totalSelesai) }}</p>
             </div>
         </div>
     </div>
 
-    <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xs">
-        <div class="flex flex-col gap-4 border-b border-gray-100 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="text-2xl font-extrabold text-[#0f513f]">Log Aduan</h2>
+    <section class="overflow-hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] shadow-xs transition-colors">
+        <div class="flex flex-col gap-4 border-b border-gray-100 dark:border-[#233a34] px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+            <h2 class="text-2xl font-extrabold text-[#0f513f] dark:text-white">Log Aduan</h2>
             <form method="GET" action="{{ route('admin.masukkan.lihat') }}" class="flex items-center gap-3">
-                <label for="status-filter" class="text-sm font-medium text-slate-600">Filter by:</label>
-                <select id="status-filter" name="status" onchange="this.form.submit()" class="h-10 rounded-md border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700 outline-none focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                <label for="status-filter" class="text-sm font-medium text-slate-600 dark:text-gray-300">Filter by:</label>
+                <select id="status-filter" name="status" onchange="this.form.submit()" class="h-10 rounded-md border border-slate-300 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-slate-700 dark:text-white outline-none focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     <option value="semua" @selected($statusFilter === 'semua')>Status: Semua</option>
                     <option value="menunggu" @selected($statusFilter === 'menunggu')>Menunggu</option>
                     <option value="diproses" @selected($statusFilter === 'diproses')>Diproses</option>
@@ -111,7 +111,7 @@
         <div class="overflow-x-auto">
             <table class="w-full min-w-[1260px] text-left">
                 <thead>
-                    <tr class="bg-[#397d77] text-sm font-black uppercase tracking-wider text-white">
+                    <tr class="bg-[#397d77] dark:bg-[#1b3832] text-sm font-black uppercase tracking-wider text-white">
                         <th class="px-14 py-6">Nama<br>Pengadu</th>
                         <th class="px-6 py-6">Email</th>
                         <th class="px-6 py-6">Isi Aduan</th>
@@ -122,25 +122,25 @@
                         <th class="px-6 py-6 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 text-sm">
+                <tbody class="divide-y divide-slate-100 dark:divide-[#233a34] text-sm">
                     @forelse ($filteredMasukan as $item)
-                        <tr class="align-middle transition hover:bg-slate-50/80">
-                            <td class="px-14 py-8 font-black leading-snug text-[#08251f]">{{ $item->nama_pengadu }}</td>
-                            <td class="px-6 py-8 font-medium text-[#08251f]">{{ $item->email }}</td>
-                            <td class="max-w-md px-6 py-8 leading-relaxed text-[#08251f]">
+                        <tr class="align-middle transition hover:bg-slate-50/80 dark:hover:bg-[#1b332d]">
+                            <td class="px-14 py-8 font-black leading-snug text-[#08251f] dark:text-white">{{ $item->nama_pengadu }}</td>
+                            <td class="px-6 py-8 font-medium text-[#08251f] dark:text-slate-200">{{ $item->email }}</td>
+                            <td class="max-w-md px-6 py-8 leading-relaxed text-[#08251f] dark:text-slate-200">
                                 {{ \Illuminate\Support\Str::limit($item->isi_aduan, 76) }}
                             </td>
-                            <td class="max-w-sm px-6 py-8 leading-relaxed text-[#08251f]">
+                            <td class="max-w-sm px-6 py-8 leading-relaxed text-[#08251f] dark:text-slate-200">
                                 @if ($item->balasan_admin)
                                     {{ \Illuminate\Support\Str::limit($item->balasan_admin, 72) }}
                                 @else
-                                    <span class="text-slate-400">Belum ada balasan</span>
+                                    <span class="text-slate-400 dark:text-gray-500">Belum ada balasan</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-8 font-medium text-[#08251f]">
+                            <td class="px-6 py-8 font-medium text-[#08251f] dark:text-slate-200">
                                 {{ optional($item->created_at)->format('H:i') ?? '-' }}
                             </td>
-                            <td class="px-6 py-8 whitespace-nowrap font-medium text-[#08251f]">
+                            <td class="px-6 py-8 whitespace-nowrap font-medium text-[#08251f] dark:text-slate-200">
                                 {{ optional($item->created_at)->translatedFormat('d M Y') ?? '-' }}
                             </td>
                             <td class="px-6 py-8">
@@ -150,7 +150,7 @@
                                     <select
                                         name="status"
                                         onchange="this.form.submit()"
-                                        class="rounded-full border px-3 py-1.5 text-xs font-black outline-none {{ $statusBadgeClass($item->status) }}">
+                                        class="rounded-full border px-3 py-1.5 text-xs font-black outline-none {{ $statusBadgeClass($item->status) }} dark:bg-[#0f1c19]">
                                         <option value="Menunggu" @selected($statusCategory($item->status) === 'menunggu')>Menunggu</option>
                                         <option value="Diproses" @selected($statusCategory($item->status) === 'diproses')>Diproses</option>
                                         <option value="Selesai" @selected($statusCategory($item->status) === 'selesai')>Selesai</option>
@@ -178,7 +178,7 @@
                                         data-date="{{ optional($item->created_at)->translatedFormat('d M Y') ?? '-' }}"
                                         data-message="{{ $item->isi_aduan }}"
                                         data-reply="{{ $item->balasan_admin }}"
-                                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 p-1.5 transition hover:bg-gray-100"
+                                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-gray-100 dark:hover:bg-[#23423b] cursor-pointer"
                                         title="Lihat Detail">
                                         <img src="{{ asset('foto/Detaillogo.png') }}" alt="Detail" class="h-full w-full object-contain">
                                         <span class="sr-only">Lihat Detail</span>
@@ -192,7 +192,7 @@
                                         data-email="{{ $item->email }}"
                                         data-message="{{ $item->isi_aduan }}"
                                         data-reply="{{ $item->balasan_admin }}"
-                                        class="text-[#0f6b52] transition hover:text-[#083c30]"
+                                        class="text-[#0f6b52] dark:text-emerald-400 transition hover:text-[#083c30] cursor-pointer"
                                         title="Reply">
                                         <img src="{{ asset('foto/Reply.png') }}" alt="Reply" class="h-6 w-6 object-contain">
                                     </button>
@@ -200,7 +200,7 @@
                                     <button
                                         type="button"
                                         onclick="openDeleteModal('{{ route('admin.masukkan.destroy', $item->id_datamasukan) }}', 'Hapus Masukkan?', 'Apakah Anda yakin ingin menghapus masukkan ini?')"
-                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100"
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer"
                                         title="Hapus">
                                         <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                         <span class="sr-only">Hapus</span>
@@ -210,23 +210,23 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center text-slate-500">Belum ada data pengaduan.</td>
+                            <td colspan="8" class="px-6 py-12 text-center text-slate-500 dark:text-gray-400">Belum ada data pengaduan.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div class="flex flex-col gap-4 border-t border-gray-100 px-6 py-5 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-col gap-4 border-t border-gray-100 dark:border-[#233a34] px-6 py-5 text-sm text-slate-600 dark:text-gray-300 sm:flex-row sm:items-center sm:justify-between">
             <p>Menampilkan {{ $filteredMasukan->count() ? '1-' . $filteredMasukan->count() : '0' }} dari {{ $totalAduan }} aduan</p>
             <div class="flex items-center gap-2">
-                <button type="button" class="flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 text-[#0f513f]">
+                <button type="button" class="flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 dark:border-[#284c43] text-[#0f513f] dark:text-emerald-400">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
                 </button>
                 <span class="flex h-10 w-10 items-center justify-center rounded-md bg-[#0f6b52] font-black text-white">1</span>
-                <button type="button" class="flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 font-semibold text-[#08251f]">2</button>
-                <button type="button" class="flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 font-semibold text-[#08251f]">3</button>
-                <button type="button" class="flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 text-[#0f513f]">
+                <button type="button" class="flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 dark:border-[#284c43] font-semibold text-[#08251f] dark:text-gray-300">2</button>
+                <button type="button" class="flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 dark:border-[#284c43] font-semibold text-[#08251f] dark:text-gray-300">3</button>
+                <button type="button" class="flex h-10 w-10 items-center justify-center rounded-md border border-slate-300 dark:border-[#284c43] text-[#0f513f] dark:text-emerald-400">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 </button>
             </div>
@@ -235,43 +235,43 @@
 </div>
 
 <div id="modal-detail-masukkan" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/50 p-4">
-    <div class="w-full max-w-2xl rounded-xl bg-white shadow-2xl">
-        <div class="flex items-center justify-between border-b px-6 py-4">
-            <h3 class="text-lg font-black text-[#0f513f]">Detail Aduan</h3>
-            <button type="button" onclick="closeMasukkanDetail()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100" title="Tutup">
+    <div class="w-full max-w-2xl rounded-xl bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl overflow-hidden">
+        <div class="flex items-center justify-between border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
+            <h3 class="text-lg font-black text-[#0f513f] dark:text-white">Detail Aduan</h3>
+            <button type="button" onclick="closeMasukkanDetail()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer" title="Tutup">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
         </div>
         <div class="space-y-5 px-6 py-5">
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <p class="text-xs font-black uppercase tracking-wider text-slate-400">Nama Pengadu</p>
-                    <p id="detail-name" class="mt-1 font-bold text-[#08251f]"></p>
+                    <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Nama Pengadu</p>
+                    <p id="detail-name" class="mt-1 font-bold text-[#08251f] dark:text-white"></p>
                 </div>
                 <div>
-                    <p class="text-xs font-black uppercase tracking-wider text-slate-400">Email</p>
-                    <p id="detail-email" class="mt-1 font-bold text-[#08251f]"></p>
+                    <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Email</p>
+                    <p id="detail-email" class="mt-1 font-bold text-[#08251f] dark:text-white"></p>
                 </div>
                 <div>
-                    <p class="text-xs font-black uppercase tracking-wider text-slate-400">Kontak</p>
-                    <p id="detail-phone" class="mt-1 font-bold text-[#08251f]"></p>
+                    <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Kontak</p>
+                    <p id="detail-phone" class="mt-1 font-bold text-[#08251f] dark:text-white"></p>
                 </div>
                 <div>
-                    <p class="text-xs font-black uppercase tracking-wider text-slate-400">Waktu</p>
-                    <p id="detail-time" class="mt-1 font-bold text-[#08251f]"></p>
+                    <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Waktu</p>
+                    <p id="detail-time" class="mt-1 font-bold text-[#08251f] dark:text-white"></p>
                 </div>
             </div>
             <div>
-                <p class="text-xs font-black uppercase tracking-wider text-slate-400">Isi Aduan</p>
-                <p id="detail-message" class="mt-2 rounded-lg bg-slate-50 p-4 leading-relaxed text-[#08251f]"></p>
+                <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Isi Aduan</p>
+                <p id="detail-message" class="mt-2 rounded-lg bg-slate-50 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#284c43] p-4 leading-relaxed text-[#08251f] dark:text-slate-100"></p>
             </div>
             <div id="detail-photo-container" class="hidden">
-                <p class="text-xs font-black uppercase tracking-wider text-slate-400">Lampiran Foto</p>
+                <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Lampiran Foto</p>
                 <div class="mt-2 flex items-center gap-3">
                     <button type="button" 
                             id="detail-photo-btn"
                             onclick="openAdminPhotoModal()" 
-                            class="group relative inline-block overflow-hidden rounded-lg border border-slate-200 bg-slate-50 transition hover:border-[#35635b] hover:shadow-md cursor-pointer text-left"
+                            class="group relative inline-block overflow-hidden rounded-lg border border-slate-200 dark:border-[#284c43] bg-slate-50 dark:bg-[#0f1c19] transition hover:border-[#35635b] hover:shadow-md cursor-pointer text-left"
                             title="Klik untuk memperbesar foto">
                         <img id="detail-photo-img" src="" alt="Lampiran Foto" class="max-h-48 w-auto rounded-lg object-contain transition duration-200 group-hover:scale-105">
                         <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg">
@@ -281,25 +281,25 @@
                             </span>
                         </div>
                     </button>
-                    <div class="text-xs text-slate-500">
-                        <p class="font-medium text-slate-700">Lampiran foto aduan</p>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Klik foto untuk melihat dalam ukuran penuh dengan fitur zoom & pan.</p>
+                    <div class="text-xs text-slate-500 dark:text-gray-400">
+                        <p class="font-medium text-slate-700 dark:text-gray-300">Lampiran foto aduan</p>
+                        <p class="text-[11px] text-slate-400 dark:text-gray-500 mt-0.5">Klik foto untuk melihat dalam ukuran penuh dengan fitur zoom & pan.</p>
                     </div>
                 </div>
             </div>
             <div>
-                <p class="text-xs font-black uppercase tracking-wider text-slate-400">Balasan Admin</p>
-                <p id="detail-reply" class="mt-2 rounded-lg bg-emerald-50 p-4 leading-relaxed text-[#08251f]"></p>
+                <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Balasan Admin</p>
+                <p id="detail-reply" class="mt-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/40 p-4 leading-relaxed text-[#08251f] dark:text-emerald-300"></p>
             </div>
         </div>
     </div>
 </div>
 
 <div id="modal-reply-masukkan" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/50 p-4">
-    <div class="w-full max-w-2xl rounded-xl bg-white shadow-2xl">
-        <div class="flex items-center justify-between border-b px-6 py-4">
-            <h3 class="text-lg font-black text-[#0f513f]">Reply Masukkan</h3>
-            <button type="button" onclick="closeMasukkanReply()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100" title="Tutup">
+    <div class="w-full max-w-2xl rounded-xl bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl overflow-hidden">
+        <div class="flex items-center justify-between border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
+            <h3 class="text-lg font-black text-[#0f513f] dark:text-white">Reply Masukkan</h3>
+            <button type="button" onclick="closeMasukkanReply()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer" title="Tutup">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
         </div>
@@ -308,25 +308,25 @@
             @method('PUT')
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
-                    <p class="text-xs font-black uppercase tracking-wider text-slate-400">Nama Pengadu</p>
-                    <p id="reply-name" class="mt-1 font-bold text-[#08251f]"></p>
+                    <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Nama Pengadu</p>
+                    <p id="reply-name" class="mt-1 font-bold text-[#08251f] dark:text-white"></p>
                 </div>
                 <div>
-                    <p class="text-xs font-black uppercase tracking-wider text-slate-400">Email</p>
-                    <p id="reply-email" class="mt-1 font-bold text-[#08251f]"></p>
+                    <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Email</p>
+                    <p id="reply-email" class="mt-1 font-bold text-[#08251f] dark:text-white"></p>
                 </div>
             </div>
             <div>
-                <p class="text-xs font-black uppercase tracking-wider text-slate-400">Isi Aduan</p>
-                <p id="reply-message" class="mt-2 rounded-lg bg-slate-50 p-4 leading-relaxed text-[#08251f]"></p>
+                <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Isi Aduan</p>
+                <p id="reply-message" class="mt-2 rounded-lg bg-slate-50 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#284c43] p-4 leading-relaxed text-[#08251f] dark:text-slate-100"></p>
             </div>
             <div>
-                <label for="reply-text" class="block text-xs font-black uppercase tracking-wider text-slate-400">Balasan Admin</label>
-                <textarea id="reply-text" name="balasan_admin" rows="5" required class="mt-2 w-full rounded-lg border border-slate-300 p-4 text-sm leading-relaxed text-[#08251f] outline-none focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Tulis balasan untuk pengadu..."></textarea>
+                <label for="reply-text" class="block text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Balasan Admin</label>
+                <textarea id="reply-text" name="balasan_admin" rows="5" required class="mt-2 w-full rounded-lg border border-slate-300 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] p-4 text-sm leading-relaxed text-[#08251f] dark:text-white outline-none focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500" placeholder="Tulis balasan untuk pengadu..."></textarea>
             </div>
-            <div class="flex justify-end gap-3 border-t pt-5">
-                <button type="button" onclick="closeMasukkanReply()" class="h-11 rounded-md px-5 text-sm font-bold text-slate-600 hover:bg-slate-100">Batal</button>
-                <button type="submit" class="h-11 rounded-md bg-[#35635b] px-5 text-sm font-black text-white hover:bg-[#2b4f49]">Kirim Reply</button>
+            <div class="flex justify-end gap-3 border-t border-gray-100 dark:border-[#233a34] pt-5">
+                <button type="button" onclick="closeMasukkanReply()" class="h-11 rounded-md px-5 text-sm font-bold text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                <button type="submit" class="h-11 rounded-md bg-[#35635b] px-5 text-sm font-black text-white hover:bg-[#2b4f49] cursor-pointer">Kirim Reply</button>
             </div>
         </form>
     </div>
@@ -334,7 +334,7 @@
 
 <!-- Modal Preview Foto Lampiran Pop-Up Admin (Z-Index 90 di atas modal detail) -->
 <div id="admin-photo-preview-modal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-6 transition-all duration-300">
-    <div class="relative w-full max-w-5xl rounded-xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[94vh] animate-in fade-in zoom-in-95 duration-200">
+    <div class="relative w-full max-w-5xl rounded-xl bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl overflow-hidden flex flex-col max-h-[94vh] animate-in fade-in zoom-in-95 duration-200">
         <!-- Header Modal -->
         <div class="bg-[#0f513f] text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shrink-0 border-b border-white/10">
             <div class="flex items-center space-x-2.5">
@@ -378,17 +378,17 @@
         </div>
 
         <!-- Footer Modal -->
-        <div class="px-5 py-3 bg-white border-t border-gray-100 flex flex-wrap items-center justify-between gap-3 shrink-0">
-            <p class="text-[11px] text-gray-500 flex items-center space-x-1.5">
+        <div class="px-5 py-3 bg-white dark:bg-[#152420] border-t border-gray-100 dark:border-[#233a34] flex flex-wrap items-center justify-between gap-3 shrink-0">
+            <p class="text-[11px] text-gray-500 dark:text-gray-400 flex items-center space-x-1.5">
                 <span>💡</span>
-                <span>Gunakan tombol <span class="font-bold text-gray-700">Zoom</span> / Scroll mouse, lalu <span class="font-bold text-gray-700">drag (geser mouse)</span> bebas ke segala arah.</span>
+                <span>Gunakan tombol <span class="font-bold text-gray-700 dark:text-gray-200">Zoom</span> / Scroll mouse, lalu <span class="font-bold text-gray-700 dark:text-gray-200">drag (geser mouse)</span> bebas ke segala arah.</span>
             </p>
             <div class="flex items-center space-x-2.5">
-                <a id="admin-modal-photo-download" href="#" target="_blank" download class="text-xs text-[#0f513f] hover:text-[#083c30] font-bold px-3.5 py-2 rounded-lg hover:bg-emerald-50 border border-emerald-200 transition-colors flex items-center space-x-1.5">
+                <a id="admin-modal-photo-download" href="#" target="_blank" download class="text-xs text-[#0f513f] dark:text-emerald-400 hover:text-[#083c30] font-bold px-3.5 py-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-[#1b3832] border border-emerald-200 dark:border-[#284c43] transition-colors flex items-center space-x-1.5">
                     <span>⬇️</span>
                     <span>Unduh Gambar</span>
                 </a>
-                <button type="button" onclick="closeAdminPhotoModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-colors cursor-pointer">
+                <button type="button" onclick="closeAdminPhotoModal()" class="bg-gray-100 dark:bg-[#0f1c19] hover:bg-gray-200 dark:hover:bg-[#1b3832] text-gray-700 dark:text-gray-300 text-xs font-bold px-4 py-2 rounded-lg transition-colors cursor-pointer border border-transparent dark:border-[#284c43]">
                     Tutup
                 </button>
             </div>

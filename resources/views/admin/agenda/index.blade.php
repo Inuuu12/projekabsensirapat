@@ -16,10 +16,10 @@
     <!-- Header Page -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] tracking-tight">Daftar Agenda</h1>
-            <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola agenda berdasarkan Surat Internal, Surat Masuk, dan Surat Keluar.</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] dark:text-white tracking-tight">Daftar Agenda</h1>
+            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300 mt-1">Kelola agenda berdasarkan Surat Internal, Surat Masuk, dan Surat Keluar.</p>
         </div>
-        <button onclick="openModal('modal-tambah-agenda')" class="bg-[#22C55E] hover:bg-[#16A34A] text-white font-bold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 transition shadow-xs cursor-pointer self-start sm:self-auto">
+        <button onclick="openModal('modal-tambah-agenda')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2.5 px-5 rounded-xl flex items-center justify-center gap-2 transition shadow-xs cursor-pointer self-start sm:self-auto border border-transparent dark:border-[#10b981]/30">
             <span class="text-lg leading-none">+</span>
             <span>Tambah Agenda</span>
         </button>
@@ -28,12 +28,12 @@
     <!-- Stats Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         @foreach ($kategoriOptions as $key => $label)
-            <a href="{{ route('admin.agenda.lihat', ['kategori_surat' => $key]) }}" class="bg-white border {{ $kategoriSurat === $key ? 'border-[#35635b] ring-2 ring-[#35635b]/10' : 'border-gray-100' }} rounded-2xl p-5 shadow-xs transition hover:border-[#35635b] flex items-center justify-between">
+            <a href="{{ route('admin.agenda.lihat', ['kategori_surat' => $key]) }}" class="bg-white dark:bg-[#152420] border {{ $kategoriSurat === $key ? 'border-[#35635b] dark:border-emerald-500 ring-2 ring-[#35635b]/10' : 'border-gray-100 dark:border-[#233a34]' }} rounded-2xl p-5 shadow-xs transition hover:border-[#35635b] dark:hover:border-emerald-500 flex items-center justify-between">
                 <div>
-                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{{ $label }}</p>
-                    <p class="mt-2 text-3xl font-black text-[#35635b]">{{ $agendaStats[$key] ?? 0 }}</p>
+                    <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">{{ $label }}</p>
+                    <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $agendaStats[$key] ?? 0 }}</p>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center p-2">
+                <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-transparent dark:border-[#233a34] flex items-center justify-center p-2">
                     <img src="{{ asset('foto/Suratlogo.png') }}" alt="{{ $label }}" class="w-full h-full object-contain">
                 </div>
             </a>
@@ -44,7 +44,7 @@
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div class="flex flex-wrap gap-2">
             @foreach ($kategoriOptions as $key => $label)
-                <a href="{{ route('admin.agenda.lihat', ['kategori_surat' => $key, 'keyword' => request('keyword')]) }}" class="rounded-xl px-4 py-2 text-sm font-bold transition {{ $kategoriSurat === $key ? 'bg-[#35635b] text-white' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50' }}">
+                <a href="{{ route('admin.agenda.lihat', ['kategori_surat' => $key, 'keyword' => request('keyword')]) }}" class="rounded-xl px-4 py-2 text-sm font-bold transition {{ $kategoriSurat === $key ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] border border-gray-200 dark:border-[#233a34] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5' }}">
                     {{ $label }}
                 </a>
             @endforeach
@@ -52,23 +52,23 @@
 
         <form method="GET" action="{{ route('admin.agenda.lihat') }}" class="relative w-full lg:w-80">
             <input type="hidden" name="kategori_surat" value="{{ $kategoriSurat }}">
-            <input name="keyword" value="{{ request('keyword') }}" type="search" class="bg-white text-gray-700 text-sm rounded-xl block w-full px-4 py-3 outline-none border border-gray-200 focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 transition shadow-xs" placeholder="Cari agenda, lokasi, asal surat...">
+            <input name="keyword" value="{{ request('keyword') }}" type="search" class="bg-white dark:bg-[#0f1c19] text-gray-700 dark:text-white text-sm rounded-xl block w-full px-4 py-3 outline-none border border-gray-200 dark:border-[#284c43] focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 transition shadow-xs placeholder-gray-400 dark:placeholder-gray-500" placeholder="Cari agenda, lokasi, asal surat...">
         </form>
     </div>
 
     <!-- Table Section -->
-    <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
-        <div class="border-b border-gray-100 px-6 py-4 flex justify-between items-center">
+    <div class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
+        <div class="border-b border-gray-100 dark:border-[#233a34] px-6 py-4 flex justify-between items-center">
             <div>
-                <h2 class="text-base font-extrabold text-gray-800">{{ $activeLabel }}</h2>
-                <p class="mt-1 text-xs text-gray-500">Menampilkan {{ $agenda->count() }} agenda dari database.</p>
+                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">{{ $activeLabel }}</h2>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $agenda->count() }} agenda dari database.</p>
             </div>
         </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse min-w-[1080px]">
                 <thead>
-                    <tr class="bg-[#35635b] text-white text-xs font-bold uppercase tracking-wider">
+                    <tr class="bg-[#35635b] dark:bg-[#1b3832] text-white text-xs font-bold uppercase tracking-wider">
                         <th class="px-6 py-4">Nama Agenda</th>
                         <th class="px-6 py-4">Tanggal</th>
                         <th class="px-6 py-4">Waktu</th>
@@ -84,39 +84,38 @@
                         <th class="px-6 py-4 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 text-sm">
+                <tbody class="divide-y divide-gray-100 dark:divide-[#233a34] text-sm">
                     @forelse ($agenda as $item)
                         @php
                             $itemRuang = $ruang->firstWhere('id_ruangrapat', $item->id_ruangrapat);
                         @endphp
-                        <tr class="hover:bg-gray-50/80 transition">
-                            <td class="px-6 py-4 font-bold text-[#35635b]">{{ $item->nama_agenda }}</td>
-                            <td class="px-6 py-4 text-gray-700 whitespace-nowrap">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
-                            <td class="px-6 py-4 text-gray-700 whitespace-nowrap">
+                        <tr class="hover:bg-gray-50/80 dark:hover:bg-[#1b332d] transition">
+                            <td class="px-6 py-4 font-bold text-[#35635b] dark:text-emerald-400">{{ $item->nama_agenda }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200 whitespace-nowrap">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200 whitespace-nowrap">
                                 {{ substr((string) $item->waktu, 0, 5) }}{{ $item->waktu_selesai ? ' - ' . substr((string) $item->waktu_selesai, 0, 5) : '' }}
                             </td>
                             
                             @if ($kategoriSurat === 'masuk')
-                                <td class="px-6 py-4 text-gray-700 font-medium">{{ $item->ditugaskan ?: '-' }}</td>
+                                <td class="px-6 py-4 text-gray-700 dark:text-slate-200 font-medium">{{ $item->ditugaskan ?: '-' }}</td>
                             @else
-                                <td class="px-6 py-4 text-gray-700 font-semibold">{{ $item->kuota ?? '-' }}</td>
+                                <td class="px-6 py-4 text-gray-700 dark:text-slate-200 font-semibold">{{ $item->kuota ?? '-' }}</td>
                             @endif
 
-                            <td class="px-6 py-4 text-gray-700">{{ $item->asal_surat ?: '-' }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->asal_surat ?: '-' }}</td>
                             
-                            {{-- Lampiran dengan Logo --}}
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if ($item->lampiran)
-                                    <a href="{{ asset('storage/' . $item->lampiran) }}" target="_blank" class="inline-flex items-center gap-1.5 font-bold text-[#35635b] hover:underline">
+                                    <a href="{{ asset('storage/' . $item->lampiran) }}" target="_blank" class="inline-flex items-center gap-1.5 font-bold text-[#35635b] dark:text-emerald-400 hover:underline">
                                         <img src="{{ asset('foto/Lampiranlogo.png') }}" alt="Lampiran" class="w-4 h-4 object-contain">
                                         <span>Lihat</span>
                                     </a>
                                 @else
-                                    <span class="text-gray-400">-</span>
+                                    <span class="text-gray-400 dark:text-gray-500">-</span>
                                 @endif
                             </td>
 
-                            <td class="px-6 py-4 text-gray-700 whitespace-nowrap">{{ $item->lokasi ?: ($itemRuang->nama_ruang ?? '-') }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200 whitespace-nowrap">{{ $item->lokasi ?: ($itemRuang->nama_ruang ?? '-') }}</td>
                             
                             <td class="px-6 py-4">
                                 <span class="inline-flex rounded-lg border px-2.5 py-1 text-xs font-bold whitespace-nowrap {{ $item->status_badge_class }}">
@@ -124,10 +123,8 @@
                                 </span>
                             </td>
 
-                            {{-- Group Tombol Aksi (Edit, Hapus, Detail) --}}
                             <td class="px-6 py-4">
                                 <div class="flex justify-center items-center gap-2">
-                                    {{-- Tombol Edit --}}
                                     <button
                                         type="button"
                                         onclick="openEditAgenda(this)"
@@ -144,28 +141,29 @@
                                         data-ruang="{{ $item->id_ruangrapat }}"
                                         data-statusqr="{{ $item->status_qr }}"
                                         data-statusfr="{{ (int) $item->status_fr }}"
-                                        class="w-7 h-7 rounded-lg bg-green-50 p-1.5 hover:bg-green-100 transition flex items-center justify-center cursor-pointer"
+                                        class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                         title="Edit Agenda">
-                                        <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="w-full h-full object-contain">
+                                        <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                        <span class="sr-only">Edit</span>
                                     </button>
 
-                                    {{-- Tombol Hapus Custom Modal --}}
                                     <button type="button" 
                                             onclick="openDeleteModal('{{ route('admin.agenda.destroy', $item->id_agenda) }}', 'Hapus Agenda?', 'Apakah Anda yakin ingin menghapus agenda ini?')"
-                                            class="w-7 h-7 rounded-lg bg-red-50 p-1.5 hover:bg-red-100 transition flex items-center justify-center cursor-pointer" 
+                                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" 
                                             title="Hapus Agenda">
-                                        <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="w-full h-full object-contain">
+                                        <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                        <span class="sr-only">Hapus</span>
                                     </button>
 
-                                    {{-- Tombol Ke Detail Agenda --}}
                                     <a href="{{ route('admin.agenda.detail', ['id' => $item->id_agenda]) }}" 
-                                       class="w-7 h-7 rounded-lg bg-gray-50 p-1.5 hover:bg-gray-100 transition flex items-center justify-center cursor-pointer" 
+                                       class="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-50 dark:bg-[#1e2f2b] border border-transparent dark:border-[#38564f] p-1.5 transition hover:bg-gray-100 dark:hover:bg-[#2e4c45] cursor-pointer" 
                                        title="Lihat Detail Agenda">
-                                        <img src="{{ asset('foto/Detaillogo.png') }}" alt="Detail Agenda" class="w-full h-full object-contain">
+                                        <img src="{{ asset('foto/Detaillogo.png') }}" alt="Detail Agenda" class="h-full w-full object-contain">
+                                        <span class="sr-only">Detail</span>
                                     </a>
 
                                     <a href="{{ url('/admin/agenda/' . $item->id_agenda . '/generate-qr') }}"
-                                       class="w-7 h-7 rounded-lg bg-emerald-50 text-[#35635b] hover:bg-emerald-100 transition flex items-center justify-center cursor-pointer text-[10px] font-black"
+                                       class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-transparent dark:border-emerald-900/40 text-[#35635b] dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition flex items-center justify-center cursor-pointer text-[10px] font-black"
                                        title="Generate QR Presensi">
                                         QR
                                     </a>
@@ -174,18 +172,21 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-6 py-8 text-center text-gray-500 font-medium">Belum ada agenda untuk {{ strtolower($activeLabel) }}.</td>
+                            <td colspan="9" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400 font-medium">Belum ada agenda untuk {{ strtolower($activeLabel) }}.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="flex flex-col gap-4 border-t border-gray-100 dark:border-[#233a34] px-6 py-5 text-sm text-slate-600 dark:text-gray-300 sm:flex-row sm:items-center sm:justify-between">
+            <p>Menampilkan {{ $agenda->count() }} agenda</p>
         </div>
     </div>
 </div>
 
 <!-- MODAL TAMBAH AGENDA -->
 <div id="modal-tambah-agenda" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <h3 class="text-lg font-bold">Tambah Agenda</h3>
             <button type="button" onclick="closeModal('modal-tambah-agenda')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal tambah agenda">
@@ -200,8 +201,8 @@
             <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
                 @include('admin.agenda.form-fields')
             </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closeModal('modal-tambah-agenda')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100 cursor-pointer">Batal</button>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <button type="button" onclick="closeModal('modal-tambah-agenda')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
                 <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h12l2 2v12H5zM8 5v6h8V5M9 18h6"></path>
@@ -215,7 +216,7 @@
 
 <!-- MODAL EDIT AGENDA -->
 <div id="modal-edit-agenda" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <h3 class="text-lg font-bold">Edit Agenda</h3>
             <button type="button" onclick="closeModal('modal-edit-agenda')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal edit agenda">
@@ -231,8 +232,8 @@
             <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
                 @include('admin.agenda.form-fields', ['prefix' => 'edit-'])
             </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closeModal('modal-edit-agenda')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100 cursor-pointer">Batal</button>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                <button type="button" onclick="closeModal('modal-edit-agenda')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
                 <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h12l2 2v12H5zM8 5v6h8V5M9 18h6"></path>

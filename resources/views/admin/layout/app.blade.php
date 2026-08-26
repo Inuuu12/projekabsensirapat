@@ -1,11 +1,58 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full bg-[#f8fafc]">
+<html lang="id" class="h-full bg-[#FAFAFA] dark:bg-[#121d1a]">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Dashboard') - SIRAPI</title>
-    <!-- Tailwind CSS CDN -->
+    
+    <!-- Script Anti-FOUC Tema Gelap/Terang -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('sirapi_theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+
+        function toggleSirapiTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const newTheme = isDark ? 'dark' : 'light';
+            localStorage.setItem('sirapi_theme', newTheme);
+            window.dispatchEvent(new CustomEvent('sirapi-theme-changed', { detail: { theme: newTheme } }));
+            updateThemeIcons();
+        }
+
+        function updateThemeIcons() {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.querySelectorAll('[data-theme-icon-light]').forEach(el => {
+                el.classList.toggle('hidden', !isDark);
+            });
+            document.querySelectorAll('[data-theme-icon-dark]').forEach(el => {
+                el.classList.toggle('hidden', isDark);
+            });
+        }
+        document.addEventListener('DOMContentLoaded', updateThemeIcons);
+    </script>
+
+    <!-- Tailwind CSS CDN dengan mode Dark Class -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'admin-bg-dark': '#0d1614',
+                        'admin-card-dark': '#152420',
+                        'admin-border-dark': '#233a34',
+                    }
+                }
+            }
+        }
+    </script>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,17 +63,180 @@
         }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #FAFAFA;
         }
         /* Custom Scrollbars */
         ::-webkit-scrollbar { height: 6px; width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
+        .dark ::-webkit-scrollbar-track { background: #0d1614; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .dark ::-webkit-scrollbar-thumb { background: #284c43; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #35635b; }
+
+        /* =========================================================
+           HIGH-CONTRAST DARK MODE RULES FOR ADMIN PANEL
+           ========================================================= */
+        .dark, .dark body, .dark main {
+            background-color: #0d1614 !important;
+            color: #f1f5f9 !important;
+        }
+        
+        /* Cards & White Surfaces */
+        .dark .bg-white {
+            background-color: #152420 !important;
+            color: #f1f5f9 !important;
+            border-color: #233a34 !important;
+        }
+        .dark .bg-gray-50, 
+        .dark .bg-slate-50, 
+        .dark .bg-gray-50\/50, 
+        .dark .bg-gray-50\/80 {
+            background-color: #1a2d29 !important;
+            color: #f1f5f9 !important;
+        }
+
+        /* Borders & Dividers */
+        .dark .border-gray-100, 
+        .dark .border-gray-200, 
+        .dark .border-slate-100, 
+        .dark .border-slate-200, 
+        .dark .border-slate-300 {
+            border-color: #233a34 !important;
+        }
+        .dark .divide-gray-100 > * + *, 
+        .dark .divide-gray-200 > * + *,
+        .dark .divide-slate-100 > * + * {
+            border-color: #233a34 !important;
+        }
+
+        /* Headings & High Contrast Titles */
+        .dark h1, 
+        .dark h2, 
+        .dark h3, 
+        .dark h4, 
+        .dark h5, 
+        .dark h6 {
+            color: #ffffff !important;
+        }
+
+        /* Secondary Text & Labels */
+        .dark .text-gray-500, 
+        .dark .text-gray-600, 
+        .dark .text-gray-700, 
+        .dark .text-gray-800, 
+        .dark .text-slate-500, 
+        .dark .text-slate-600, 
+        .dark .text-slate-700, 
+        .dark .text-slate-800 {
+            color: #cbd5e1 !important;
+        }
+        .dark .text-gray-400, 
+        .dark .text-slate-400 {
+            color: #94a3b8 !important;
+        }
+        .dark .font-bold, 
+        .dark .font-extrabold, 
+        .dark .font-black {
+            color: #ffffff;
+        }
+
+        /* Stat Numbers & Highlights */
+        .dark .text-emerald-700, 
+        .dark .text-green-700 {
+            color: #34d399 !important;
+        }
+
+        /* Table Header & Rows */
+        .dark thead tr {
+            background-color: #1b3832 !important;
+            color: #ffffff !important;
+        }
+        .dark thead th {
+            color: #ffffff !important;
+            border-bottom: 1px solid #233a34 !important;
+        }
+        .dark tbody tr {
+            border-bottom-color: #233a34 !important;
+        }
+        .dark tbody tr:hover {
+            background-color: #1b332d !important;
+        }
+        .dark tbody td {
+            color: #e2e8f0 !important;
+        }
+
+        /* Badges / Status Pills */
+        .dark .bg-emerald-50,
+        .dark .bg-emerald-100 {
+            background-color: rgba(6, 78, 59, 0.5) !important;
+            color: #6ee7b7 !important;
+            border: 1px solid rgba(16, 185, 129, 0.4) !important;
+        }
+        .dark .bg-amber-50,
+        .dark .bg-amber-100,
+        .dark .bg-yellow-50 {
+            background-color: rgba(120, 53, 15, 0.5) !important;
+            color: #fcd34d !important;
+            border: 1px solid rgba(245, 158, 11, 0.4) !important;
+        }
+        .dark .bg-red-50,
+        .dark .bg-red-100 {
+            background-color: rgba(127, 29, 29, 0.5) !important;
+            color: #fca5a5 !important;
+            border: 1px solid rgba(239, 68, 68, 0.4) !important;
+        }
+        .dark .bg-blue-50,
+        .dark .bg-blue-100 {
+            background-color: rgba(30, 58, 138, 0.5) !important;
+            color: #93c5fd !important;
+            border: 1px solid rgba(59, 130, 246, 0.4) !important;
+        }
+        .dark .bg-green-50,
+        .dark .bg-green-100 {
+            background-color: #1a332d !important;
+            color: #6ee7b7 !important;
+            border: 1px solid #284c43 !important;
+        }
+        .dark .bg-gray-100,
+        .dark .bg-gray-200,
+        .dark .bg-slate-100,
+        .dark .bg-slate-200 {
+            background-color: #1a2e29 !important;
+            color: #e2e8f0 !important;
+            border: 1px solid #35584f !important;
+        }
+
+        /* Inputs, Selects & Textareas */
+        .dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+        .dark select,
+        .dark textarea {
+            background-color: #0f1c19 !important;
+            border-color: #284c43 !important;
+            color: #ffffff !important;
+        }
+        .dark input::placeholder, 
+        .dark textarea::placeholder {
+            color: #64748b !important;
+        }
+        .dark select option {
+            background-color: #0f1c19 !important;
+            color: #ffffff !important;
+        }
+
+        /* Modal Dialogs */
+        .dark .max-w-2xl.bg-white,
+        .dark .max-w-lg.bg-white,
+        .dark .max-w-md.bg-white,
+        .dark .max-w-xl.bg-white,
+        .dark .max-w-sm.bg-white {
+            background-color: #152420 !important;
+            color: #f1f5f9 !important;
+            border: 1px solid #284c43 !important;
+        }
     </style>
     @stack('styles')
 </head>
-<body class="h-full font-sans antialiased text-gray-800 flex overflow-hidden bg-[#FAFAFA]">
+<body class="h-full font-sans antialiased text-gray-800 dark:text-slate-100 flex overflow-hidden bg-[#FAFAFA] dark:bg-[#0d1614] transition-colors duration-200">
 
     <!-- Sidebar Layout -->
     @include('admin.layout.sidebar')
@@ -37,7 +247,7 @@
         @include('admin.layout.navbar')
 
         <!-- Scrollable Content Page -->
-        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#FAFAFA]">
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#FAFAFA] dark:bg-[#121d1a]">
             @if (session('success'))
                 <div class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
                     {{ session('success') }}

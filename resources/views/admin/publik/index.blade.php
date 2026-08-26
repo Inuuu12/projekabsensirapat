@@ -28,42 +28,42 @@
 
 <div class="max-w-[1400px] mx-auto space-y-6">
     <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] tracking-tight">Konten Publik</h1>
-        <p class="text-xs sm:text-sm text-gray-500 mt-1">Kelola dan publikasikan informasi berita, galeri, ucapan ulang tahun, serta video ke portal publik.</p>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] dark:text-white tracking-tight">Konten Publik</h1>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300 mt-1">Kelola dan publikasikan informasi berita, galeri, ucapan ulang tahun, serta video ke portal publik.</p>
     </div>
 
-    <section class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5">
+    <section class="bg-white dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#233a34] shadow-xs p-5 transition-colors">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <h2 class="text-base font-extrabold text-gray-800">Tambah Konten</h2>
-                <p class="text-xs text-gray-500 mt-1">Pilih jenis konten publik yang ingin ditambahkan.</p>
+                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Tambah Konten</h2>
+                <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Pilih jenis konten publik yang ingin ditambahkan.</p>
             </div>
         </div>
         <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <button type="button" onclick="openPublicModal('modal-tambah-berita')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50">
+            <button type="button" onclick="openPublicModal('modal-tambah-berita')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50 dark:hover:bg-[#1b3832] cursor-pointer">
                 <span>
-                    <span class="block text-sm font-extrabold text-gray-800">Berita</span>
-                    <span class="mt-1 block text-xs font-medium text-gray-500">Tambah berita publik</span>
+                    <span class="block text-sm font-extrabold text-gray-800 dark:text-white">Berita</span>
+                    <span class="mt-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Tambah berita publik</span>
                 </span>
-                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 p-2">
+                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 dark:bg-[#152420] p-2">
                     <img src="{{ asset('foto/Beritalogo.png') }}" alt="Berita" class="h-full w-full object-contain">
                 </span>
             </button>
-            <a href="{{ route('admin.agenda.lihat') }}" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50">
+            <a href="{{ route('admin.agenda.lihat') }}" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50 dark:hover:bg-[#1b3832] cursor-pointer">
                 <span>
-                    <span class="block text-sm font-extrabold text-gray-800">Galeri</span>
-                    <span class="mt-1 block text-xs font-medium text-gray-500">Unggah dokumentasi agenda</span>
+                    <span class="block text-sm font-extrabold text-gray-800 dark:text-white">Galeri</span>
+                    <span class="mt-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Unggah dokumentasi agenda</span>
                 </span>
-                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 p-2">
+                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 dark:bg-[#152420] p-2">
                     <img src="{{ asset('foto/Galerilogo.png') }}" alt="Galeri" class="h-full w-full object-contain">
                 </span>
             </a>
-            <button type="button" onclick="openPublicModal('modal-tambah-video')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-white p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50">
+            <button type="button" onclick="openPublicModal('modal-tambah-video')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50 dark:hover:bg-[#1b3832] cursor-pointer">
                 <span>
-                    <span class="block text-sm font-extrabold text-gray-800">Video</span>
-                    <span class="mt-1 block text-xs font-medium text-gray-500">Tambah link YouTube</span>
+                    <span class="block text-sm font-extrabold text-gray-800 dark:text-white">Video</span>
+                    <span class="mt-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Tambah link YouTube</span>
                 </span>
-                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 p-2">
+                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 dark:bg-[#152420] p-2">
                     <img src="{{ asset('foto/Videologo.png') }}" alt="Video" class="h-full w-full object-contain">
                 </span>
             </button>
@@ -71,16 +71,16 @@
     </section>
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <section class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
-            <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
+        <section class="bg-white dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#233a34] shadow-xs overflow-hidden transition-colors">
+            <div class="flex items-center justify-between gap-3 border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
                 <div>
-                    <h2 class="text-base font-extrabold text-gray-800">Berita Publik</h2>
-                    <p class="text-xs text-gray-500 mt-1">{{ $berita->count() }} berita di database.</p>
+                    <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Berita Publik</h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">{{ $berita->count() }} berita di database.</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <form method="POST" action="{{ route('admin.publik.berita.sync') }}">
                         @csrf
-                        <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg bg-[#35635b] px-3 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-[#284c46]" title="Sinkronkan berita dari Pemkab Bogor & Diskominfo">
+                        <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg bg-[#35635b] px-3 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-[#284c46] cursor-pointer" title="Sinkronkan berita dari Pemkab Bogor & Diskominfo">
                             <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                             </svg>
@@ -88,19 +88,19 @@
                         </button>
                     </form>
                     @if ($berita->count() > 6)
-                        <button type="button" onclick="openPublicModal('modal-semua-berita')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
+                        <button type="button" onclick="openPublicModal('modal-semua-berita')" class="rounded-lg border border-gray-200 dark:border-[#284c43] px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer">
                             Selengkapnya
                         </button>
                     @endif
                 </div>
             </div>
-            <div class="divide-y divide-gray-100">
+            <div class="divide-y divide-gray-100 dark:divide-[#233a34]">
                 @forelse ($berita->take(6) as $item)
-                    <div class="p-4 flex items-center gap-4">
-                        <div class="w-16 h-16 rounded-xl bg-gray-100 bg-cover bg-center shrink-0" style="background-image: url('{{ $imageUrl($item->gambar) }}')"></div>
+                    <div class="p-4 flex items-center gap-4 hover:bg-gray-50/50 dark:hover:bg-[#1b332d] transition">
+                        <div class="w-16 h-16 rounded-xl bg-gray-100 dark:bg-[#0f1c19] bg-cover bg-center shrink-0 border border-transparent dark:border-[#284c43]" style="background-image: url('{{ $imageUrl($item->gambar) }}')"></div>
                         <div class="min-w-0 flex-1">
-                            <h3 class="text-sm font-bold text-gray-900 truncate">{{ $item->judul }}</h3>
-                            <p class="text-xs text-gray-500">{{ $item->tanggal?->translatedFormat('d M Y') }} &bull; {{ $item->sumber }}</p>
+                            <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $item->judul }}</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-300">{{ $item->tanggal?->translatedFormat('d M Y') }} &bull; {{ $item->sumber }}</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <button
@@ -111,7 +111,7 @@
                                 data-isi="{{ $item->isi_berita }}"
                                 data-tanggal="{{ $item->tanggal?->format('Y-m-d') }}"
                                 data-sumber="{{ $item->sumber }}"
-                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Edit Berita">
                                 <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
@@ -119,7 +119,7 @@
                             <form method="POST" action="{{ route('admin.publik.berita.destroy', $item->id_berita) }}">
                                 @csrf
                                 @method('DELETE')
-                                <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Berita">
+                                <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Berita">
                                     <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                     <span class="sr-only">Hapus</span>
                                 </button>
@@ -127,37 +127,37 @@
                         </div>
                     </div>
                 @empty
-                    <p class="p-6 text-sm text-gray-500">Belum ada berita.</p>
+                    <p class="p-6 text-sm text-gray-500 dark:text-gray-400">Belum ada berita.</p>
                 @endforelse
             </div>
         </section>
 
-        <section class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
-            <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
+        <section class="bg-white dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#233a34] shadow-xs overflow-hidden transition-colors">
+            <div class="flex items-center justify-between gap-3 border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
                 <div>
-                    <h2 class="text-base font-extrabold text-gray-800">Galeri Publik</h2>
-                    <p class="text-xs text-gray-500 mt-1">{{ $galeri->count() }} dokumentasi agenda.</p>
+                    <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Galeri Publik</h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">{{ $galeri->count() }} dokumentasi agenda.</p>
                 </div>
                 @if ($galeri->count() > 6)
-                    <button type="button" onclick="openPublicModal('modal-semua-galeri')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
+                    <button type="button" onclick="openPublicModal('modal-semua-galeri')" class="rounded-lg border border-gray-200 dark:border-[#284c43] px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer">
                         Selengkapnya
                     </button>
                 @endif
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-3 p-4">
                 @forelse ($galeri->take(6) as $item)
-                    <div class="rounded-xl border border-gray-100 overflow-hidden">
-                        <div class="aspect-[4/3] bg-gray-100 bg-cover bg-center" style="background-image: url('{{ $imageUrl($galleryImagePath($item), 'foto/Agendahariini.png') }}')"></div>
-                        <div class="border-b border-gray-100 px-3 py-2">
-                            <p class="truncate text-xs font-bold text-gray-800">{{ $galleryTitle($item) }}</p>
-                            <p class="mt-0.5 text-[10px] text-gray-500">{{ optional($galleryDate($item))->translatedFormat('d M Y') ?? '-' }}</p>
+                    <div class="rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] overflow-hidden">
+                        <div class="aspect-[4/3] bg-gray-100 dark:bg-[#152420] bg-cover bg-center" style="background-image: url('{{ $imageUrl($galleryImagePath($item), 'foto/Agendahariini.png') }}')"></div>
+                        <div class="border-b border-gray-100 dark:border-[#233a34] px-3 py-2">
+                            <p class="truncate text-xs font-bold text-gray-800 dark:text-white">{{ $galleryTitle($item) }}</p>
+                            <p class="mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">{{ optional($galleryDate($item))->translatedFormat('d M Y') ?? '-' }}</p>
                         </div>
                         <div class="flex justify-center gap-2 p-2">
                             <button
                                 type="button"
                                 onclick="openEditGaleri(this)"
                                 data-action="{{ route('admin.agenda.dokumen.store', $item->id_agenda) }}"
-                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Ganti Dokumentasi">
                                 <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
@@ -165,7 +165,7 @@
                             <form method="POST" action="{{ route('admin.agenda.dokumen.destroy', [$item->id_agenda, $item->id_dokumen]) }}">
                                 @csrf
                                 @method('DELETE')
-                                <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Dokumentasi">
+                                <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Dokumentasi">
                                     <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                     <span class="sr-only">Hapus</span>
                                 </button>
@@ -173,56 +173,56 @@
                         </div>
                     </div>
                 @empty
-                    <p class="col-span-3 p-2 text-sm text-gray-500">Belum ada foto galeri.</p>
+                    <p class="col-span-3 p-2 text-sm text-gray-500 dark:text-gray-400">Belum ada foto galeri.</p>
                 @endforelse
             </div>
         </section>
 
-        <section class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
-            <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
+        <section class="bg-white dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#233a34] shadow-xs overflow-hidden transition-colors">
+            <div class="flex items-center justify-between gap-3 border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
                 <div>
-                    <h2 class="text-base font-extrabold text-gray-800">Ulang Tahun Publik</h2>
-                    <p class="text-xs text-gray-500 mt-1">{{ $ulangTahun->count() }} pegawai memiliki tanggal lahir.</p>
+                    <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Ulang Tahun Publik</h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">{{ $ulangTahun->count() }} pegawai memiliki tanggal lahir.</p>
                 </div>
                 @if ($ulangTahun->count() > 6)
-                    <button type="button" onclick="openPublicModal('modal-semua-ulang-tahun')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
+                    <button type="button" onclick="openPublicModal('modal-semua-ulang-tahun')" class="rounded-lg border border-gray-200 dark:border-[#284c43] px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer">
                         Selengkapnya
                     </button>
                 @endif
             </div>
-            <div class="divide-y divide-gray-100">
+            <div class="divide-y divide-gray-100 dark:divide-[#233a34]">
                 @forelse ($ulangTahun->take(6) as $item)
-                    <div class="p-4 flex items-center justify-between gap-4">
+                    <div class="p-4 flex items-center justify-between gap-4 hover:bg-gray-50/50 dark:hover:bg-[#1b332d] transition">
                         <div>
-                            <h3 class="text-sm font-bold text-gray-900">{{ $item->nama }}</h3>
-                            <p class="text-xs text-gray-500">{{ $item->tanggal?->translatedFormat('d M') }}</p>
+                            <h3 class="text-sm font-bold text-gray-900 dark:text-white">{{ $item->nama }}</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-300">{{ $item->tanggal?->translatedFormat('d M') }}</p>
                         </div>
-                        <a href="{{ route('admin.pegawai.lihat') }}" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">Data Pegawai</a>
+                        <a href="{{ route('admin.pegawai.lihat') }}" class="rounded-lg border border-gray-200 dark:border-[#284c43] px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-white/5">Data Pegawai</a>
                     </div>
                 @empty
-                    <p class="p-6 text-sm text-gray-500">Belum ada pegawai yang memiliki tanggal lahir.</p>
+                    <p class="p-6 text-sm text-gray-500 dark:text-gray-400">Belum ada pegawai yang memiliki tanggal lahir.</p>
                 @endforelse
             </div>
         </section>
 
-        <section class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
-            <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-6 py-4">
+        <section class="bg-white dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#233a34] shadow-xs overflow-hidden transition-colors">
+            <div class="flex items-center justify-between gap-3 border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
                 <div>
-                    <h2 class="text-base font-extrabold text-gray-800">Video Publik</h2>
-                    <p class="text-xs text-gray-500 mt-1">{{ $video->count() }} video di database.</p>
+                    <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Video Publik</h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">{{ $video->count() }} video di database.</p>
                 </div>
                 @if ($video->count() > 6)
-                    <button type="button" onclick="openPublicModal('modal-semua-video')" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">
+                    <button type="button" onclick="openPublicModal('modal-semua-video')" class="rounded-lg border border-gray-200 dark:border-[#284c43] px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer">
                         Selengkapnya
                     </button>
                 @endif
             </div>
-            <div class="divide-y divide-gray-100">
+            <div class="divide-y divide-gray-100 dark:divide-[#233a34]">
                 @forelse ($video->take(6) as $item)
-                    <div class="p-4 flex items-center justify-between gap-4">
+                    <div class="p-4 flex items-center justify-between gap-4 hover:bg-gray-50/50 dark:hover:bg-[#1b332d] transition">
                         <div class="min-w-0">
-                            <h3 class="text-sm font-bold text-gray-900 truncate">{{ $item->judul }}</h3>
-                            <p class="text-xs text-gray-500">{{ optional($item->created_at)->translatedFormat('d M Y') }} &bull; YouTube</p>
+                            <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $item->judul }}</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-300">{{ optional($item->created_at)->translatedFormat('d M Y') }} &bull; YouTube</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <button
@@ -232,7 +232,7 @@
                                 data-judul="{{ $item->judul }}"
                                 data-deskripsi="{{ $item->deskripsi }}"
                                 data-url="{{ $item->youtube_url }}"
-                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Edit Video">
                                 <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
@@ -240,7 +240,7 @@
                             <form method="POST" action="{{ route('admin.publik.video.destroy', $item->id_video) }}">
                                 @csrf
                                 @method('DELETE')
-                                <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Video">
+                                <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Video">
                                     <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                     <span class="sr-only">Hapus</span>
                                 </button>
@@ -248,7 +248,7 @@
                         </div>
                     </div>
                 @empty
-                    <p class="p-6 text-sm text-gray-500">Belum ada data video.</p>
+                    <p class="p-6 text-sm text-gray-500 dark:text-gray-400">Belum ada data video.</p>
                 @endforelse
             </div>
         </section>
@@ -256,7 +256,7 @@
 </div>
 
 <div id="modal-semua-galeri" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <div>
                 <h3 class="text-lg font-bold">Semua Dokumentasi Agenda</h3>
@@ -270,18 +270,18 @@
         </div>
         <div class="grid grid-cols-1 gap-4 overflow-y-auto p-5 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($galeri as $item)
-                <div class="overflow-hidden rounded-xl border border-gray-100">
-                    <div class="aspect-[4/3] bg-gray-100 bg-cover bg-center" style="background-image: url('{{ $imageUrl($galleryImagePath($item), 'foto/Agendahariini.png') }}')"></div>
-                    <div class="border-b border-gray-100 px-3 py-2">
-                        <p class="truncate text-xs font-bold text-gray-800">{{ $galleryTitle($item) }}</p>
-                        <p class="mt-0.5 text-[10px] text-gray-500">{{ optional($galleryDate($item))->translatedFormat('d M Y') ?? '-' }}</p>
+                <div class="overflow-hidden rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19]">
+                    <div class="aspect-[4/3] bg-gray-100 dark:bg-[#152420] bg-cover bg-center" style="background-image: url('{{ $imageUrl($galleryImagePath($item), 'foto/Agendahariini.png') }}')"></div>
+                    <div class="border-b border-gray-100 dark:border-[#233a34] px-3 py-2">
+                        <p class="truncate text-xs font-bold text-gray-800 dark:text-white">{{ $galleryTitle($item) }}</p>
+                        <p class="mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">{{ optional($galleryDate($item))->translatedFormat('d M Y') ?? '-' }}</p>
                     </div>
                     <div class="flex justify-center gap-2 p-2">
                         <button
                             type="button"
                             onclick="openEditGaleri(this)"
                             data-action="{{ route('admin.agenda.dokumen.store', $item->id_agenda) }}"
-                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                             title="Ganti Dokumentasi">
                             <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                             <span class="sr-only">Edit</span>
@@ -289,7 +289,7 @@
                         <form method="POST" action="{{ route('admin.agenda.dokumen.destroy', [$item->id_agenda, $item->id_dokumen]) }}">
                             @csrf
                             @method('DELETE')
-                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Dokumentasi">
+                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Dokumentasi">
                                 <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                 <span class="sr-only">Hapus</span>
                             </button>
@@ -297,14 +297,14 @@
                     </div>
                 </div>
             @empty
-                <p class="p-6 text-sm text-gray-500 sm:col-span-2 lg:col-span-3">Belum ada dokumentasi agenda.</p>
+                <p class="p-6 text-sm text-gray-500 dark:text-gray-400 sm:col-span-2 lg:col-span-3">Belum ada dokumentasi agenda.</p>
             @endforelse
         </div>
     </div>
 </div>
 
 <div id="modal-semua-berita" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <div>
                 <h3 class="text-lg font-bold">Semua Berita Publik</h3>
@@ -318,11 +318,11 @@
         </div>
         <div class="grid grid-cols-1 gap-4 overflow-y-auto p-5 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($berita as $item)
-                <div class="flex items-center gap-4 overflow-hidden rounded-xl border border-gray-100 p-3">
-                    <div class="h-16 w-16 shrink-0 rounded-lg bg-gray-100 bg-cover bg-center" style="background-image: url('{{ $imageUrl($item->gambar) }}')"></div>
+                <div class="flex items-center gap-4 overflow-hidden rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-3">
+                    <div class="h-16 w-16 shrink-0 rounded-lg bg-gray-100 dark:bg-[#152420] bg-cover bg-center" style="background-image: url('{{ $imageUrl($item->gambar) }}')"></div>
                     <div class="min-w-0 flex-1">
-                        <h4 class="truncate text-sm font-bold text-gray-900">{{ $item->judul }}</h4>
-                        <p class="mt-1 text-[10px] text-gray-500">{{ $item->tanggal?->translatedFormat('d M Y') }} &bull; {{ $item->sumber }}</p>
+                        <h4 class="truncate text-sm font-bold text-gray-900 dark:text-white">{{ $item->judul }}</h4>
+                        <p class="mt-1 text-[10px] text-gray-500 dark:text-gray-300">{{ $item->tanggal?->translatedFormat('d M Y') }} &bull; {{ $item->sumber }}</p>
                     </div>
                     <div class="flex flex-col justify-center gap-1">
                         <button
@@ -333,7 +333,7 @@
                             data-isi="{{ $item->isi_berita }}"
                             data-tanggal="{{ $item->tanggal?->format('Y-m-d') }}"
                             data-sumber="{{ $item->sumber }}"
-                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                             title="Edit Berita">
                             <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                             <span class="sr-only">Edit</span>
@@ -341,7 +341,7 @@
                         <form method="POST" action="{{ route('admin.publik.berita.destroy', $item->id_berita) }}">
                             @csrf
                             @method('DELETE')
-                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Berita">
+                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Berita">
                                 <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                 <span class="sr-only">Hapus</span>
                             </button>
@@ -349,14 +349,14 @@
                     </div>
                 </div>
             @empty
-                <p class="p-6 text-sm text-gray-500 sm:col-span-2 lg:col-span-3">Belum ada berita publik.</p>
+                <p class="p-6 text-sm text-gray-500 dark:text-gray-400 sm:col-span-2 lg:col-span-3">Belum ada berita publik.</p>
             @endforelse
         </div>
     </div>
 </div>
 
 <div id="modal-semua-ulang-tahun" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <div>
                 <h3 class="text-lg font-bold">Semua Ulang Tahun Publik</h3>
@@ -370,22 +370,22 @@
         </div>
         <div class="grid grid-cols-1 gap-4 overflow-y-auto p-5 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($ulangTahun as $item)
-                <div class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 p-4">
+                <div class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-4">
                     <div>
-                        <h3 class="text-sm font-bold text-gray-900">{{ $item->nama }}</h3>
-                        <p class="text-xs text-gray-500">{{ $item->tanggal?->translatedFormat('d M') }}</p>
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">{{ $item->nama }}</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-300">{{ $item->tanggal?->translatedFormat('d M') }}</p>
                     </div>
-                    <a href="{{ route('admin.pegawai.lihat') }}" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50">Data Pegawai</a>
+                    <a href="{{ route('admin.pegawai.lihat') }}" class="rounded-lg border border-gray-200 dark:border-[#284c43] px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-white/5">Data Pegawai</a>
                 </div>
             @empty
-                <p class="p-6 text-sm text-gray-500 sm:col-span-2 lg:col-span-3">Belum ada pegawai yang memiliki tanggal lahir.</p>
+                <p class="p-6 text-sm text-gray-500 dark:text-gray-400 sm:col-span-2 lg:col-span-3">Belum ada pegawai yang memiliki tanggal lahir.</p>
             @endforelse
         </div>
     </div>
 </div>
 
 <div id="modal-semua-video" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <div>
                 <h3 class="text-lg font-bold">Semua Video Publik</h3>
@@ -399,8 +399,8 @@
         </div>
         <div class="grid grid-cols-1 gap-4 overflow-y-auto p-5 lg:grid-cols-2">
             @forelse ($video as $item)
-                <div class="overflow-hidden rounded-xl border border-gray-100">
-                    <div class="aspect-video bg-gray-100">
+                <div class="overflow-hidden rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19]">
+                    <div class="aspect-video bg-gray-100 dark:bg-[#152420]">
                         <iframe
                             src="{{ $item->youtube_embed_url }}"
                             title="{{ $item->judul }}"
@@ -409,11 +409,11 @@
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowfullscreen></iframe>
                     </div>
-                    <div class="border-b border-gray-100 px-4 py-3">
-                        <h4 class="truncate text-sm font-bold text-gray-900">{{ $item->judul }}</h4>
-                        <p class="mt-1 text-xs text-gray-500">{{ optional($item->created_at)->translatedFormat('d M Y') }} &bull; YouTube</p>
+                    <div class="border-b border-gray-100 dark:border-[#233a34] px-4 py-3">
+                        <h4 class="truncate text-sm font-bold text-gray-900 dark:text-white">{{ $item->judul }}</h4>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-300">{{ optional($item->created_at)->translatedFormat('d M Y') }} &bull; YouTube</p>
                         @if ($item->deskripsi)
-                            <p class="mt-2 line-clamp-2 text-xs text-gray-600">{{ $item->deskripsi }}</p>
+                            <p class="mt-2 line-clamp-2 text-xs text-gray-600 dark:text-gray-300">{{ $item->deskripsi }}</p>
                         @endif
                     </div>
                     <div class="flex justify-center gap-2 p-3">
@@ -424,7 +424,7 @@
                             data-judul="{{ $item->judul }}"
                             data-deskripsi="{{ $item->deskripsi }}"
                             data-url="{{ $item->youtube_url }}"
-                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 p-1.5 transition hover:bg-green-100"
+                            class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                             title="Edit Video">
                             <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                             <span class="sr-only">Edit</span>
@@ -432,7 +432,7 @@
                         <form method="POST" action="{{ route('admin.publik.video.destroy', $item->id_video) }}">
                             @csrf
                             @method('DELETE')
-                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 p-1.5 transition hover:bg-red-100" title="Hapus Video">
+                            <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Video">
                                 <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                 <span class="sr-only">Hapus</span>
                             </button>
@@ -440,14 +440,14 @@
                     </div>
                 </div>
             @empty
-                <p class="p-6 text-sm text-gray-500 lg:col-span-2">Belum ada data video.</p>
+                <p class="p-6 text-sm text-gray-500 dark:text-gray-400 lg:col-span-2">Belum ada data video.</p>
             @endforelse
         </div>
     </div>
 </div>
 
 <div id="modal-tambah-berita" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <h3 class="text-base font-bold">Tambah Berita</h3>
             <button type="button" onclick="closePublicModal('modal-tambah-berita')" class="flex h-8 w-8 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal tambah berita">
@@ -462,53 +462,53 @@
             <div class="space-y-4 px-5 py-6 sm:px-6">
                 <!-- Tempel Link URL Input -->
                 <div>
-                    <label class="mb-2 block text-xs font-extrabold text-[#0e2f27] uppercase tracking-wider">🔗 Tempel Link / URL Berita</label>
-                    <input name="url" id="fetch-berita-url" type="url" placeholder="https://bogorkab.go.id/berita/... atau link berita lain" class="h-11 w-full rounded-xl border border-[#c9ddd4] bg-[#f4faf7] px-4 text-xs text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-                    <p class="mt-2 text-[11px] text-gray-500">Judul, Ringkasan, Tanggal, Gambar Thumbnail, dan Sumber akan otomatis diambil dan disimpan dari link di atas.</p>
+                    <label class="mb-2 block text-xs font-extrabold text-[#0e2f27] dark:text-gray-200 uppercase tracking-wider">🔗 Tempel Link / URL Berita</label>
+                    <input name="url" id="fetch-berita-url" type="url" placeholder="https://bogorkab.go.id/berita/... atau link berita lain" class="h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 text-xs text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
+                    <p class="mt-2 text-[11px] text-gray-500 dark:text-gray-400">Judul, Ringkasan, Tanggal, Gambar Thumbnail, dan Sumber akan otomatis diambil dan disimpan dari link di atas.</p>
                 </div>
 
                 <!-- Optional Manual Collapsible -->
-                <div class="pt-2 border-t border-gray-100">
-                    <button type="button" onclick="document.getElementById('manual-berita-fields').classList.toggle('hidden')" class="text-xs font-bold text-[#35635b] hover:underline flex items-center gap-1">
+                <div class="pt-2 border-t border-gray-100 dark:border-[#233a34]">
+                    <button type="button" onclick="document.getElementById('manual-berita-fields').classList.toggle('hidden')" class="text-xs font-bold text-[#35635b] dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer">
                         <span>⚙️ Atau Input Manual (Opsional)</span>
                     </button>
                     
-                    <div id="manual-berita-fields" class="mt-3 space-y-4 hidden border-t border-dashed border-gray-200 pt-3">
+                    <div id="manual-berita-fields" class="mt-3 space-y-4 hidden border-t border-dashed border-gray-200 dark:border-[#284c43] pt-3">
                         <div>
-                            <label class="mb-1 block text-xs font-bold text-[#0e2f27]">Judul Berita</label>
-                            <input name="judul" class="h-10 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 text-xs text-gray-800 outline-none focus:border-[#35635b]" placeholder="Judul berita">
+                            <label class="mb-1 block text-xs font-bold text-[#0e2f27] dark:text-gray-200">Judul Berita</label>
+                            <input name="judul" class="h-10 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3 text-xs text-gray-800 dark:text-white outline-none focus:border-[#35635b] placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Judul berita">
                         </div>
                         <div>
-                            <label class="mb-1 block text-xs font-bold text-[#0e2f27]">Isi Berita</label>
-                            <textarea name="isi_berita" rows="3" class="w-full resize-none rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 py-2 text-xs text-gray-800 outline-none focus:border-[#35635b]" placeholder="Isi berita"></textarea>
+                            <label class="mb-1 block text-xs font-bold text-[#0e2f27] dark:text-gray-200">Isi Berita</label>
+                            <textarea name="isi_berita" rows="3" class="w-full resize-none rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3 py-2 text-xs text-gray-800 dark:text-white outline-none focus:border-[#35635b] placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Isi berita"></textarea>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="mb-1 block text-xs font-bold text-[#0e2f27]">Tanggal</label>
-                                <input type="date" name="tanggal" value="{{ now()->toDateString() }}" class="h-10 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 text-xs text-gray-800 outline-none focus:border-[#35635b]">
+                                <label class="mb-1 block text-xs font-bold text-[#0e2f27] dark:text-gray-200">Tanggal</label>
+                                <input type="date" name="tanggal" value="{{ now()->toDateString() }}" class="h-10 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3 text-xs text-gray-800 dark:text-white outline-none focus:border-[#35635b]">
                             </div>
                             <div>
-                                <label class="mb-1 block text-xs font-bold text-[#0e2f27]">Sumber</label>
-                                <input name="sumber" class="h-10 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 text-xs text-gray-800 outline-none focus:border-[#35635b]" placeholder="Sumber">
+                                <label class="mb-1 block text-xs font-bold text-[#0e2f27] dark:text-gray-200">Sumber</label>
+                                <input name="sumber" class="h-10 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3 text-xs text-gray-800 dark:text-white outline-none focus:border-[#35635b] placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Sumber">
                             </div>
                         </div>
                         <div>
-                            <label class="mb-1 block text-xs font-bold text-[#0e2f27]">Upload Gambar</label>
-                            <input type="file" name="gambar" accept="image/*" class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-3 py-2 text-xs text-gray-800 outline-none file:mr-3 file:rounded-md file:border-0 file:bg-[#35635b] file:px-3 file:py-1 file:text-xs file:font-bold file:text-white">
+                            <label class="mb-1 block text-xs font-bold text-[#0e2f27] dark:text-gray-200">Upload Gambar</label>
+                            <input type="file" name="gambar" accept="image/*" class="w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3 py-2 text-xs text-gray-800 dark:text-white outline-none file:mr-3 file:rounded-md file:border-0 file:bg-[#35635b] file:px-3 file:py-1 file:text-xs file:font-bold file:text-white">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col-reverse gap-2 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6 bg-gray-50">
-                <button type="button" onclick="closePublicModal('modal-tambah-berita')" class="h-10 rounded-xl px-4 text-xs font-bold text-gray-600 transition hover:bg-gray-200/60">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] px-5 text-xs font-bold text-white transition hover:bg-[#035f35]">Simpan Berita</button>
+            <div class="flex flex-col-reverse gap-2 border-t border-gray-100 dark:border-[#233a34] px-5 py-4 sm:flex-row sm:justify-end sm:px-6 bg-gray-50 dark:bg-[#0f1c19]">
+                <button type="button" onclick="closePublicModal('modal-tambah-berita')" class="h-10 rounded-xl px-4 text-xs font-bold text-gray-600 dark:text-gray-300 transition hover:bg-gray-200/60 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] px-5 text-xs font-bold text-white transition hover:bg-[#035f35] cursor-pointer">Simpan Berita</button>
             </div>
         </form>
     </div>
 </div>
 
 <div id="modal-tambah-galeri" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <h3 class="text-lg font-bold">Tambah Galeri</h3>
             <button type="button" onclick="closePublicModal('modal-tambah-galeri')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal tambah galeri">
@@ -521,24 +521,24 @@
             @csrf
             <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Tanggal</label>
-                    <input type="date" name="tanggal" value="{{ now()->toDateString() }}" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Tanggal</label>
+                    <input type="date" name="tanggal" value="{{ now()->toDateString() }}" required class="h-11 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
                 </div>
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Foto Galeri</label>
-                    <input type="file" name="gambar" accept="image/*" required class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Foto Galeri</label>
+                    <input type="file" name="gambar" accept="image/*" required class="w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 py-3 text-sm text-gray-800 dark:text-white outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
                 </div>
             </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closePublicModal('modal-tambah-galeri')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">Simpan</button>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] px-5 py-4 sm:flex-row sm:justify-end sm:px-6 bg-gray-50 dark:bg-[#0f1c19]">
+                <button type="button" onclick="closePublicModal('modal-tambah-galeri')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">Simpan</button>
             </div>
         </form>
     </div>
 </div>
 
 <div id="modal-tambah-video" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <h3 class="text-lg font-bold">Tambah Video</h3>
             <button type="button" onclick="closePublicModal('modal-tambah-video')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal tambah video">
@@ -551,28 +551,28 @@
             @csrf
             <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Judul Video</label>
-                    <input name="judul" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10" placeholder="Judul video">
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Judul Video</label>
+                    <input name="judul" required class="h-11 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-500 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10" placeholder="Judul video">
                 </div>
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Link YouTube</label>
-                    <input name="youtube_url" type="url" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10" placeholder="https://www.youtube.com/watch?v=...">
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Link YouTube</label>
+                    <input name="youtube_url" type="url" required class="h-11 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-500 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10" placeholder="https://www.youtube.com/watch?v=...">
                 </div>
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Deskripsi</label>
-                    <textarea name="deskripsi" rows="3" class="w-full resize-none rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10" placeholder="Deskripsi video opsional"></textarea>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Deskripsi</label>
+                    <textarea name="deskripsi" rows="3" class="w-full resize-none rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 py-3 text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-500 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10" placeholder="Deskripsi video opsional"></textarea>
                 </div>
             </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closePublicModal('modal-tambah-video')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">Simpan</button>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] px-5 py-4 sm:flex-row sm:justify-end sm:px-6 bg-gray-50 dark:bg-[#0f1c19]">
+                <button type="button" onclick="closePublicModal('modal-tambah-video')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">Simpan</button>
             </div>
         </form>
     </div>
 </div>
 
 <div id="modal-edit-berita" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <h3 class="text-lg font-bold">Edit Berita</h3>
             <button type="button" onclick="closePublicModal('modal-edit-berita')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal edit berita">
@@ -586,38 +586,38 @@
             @method('PUT')
             <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Judul Berita</label>
-                    <input id="edit-berita-judul" name="judul" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Judul Berita</label>
+                    <input id="edit-berita-judul" name="judul" required class="h-11 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
                 </div>
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Isi Berita</label>
-                    <textarea id="edit-berita-isi" name="isi_berita" required rows="4" class="w-full resize-none rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10"></textarea>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Isi Berita</label>
+                    <textarea id="edit-berita-isi" name="isi_berita" required rows="4" class="w-full resize-none rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 py-3 text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10"></textarea>
                 </div>
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                        <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Tanggal</label>
-                        <input id="edit-berita-tanggal" type="date" name="tanggal" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                        <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Tanggal</label>
+                        <input id="edit-berita-tanggal" type="date" name="tanggal" required class="h-11 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
                     </div>
                     <div>
-                        <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Sumber</label>
-                        <input id="edit-berita-sumber" name="sumber" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                        <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Sumber</label>
+                        <input id="edit-berita-sumber" name="sumber" required class="h-11 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
                     </div>
                 </div>
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Ganti Gambar</label>
-                    <input type="file" name="gambar" accept="image/*" class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Ganti Gambar</label>
+                    <input type="file" name="gambar" accept="image/*" class="w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 py-3 text-sm text-gray-800 dark:text-white outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
                 </div>
             </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closePublicModal('modal-edit-berita')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">Simpan</button>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] px-5 py-4 sm:flex-row sm:justify-end sm:px-6 bg-gray-50 dark:bg-[#0f1c19]">
+                <button type="button" onclick="closePublicModal('modal-edit-berita')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">Simpan</button>
             </div>
         </form>
     </div>
 </div>
 
 <div id="modal-edit-galeri" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <h3 class="text-lg font-bold">Edit Galeri</h3>
             <button type="button" onclick="closePublicModal('modal-edit-galeri')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal edit galeri">
@@ -631,21 +631,21 @@
             <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
                 <input type="hidden" name="jenis_dokumen" value="dokumentasi">
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Unggah Dokumentasi</label>
-                    <input type="file" name="dokumen[]" accept=".jpg,.jpeg,.png,.webp" multiple required class="w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
-                    <p class="mt-2 text-xs text-gray-500">Bisa pilih lebih dari satu gambar. Hapus dokumentasi lama satu per satu dari galeri jika tidak diperlukan.</p>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Unggah Dokumentasi</label>
+                    <input type="file" name="dokumen[]" accept=".jpg,.jpeg,.png,.webp" multiple required class="w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 py-3 text-sm text-gray-800 dark:text-white outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-[#35635b] file:px-4 file:py-2 file:text-sm file:font-bold file:text-white focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
+                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Bisa pilih lebih dari satu gambar. Hapus dokumentasi lama satu per satu dari galeri jika tidak diperlukan.</p>
                 </div>
             </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closePublicModal('modal-edit-galeri')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">Simpan</button>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] px-5 py-4 sm:flex-row sm:justify-end sm:px-6 bg-gray-50 dark:bg-[#0f1c19]">
+                <button type="button" onclick="closePublicModal('modal-edit-galeri')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">Simpan</button>
             </div>
         </form>
     </div>
 </div>
 
 <div id="modal-edit-video" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
-    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl sm:max-h-[calc(100vh-2rem)]">
         <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
             <h3 class="text-lg font-bold">Edit Video</h3>
             <button type="button" onclick="closePublicModal('modal-edit-video')" class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" aria-label="Tutup modal edit video">
@@ -659,21 +659,21 @@
             @method('PUT')
             <div class="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Judul Video</label>
-                    <input id="edit-video-judul" name="judul" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Judul Video</label>
+                    <input id="edit-video-judul" name="judul" required class="h-11 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
                 </div>
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Link YouTube</label>
-                    <input id="edit-video-url" name="youtube_url" type="url" required class="h-11 w-full rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10">
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Link YouTube</label>
+                    <input id="edit-video-url" name="youtube_url" type="url" required class="h-11 w-full rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
                 </div>
                 <div>
-                    <label class="mb-2 block text-sm font-bold text-[#0e2f27]">Deskripsi</label>
-                    <textarea id="edit-video-deskripsi" name="deskripsi" rows="3" class="w-full resize-none rounded-lg border border-[#c9ddd4] bg-[#f4faf7] px-4 py-3 text-sm text-gray-800 outline-none transition focus:border-[#35635b] focus:bg-white focus:ring-2 focus:ring-[#35635b]/10"></textarea>
+                    <label class="mb-2 block text-sm font-bold text-[#0e2f27] dark:text-gray-200">Deskripsi</label>
+                    <textarea id="edit-video-deskripsi" name="deskripsi" rows="3" class="w-full resize-none rounded-lg border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-4 py-3 text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10"></textarea>
                 </div>
             </div>
-            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                <button type="button" onclick="closePublicModal('modal-edit-video')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35]">Simpan</button>
+            <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] px-5 py-4 sm:flex-row sm:justify-end sm:px-6 bg-gray-50 dark:bg-[#0f1c19]">
+                <button type="button" onclick="closePublicModal('modal-edit-video')" class="h-10 rounded-lg px-5 text-sm font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#04733f] px-5 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">Simpan</button>
             </div>
         </form>
     </div>

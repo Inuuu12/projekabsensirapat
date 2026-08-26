@@ -9,15 +9,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    @include('publik.layout_publik.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
                         sirapi: {
-                            green: '#155B53',
-                            green2: '#1F7D73',
+                            green: '#35635b',
+                            green2: '#2b4f49',
                             ink: '#14211F',
                             line: '#E7E2DA',
                             paper: '#FBFAF8',
@@ -32,7 +34,7 @@
         }
     </script>
 </head>
-<body class="min-h-screen bg-white font-sans text-sirapi-ink antialiased">
+<body class="min-h-screen bg-[#F8F7F4] dark:bg-[#0d1614] font-sans text-sirapi-ink dark:text-slate-100 antialiased transition-colors duration-200">
     @php
         $agendaAktif = $agenda ?? null;
         $sudahHadir = (bool) ($kehadiran ?? false);
@@ -54,45 +56,61 @@
         $lampiranAgenda = $agendaAktif?->lampiran ? basename($agendaAktif->lampiran) : null;
     @endphp
 
-    <header class="h-[72px] bg-sirapi-green text-white">
+    <header class="h-[72px] bg-sirapi-green dark:bg-[#0f1c19] dark:border-b dark:border-[#233a34] text-white">
         <div class="mx-auto flex h-full w-full max-w-[700px] items-center justify-between px-4 sm:px-6">
             <a href="{{ route('publik.beranda') }}" class="flex min-w-0 items-center gap-3">
                 <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-11 w-11 shrink-0 object-contain">
-                <span class="min-w-0">
-                    <span class="block text-[11px] font-medium leading-tight text-white/90">Dinas Komunikasi & Informatika</span>
-                    <span class="block text-lg font-extrabold leading-tight tracking-wide">SIRAPI</span>
+                <span class="min-w-0 flex flex-col justify-center">
+                    <span class="block text-[9px] font-bold tracking-wider uppercase text-emerald-200/90 dark:text-emerald-400 leading-tight">{{ config('sirapi.region', 'Pemerintah Kabupaten Bogor') }}</span>
+                    <span class="block text-base font-black leading-tight tracking-wide">{{ config('sirapi.name', 'SIRAPI') }}</span>
+                    <span class="block text-[11px] font-medium leading-tight text-white/80 dark:text-gray-300">{{ config('sirapi.organization', 'Dinas Komunikasi & Informatika') }}</span>
                 </span>
             </a>
 
-            <div class="relative" data-profile-menu>
-                <button type="button" data-toggle-profile-menu class="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition hover:bg-white/10" title="Menu profil">
-                    <span class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white/15 text-sm font-extrabold ring-2 ring-white/20">
-                        @if ($fotoPegawai)
-                            <img src="{{ $fotoPegawai }}" alt="{{ $pegawai->nama_pegawai }}" class="h-full w-full object-cover">
-                        @else
-                            {{ $initials ?: 'P' }}
-                        @endif
-                    </span>
-                    <span class="hidden text-left sm:block">
-                        <span class="block max-w-24 truncate text-sm font-extrabold">{{ $namaDepan }}</span>
-                        <span class="block text-[11px] font-medium leading-tight text-white/90">{{ $pegawai->jabatan ?: 'Pegawai' }}</span>
-                    </span>
-                    <i data-lucide="chevron-down" class="h-4 w-4 text-white/80"></i>
+            <div class="flex items-center gap-2">
+                <!-- Theme Toggle Button -->
+                <button type="button" 
+                        onclick="toggleSirapiTheme()" 
+                        class="w-10 h-10 rounded-full flex items-center justify-center text-white/90 hover:text-white dark:text-amber-400 dark:hover:text-amber-300 bg-white/10 hover:bg-white/20 dark:bg-[#152420] dark:border dark:border-[#284c43] transition-colors cursor-pointer"
+                        title="Ganti Mode Gelap / Terang">
+                    <svg data-theme-icon-light class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg data-theme-icon-dark class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
                 </button>
 
-                <div data-profile-dropdown class="absolute right-0 top-12 z-40 hidden w-48 overflow-hidden rounded-xl border border-gray-100 bg-white py-2 text-sirapi-ink shadow-xl">
-                    <button type="button" data-open-profile class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-bold transition hover:bg-gray-50">
-                        <i data-lucide="user-pen" class="h-4 w-4 text-sirapi-green"></i>
-                        <span>Edit Profil</span>
+                <div class="relative" data-profile-menu>
+                    <button type="button" data-toggle-profile-menu class="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition hover:bg-white/10 dark:hover:bg-white/5 cursor-pointer" title="Menu profil">
+                        <span class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white/15 dark:bg-white/10 text-sm font-extrabold ring-2 ring-white/20 dark:ring-[#284c43]">
+                            @if ($fotoPegawai)
+                                <img src="{{ $fotoPegawai }}" alt="{{ $pegawai->nama_pegawai }}" class="h-full w-full object-cover">
+                            @else
+                                {{ $initials ?: 'P' }}
+                            @endif
+                        </span>
+                        <span class="hidden text-left sm:block">
+                            <span class="block max-w-24 truncate text-sm font-extrabold">{{ $namaDepan }}</span>
+                            <span class="block text-[11px] font-medium leading-tight text-white/90 dark:text-gray-300">{{ $pegawai->jabatan ?: 'Pegawai' }}</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="h-4 w-4 text-white/80"></i>
                     </button>
 
-                    <form action="{{ route('pegawai.logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-bold text-red-600 transition hover:bg-red-50">
-                            <i data-lucide="power" class="h-4 w-4"></i>
-                            <span>Logout</span>
+                    <div data-profile-dropdown class="absolute right-0 top-12 z-40 hidden w-48 overflow-hidden rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] py-2 text-sirapi-ink dark:text-slate-100 shadow-xl">
+                        <button type="button" data-open-profile class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-bold transition hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer">
+                            <i data-lucide="user-pen" class="h-4 w-4 text-sirapi-green dark:text-emerald-400"></i>
+                            <span>Edit Profil</span>
                         </button>
-                    </form>
+
+                        <form action="{{ route('pegawai.logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-bold text-red-600 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer">
+                                <i data-lucide="power" class="h-4 w-4"></i>
+                                <span>Logout</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -100,48 +118,48 @@
 
     <main class="mx-auto w-full max-w-[700px] px-4 pb-16 pt-16 sm:px-6">
         @if ($errors->has('presensi'))
-            <div class="mb-5 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-bold text-red-700">
+            <div class="mb-5 rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-5 py-4 text-sm font-bold text-red-700 dark:text-red-300">
                 {{ $errors->first('presensi') }}
             </div>
         @endif
 
         @if (session('success'))
-            <div class="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-bold text-emerald-700">
+            <div class="mb-5 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-5 py-4 text-sm font-bold text-emerald-700 dark:text-emerald-300">
                 {{ session('success') }}
             </div>
         @endif
 
         @if (session('profile_success'))
-            <div class="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-bold text-emerald-700">
+            <div class="mb-5 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-5 py-4 text-sm font-bold text-emerald-700 dark:text-emerald-300">
                 {{ session('profile_success') }}
             </div>
         @endif
 
-        <section class="rounded-[22px] border border-sirapi-line bg-white px-8 py-5 shadow-[3px_4px_4px_rgba(0,0,0,0.22)] sm:px-9">
-            <h1 class="text-base font-extrabold">Informasi Kegiatan</h1>
+        <section class="rounded-[22px] border border-sirapi-line dark:border-[#233a34] bg-white dark:bg-[#152420] px-8 py-5 shadow-xs transition-colors">
+            <h1 class="text-base font-extrabold text-gray-900 dark:text-white">Informasi Kegiatan</h1>
 
-            <div class="mt-5 divide-y divide-sirapi-line">
+            <div class="mt-5 divide-y divide-sirapi-line dark:divide-[#233a34]">
                 <div class="pb-3">
-                    <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Waktu</p>
-                    <p class="mt-1 text-sm font-extrabold">{{ $agendaAktif ? $waktuAgenda : '-' }}</p>
+                    <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Waktu</p>
+                    <p class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">{{ $agendaAktif ? $waktuAgenda : '-' }}</p>
                 </div>
                 <div class="py-3">
-                    <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Tanggal</p>
-                    <p class="mt-1 text-sm font-extrabold">{{ $tanggalAgenda }}</p>
+                    <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Tanggal</p>
+                    <p class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">{{ $tanggalAgenda }}</p>
                 </div>
                 <div class="py-3">
-                    <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Lokasi</p>
-                    <p class="mt-1 text-sm font-extrabold">{{ $agendaAktif?->lokasi ?? '-' }}</p>
+                    <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Lokasi</p>
+                    <p class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">{{ $agendaAktif?->lokasi ?? '-' }}</p>
                 </div>
                 <div class="{{ $agendaAktif?->ditugaskan ? 'py-3' : 'pt-3' }}">
-                    <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Penyelenggara</p>
-                    <p class="mt-1 text-sm font-extrabold">{{ $agendaAktif?->asal_surat ?: 'Bidang Informasi Publik' }}</p>
+                    <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Penyelenggara</p>
+                    <p class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">{{ $agendaAktif?->asal_surat ?: 'Bidang Informasi Publik' }}</p>
                 </div>
                 @if ($agendaAktif?->ditugaskan)
                     <div class="pt-3">
-                        <p class="text-[11px] font-medium uppercase text-[#AAB2AE]">Ditugaskan Kepada</p>
-                        <p class="mt-1 text-sm font-extrabold text-[#155B53] flex items-center gap-1.5">
-                            <i data-lucide="user-check" class="h-4 w-4 shrink-0 text-[#155B53]"></i>
+                        <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Ditugaskan Kepada</p>
+                        <p class="mt-1 text-sm font-extrabold text-[#35635b] dark:text-emerald-400 flex items-center gap-1.5">
+                            <i data-lucide="user-check" class="h-4 w-4 shrink-0 text-[#35635b] dark:text-emerald-400"></i>
                             <span>{{ $agendaAktif->ditugaskan }}</span>
                         </p>
                     </div>
@@ -151,12 +169,12 @@
 
         <section class="mt-14 flex justify-center">
             @if (! $agendaAktif)
-                <div class="w-full max-w-[450px] rounded-2xl border border-amber-200 bg-amber-50 px-8 py-5 text-center">
-                    <p class="text-sm font-extrabold text-amber-800">Agenda belum tersedia</p>
-                    <p class="mt-1 text-xs font-medium text-amber-700">Silakan pilih agenda publik atau hubungi admin.</p>
+                <div class="w-full max-w-[450px] rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 px-8 py-5 text-center">
+                    <p class="text-sm font-extrabold text-amber-800 dark:text-amber-200">Agenda belum tersedia</p>
+                    <p class="mt-1 text-xs font-medium text-amber-700 dark:text-amber-300">Silakan pilih agenda publik atau hubungi admin.</p>
                 </div>
             @elseif ($sudahHadir)
-                <div class="flex min-h-[64px] w-full max-w-[450px] items-center gap-7 rounded-2xl border-[3px] border-[#23D93D] px-9 py-4 text-[#16D934]">
+                <div class="flex min-h-[64px] w-full max-w-[450px] items-center gap-7 rounded-2xl border-[3px] border-[#23D93D] px-9 py-4 text-[#16D934] bg-white dark:bg-[#152420]">
                     <i data-lucide="circle-check" class="h-7 w-7 shrink-0 stroke-[2.4]"></i>
                     <div>
                         <p class="text-sm font-extrabold leading-tight">Presensi telah berhasil</p>
@@ -164,34 +182,34 @@
                     </div>
                 </div>
             @elseif ($agendaAktif->status_label === 'Selesai')
-                <div class="w-full max-w-[450px] rounded-2xl border border-amber-200 bg-amber-50 px-8 py-5 text-center">
-                    <p class="text-sm font-extrabold text-amber-800">Agenda Rapat Telah Selesai</p>
-                    <p class="mt-1 text-xs font-medium text-amber-700">Presensi untuk agenda rapat ini telah ditutup karena waktu rapat telah berakhir.</p>
+                <div class="w-full max-w-[450px] rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 px-8 py-5 text-center">
+                    <p class="text-sm font-extrabold text-amber-800 dark:text-amber-200">Agenda Rapat Telah Selesai</p>
+                    <p class="mt-1 text-xs font-medium text-amber-700 dark:text-amber-300">Presensi untuk agenda rapat ini telah ditutup karena waktu rapat telah berakhir.</p>
                 </div>
             @elseif (! $isDitugaskan)
-                <div class="w-full max-w-[450px] rounded-2xl border border-red-200 bg-red-50 p-6 text-center space-y-2">
-                    <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-red-100 text-red-600">
+                <div class="w-full max-w-[450px] rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-6 text-center space-y-2">
+                    <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/60 text-red-600 dark:text-red-400">
                         <i data-lucide="shield-alert" class="h-6 w-6"></i>
                     </div>
-                    <p class="text-sm font-extrabold text-red-900">Akses Presensi Dibatasi</p>
-                    <p class="text-xs font-medium text-red-700 leading-relaxed">
+                    <p class="text-sm font-extrabold text-red-900 dark:text-red-200">Akses Presensi Dibatasi</p>
+                    <p class="text-xs font-medium text-red-700 dark:text-red-300 leading-relaxed">
                         Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan:<br>
-                        <span class="inline-block mt-1 font-bold text-red-900 bg-red-100/80 px-3 py-1 rounded-lg">{{ $agendaAktif->ditugaskan ?: '-' }}</span>
+                        <span class="inline-block mt-1 font-bold text-red-900 dark:text-red-200 bg-red-100/80 dark:bg-red-900/40 px-3 py-1 rounded-lg">{{ $agendaAktif->ditugaskan ?: '-' }}</span>
                     </p>
                 </div>
             @elseif ($agendaAktif->isKuotaPenuh())
-                <div class="w-full max-w-[450px] rounded-2xl border border-red-200 bg-red-50 p-6 text-center space-y-2">
-                    <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-red-100 text-red-600">
+                <div class="w-full max-w-[450px] rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-6 text-center space-y-2">
+                    <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/60 text-red-600 dark:text-red-400">
                         <i data-lucide="users" class="h-6 w-6"></i>
                     </div>
-                    <p class="text-sm font-extrabold text-red-900">Kuota Presensi Penuh</p>
-                    <p class="text-xs font-medium text-red-700 leading-relaxed">
+                    <p class="text-sm font-extrabold text-red-900 dark:text-red-200">Kuota Presensi Penuh</p>
+                    <p class="text-xs font-medium text-red-700 dark:text-red-300 leading-relaxed">
                         Presensi untuk agenda ini telah ditutup karena kuota maksimal peserta telah terpenuhi.
                     </p>
                 </div>
             @else
                 @if (empty($pegawai->face_descriptor))
-                    <button type="button" data-open-face class="flex min-h-[96px] w-full max-w-[445px] items-center gap-5 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 px-6 text-left text-white shadow-sm transition hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-orange-500/20">
+                    <button type="button" data-open-face class="flex min-h-[96px] w-full max-w-[445px] items-center gap-5 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 px-6 text-left text-white shadow-xs transition hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-orange-500/20 cursor-pointer">
                         <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15">
                             <i data-lucide="scan-face" class="h-7 w-7"></i>
                         </span>
@@ -201,7 +219,7 @@
                         </span>
                     </button>
                 @else
-                    <button type="button" data-open-presensi-face class="flex min-h-[96px] w-full max-w-[445px] items-center gap-5 rounded-2xl bg-gradient-to-r from-sirapi-green to-sirapi-green2 px-6 text-left text-white shadow-sm transition hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-sirapi-green/20">
+                    <button type="button" data-open-presensi-face class="flex min-h-[96px] w-full max-w-[445px] items-center gap-5 rounded-2xl bg-gradient-to-r from-sirapi-green to-sirapi-green2 dark:from-[#107050] dark:to-[#0c5940] px-6 text-left text-white shadow-xs transition hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-sirapi-green/20 cursor-pointer">
                         <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15">
                             <i data-lucide="scan-line" class="h-7 w-7"></i>
                         </span>
@@ -219,27 +237,27 @@
         </section>
 
         <section class="mt-16 px-8 sm:px-9">
-            <h2 class="text-lg font-extrabold">Lampiran</h2>
+            <h2 class="text-lg font-extrabold text-gray-900 dark:text-white">Lampiran</h2>
             <div class="mt-3 grid gap-4 sm:grid-cols-2">
                 @forelse ($dokumen as $item)
-                    <a href="{{ asset('storage/' . $item->file_path) }}" target="_blank" rel="noopener" class="flex min-h-[53px] items-center gap-3 rounded-xl border border-sirapi-line bg-white px-4 transition hover:border-sirapi-green">
-                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FFE6BB] text-[10px] font-extrabold text-[#D58A18]">PDF</span>
+                    <a href="{{ asset('storage/' . $item->file_path) }}" target="_blank" rel="noopener" class="flex min-h-[53px] items-center gap-3 rounded-xl border border-sirapi-line dark:border-[#233a34] bg-white dark:bg-[#152420] px-4 transition hover:border-sirapi-green dark:hover:border-emerald-500 shadow-xs">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FFE6BB] dark:bg-amber-950/60 text-[10px] font-extrabold text-[#D58A18] dark:text-amber-300 border border-transparent dark:border-amber-700/40">PDF</span>
                         <span class="min-w-0">
-                            <span class="block truncate text-xs font-extrabold">{{ $item->nama_file ?: basename($item->file_path) }}</span>
-                            <span class="block text-[11px] font-medium text-[#9CA5A0]">{{ strtoupper(pathinfo($item->file_path, PATHINFO_EXTENSION) ?: 'FILE') }}</span>
+                            <span class="block truncate text-xs font-extrabold text-gray-900 dark:text-white">{{ $item->nama_file ?: basename($item->file_path) }}</span>
+                            <span class="block text-[11px] font-medium text-[#9CA5A0] dark:text-gray-400">{{ strtoupper(pathinfo($item->file_path, PATHINFO_EXTENSION) ?: 'FILE') }}</span>
                         </span>
                     </a>
                 @empty
                     @if ($lampiranAgenda)
-                        <a href="{{ route('publik.agenda.lampiran.file', $agendaAktif->id_agenda) }}" target="_blank" rel="noopener" class="flex min-h-[53px] items-center gap-3 rounded-xl border border-sirapi-line bg-white px-4 transition hover:border-sirapi-green">
-                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FFE6BB] text-[10px] font-extrabold text-[#D58A18]">PDF</span>
+                        <a href="{{ route('publik.agenda.lampiran.file', $agendaAktif->id_agenda) }}" target="_blank" rel="noopener" class="flex min-h-[53px] items-center gap-3 rounded-xl border border-sirapi-line dark:border-[#233a34] bg-white dark:bg-[#152420] px-4 transition hover:border-sirapi-green dark:hover:border-emerald-500 shadow-xs">
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FFE6BB] dark:bg-amber-950/60 text-[10px] font-extrabold text-[#D58A18] dark:text-amber-300 border border-transparent dark:border-amber-700/40">PDF</span>
                             <span class="min-w-0">
-                                <span class="block truncate text-xs font-extrabold">{{ $lampiranAgenda }}</span>
-                                <span class="block text-[11px] font-medium text-[#9CA5A0]">{{ strtoupper(pathinfo($lampiranAgenda, PATHINFO_EXTENSION) ?: 'FILE') }}</span>
+                                <span class="block truncate text-xs font-extrabold text-gray-900 dark:text-white">{{ $lampiranAgenda }}</span>
+                                <span class="block text-[11px] font-medium text-[#9CA5A0] dark:text-gray-400">{{ strtoupper(pathinfo($lampiranAgenda, PATHINFO_EXTENSION) ?: 'FILE') }}</span>
                             </span>
                         </a>
                     @else
-                        <p class="text-sm font-medium text-[#9CA5A0]">Tidak ada lampiran.</p>
+                        <p class="text-sm font-medium text-[#9CA5A0] dark:text-gray-400">Tidak ada lampiran.</p>
                     @endif
                 @endforelse
             </div>
@@ -247,15 +265,15 @@
     </main>
 
     <!-- Edit Profile Modal (Gaya Admin Popup) -->
-    <div data-profile-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
-        <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
+    <div data-profile-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4">
+        <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 shadow-2xl sm:max-h-[calc(100vh-2rem)] border border-transparent dark:border-[#233a34]">
             <!-- Header Popup Admin Style -->
-            <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+            <div class="flex items-center justify-between bg-ijo-tua dark:bg-[#0f1c19] px-5 py-4 text-white sm:px-6 border-b border-transparent dark:border-[#233a34]">
                 <div>
                     <h3 class="text-lg font-bold text-white">Edit Profil Pegawai</h3>
-                    <p class="text-xs text-white/80 font-medium">{{ $pegawai->email }}</p>
+                    <p class="text-xs text-white/80 dark:text-emerald-400 font-medium">{{ $pegawai->email }}</p>
                 </div>
-                <button type="button" data-close-profile class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" title="Tutup">
+                <button type="button" data-close-profile class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 dark:hover:bg-white/5 hover:text-white cursor-pointer" title="Tutup">
                     <i data-lucide="x" class="h-5 w-5"></i>
                 </button>
             </div>
@@ -266,7 +284,7 @@
 
                 @if ($errors->any() && ! $errors->has('presensi'))
                     <div class="px-5 pt-4 sm:px-6">
-                        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700">
+                        <div class="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-4 py-3 text-xs font-semibold text-red-700 dark:text-red-300">
                             {{ $errors->first() }}
                         </div>
                     </div>
@@ -275,23 +293,23 @@
                 <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
                     <!-- Foto Profil -->
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Foto Profil</label>
-                        <input type="file" name="foto" accept="image/*" class="block w-full rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Foto Profil</label>
+                        <input type="file" name="foto" accept="image/*" class="block w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 py-2 text-xs font-medium text-gray-700 dark:text-gray-300 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- Record Wajah Box -->
-                    <div class="sm:col-span-2 rounded-xl border border-sirapi-green/20 bg-sirapi-green/5 p-3.5">
+                    <div class="sm:col-span-2 rounded-xl border border-sirapi-green/20 dark:border-[#284c43] bg-sirapi-green/5 dark:bg-[#0f1c19] p-3.5">
                         <div class="flex items-center justify-between gap-3">
                             <div class="flex items-center gap-3">
-                                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#3f8078] text-white shadow-sm">
+                                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ijo-tua dark:bg-[#107050] text-white shadow-xs">
                                     <i data-lucide="scan-face" class="h-5 w-5"></i>
                                 </span>
                                 <div>
-                                    <span class="block text-xs font-extrabold text-[#35635b]">Record / Rekam Ulang Wajah</span>
-                                    <span class="block text-[11px] font-medium text-gray-500">Ambil ulang foto wajah untuk presensi Face Recognition</span>
+                                    <span class="block text-xs font-extrabold text-[#35635b] dark:text-emerald-400">Record / Rekam Ulang Wajah</span>
+                                    <span class="block text-[11px] font-medium text-gray-500 dark:text-gray-400">Ambil ulang foto wajah untuk presensi Face Recognition</span>
                                 </div>
                             </div>
-                            <button type="button" data-open-face class="shrink-0 rounded-xl bg-[#3f8078] px-3.5 py-2 text-xs font-extrabold text-white transition hover:bg-[#35635b]">
+                            <button type="button" data-open-face class="shrink-0 rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-3.5 py-2 text-xs font-extrabold text-white transition shadow-xs cursor-pointer">
                                 Rekam Wajah
                             </button>
                         </div>
@@ -299,20 +317,20 @@
 
                     <!-- Nama Pegawai -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Nama Lengkap *</label>
-                        <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai', $pegawai->nama_pegawai) }}" required class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Nama Lengkap *</label>
+                        <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai', $pegawai->nama_pegawai) }}" required class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- NIP -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">NIP *</label>
-                        <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">NIP *</label>
+                        <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- Jabatan -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Jabatan *</label>
-                        <select name="jabatan" required class="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Jabatan *</label>
+                        <select name="jabatan" required class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                             <option value="">Pilih jabatan</option>
                             @foreach ($jabatanOptions->merge([$pegawai->jabatan])->filter()->unique() as $jabatan)
                                 <option value="{{ $jabatan }}" @selected(old('jabatan', $pegawai->jabatan) === $jabatan)>{{ $jabatan }}</option>
@@ -322,8 +340,8 @@
 
                     <!-- Bidang -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Bidang</label>
-                        <select name="bidang" class="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Bidang</label>
+                        <select name="bidang" class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                             <option value="">Pilih bidang</option>
                             @foreach ($bidangOptions->merge([$pegawai->bidang])->filter()->unique() as $bidang)
                                 <option value="{{ $bidang }}" @selected(old('bidang', $pegawai->bidang) === $bidang)>{{ $bidang }}</option>
@@ -333,43 +351,43 @@
 
                     <!-- No HP -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">No. HP / WhatsApp</label>
-                        <input type="text" name="nomor_hp" value="{{ old('nomor_hp', $pegawai->nomor_hp) }}" pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">No. HP / WhatsApp</label>
+                        <input type="text" name="nomor_hp" value="{{ old('nomor_hp', $pegawai->nomor_hp) }}" pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- Email -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Email *</label>
-                        <input type="email" name="email" value="{{ old('email', $pegawai->email) }}" required class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Email *</label>
+                        <input type="email" name="email" value="{{ old('email', $pegawai->email) }}" required class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- Password Baru -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Password Baru</label>
-                        <input type="password" name="password" placeholder="Kosongkan jika tidak diubah" class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Password Baru</label>
+                        <input type="password" name="password" placeholder="Kosongkan jika tidak diubah" class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- Konfirmasi Password -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">Konfirmasi Password</label>
-                        <input type="password" name="password_confirmation" placeholder="Ulangi password baru" class="h-10 w-full rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Konfirmasi Password</label>
+                        <input type="password" name="password_confirmation" placeholder="Ulangi password baru" class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- OTP Password -->
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 mb-1">OTP Password (Diperlukan jika ubah password)</label>
+                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">OTP Password (Diperlukan jika ubah password)</label>
                         <div class="flex gap-2">
-                            <input type="text" name="password_otp" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Kode OTP 6 digit" class="h-10 min-w-0 flex-1 rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-800 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                            <button type="button" data-send-password-otp class="h-10 shrink-0 rounded-xl bg-[#3f8078] px-4 text-xs font-extrabold text-white transition hover:bg-[#35635b]">Kirim OTP</button>
+                            <input type="text" name="password_otp" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Kode OTP 6 digit" class="h-10 min-w-0 flex-1 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            <button type="button" data-send-password-otp class="h-10 shrink-0 rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 text-xs font-extrabold text-white transition shadow-xs cursor-pointer">Kirim OTP</button>
                         </div>
                         <p data-password-otp-status class="mt-2 hidden text-xs font-bold"></p>
                     </div>
                 </div>
 
                 <!-- Footer Buttons Admin Style -->
-                <div class="flex flex-col-reverse gap-3 border-t border-gray-100 bg-gray-50/50 px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                    <button type="button" data-close-profile class="h-10 rounded-xl border border-gray-200 bg-white px-5 text-xs font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                    <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] px-5 text-xs font-bold text-white transition hover:bg-[#035f35]">
+                <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] bg-gray-50/50 dark:bg-[#0f1c19] px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
+                    <button type="button" data-close-profile class="h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#152420] px-5 text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                    <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] hover:bg-[#035f35] dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-5 text-xs font-bold text-white transition shadow-xs cursor-pointer">
                         <i data-lucide="save" class="h-4 w-4"></i>
                         <span>Simpan Perubahan</span>
                     </button>
@@ -379,30 +397,30 @@
     </div>
 
     <!-- Face Registration Modal (Gaya Admin Popup) -->
-    <div data-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4">
-        <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100vh-2rem)]">
-            <div class="flex items-center justify-between bg-[#3f8078] px-5 py-4 text-white sm:px-6">
+    <div data-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4">
+        <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 shadow-2xl sm:max-h-[calc(100vh-2rem)] border border-transparent dark:border-[#233a34]">
+            <div class="flex items-center justify-between bg-ijo-tua dark:bg-[#0f1c19] px-5 py-4 text-white sm:px-6 border-b border-transparent dark:border-[#233a34]">
                 <div>
                     <h3 class="text-lg font-bold text-white">Daftarkan / Record Wajah</h3>
-                    <p class="text-xs text-white/80 font-medium">Kamera Presensi Face Recognition</p>
+                    <p class="text-xs text-white/80 dark:text-emerald-400 font-medium">Kamera Presensi Face Recognition</p>
                 </div>
-                <button type="button" data-close-face class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white" title="Tutup">
+                <button type="button" data-close-face class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 dark:hover:bg-white/5 hover:text-white cursor-pointer" title="Tutup">
                     <i data-lucide="x" class="h-5 w-5"></i>
                 </button>
             </div>
 
             <div class="p-5 sm:p-6 text-center space-y-4">
-                <p class="text-xs text-gray-500 font-medium">Posisikan wajah Anda dengan jelas di tengah kamera, lalu klik tombol Ambil Wajah.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Posisikan wajah Anda dengan jelas di tengah kamera, lalu klik tombol Ambil Wajah.</p>
                 
-                <div class="relative w-full aspect-[4/3] bg-gray-900 rounded-2xl overflow-hidden shadow-inner border border-gray-200">
+                <div class="relative w-full aspect-[4/3] bg-gray-900 rounded-2xl overflow-hidden shadow-inner border border-gray-200 dark:border-[#284c43]">
                     <p id="face-status" class="absolute inset-0 flex items-center justify-center text-white text-xs font-medium z-10 animate-pulse px-4">Memuat kamera dan model...</p>
                     <video id="face-video" class="absolute top-0 left-0 w-full h-full object-cover hidden" style="transform: scaleX(-1);" autoplay muted playsinline></video>
                     <canvas id="face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
                 </div>
 
                 <div class="flex gap-3 pt-2">
-                    <button type="button" data-close-face class="flex-1 h-10 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 transition hover:bg-gray-100">Batal</button>
-                    <button type="button" id="btn-capture-face" class="flex-1 inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] text-xs font-bold text-white transition hover:bg-[#035f35] hidden">
+                    <button type="button" data-close-face class="flex-1 h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
+                    <button type="button" id="btn-capture-face" class="flex-1 inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] hover:bg-[#035f35] dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-xs font-bold text-white transition hidden shadow-xs cursor-pointer">
                         <i data-lucide="scan" class="h-4 w-4"></i>
                         <span>Ambil Wajah</span>
                     </button>
@@ -412,15 +430,15 @@
     </div>
 
     <!-- Presensi Face Scan Modal -->
-    <div data-presensi-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 px-4 py-6">
-        <section class="max-h-full w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl relative text-center">
-            <button type="button" data-close-presensi-face class="absolute top-4 right-4 text-gray-400 hover:text-gray-700">
+    <div data-presensi-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 backdrop-blur-xs px-4 py-6">
+        <section class="max-h-full w-full max-w-lg overflow-y-auto rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 p-6 shadow-2xl relative text-center border border-transparent dark:border-[#233a34]">
+            <button type="button" data-close-presensi-face class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer">
                 <i data-lucide="x" class="h-6 w-6"></i>
             </button>
-            <h2 class="text-lg font-extrabold text-gray-900">Scan Wajah Presensi</h2>
-            <p class="text-xs text-gray-500 mt-1 mb-4">Posisikan wajah Anda hingga sistem mengenali Anda.</p>
+            <h2 class="text-lg font-extrabold text-gray-900 dark:text-white">Scan Wajah Presensi</h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 mb-4">Posisikan wajah Anda hingga sistem mengenali Anda.</p>
             
-            <div class="relative w-full aspect-[4/3] bg-gray-900 rounded-xl overflow-hidden mb-4 shadow-inner">
+            <div class="relative w-full aspect-[4/3] bg-gray-900 rounded-xl overflow-hidden mb-4 shadow-inner border border-gray-200 dark:border-[#284c43]">
                 <p id="presensi-face-status" class="absolute inset-0 flex items-center justify-center text-white text-sm font-medium z-10 animate-pulse">Memuat kamera dan model...</p>
                 <video id="presensi-face-video" class="absolute top-0 left-0 w-full h-full object-cover hidden" style="transform: scaleX(-1);" autoplay muted playsinline></video>
                 <canvas id="presensi-face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
