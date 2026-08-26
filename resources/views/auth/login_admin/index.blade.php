@@ -42,40 +42,40 @@
         $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
     @endphp
 
-    <div class="flex flex-col md:flex-row w-full h-screen bg-white dark:bg-[#152420] overflow-hidden transition-colors">
+    <div class="flex flex-col md:flex-row w-full min-h-screen md:h-screen bg-white dark:bg-[#152420] overflow-y-auto md:overflow-hidden transition-colors">
         
         <!-- BAGIAN KIRI: Branding & Informasi -->
-        <div class="relative w-full md:w-5/12 bg-brand-teal dark:bg-[#0f1c19] dark:border-r dark:border-[#233a34] text-white flex flex-col justify-between p-8 md:p-12 overflow-hidden">
+        <div class="relative w-full md:w-5/12 bg-brand-teal dark:bg-[#0f1c19] dark:border-r dark:border-[#233a34] text-white flex flex-col justify-between p-6 sm:p-8 md:p-12 overflow-hidden shrink-0">
             
             <!-- Ornamen Lingkaran Top-Left -->
             <div class="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-white/10 dark:bg-white/5 pointer-events-none"></div>
 
             <!-- Konten Tengah (Logo & Judul) -->
-            <div class="my-auto flex flex-col items-center text-center z-10">
-                <div class="mb-6">
+            <div class="my-auto flex flex-col items-center text-center z-10 py-6 md:py-0">
+                <div class="mb-4 sm:mb-6">
                     <img src="{{ asset('foto/logo-bappenda.png') }}" 
                          alt="Logo Kab. Bogor" 
-                         class="h-36 w-auto drop-shadow-md">
+                         class="h-24 sm:h-28 md:h-36 w-auto drop-shadow-md">
                 </div>
                 
-                <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">{{ config('sirapi.name', 'SIRAPI') }}</h1>
-                <p class="text-sm md:text-base font-medium opacity-90 max-w-xs mb-2">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2">{{ config('sirapi.name', 'SIRAPI') }}</h1>
+                <p class="text-xs sm:text-sm md:text-base font-medium opacity-90 max-w-xs mb-1 sm:mb-2">
                     Sistem Informasi Rapat dan Presensi
                 </p>
-                <p class="text-xs opacity-80 max-w-xs">
+                <p class="text-[11px] sm:text-xs opacity-80 max-w-xs">
                     {{ $regionName }}
                 </p>
             </div>
 
             <!-- Footer Kiri -->
-            <div class="text-center text-xs opacity-80 z-10 space-y-1">
+            <div class="text-center text-xs opacity-80 z-10 space-y-1 hidden md:block">
                 <p class="font-medium">Versi 1.0</p>
                 <p>&copy; {{ date('Y') }} {{ $regionName }}</p>
             </div>
         </div>
 
         <!-- BAGIAN KANAN: Form Login -->
-        <div class="w-full md:w-7/12 flex items-center justify-center p-8 md:p-16 bg-white dark:bg-[#152420] relative transition-colors">
+        <div class="w-full md:w-7/12 flex items-center justify-center p-6 sm:p-8 md:p-16 bg-white dark:bg-[#152420] relative transition-colors flex-1">
             <!-- Theme Toggle Top-Right -->
             <button type="button" 
                     onclick="toggleSirapiTheme()" 

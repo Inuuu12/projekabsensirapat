@@ -30,14 +30,14 @@
         }
     </script>
 </head>
-<body class="min-h-screen bg-white dark:bg-[#0d1614] font-sans text-sirapi-ink dark:text-slate-100 antialiased transition-colors duration-200">
-    <header class="relative flex h-[240px] items-center justify-center overflow-hidden bg-sirapi-green dark:bg-[#0f1c19] dark:border-b dark:border-[#233a34] text-white">
+<body class="min-h-screen bg-white dark:bg-[#0d1614] font-sans text-sirapi-ink dark:text-slate-100 antialiased transition-colors duration-200 flex flex-col">
+    <header class="relative flex h-[200px] sm:h-[240px] items-center justify-center overflow-hidden bg-sirapi-green dark:bg-[#0f1c19] dark:border-b dark:border-[#233a34] text-white shrink-0">
         <div class="absolute -left-20 -top-24 h-72 w-72 rounded-full bg-white/10 dark:bg-white/5"></div>
         
         <!-- Theme Toggle Top-Right -->
         <button type="button" 
                 onclick="toggleSirapiTheme()" 
-                class="absolute top-5 right-5 w-10 h-10 rounded-full flex items-center justify-center text-white/90 hover:text-white dark:text-amber-400 dark:hover:text-amber-300 bg-white/10 hover:bg-white/20 dark:bg-[#152420] dark:border dark:border-[#284c43] transition-colors cursor-pointer z-20"
+                class="absolute top-4 right-4 sm:top-5 sm:right-5 w-10 h-10 rounded-full flex items-center justify-center text-white/90 hover:text-white dark:text-amber-400 dark:hover:text-amber-300 bg-white/10 hover:bg-white/20 dark:bg-[#152420] dark:border dark:border-[#284c43] transition-colors cursor-pointer z-20"
                 title="Ganti Mode Gelap / Terang">
             <svg data-theme-icon-light class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -47,18 +47,18 @@
             </svg>
         </button>
 
-        <div class="relative flex flex-col items-center text-center">
-            <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-28 w-auto drop-shadow">
-            <h1 class="mt-5 text-2xl font-extrabold tracking-wide">SIRAPI</h1>
-            <p class="mt-2 text-sm font-bold">Sistem Informasi Rapat dan Presensi</p>
+        <div class="relative flex flex-col items-center text-center px-4">
+            <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-20 sm:h-28 w-auto drop-shadow">
+            <h1 class="mt-3 sm:mt-5 text-xl sm:text-2xl font-extrabold tracking-wide">SIRAPI</h1>
+            <p class="mt-1 sm:mt-2 text-xs sm:text-sm font-bold">Sistem Informasi Rapat dan Presensi</p>
         </div>
     </header>
 
-    <main class="flex min-h-[calc(100vh-240px)] items-start justify-center px-6 pt-16 pb-12">
+    <main class="flex flex-1 items-start justify-center px-4 sm:px-6 pt-8 sm:pt-14 pb-12">
         <section class="w-full max-w-[356px]">
-            <div class="text-center mb-8">
-                <h2 class="text-3xl font-extrabold text-[#2A3547] dark:text-white tracking-tight">Selamat Datang</h2>
-                <p class="mt-2 text-[15px] font-bold text-[#2A3547] dark:text-gray-300">Silakan login menggunakan email resmi Anda.</p>
+            <div class="text-center mb-6 sm:mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-[#2A3547] dark:text-white tracking-tight">Selamat Datang</h2>
+                <p class="mt-1 sm:mt-2 text-xs sm:text-[15px] font-bold text-[#2A3547] dark:text-gray-300">Silakan login menggunakan email resmi Anda.</p>
             </div>
 
             @if (session('status'))

@@ -52,6 +52,17 @@
                         <dt class="text-xs font-semibold text-gray-400 dark:text-gray-400">Kuota</dt>
                         <dd class="font-medium text-gray-800 dark:text-slate-100 mt-0.5">{{ $agenda->kuota ?? '-' }}</dd>
                     </div>
+                    @if ($agenda->lampiran)
+                        <div>
+                            <dt class="text-xs font-semibold text-gray-400 dark:text-gray-400">Lampiran Surat</dt>
+                            <dd class="mt-0.5">
+                                <button type="button" onclick="openDocumentPreview('{{ asset('storage/' . $agenda->lampiran) }}', 'Lampiran Surat - {{ addslashes($agenda->nama_agenda) }}', '{{ addslashes(basename($agenda->lampiran)) }}')" class="inline-flex items-center gap-1.5 font-bold text-xs text-[#35635b] dark:text-emerald-400 hover:underline cursor-pointer">
+                                    <img src="{{ asset('foto/Lampiranlogo.png') }}" alt="Lampiran" class="w-3.5 h-3.5 object-contain">
+                                    <span>Lihat Surat</span>
+                                </button>
+                            </dd>
+                        </div>
+                    @endif
                 </dl>
             </div>
 
@@ -61,7 +72,7 @@
                     @if ($notulen)
                         <p class="mt-1 truncate text-xs font-semibold text-[#35635b] dark:text-emerald-400">{{ $notulen->nama_file }}</p>
                         <div class="mt-4 flex flex-wrap gap-2">
-                            <a href="{{ asset('storage/' . $notulen->file_path) }}" target="_blank" class="rounded-lg bg-[#35635b] px-3 py-2 text-xs font-bold text-white hover:bg-[#2b4f49]">Lihat</a>
+                            <button type="button" onclick="openDocumentPreview('{{ asset('storage/' . $notulen->file_path) }}', 'Notulen - {{ addslashes($agenda->nama_agenda) }}', '{{ addslashes($notulen->nama_file) }}')" class="rounded-lg bg-[#35635b] dark:bg-[#107050] hover:bg-[#2b4f49] dark:hover:bg-[#0c5940] px-3 py-2 text-xs font-bold text-white transition cursor-pointer">Lihat</button>
                             <button type="button" onclick="openDeleteModal('{{ route('admin.agenda.dokumen.destroy', [$agenda->id_agenda, $notulen->id_dokumen]) }}', 'Hapus Notulen?', 'Apakah Anda yakin ingin menghapus notulen agenda ini?')" class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Notulen">
                                 <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                 <span class="sr-only">Hapus</span>
@@ -74,7 +85,7 @@
                         @csrf
                         <input type="hidden" name="jenis_dokumen" value="notulen">
                         <input name="dokumen" type="file" accept=".pdf,.doc,.docx" required class="w-full rounded-lg border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 py-2 text-xs text-gray-700 dark:text-gray-300">
-                        <button type="submit" class="w-full rounded-lg bg-[#04733f] px-3 py-2 text-xs font-bold text-white hover:bg-[#035f35] cursor-pointer">
+                        <button type="submit" class="w-full rounded-lg bg-[#04733f] dark:bg-[#107050] hover:bg-[#035f35] dark:hover:bg-[#0c5940] px-3 py-2 text-xs font-bold text-white transition cursor-pointer">
                             {{ $notulen ? 'Ganti Notulen' : 'Unggah Notulen' }}
                         </button>
                     </form>
@@ -88,7 +99,7 @@
                                 <div class="flex items-center justify-between gap-3 rounded-lg bg-gray-50 dark:bg-[#1a2d29] border border-transparent dark:border-[#233a34] px-3 py-2">
                                     <p class="min-w-0 truncate text-xs font-semibold text-[#35635b] dark:text-emerald-400">{{ $dokumentasi->nama_file }}</p>
                                     <div class="flex shrink-0 gap-2">
-                                        <a href="{{ asset('storage/' . $dokumentasi->file_path) }}" target="_blank" class="rounded-lg bg-[#35635b] px-3 py-2 text-xs font-bold text-white hover:bg-[#2b4f49]">Lihat</a>
+                                        <button type="button" onclick="openDocumentPreview('{{ asset('storage/' . $dokumentasi->file_path) }}', 'Dokumentasi - {{ addslashes($agenda->nama_agenda) }}', '{{ addslashes($dokumentasi->nama_file) }}')" class="rounded-lg bg-[#35635b] dark:bg-[#107050] hover:bg-[#2b4f49] dark:hover:bg-[#0c5940] px-3 py-2 text-xs font-bold text-white transition cursor-pointer">Lihat</button>
                                         <button type="button" onclick="openDeleteModal('{{ route('admin.agenda.dokumen.destroy', [$agenda->id_agenda, $dokumentasi->id_dokumen]) }}', 'Hapus Dokumentasi?', 'Apakah Anda yakin ingin menghapus dokumentasi agenda ini?')" class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Dokumentasi">
                                             <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                             <span class="sr-only">Hapus</span>
@@ -104,7 +115,7 @@
                         @csrf
                         <input type="hidden" name="jenis_dokumen" value="dokumentasi">
                         <input name="dokumen[]" type="file" accept=".jpg,.jpeg,.png,.webp" multiple required class="w-full rounded-lg border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 py-2 text-xs text-gray-700 dark:text-gray-300">
-                        <button type="submit" class="w-full rounded-lg bg-[#04733f] px-3 py-2 text-xs font-bold text-white hover:bg-[#035f35] cursor-pointer">
+                        <button type="submit" class="w-full rounded-lg bg-[#04733f] dark:bg-[#107050] hover:bg-[#035f35] dark:hover:bg-[#0c5940] px-3 py-2 text-xs font-bold text-white transition cursor-pointer">
                             Unggah Dokumentasi
                         </button>
                     </form>

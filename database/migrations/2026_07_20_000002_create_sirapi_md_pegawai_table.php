@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password')->nullable();
             $table->longText('face_descriptor')->nullable();
+            $table->string('status_verifikasi', 20)->default('aktif');
             $table->timestamps();
         });
     }

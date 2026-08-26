@@ -234,15 +234,15 @@
     </section>
 </div>
 
-<div id="modal-detail-masukkan" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/50 p-4">
-    <div class="w-full max-w-2xl rounded-xl bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl overflow-hidden">
-        <div class="flex items-center justify-between border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
-            <h3 class="text-lg font-black text-[#0f513f] dark:text-white">Detail Aduan</h3>
-            <button type="button" onclick="closeMasukkanDetail()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer" title="Tutup">
+<div id="modal-detail-masukkan" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/50 backdrop-blur-xs p-2.5 sm:p-4 overflow-y-auto">
+    <div class="my-auto w-full max-w-2xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden">
+        <div class="flex items-center justify-between rounded-t-2xl border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 shrink-0 bg-white dark:bg-[#163830]">
+            <h3 class="text-base sm:text-lg font-black text-[#0f513f] dark:text-white">Detail Aduan</h3>
+            <button type="button" onclick="closeMasukkanDetail()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-white/80 dark:hover:bg-white/10 cursor-pointer" title="Tutup">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
         </div>
-        <div class="space-y-5 px-6 py-5">
+        <div class="flex-1 min-h-0 space-y-4 sm:space-y-5 p-4 sm:p-6 overflow-y-auto">
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
                     <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Nama Pengadu</p>
@@ -292,41 +292,46 @@
                 <p id="detail-reply" class="mt-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/40 p-4 leading-relaxed text-[#08251f] dark:text-emerald-300"></p>
             </div>
         </div>
+        <div class="flex justify-end gap-3 border-t border-gray-100 dark:border-[#233a34] p-3 sm:px-6 sm:py-3.5 bg-gray-50 dark:bg-[#0f1c19] rounded-b-2xl shrink-0">
+            <button type="button" onclick="closeMasukkanDetail()" class="w-full sm:w-auto h-11 sm:h-9 rounded-xl px-5 text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-white/5 cursor-pointer transition">Tutup</button>
+        </div>
     </div>
 </div>
 
-<div id="modal-reply-masukkan" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/50 p-4">
-    <div class="w-full max-w-2xl rounded-xl bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl overflow-hidden">
-        <div class="flex items-center justify-between border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
-            <h3 class="text-lg font-black text-[#0f513f] dark:text-white">Reply Masukkan</h3>
-            <button type="button" onclick="closeMasukkanReply()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer" title="Tutup">
+<div id="modal-reply-masukkan" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/50 backdrop-blur-xs p-2.5 sm:p-4 overflow-y-auto">
+    <div class="my-auto w-full max-w-2xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden">
+        <div class="flex items-center justify-between rounded-t-2xl border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 shrink-0 bg-white dark:bg-[#163830]">
+            <h3 class="text-base sm:text-lg font-black text-[#0f513f] dark:text-white">Reply Masukkan</h3>
+            <button type="button" onclick="closeMasukkanReply()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-white/80 dark:hover:bg-white/10 cursor-pointer" title="Tutup">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
         </div>
-        <form id="reply-form" method="POST" class="space-y-5 px-6 py-5">
+        <form id="reply-form" method="POST" class="flex min-h-0 flex-1 flex-col">
             @csrf
             @method('PUT')
-            <div class="grid gap-4 sm:grid-cols-2">
-                <div>
-                    <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Nama Pengadu</p>
-                    <p id="reply-name" class="mt-1 font-bold text-[#08251f] dark:text-white"></p>
+            <div class="flex-1 min-h-0 space-y-4 sm:space-y-5 p-4 sm:p-6 overflow-y-auto">
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Nama Pengadu</p>
+                        <p id="reply-name" class="mt-1 font-bold text-[#08251f] dark:text-white"></p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Email</p>
+                        <p id="reply-email" class="mt-1 font-bold text-[#08251f] dark:text-white"></p>
+                    </div>
                 </div>
                 <div>
-                    <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Email</p>
-                    <p id="reply-email" class="mt-1 font-bold text-[#08251f] dark:text-white"></p>
+                    <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Isi Aduan</p>
+                    <p id="reply-message" class="mt-2 rounded-lg bg-slate-50 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#284c43] p-4 leading-relaxed text-[#08251f] dark:text-slate-100"></p>
+                </div>
+                <div>
+                    <label for="reply-text" class="block text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Balasan Admin</label>
+                    <textarea id="reply-text" name="balasan_admin" rows="4" required class="mt-2 w-full rounded-lg border border-slate-300 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] p-4 text-sm leading-relaxed text-[#08251f] dark:text-white outline-none focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500" placeholder="Tulis balasan untuk pengadu..."></textarea>
                 </div>
             </div>
-            <div>
-                <p class="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Isi Aduan</p>
-                <p id="reply-message" class="mt-2 rounded-lg bg-slate-50 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#284c43] p-4 leading-relaxed text-[#08251f] dark:text-slate-100"></p>
-            </div>
-            <div>
-                <label for="reply-text" class="block text-xs font-black uppercase tracking-wider text-slate-400 dark:text-gray-400">Balasan Admin</label>
-                <textarea id="reply-text" name="balasan_admin" rows="5" required class="mt-2 w-full rounded-lg border border-slate-300 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] p-4 text-sm leading-relaxed text-[#08251f] dark:text-white outline-none focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500" placeholder="Tulis balasan untuk pengadu..."></textarea>
-            </div>
-            <div class="flex justify-end gap-3 border-t border-gray-100 dark:border-[#233a34] pt-5">
-                <button type="button" onclick="closeMasukkanReply()" class="h-11 rounded-md px-5 text-sm font-bold text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
-                <button type="submit" class="h-11 rounded-md bg-[#35635b] px-5 text-sm font-black text-white hover:bg-[#2b4f49] cursor-pointer">Kirim Reply</button>
+            <div class="grid grid-cols-2 sm:flex sm:justify-end gap-2.5 sm:gap-3 border-t border-gray-100 dark:border-[#233a34] p-3 sm:px-6 sm:py-4 bg-gray-50 dark:bg-[#0f1c19] rounded-b-2xl shrink-0">
+                <button type="button" onclick="closeMasukkanReply()" class="w-full sm:w-auto h-10 rounded-xl px-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-[#152420] border border-gray-300 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer flex items-center justify-center">Batal</button>
+                <button type="submit" class="w-full sm:w-auto inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#35635b] dark:bg-[#107050] hover:bg-[#2b4f49] dark:hover:bg-[#0c5940] px-5 text-xs sm:text-sm font-bold text-white cursor-pointer transition shadow-sm">Kirim Reply</button>
             </div>
         </form>
     </div>
@@ -334,9 +339,9 @@
 
 <!-- Modal Preview Foto Lampiran Pop-Up Admin (Z-Index 90 di atas modal detail) -->
 <div id="admin-photo-preview-modal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/80 backdrop-blur-sm p-3 sm:p-6 transition-all duration-300">
-    <div class="relative w-full max-w-5xl rounded-xl bg-white dark:bg-[#152420] border border-transparent dark:border-[#284c43] shadow-2xl overflow-hidden flex flex-col max-h-[94vh] animate-in fade-in zoom-in-95 duration-200">
+    <div class="relative w-full max-w-5xl rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden flex flex-col max-h-[94vh] animate-in fade-in zoom-in-95 duration-200">
         <!-- Header Modal -->
-        <div class="bg-[#0f513f] text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shrink-0 border-b border-white/10">
+        <div class="rounded-t-2xl bg-[#0f513f] text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shrink-0 border-b border-white/10">
             <div class="flex items-center space-x-2.5">
                 <span class="text-base">🖼️</span>
                 <div>

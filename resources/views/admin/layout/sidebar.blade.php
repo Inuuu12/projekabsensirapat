@@ -114,7 +114,7 @@
     <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"></div>
 
     <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0 relative">
-        <div class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-[#152420] border border-transparent dark:border-[#233a34] text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm">
+        <div class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-[#152420] dark:border dark:border-[#233a34] text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm">
             <div class="bg-white dark:bg-[#152420] px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                 <div class="sm:flex sm:items-start flex-col items-center">
                     <!-- Ikon Peringatan -->
@@ -135,17 +135,17 @@
             </div>
             
             <!-- Bagian Tombol Aksi (Ya atau Batal) -->
-            <div class="bg-gray-50 dark:bg-[#0f1c19] px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-3 border-t border-gray-100 dark:border-[#233a34]">
+            <div class="bg-gray-50 dark:bg-[#0f1c19] px-4 py-3 grid grid-cols-2 sm:flex sm:flex-row-reverse sm:px-6 gap-2.5 sm:gap-3 border-t border-gray-100 dark:border-[#233a34]">
                 <!-- Form Laravel untuk eksekusi POST /logout -->
                 <form action="{{ route('admin.logout') }}" method="POST" class="inline-block m-0 w-full sm:w-auto">
                     @csrf 
-                    <button type="submit" class="inline-flex w-full justify-center rounded-xl bg-red-600 hover:bg-red-700 px-4 py-2.5 text-sm font-bold text-white shadow-sm sm:w-auto transition cursor-pointer">
+                    <button type="submit" class="inline-flex w-full h-10 items-center justify-center rounded-xl bg-red-600 hover:bg-red-700 px-4 text-xs sm:text-sm font-bold text-white shadow-sm transition cursor-pointer">
                         Ya, Keluar
                     </button>
                 </form>
                 
                 <!-- Tombol Batal untuk menutup modal -->
-                <button type="button" onclick="document.getElementById('logoutModal').classList.add('hidden')" class="mt-3 inline-flex w-full justify-center rounded-xl bg-white dark:bg-[#152420] px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-[#284c43] hover:bg-gray-50 dark:hover:bg-white/5 sm:mt-0 sm:w-auto transition cursor-pointer">
+                <button type="button" onclick="document.getElementById('logoutModal').classList.add('hidden')" class="inline-flex w-full h-10 items-center justify-center rounded-xl bg-white dark:bg-[#152420] px-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-[#284c43] hover:bg-gray-50 dark:hover:bg-white/5 transition cursor-pointer">
                     Batal
                 </button>
             </div>

@@ -73,9 +73,24 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         .dark ::-webkit-scrollbar-thumb:hover { background: #35635b; }
 
+        /* Mobile Form & Touch Scrolling Optimizations */
+        .overflow-y-auto, .overflow-auto {
+            -webkit-overflow-scrolling: touch;
+        }
+        @media (max-width: 640px) {
+            input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="hidden"]),
+            select,
+            textarea {
+                font-size: 16px !important; /* Prevents unwanted auto-zoom on iOS Safari */
+            }
+        }
+
         /* =========================================================
            HIGH-CONTRAST DARK MODE RULES FOR ADMIN PANEL
            ========================================================= */
+        .dark {
+            color-scheme: dark;
+        }
         .dark, .dark body, .dark main {
             background-color: #0d1614 !important;
             color: #f1f5f9 !important;
@@ -138,6 +153,11 @@
         .dark .font-extrabold, 
         .dark .font-black {
             color: #ffffff;
+        }
+
+        /* Form Labels */
+        .dark label {
+            color: #e2e8f0;
         }
 
         /* Stat Numbers & Highlights */
@@ -207,7 +227,7 @@
         }
 
         /* Inputs, Selects & Textareas */
-        .dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+        .dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="hidden"]),
         .dark select,
         .dark textarea {
             background-color: #0f1c19 !important;
@@ -218,20 +238,92 @@
         .dark textarea::placeholder {
             color: #64748b !important;
         }
-        .dark select option {
+        .dark select option,
+        .dark select optgroup {
             background-color: #0f1c19 !important;
             color: #ffffff !important;
         }
+        .dark select optgroup {
+            font-weight: 800 !important;
+            color: #34d399 !important;
+        }
 
-        /* Modal Dialogs */
-        .dark .max-w-2xl.bg-white,
-        .dark .max-w-lg.bg-white,
-        .dark .max-w-md.bg-white,
-        .dark .max-w-xl.bg-white,
-        .dark .max-w-sm.bg-white {
-            background-color: #152420 !important;
-            color: #f1f5f9 !important;
+        /* Focus states in Dark Mode */
+        .dark input:focus,
+        .dark select:focus,
+        .dark textarea:focus {
+            border-color: #10b981 !important;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25) !important;
+        }
+
+        /* Date & Time Picker Indicator Icons in Dark Mode */
+        .dark input[type="date"]::-webkit-calendar-picker-indicator,
+        .dark input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.85);
+            cursor: pointer;
+        }
+
+        /* File Upload Buttons in Dark Mode */
+        .dark input[type="file"]::file-selector-button {
+            background-color: #107050 !important;
+            color: #ffffff !important;
+            border: 0 !important;
+            border-radius: 0.5rem !important;
+            padding: 0.375rem 0.875rem !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            transition: background-color 0.2s ease;
+        }
+        .dark input[type="file"]::file-selector-button:hover {
+            background-color: #0c5940 !important;
+        }
+
+        /* Checkboxes & Radios in Dark Mode */
+        .dark input[type="checkbox"],
+        .dark input[type="radio"] {
+            background-color: #0f1c19 !important;
+            border-color: #284c43 !important;
+        }
+        .dark input[type="checkbox"]:checked,
+        .dark input[type="radio"]:checked {
+            background-color: #04733f !important;
+            border-color: #10b981 !important;
+        }
+        /* Modal Dialog Headers & Footers in Dark Mode */
+        .dark .bg-\[\#3f8078\],
+        .dark .bg-\[\#0f513f\] {
+            background-color: #163830 !important;
+            border-bottom: 1px solid #284c43 !important;
+        }
+
+        /* Form Labels in Dark Mode */
+        .dark form label,
+        .dark .modal-label {
+            color: #e2e8f0 !important;
+        }
+
+        /* Action & Submit Buttons inside Modals in Dark Mode */
+        .dark button[type="submit"].bg-\[\#04733f\],
+        .dark a.bg-\[\#04733f\],
+        .dark button.bg-\[\#04733f\] {
+            background-color: #107050 !important;
+            border: 1px solid rgba(52, 211, 153, 0.2) !important;
+        }
+        .dark button[type="submit"].bg-\[\#04733f\]:hover,
+        .dark a.bg-\[\#04733f\]:hover,
+        .dark button.bg-\[\#04733f\]:hover {
+            background-color: #0c5940 !important;
+        }
+
+        /* Cancel Buttons inside Modals in Dark Mode */
+        .dark .modal-btn-cancel {
+            background-color: #0f1c19 !important;
             border: 1px solid #284c43 !important;
+            color: #cbd5e1 !important;
+        }
+        .dark .modal-btn-cancel:hover {
+            background-color: #1b332d !important;
+            color: #ffffff !important;
         }
     </style>
     @stack('styles')
@@ -277,6 +369,7 @@
     </div>
 
     @include('admin.agenda.deletepopup')
+    @include('admin.layout.document-preview-modal')
 
     <script>
         function toggleSidebar() {
