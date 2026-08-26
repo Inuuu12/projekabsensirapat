@@ -15,9 +15,29 @@
         </button>
     </div>
 
-    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs transition-colors">
-        <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Total Pegawai</p>
-        <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalPegawai ?? $pegawai->count() }}</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs transition-colors">
+            <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Total Pegawai</p>
+            <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalPegawai ?? $pegawai->count() }}</p>
+        </div>
+        <div class="bg-white dark:bg-[#152420] border border-emerald-100 dark:border-emerald-900/30 rounded-2xl p-5 shadow-xs transition-colors">
+            <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Pegawai Aktif</p>
+            <p class="mt-2 text-3xl font-black text-emerald-600 dark:text-emerald-400">{{ $totalAktif ?? 0 }}</p>
+        </div>
+        <div class="bg-white dark:bg-[#152420] border border-amber-100 dark:border-amber-900/30 rounded-2xl p-5 shadow-xs transition-colors relative overflow-hidden">
+            @if (($totalPending ?? 0) > 0)
+                <span class="absolute top-4 right-4 flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                </span>
+            @endif
+            <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Menunggu Verifikasi</p>
+            <p class="mt-2 text-3xl font-black text-amber-600 dark:text-amber-400">{{ $totalPending ?? 0 }}</p>
+        </div>
+        <div class="bg-white dark:bg-[#152420] border border-red-100 dark:border-red-900/30 rounded-2xl p-5 shadow-xs transition-colors">
+            <p class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">Ditolak</p>
+            <p class="mt-2 text-3xl font-black text-red-600 dark:text-red-400">{{ $totalDitolak ?? 0 }}</p>
+        </div>
     </div>
 
     <div class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
@@ -27,8 +47,8 @@
                 <p id="text-count-pegawai" class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $pegawai->count() }} dari {{ $totalPegawai ?? $pegawai->count() }} pegawai.</p>
             </div>
             <form id="form-search-pegawai" method="GET" action="{{ route('admin.pegawai.lihat') }}" class="w-full">
-                <div class="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px_220px] lg:items-end">
-                    <div>
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_180px_180px_180px] lg:items-end">
+                    <div class="sm:col-span-2 lg:col-span-1">
                         <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Search</label>
                         <input
                             id="keyword"
@@ -39,10 +59,24 @@
                             placeholder="Cari nama, NIP, tanggal lahir, jabatan, bidang, no HP, email...">
                     </div>
                     <div>
+                        <label for="status-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Status Akun</label>
+                        <select
+                            id="status-filter"
+                            name="status"
+                            onchange="document.getElementById('form-search-pegawai').submit()"
+                            class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            <option value="semua" @selected(($statusFilter ?? 'semua') === 'semua')>Semua Status</option>
+                            <option value="aktif" @selected(($statusFilter ?? 'semua') === 'aktif')>Aktif ({{ $totalAktif ?? 0 }})</option>
+                            <option value="pending" @selected(($statusFilter ?? 'semua') === 'pending')>Menunggu Verifikasi ({{ $totalPending ?? 0 }})</option>
+                            <option value="ditolak" @selected(($statusFilter ?? 'semua') === 'ditolak')>Ditolak ({{ $totalDitolak ?? 0 }})</option>
+                        </select>
+                    </div>
+                    <div>
                         <label for="bidang-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Bidang</label>
                         <select
                             id="bidang-filter"
                             name="bidang"
+                            onchange="document.getElementById('form-search-pegawai').submit()"
                             class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                             <option value="semua" @selected(($bidangFilter ?? 'semua') === 'semua')>Semua Bidang</option>
                             @foreach (($bidangOptions ?? collect()) as $bidang)
@@ -55,6 +89,7 @@
                         <select
                             id="jabatan-filter"
                             name="jabatan"
+                            onchange="document.getElementById('form-search-pegawai').submit()"
                             class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                             <option value="semua" @selected(($jabatanFilter ?? 'semua') === 'semua')>Semua Jabatan</option>
                             @foreach (($jabatanOptions ?? collect()) as $jabatan)
@@ -66,7 +101,7 @@
             </form>
         </div>
         <div class="overflow-x-auto overflow-y-auto max-h-[450px] custom-scrollbar">
-            <table class="w-full text-left min-w-[1160px]">
+            <table class="w-full text-left min-w-[1280px]">
                 <thead class="sticky top-0 z-10">
                     <tr class="bg-[#35635b] dark:bg-[#1b3832] text-white text-xs font-bold uppercase tracking-wider outline outline-1 outline-[#35635b] dark:outline-[#1b3832]">
                         <th class="px-6 py-4">Foto</th>
@@ -77,6 +112,7 @@
                         <th class="px-6 py-4">Bidang</th>
                         <th class="px-6 py-4">No HP</th>
                         <th class="px-6 py-4">Email</th>
+                        <th class="px-6 py-4">Status Akun</th>
                         <th class="px-6 py-4">Data Wajah</th>
                         <th class="px-6 py-4 text-center">Aksi</th>
                     </tr>
@@ -86,12 +122,12 @@
                         <tr class="hover:bg-gray-50/80 dark:hover:bg-[#1b332d] transition">
                             <td class="px-6 py-4">
                                 @if (!empty($item->foto))
-    <img src="{{ asset('storage/' . $item->foto) }}" 
-         alt="{{ $item->nama_pegawai }}" 
-         class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
-@else
-    <img src="{{ asset('foto/profile.png') }}" alt="{{ $item->nama_pegawai }}" class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
-@endif
+                                    <img src="{{ asset('storage/' . $item->foto) }}" 
+                                         alt="{{ $item->nama_pegawai }}" 
+                                         class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
+                                @else
+                                    <img src="{{ asset('foto/profile.png') }}" alt="{{ $item->nama_pegawai }}" class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
+                                @endif
                             </td>
                             <td class="px-6 py-4 font-bold text-[#35635b] dark:text-emerald-400">{{ $item->nama_pegawai }}</td>
                             <td class="px-6 py-4 font-semibold text-gray-700 dark:text-slate-200">{{ $item->nip }}</td>
@@ -100,6 +136,11 @@
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->bidang ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->nomor_hp }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->email }}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center rounded-lg border px-2.5 py-1 text-xs font-bold whitespace-nowrap {{ $item->status_badge_class }}">
+                                    {{ $item->status_label }}
+                                </span>
+                            </td>
                             <td class="px-6 py-4">
                                 @if (!is_null($item->face_descriptor))
                                     @if ($item->foto_wajah)
@@ -115,7 +156,39 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                <div class="flex justify-center gap-2">
+                                <div class="flex justify-center items-center gap-1.5">
+                                    @if ($item->isPending() || $item->isDitolak())
+                                        <form method="POST" action="{{ route('admin.pegawai.verifikasi', $item->id_pegawai) }}" class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="status_verifikasi" value="aktif">
+                                            <button
+                                                type="submit"
+                                                onclick="return confirm('Setujui dan aktifkan akun pegawai ini?')"
+                                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-1.5 transition cursor-pointer"
+                                                title="Setujui / Aktifkan Akun">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                <span class="sr-only">Setujui</span>
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                    @if ($item->isPending() || $item->isAktif())
+                                        <form method="POST" action="{{ route('admin.pegawai.verifikasi', $item->id_pegawai) }}" class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="status_verifikasi" value="ditolak">
+                                            <button
+                                                type="submit"
+                                                onclick="return confirm('Tolak/nonaktifkan akun pegawai ini? Pegawai tidak akan bisa login atau presensi.')"
+                                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 p-1.5 transition cursor-pointer"
+                                                title="Tolak / Nonaktifkan Akun">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                <span class="sr-only">Tolak</span>
+                                            </button>
+                                        </form>
+                                    @endif
+
                                     <button
                                         type="button"
                                         onclick="openEditPegawai(this)"
@@ -159,7 +232,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="10" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Belum ada data pegawai.</td>
+                            <td colspan="11" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Belum ada data pegawai.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -106,6 +106,7 @@ Route::prefix('admin')->group(function () {
         Route::delete('/pegawai/jabatan/{id}', [AdminPegawaiController::class, 'destroyJabatan'])->name('admin.pegawai.jabatan.destroy');
         Route::post('/pegawai', [AdminPegawaiController::class, 'store_Pegawai'])->name('admin.pegawai.store');
         Route::put('/pegawai/{id}', [AdminPegawaiController::class, 'update_Pegawai'])->name('admin.pegawai.update');
+        Route::put('/pegawai/{id}/verifikasi', [AdminPegawaiController::class, 'verifikasi_Pegawai'])->name('admin.pegawai.verifikasi');
         Route::post('/pegawai/{id}/reset-wajah', [AdminPegawaiController::class, 'resetWajah'])->name('admin.pegawai.reset-wajah');
         Route::delete('/pegawai/{id}', [AdminPegawaiController::class, 'hapus_Pegawai'])->name('admin.pegawai.destroy');
 

@@ -17,6 +17,7 @@ class AdminPegawaiController extends Controller
     {
         $admin = Auth::guard('admin')->user();
         $keyword = trim((string) $request->query('keyword', ''));
+        $statusFilter = (string) $request->query('status', 'semua');
         $bidangFilter = (string) $request->query('bidang', 'semua');
         $jabatanFilter = (string) $request->query('jabatan', 'semua');
 
@@ -32,11 +33,16 @@ class AdminPegawaiController extends Controller
                         ->orWhere('email', 'like', "%{$keyword}%");
                 });
             })
+            ->when($statusFilter !== 'semua', fn ($query) => $query->where('status_verifikasi', $statusFilter))
             ->when($bidangFilter !== 'semua', fn ($query) => $query->where('bidang', $bidangFilter))
             ->when($jabatanFilter !== 'semua', fn ($query) => $query->where('jabatan', $jabatanFilter));
 
         $pegawai = $pegawaiQuery->latest('id_pegawai')->get();
         $totalPegawai = Pegawai::count();
+        $totalAktif = Pegawai::where('status_verifikasi', 'aktif')->count();
+        $totalPending = Pegawai::where('status_verifikasi', 'pending')->count();
+        $totalDitolak = Pegawai::where('status_verifikasi', 'ditolak')->count();
+
         $bidangMaster = Bidang::orderBy('nama_bidang')->get();
         $jabatanMaster = Jabatan::orderByRaw("
                 CASE
@@ -74,7 +80,11 @@ class AdminPegawaiController extends Controller
             'admin',
             'pegawai',
             'totalPegawai',
+            'totalAktif',
+            'totalPending',
+            'totalDitolak',
             'keyword',
+            'statusFilter',
             'bidangFilter',
             'jabatanFilter',
             'bidangOptions',
@@ -103,6 +113,7 @@ class AdminPegawaiController extends Controller
 
         $defaultPassword = Str::password(12);
         $validated['password'] = $defaultPassword;
+        $validated['status_verifikasi'] = Pegawai::STATUS_AKTIF;
 
         Pegawai::create($validated);
 
@@ -118,6 +129,39 @@ class AdminPegawaiController extends Controller
         }
 
         return back()->with('success', 'Data pegawai berhasil ditambahkan. Password sementara sudah dikirim ke email pegawai.');
+    }
+
+    public function verifikasi_Pegawai(int $id, Request $request)
+    {
+        $validated = $request->validate([
+            'status_verifikasi' => 'required|in:aktif,ditolak,pending',
+        ]);
+
+        $pegawai = Pegawai::findOrFail($id);
+        $pegawai->update([
+            'status_verifikasi' => $validated['status_verifikasi'],
+        ]);
+
+        $statusText = match ($validated['status_verifikasi']) {
+            'aktif' => 'disetujui dan diaktifkan',
+            'ditolak' => 'ditolak',
+            default => 'diubah menjadi pending',
+        };
+
+        if ($validated['status_verifikasi'] === 'aktif') {
+            try {
+                Mail::raw(
+                    "Halo {$pegawai->nama_pegawai},\n\nAkun Pegawai SIRAPI Anda telah DISETUJUI oleh Administrator.\nAnda sekarang dapat login ke sistem SIRAPI menggunakan email: {$pegawai->email}\n\nTerima kasih.",
+                    function ($message) use ($pegawai) {
+                        $message->to($pegawai->email)->subject('Pemberitahuan: Akun Pegawai SIRAPI Disetujui');
+                    }
+                );
+            } catch (\Throwable) {
+                // Email notification fail shouldn't break the approval
+            }
+        }
+
+        return back()->with('success', "Akun pegawai {$pegawai->nama_pegawai} berhasil {$statusText}!");
     }
 
     public function update_Pegawai($id, Request $request)

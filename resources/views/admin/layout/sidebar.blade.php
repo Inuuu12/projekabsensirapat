@@ -63,7 +63,15 @@
                 </button>
 
                 <div class="{{ $isUserActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
-                    <a href="{{ route('admin.pegawai.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.pegawai.lihat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Data Pegawai</a>
+                    <a href="{{ route('admin.pegawai.lihat') }}" class="flex items-center justify-between text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.pegawai.lihat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">
+                        <span>Data Pegawai</span>
+                        @php
+                            $pendingPegawaiCount = \App\Models\Pegawai::where('status_verifikasi', 'pending')->count();
+                        @endphp
+                        @if ($pendingPegawaiCount > 0)
+                            <span class="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-white bg-amber-500 rounded-full">{{ $pendingPegawaiCount }}</span>
+                        @endif
+                    </a>
                     <a href="{{ route('admin.tamu.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.tamu.lihat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Data Tamu</a>
                 </div>
             </div>

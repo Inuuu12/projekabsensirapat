@@ -80,8 +80,23 @@ class PegawaiAuthController extends Controller
         ]);
 
         if (Auth::guard('pegawai')->attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
             $pegawai = Auth::guard('pegawai')->user();
+
+            if (! $pegawai->isAktif()) {
+                Auth::guard('pegawai')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                $pesan = $pegawai->isDitolak()
+                    ? 'Akun ditolak oleh Admin. Hubungi pihak kepegawaian.'
+                    : 'Akun sedang menunggu verifikasi Administrator.';
+
+                return back()->withErrors([
+                    'email' => $pesan,
+                ])->onlyInput('email');
+            }
+
+            $request->session()->regenerate();
 
             $agendaId = $request->input('agenda_id') ?: $request->query('agenda_id');
             $agenda = $agendaId ? Agenda::find($agendaId) : $this->agendaPresensi($request);
@@ -129,12 +144,11 @@ class PegawaiAuthController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $pegawai = Pegawai::create($validated);
+        $validated['status_verifikasi'] = Pegawai::STATUS_PENDING;
 
-        Auth::guard('pegawai')->login($pegawai);
-        $request->session()->regenerate();
+        Pegawai::create($validated);
 
-        return redirect()->route('pegawai.presensi.index');
+        return redirect()->route('pegawai.login')->with('status', 'Pendaftaran berhasil! Menunggu verifikasi Admin.');
     }
 
     public function kirimOtpLupaPassword(Request $request)
@@ -527,6 +541,7 @@ class PegawaiAuthController extends Controller
     public function getRegisteredFaces()
     {
         $pegawai = DB::table('sirapi_md_pegawai')
+            ->where('status_verifikasi', Pegawai::STATUS_AKTIF)
             ->whereNotNull('face_descriptor')
             ->select('id_pegawai', 'nama_pegawai', 'face_descriptor')
             ->get();
@@ -546,6 +561,13 @@ class PegawaiAuthController extends Controller
 
         if (! $pegawai || ! $agenda) {
             return response()->json(['success' => false, 'message' => 'Data tidak valid.'], 400);
+        }
+
+        if (($pegawai->status_verifikasi ?? 'aktif') !== Pegawai::STATUS_AKTIF) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Presensi ditolak. Akun pegawai Anda belum aktif atau belum diverifikasi oleh Administrator.'
+            ], 403);
         }
 
         if ($agenda->status_label === Agenda::STATUS_SELESAI) {

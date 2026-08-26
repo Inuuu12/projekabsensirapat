@@ -66,6 +66,16 @@
                 </div>
             @endif
 
+            <div class="mb-6 rounded-2xl border border-blue-200 dark:border-blue-800/60 bg-blue-50 dark:bg-blue-950/40 p-4 text-xs text-blue-800 dark:text-blue-200 flex items-center gap-3 shadow-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div class="leading-snug">
+                    <strong class="font-bold text-sm text-blue-900 dark:text-blue-100">Informasi:</strong>
+                    Akun baru memerlukan verifikasi Administrator sebelum dapat digunakan untuk login dan presensi.
+                </div>
+            </div>
+
             <form action="{{ route('pegawai.register.submit') }}" method="POST" class="grid gap-5 rounded-2xl border border-[#DDE3DF] dark:border-[#233a34] bg-white dark:bg-[#152420] p-6 shadow-xs sm:grid-cols-2 transition-colors">
                 @csrf
 
