@@ -100,7 +100,7 @@
         $lampiranAgenda = $agendaAktif?->lampiran ? basename($agendaAktif->lampiran) : null;
     @endphp
 
-    <header class="h-[72px] bg-sirapi-green dark:bg-[#0f1c19] dark:border-b dark:border-[#233a34] text-white">
+    <header class="sticky top-0 z-40 h-[72px] bg-sirapi-green dark:bg-[#0f1c19] dark:border-b dark:border-[#233a34] text-white shadow-sm">
         <div class="mx-auto flex h-full w-full max-w-[700px] items-center justify-between px-4 sm:px-6">
             <a href="{{ route('publik.beranda') }}" class="flex min-w-0 items-center gap-3">
                 <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-11 w-11 shrink-0 object-contain">
@@ -309,8 +309,8 @@
     </main>
 
     <!-- Edit Profile Modal -->
-    <div data-profile-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-2.5 sm:p-4 overflow-y-auto">
-        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-xl sm:max-w-2xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 shadow-2xl border border-gray-100 dark:border-[#233a34]">
+    <div data-profile-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4">
+        <div class="flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 shadow-2xl border border-gray-100 dark:border-[#233a34]">
             <!-- Header Modal -->
             <div class="flex items-center justify-between border-b border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] px-4 py-3 sm:px-6 sm:py-4 shrink-0">
                 <div>

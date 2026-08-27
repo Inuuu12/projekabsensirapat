@@ -26,23 +26,23 @@
             <input id="{{ $prefix }}tanggal" name="tanggal" type="date" required class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] pl-10 pr-3 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
         </div>
     </div>
-    <div class="grid grid-cols-2 gap-2.5 sm:contents">
+    <div class="grid grid-cols-2 gap-2 sm:col-span-2 sm:gap-4">
         <div>
             <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Waktu Mulai</label>
             <div class="relative">
-                <svg class="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 sm:left-3.5 sm:h-4 sm:w-4 -translate-y-1/2 text-[#3f4f49] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="pointer-events-none absolute left-2.5 sm:left-3.5 top-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 -translate-y-1/2 text-[#3f4f49] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6v6l4 2m5-2a9 9 0 11-18 0 9 11 0 0118 0z"></path>
                 </svg>
-                <input id="{{ $prefix }}waktu" name="waktu" type="time" required class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] pl-8 sm:pl-10 pr-2 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
+                <input id="{{ $prefix }}waktu" name="waktu" type="time" required class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] pl-7 sm:pl-10 pr-1.5 sm:pr-2 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
             </div>
         </div>
         <div>
             <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Waktu Selesai</label>
             <div class="relative">
-                <svg class="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 sm:left-3.5 sm:h-4 sm:w-4 -translate-y-1/2 text-[#3f4f49] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="pointer-events-none absolute left-2.5 sm:left-3.5 top-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 -translate-y-1/2 text-[#3f4f49] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6v6l4 2m5-2a9 9 0 11-18 0 9 11 0 0118 0z"></path>
                 </svg>
-                <input id="{{ $prefix }}waktu_selesai" name="waktu_selesai" type="time" class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] pl-8 sm:pl-10 pr-2 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
+                <input id="{{ $prefix }}waktu_selesai" name="waktu_selesai" type="time" class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] pl-7 sm:pl-10 pr-1.5 sm:pr-2 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
             </div>
         </div>
     </div>
@@ -131,7 +131,7 @@
     <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Lampiran Surat Undangan</label>
     <input id="{{ $prefix }}lampiran" name="lampiran" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="hidden" data-agenda-file-input="{{ $prefix }}">
     <label for="{{ $prefix }}lampiran" class="flex min-h-[76px] sm:min-h-[88px] cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3 py-3 text-center transition hover:border-[#35635b] hover:bg-white dark:hover:bg-[#152420]">
-        <svg class="mb-1 h-5 w-5 text-[#04733f] dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="mb-1 h-5 w-5 text-[#35635b] dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 3h7l5 5v13H7zM14 3v5h5M9 15h6M9 18h4"></path>
         </svg>
         <span id="{{ $prefix }}lampiran-label" class="text-xs sm:text-sm font-medium text-[#0e2f27] dark:text-gray-200">Klik atau seret file PDF ke sini</span>

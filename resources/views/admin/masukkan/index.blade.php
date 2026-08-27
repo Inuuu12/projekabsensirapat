@@ -234,8 +234,8 @@
     </section>
 </div>
 
-<div id="modal-detail-masukkan" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/50 backdrop-blur-xs p-2.5 sm:p-4 overflow-y-auto">
-    <div class="my-auto w-full max-w-2xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden">
+<div id="modal-detail-masukkan" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4">
+    <div class="relative w-full max-w-2xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden">
         <div class="flex items-center justify-between rounded-t-2xl border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 shrink-0 bg-white dark:bg-[#163830]">
             <h3 class="text-base sm:text-lg font-black text-[#0f513f] dark:text-white">Detail Aduan</h3>
             <button type="button" onclick="closeMasukkanDetail()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-white/80 dark:hover:bg-white/10 cursor-pointer" title="Tutup">
@@ -298,8 +298,8 @@
     </div>
 </div>
 
-<div id="modal-reply-masukkan" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/50 backdrop-blur-xs p-2.5 sm:p-4 overflow-y-auto">
-    <div class="my-auto w-full max-w-2xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden">
+<div id="modal-reply-masukkan" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4">
+    <div class="relative w-full max-w-2xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden">
         <div class="flex items-center justify-between rounded-t-2xl border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 shrink-0 bg-white dark:bg-[#163830]">
             <h3 class="text-base sm:text-lg font-black text-[#0f513f] dark:text-white">Reply Masukkan</h3>
             <button type="button" onclick="closeMasukkanReply()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-white/80 dark:hover:bg-white/10 cursor-pointer" title="Tutup">
@@ -432,11 +432,19 @@
             photoImg.src = '';
         }
 
-        modal.classList.replace('hidden', 'flex');
+        if (modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
     }
 
     function closeMasukkanDetail() {
-        document.getElementById('modal-detail-masukkan').classList.replace('flex', 'hidden');
+        const modal = document.getElementById('modal-detail-masukkan');
+        if (modal) {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
     }
 
     function openMasukkanReply(button) {
@@ -446,11 +454,20 @@
         document.getElementById('reply-email').textContent = button.dataset.email || '-';
         document.getElementById('reply-message').textContent = button.dataset.message || '-';
         document.getElementById('reply-text').value = button.dataset.reply || '';
-        modal.classList.replace('hidden', 'flex');
+        
+        if (modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
     }
 
     function closeMasukkanReply() {
-        document.getElementById('modal-reply-masukkan').classList.replace('flex', 'hidden');
+        const modal = document.getElementById('modal-reply-masukkan');
+        if (modal) {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
     }
 
     // ==========================================

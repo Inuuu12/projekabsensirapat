@@ -256,10 +256,18 @@
             box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25) !important;
         }
 
-        /* Date & Time Picker Indicator Icons in Dark Mode */
-        .dark input[type="date"]::-webkit-calendar-picker-indicator,
-        .dark input[type="time"]::-webkit-calendar-picker-indicator {
-            filter: invert(0.85);
+        /* Remove duplicate native picker indicator on the right so only the single left icon appears */
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator,
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            opacity: 0;
             cursor: pointer;
         }
 
@@ -325,6 +333,70 @@
             background-color: #1b332d !important;
             color: #ffffff !important;
         }
+
+        /* =========================================================
+           DARK MODE ICON & LOGO ENHANCEMENTS
+           ========================================================= */
+        .dark img[src*="Suratlogo.png"],
+        .dark img[src*="Agendahariini.png"],
+        .dark img[src*="Ruanganlogo.png"],
+        .dark img[src*="Pengunjunglogo.png"],
+        .dark img[src*="Lampiranlogo.png"],
+        .dark img[src*="Totalagendalogo.png"],
+        .dark img[src*="Total Aduan.png"],
+        .dark img[src*="Menunggu.png"],
+        .dark img[src*="process.png"],
+        .dark img[src*="Selesai.png"],
+        .dark img[src*="Selesailogo.png"],
+        .dark img[src*="ruangantersedia.png"],
+        .dark img[src*="ruanganterpakai.png"],
+        .dark img[src*="totalruangan.png"],
+        .dark img[src*="Beritalogo.png"],
+        .dark img[src*="Videologo.png"],
+        .dark img[src*="Galerilogo.png"],
+        .dark img[src*="Lihatlogo.png"],
+        .dark img[src*="Detaillogo.png"],
+        .dark img[src*="Reply.png"],
+        .dark img[src*="Kunjunganlogo.png"],
+        .dark img[src*="Pegawailogo.png"],
+        .dark img[src*="Container.png"],
+        .dark img[src*="Akandatanglogo.png"],
+        .dark img[src*="Agendalogo.png"] {
+            filter: brightness(0) invert(1) !important;
+            opacity: 0.95 !important;
+        }
+
+        /* Action Icon Highlights in Dark Mode */
+        .dark img[src*="Editlogo.png"] {
+            filter: brightness(1.2) drop-shadow(0 1px 2px rgba(251, 191, 36, 0.5)) !important;
+        }
+        .dark img[src*="Deletelogo.png"] {
+            filter: brightness(1.2) drop-shadow(0 1px 2px rgba(248, 113, 113, 0.5)) !important;
+        }
+
+        /* Brand Seal Logo in Dark Mode */
+        .dark img[src*="logo-bappenda.png"] {
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6)) !important;
+        }
+
+        /* Enforce Exact Viewport Frame for all Modals */
+        div[id^="modal-"],
+        div[id*="-modal"] {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            width: 100dvw !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            max-width: 100vw !important;
+            max-height: 100dvh !important;
+            margin: 0 !important;
+            z-index: 9999 !important;
+            box-sizing: border-box !important;
+        }
     </style>
     @stack('styles')
 </head>
@@ -380,6 +452,17 @@
                 overlay.classList.toggle('hidden');
             }
         }
+
+        // Teleport all modals to document.body to prevent flex/overflow offsets from <main>
+        function teleportModalsToBody() {
+            document.querySelectorAll('div[id^="modal-"], div[id*="-modal"]').forEach(modal => {
+                if (modal.parentElement && modal.parentElement !== document.body) {
+                    document.body.appendChild(modal);
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', teleportModalsToBody);
+        window.addEventListener('load', teleportModalsToBody);
     </script>
     @stack('scripts')
 </body>

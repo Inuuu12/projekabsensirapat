@@ -353,18 +353,18 @@
         </section>
     </main>
 
-    <div id="home-aduan-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-4">
-        <div class="w-full max-w-2xl rounded-3xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
-            <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34]">
+    <div id="home-aduan-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
+        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col rounded-3xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
+            <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34] shrink-0">
                 <div>       
                     <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Detail Aduan</p>
-                    <h2 id="home-aduan-title" class="text-xl font-extrabold mt-1 text-white">-</h2>
+                    <h2 id="home-aduan-title" class="text-lg sm:text-xl font-extrabold mt-1 text-white">-</h2>
                     <p id="home-aduan-date" class="text-xs text-white/70 dark:text-gray-300 mt-1">-</p>
                 </div>
                 <button type="button" id="home-aduan-close" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10 flex items-center justify-center text-lg font-bold cursor-pointer">x</button>
             </div>
 
-            <div class="p-6 space-y-5">
+            <div class="flex-1 min-h-0 overflow-y-auto p-5 sm:p-6 space-y-4 sm:space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                     <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4">
                         <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Nama</p>
@@ -393,18 +393,18 @@
         </div>
     </div>
 
-    <div id="weather-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-4">
-        <div class="w-full max-w-2xl rounded-3xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
-            <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34]">
+    <div id="weather-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
+        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col rounded-3xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
+            <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34] shrink-0">
                 <div>
                     <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Cuaca API</p>
-                    <h2 id="weather-location" class="text-xl font-extrabold mt-1 text-white">Cibinong, Kabupaten Bogor</h2>
+                    <h2 id="weather-location" class="text-lg sm:text-xl font-extrabold mt-1 text-white">Cibinong, Kabupaten Bogor</h2>
                     <p id="weather-updated" class="text-xs text-white/70 dark:text-gray-300 mt-1">Memuat data...</p>
                 </div>
                 <button type="button" id="close-weather-modal" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10 flex items-center justify-center text-lg font-bold cursor-pointer">x</button>
             </div>
 
-            <div class="p-6 space-y-5">
+            <div class="flex-1 min-h-0 overflow-y-auto p-5 sm:p-6 space-y-4 sm:space-y-5">
                 <div id="weather-error" class="hidden rounded-2xl bg-oren-muda dark:bg-amber-950/50 text-oren-tua dark:text-amber-200 px-4 py-3 text-xs font-bold"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

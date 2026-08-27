@@ -129,8 +129,8 @@
         </section>
     </main>
 
-    <div data-forgot-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 backdrop-blur-xs px-5">
-        <section class="w-full max-w-md rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 p-6 shadow-xl border border-transparent dark:border-[#233a34]">
+    <div data-forgot-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 backdrop-blur-xs p-3 sm:p-5">
+        <section class="relative my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-md overflow-y-auto rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 p-5 sm:p-6 shadow-xl border border-transparent dark:border-[#233a34]">
             <div class="flex items-start justify-between gap-4 border-b border-gray-100 dark:border-[#233a34] pb-4">
                 <div>
                     <h2 class="text-lg font-extrabold text-sirapi-ink dark:text-white">Reset Kata Sandi</h2>
