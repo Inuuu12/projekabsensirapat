@@ -201,7 +201,7 @@
                                 </p>
                             </div>
                             <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agendaAktif->status_label === 'Selesai' ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-200' : ($agendaAktif->isKuotaPenuh() ? 'bg-red-100 dark:bg-red-950/50 text-red-800 dark:text-red-200' : ($agendaAktif->status_label === 'Mendatang' ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800/50' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43]' : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400'))) }}">
-                                {{ $agendaAktif->status_label === 'Selesai' ? 'Selesai' : ($agendaAktif->isKuotaPenuh() ? 'Kuota Penuh' : ($agendaAktif->status_label === 'Mendatang' ? 'Terkunci (Mendatang)' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'Aktif' : 'Belum aktif'))) }}
+                                {{ $agendaAktif->status_label === 'Selesai' ? 'Selesai' : ($agendaAktif->isKuotaPenuh() ? 'Kuota Penuh' : ($agendaAktif->status_label === 'Mendatang' ? '(Mendatang)' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'Aktif' : 'Belum aktif'))) }}
                             </span>
                         </div>
 
