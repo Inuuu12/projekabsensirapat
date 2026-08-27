@@ -41,6 +41,31 @@ class AdminAgendaController extends Controller
             $validated['id_ruangrapat'] = $defaultRuang?->id_ruangrapat ?? 1;
         }
 
+        // Validasi Bentrok Jadwal Ruangan
+        if (! $isMasuk && ! empty($validated['id_ruangrapat'])) {
+            $ruang = RuangRapat::find($validated['id_ruangrapat']);
+            if ($ruang) {
+                $conflict = $ruang->checkConflict(
+                    $validated['tanggal'],
+                    $validated['waktu'],
+                    $validated['waktu_selesai'] ?? null
+                );
+
+                if ($conflict) {
+                    $waktuMulaiConf = substr((string) $conflict->waktu, 0, 5);
+                    $waktuSelesaiConf = $conflict->waktu_selesai ? substr((string) $conflict->waktu_selesai, 0, 5) : 'selesai';
+                    $tanggalConf = Carbon::parse($conflict->tanggal)->translatedFormat('d F Y');
+                    $msg = "Ruangan {$ruang->nama_ruang} tidak dapat dipilih karena sudah terpakai pada {$tanggalConf} pukul {$waktuMulaiConf} - {$waktuSelesaiConf} WIB untuk agenda '{$conflict->nama_agenda}'.";
+
+                    if ($request->wantsJson()) {
+                        return response()->json(['success' => false, 'message' => $msg], 422);
+                    }
+
+                    return back()->withInput()->with('error', $msg);
+                }
+            }
+        }
+
         if ($request->hasFile('lampiran')) {
             $validated['lampiran'] = $request->file('lampiran')->store('agenda-lampiran', 'public');
         }
@@ -279,6 +304,28 @@ class AdminAgendaController extends Controller
         if (empty($validated['id_ruangrapat'])) {
             $defaultRuang = RuangRapat::first();
             $validated['id_ruangrapat'] = $defaultRuang?->id_ruangrapat ?? 1;
+        }
+
+        // Validasi Bentrok Jadwal Ruangan
+        if (! $isMasuk && ! empty($validated['id_ruangrapat'])) {
+            $ruang = RuangRapat::find($validated['id_ruangrapat']);
+            if ($ruang) {
+                $conflict = $ruang->checkConflict(
+                    $validated['tanggal'],
+                    $validated['waktu'],
+                    $validated['waktu_selesai'] ?? null,
+                    (int) $id
+                );
+
+                if ($conflict) {
+                    $waktuMulaiConf = substr((string) $conflict->waktu, 0, 5);
+                    $waktuSelesaiConf = $conflict->waktu_selesai ? substr((string) $conflict->waktu_selesai, 0, 5) : 'selesai';
+                    $tanggalConf = Carbon::parse($conflict->tanggal)->translatedFormat('d F Y');
+                    $msg = "Ruangan {$ruang->nama_ruang} tidak dapat dipilih karena sudah terpakai pada {$tanggalConf} pukul {$waktuMulaiConf} - {$waktuSelesaiConf} WIB untuk agenda '{$conflict->nama_agenda}'.";
+
+                    return back()->withInput()->with('error', $msg);
+                }
+            }
         }
 
         if ($request->hasFile('lampiran')) {
