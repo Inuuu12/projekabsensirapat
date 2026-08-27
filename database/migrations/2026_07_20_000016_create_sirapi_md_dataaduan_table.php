@@ -8,8 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('sirapi_md_datamasukan', function (Blueprint $table) {
-            $table->bigIncrements('id_datamasukan');
+        Schema::create('sirapi_md_dataaduan', function (Blueprint $table) {
+            $table->bigIncrements('id_dataaduan');
             $table->string('nama_pengadu');
             $table->string('nomor_pengadu');
             $table->string('email');
@@ -19,12 +19,12 @@ return new class extends Migration
             $table->string('status');
             $table->timestamps();
 
-            $table->foreignid('id_admin')->nullable()->constraide('sirapi_md_admin','id_admin')->cascadeondelete('');
+            $table->foreignId('id_admin')->nullable()->constrained('sirapi_md_admin', 'id_admin')->nullOnDelete();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('sirapi_md_datamasukan');
+        Schema::dropIfExists('sirapi_md_dataaduan');
     }
 };

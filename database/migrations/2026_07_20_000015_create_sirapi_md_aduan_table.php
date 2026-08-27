@@ -8,11 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('sirapi_md_masukan', function (Blueprint $table) {
-            $table->id('id_masukan');
+        Schema::create('sirapi_md_aduan', function (Blueprint $table) {
+            $table->id('id_aduan');
             $table->string('email')->unique();
             $table->string('no_hp');
-            $table->text('isi_masukan');
+            $table->text('isi_aduan');
             $table->string('lampiran');
             $table->integer('status_id');
             $table->text('reply_admin');
@@ -20,12 +20,12 @@ return new class extends Migration
             $table->dateTime('waktu_selesai');
             $table->timestamps();
 
-            $table->foreignId('id_statusmasukan')->constrained('sirapi_md_statusmasukan', 'id_statusmasukan')->cascadeonDelete('');
+            $table->foreignId('id_statusaduan')->constrained('sirapi_md_statusaduan', 'id_statusaduan')->cascadeOnDelete();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('sirapi_md_masukan');
+        Schema::dropIfExists('sirapi_md_aduan');
     }
 };

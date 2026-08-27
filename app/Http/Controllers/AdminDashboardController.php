@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
-use App\Models\DataMasukan;
+use App\Models\DataAduan;
 use App\Models\Kunjungan;
 use App\Models\RuangRapat;
 use Carbon\Carbon;
@@ -17,7 +17,8 @@ class AdminDashboardController extends Controller
         $totalAgendaHariIni = Agenda::whereDate('tanggal', $today)->count();
         $totalRuangRapat = RuangRapat::count();
         $totalKunjungan = Kunjungan::whereDate('tanggal_kunjungan', $today)->count();
-        $totalMasukkanBaru = DataMasukan::whereIn('status', ['Pending', 'Menunggu'])->count();
+        $totalAduanBaru = DataAduan::whereIn('status', ['Pending', 'Menunggu'])->count();
+        $totalMasukkanBaru = $totalAduanBaru;
 
         $agendaTerdekat = Agenda::whereDate('tanggal', '>=', $today)
             ->orderBy('tanggal', 'asc')
@@ -36,8 +37,8 @@ class AdminDashboardController extends Controller
                 'deskripsi' => $item->nama_pengunjung ?: $item->asal_instansi ?: 'Kunjungan baru',
                 'waktu' => $item->created_at,
             ]))
-            ->merge(DataMasukan::latest('created_at')->take(3)->get()->map(fn ($item) => [
-                'judul' => 'Masukkan diterima',
+            ->merge(DataAduan::latest('created_at')->take(3)->get()->map(fn ($item) => [
+                'judul' => 'Aduan diterima',
                 'deskripsi' => $item->nama_pengadu,
                 'waktu' => $item->created_at,
             ]))
@@ -49,6 +50,7 @@ class AdminDashboardController extends Controller
             'totalAgendaHariIni',
             'totalRuangRapat',
             'totalKunjungan',
+            'totalAduanBaru',
             'totalMasukkanBaru',
             'agendaTerdekat',
             'aktivitasTerbaru'

@@ -44,7 +44,11 @@ class PegawaiAuthController extends Controller
                         ->withErrors(['presensi' => 'Presensi ditolak. Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan (' . ($agenda->ditugaskan ?: '-') . ').']);
                 }
 
-                if (! $agenda->isPegawaiSudahHadir($pegawai) && $agenda->isKuotaPenuh()) {
+                if ($this->kehadiranPegawai($agenda->id_agenda, $pegawai->email)) {
+                    return redirect()->route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda]);
+                }
+
+                if ($agenda->isKuotaPenuh()) {
                     return redirect()->route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda])
                         ->withErrors(['presensi' => 'Presensi ditolak karena kuota peserta agenda ini sudah penuh.']);
                 }
@@ -112,7 +116,14 @@ class PegawaiAuthController extends Controller
                         ->withErrors(['presensi' => 'Login berhasil, namun presensi ditolak. Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan (' . ($agenda->ditugaskan ?: '-') . ').']);
                 }
 
-                if (! $agenda->isPegawaiSudahHadir($pegawai) && $agenda->isKuotaPenuh()) {
+                $kehadiran = $this->kehadiranPegawai($agenda->id_agenda, $pegawai->email);
+                if ($kehadiran) {
+                    $waktuHadir = $kehadiran->created_at ? Carbon::parse($kehadiran->created_at)->timezone(self::TIMEZONE)->format('H:i') : null;
+                    return redirect()->route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda])
+                        ->with('info', 'Login berhasil. Anda telah melakukan presensi sebelumnya' . ($waktuHadir ? ' pada pukul ' . $waktuHadir . ' WIB.' : '.'));
+                }
+
+                if ($agenda->isKuotaPenuh()) {
                     return redirect()->route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda])
                         ->withErrors(['presensi' => 'Login berhasil, namun presensi ditolak karena kuota peserta agenda ini sudah penuh.']);
                 }
@@ -288,7 +299,15 @@ class PegawaiAuthController extends Controller
             return back()->withErrors(['presensi' => 'Presensi ditolak. Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan (' . ($agenda->ditugaskan ?: '-') . ').']);
         }
 
-        if (! $agenda->isPegawaiSudahHadir($pegawai) && $agenda->isKuotaPenuh()) {
+        $kehadiran = $this->kehadiranPegawai($agenda->id_agenda, $pegawai->email);
+        if ($kehadiran) {
+            $waktuHadir = $kehadiran->created_at ? Carbon::parse($kehadiran->created_at)->timezone(self::TIMEZONE)->format('H:i') : null;
+            return redirect()
+                ->route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda])
+                ->with('info', 'Anda telah melakukan presensi sebelumnya' . ($waktuHadir ? ' pada pukul ' . $waktuHadir . ' WIB.' : '.'));
+        }
+
+        if ($agenda->isKuotaPenuh()) {
             return back()->withErrors(['presensi' => 'Presensi ditolak karena kuota peserta agenda ini sudah penuh.']);
         }
 
@@ -296,7 +315,7 @@ class PegawaiAuthController extends Controller
 
         return redirect()
             ->route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda])
-            ->with('success', 'Presensi telah berhasil.');
+            ->with('success', 'Presensi telah berhasil dicatat.');
     }
 
     public function updateProfil(Request $request)
@@ -602,7 +621,31 @@ class PegawaiAuthController extends Controller
             ], 403);
         }
 
-        if (! $agenda->isPegawaiSudahHadir($pegawai) && $agenda->isKuotaPenuh()) {
+        $pegawaiModel = Pegawai::find($pegawai->id_pegawai);
+        if ($pegawaiModel) {
+            Auth::guard('pegawai')->login($pegawaiModel);
+            if ($request->hasSession()) {
+                $request->session()->regenerate();
+            }
+        }
+
+        $kehadiran = $this->kehadiranPegawai($agenda->id_agenda, $pegawai->email);
+        if ($kehadiran) {
+            $waktuHadir = $kehadiran->created_at ? Carbon::parse($kehadiran->created_at)->timezone(self::TIMEZONE)->format('H:i') : null;
+            $pesan = "Anda telah melakukan presensi sebelumnya" . ($waktuHadir ? " pada pukul {$waktuHadir} WIB." : ".");
+            if ($request->hasSession()) {
+                $request->session()->flash('info', $pesan);
+            }
+
+            return response()->json([
+                'success' => true,
+                'already_present' => true,
+                'message' => $pesan,
+                'redirect_url' => route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda]),
+            ]);
+        }
+
+        if ($agenda->isKuotaPenuh()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Presensi ditolak karena kuota peserta agenda ini sudah penuh.'
@@ -611,10 +654,8 @@ class PegawaiAuthController extends Controller
 
         $this->catatKehadiranPegawai($agenda, $pegawai, 'Hadir lewat Scan Wajah (Face Recognition)');
 
-        $pegawaiModel = Pegawai::find($pegawai->id_pegawai);
-        if ($pegawaiModel) {
-            Auth::guard('pegawai')->login($pegawaiModel);
-            $request->session()->regenerate();
+        if ($request->hasSession()) {
+            $request->session()->flash('success', "Presensi berhasil dicatat untuk {$pegawai->nama_pegawai}!");
         }
 
         return response()->json([
@@ -659,25 +700,29 @@ class PegawaiAuthController extends Controller
                 $idPeserta = DB::table('sirapi_md_peserta')->insertGetId($pesertaData);
             }
 
-            $idLog = DB::table('sirapi_md_logbook')->insertGetId([
-                'Id_agenda' => $agenda->id_agenda,
-                'catatan' => $catatan . ': ' . $nama,
-                'waktu_isi' => $now,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
+            $existingKehadiran = DB::table('sirapi_md_kehadiran')
+                ->where('id_agenda', $agenda->id_agenda)
+                ->where('id_peserta', $idPeserta)
+                ->first();
 
-            DB::table('sirapi_md_kehadiran')->updateOrInsert(
-                [
+            // Pastikan jam presensi asli (created_at) dan logbook tidak tertimpa
+            if (! $existingKehadiran) {
+                $idLog = DB::table('sirapi_md_logbook')->insertGetId([
+                    'Id_agenda' => $agenda->id_agenda,
+                    'catatan' => $catatan . ': ' . $nama,
+                    'waktu_isi' => $now,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+
+                DB::table('sirapi_md_kehadiran')->insert([
                     'id_agenda' => $agenda->id_agenda,
                     'id_peserta' => $idPeserta,
-                ],
-                [
                     'id_log' => $idLog,
-                    'updated_at' => $now,
                     'created_at' => $now,
-                ]
-            );
+                    'updated_at' => $now,
+                ]);
+            }
         });
     }
 }

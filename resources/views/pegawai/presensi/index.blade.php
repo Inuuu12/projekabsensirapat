@@ -162,20 +162,30 @@
 
     <main class="mx-auto w-full max-w-[700px] px-4 pb-16 pt-16 sm:px-6">
         @if ($errors->has('presensi'))
-            <div class="mb-5 rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-5 py-4 text-sm font-bold text-red-700 dark:text-red-300">
-                {{ $errors->first('presensi') }}
+            <div class="mb-5 rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-5 py-4 text-sm font-bold text-red-700 dark:text-red-300 flex items-center gap-3">
+                <i data-lucide="shield-alert" class="h-5 w-5 shrink-0 text-red-600 dark:text-red-400"></i>
+                <span>{{ $errors->first('presensi') }}</span>
             </div>
         @endif
 
         @if (session('success'))
-            <div class="mb-5 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-5 py-4 text-sm font-bold text-emerald-700 dark:text-emerald-300">
-                {{ session('success') }}
+            <div class="mb-5 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-5 py-4 text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-3">
+                <i data-lucide="circle-check" class="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if (session('info'))
+            <div class="mb-5 rounded-2xl border border-blue-200 dark:border-sky-800 bg-blue-50 dark:bg-sky-950/40 px-5 py-4 text-sm font-bold text-blue-800 dark:text-sky-300 flex items-center gap-3 shadow-xs">
+                <i data-lucide="info" class="h-5 w-5 shrink-0 text-blue-600 dark:text-sky-400"></i>
+                <span>{{ session('info') }}</span>
             </div>
         @endif
 
         @if (session('profile_success'))
-            <div class="mb-5 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-5 py-4 text-sm font-bold text-emerald-700 dark:text-emerald-300">
-                {{ session('profile_success') }}
+            <div class="mb-5 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-5 py-4 text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-3">
+                <i data-lucide="circle-check" class="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400"></i>
+                <span>{{ session('profile_success') }}</span>
             </div>
         @endif
 
@@ -284,22 +294,50 @@
             <h2 class="text-lg font-extrabold text-gray-900 dark:text-white">Lampiran</h2>
             <div class="mt-3 grid gap-4 sm:grid-cols-2">
                 @forelse ($dokumen as $item)
-                    <a href="{{ asset('storage/' . $item->file_path) }}" target="_blank" rel="noopener" class="flex min-h-[53px] items-center gap-3 rounded-xl border border-sirapi-line dark:border-[#233a34] bg-white dark:bg-[#152420] px-4 transition hover:border-sirapi-green dark:hover:border-emerald-500 shadow-xs">
-                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FFE6BB] dark:bg-amber-950/60 text-[10px] font-extrabold text-[#D58A18] dark:text-amber-300 border border-transparent dark:border-amber-700/40">PDF</span>
-                        <span class="min-w-0">
-                            <span class="block truncate text-xs font-extrabold text-gray-900 dark:text-white">{{ $item->nama_file ?: basename($item->file_path) }}</span>
-                            <span class="block text-[11px] font-medium text-[#9CA5A0] dark:text-gray-400">{{ strtoupper(pathinfo($item->file_path, PATHINFO_EXTENSION) ?: 'FILE') }}</span>
+                    @php
+                        $fileUrl = asset('storage/' . $item->file_path);
+                        $fileName = $item->nama_file ?: basename($item->file_path);
+                        $fileExt = strtoupper(pathinfo($item->file_path, PATHINFO_EXTENSION) ?: 'FILE');
+                        $badgeColor = match(strtolower($fileExt)) {
+                            'pdf' => 'bg-red-50 text-red-600 dark:bg-red-950/60 dark:text-red-300 border-red-100 dark:border-red-800/40',
+                            'doc', 'docx' => 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-300 border-blue-100 dark:border-blue-800/40',
+                            'jpg', 'jpeg', 'png', 'webp' => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800/40',
+                            default => 'bg-[#FFE6BB] text-[#D58A18] dark:bg-amber-950/60 dark:text-amber-300 border-transparent dark:border-amber-700/40',
+                        };
+                    @endphp
+                    <button type="button" 
+                            onclick="openDocumentPreview('{{ $fileUrl }}', 'Lampiran Agenda', '{{ addslashes($fileName) }}')" 
+                            class="flex min-h-[53px] items-center gap-3 rounded-xl border border-sirapi-line dark:border-[#233a34] bg-white dark:bg-[#152420] px-4 transition hover:border-sirapi-green dark:hover:border-emerald-500 shadow-xs text-left cursor-pointer group w-full">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-extrabold border {{ $badgeColor }}">{{ $fileExt }}</span>
+                        <span class="min-w-0 flex-1">
+                            <span class="block truncate text-xs font-extrabold text-gray-900 dark:text-white group-hover:text-sirapi-green dark:group-hover:text-emerald-400 transition">{{ $fileName }}</span>
+                            <span class="block text-[11px] font-medium text-[#9CA5A0] dark:text-gray-400">Klik untuk melihat lampiran</span>
                         </span>
-                    </a>
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-sirapi-green dark:group-hover:text-emerald-400 shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </button>
                 @empty
                     @if ($lampiranAgenda)
-                        <a href="{{ route('publik.agenda.lampiran.file', $agendaAktif->id_agenda) }}" target="_blank" rel="noopener" class="flex min-h-[53px] items-center gap-3 rounded-xl border border-sirapi-line dark:border-[#233a34] bg-white dark:bg-[#152420] px-4 transition hover:border-sirapi-green dark:hover:border-emerald-500 shadow-xs">
-                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FFE6BB] dark:bg-amber-950/60 text-[10px] font-extrabold text-[#D58A18] dark:text-amber-300 border border-transparent dark:border-amber-700/40">PDF</span>
-                            <span class="min-w-0">
-                                <span class="block truncate text-xs font-extrabold text-gray-900 dark:text-white">{{ $lampiranAgenda }}</span>
-                                <span class="block text-[11px] font-medium text-[#9CA5A0] dark:text-gray-400">{{ strtoupper(pathinfo($lampiranAgenda, PATHINFO_EXTENSION) ?: 'FILE') }}</span>
+                        @php
+                            $fileUrl = route('publik.agenda.lampiran.file', $agendaAktif->id_agenda);
+                            $fileName = $lampiranAgenda;
+                            $fileExt = strtoupper(pathinfo($lampiranAgenda, PATHINFO_EXTENSION) ?: 'FILE');
+                            $badgeColor = match(strtolower($fileExt)) {
+                                'pdf' => 'bg-red-50 text-red-600 dark:bg-red-950/60 dark:text-red-300 border-red-100 dark:border-red-800/40',
+                                'doc', 'docx' => 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-300 border-blue-100 dark:border-blue-800/40',
+                                'jpg', 'jpeg', 'png', 'webp' => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800/40',
+                                default => 'bg-[#FFE6BB] text-[#D58A18] dark:bg-amber-950/60 dark:text-amber-300 border-transparent dark:border-amber-700/40',
+                            };
+                        @endphp
+                        <button type="button" 
+                                onclick="openDocumentPreview('{{ $fileUrl }}', 'Lampiran Agenda', '{{ addslashes($fileName) }}')" 
+                                class="flex min-h-[53px] items-center gap-3 rounded-xl border border-sirapi-line dark:border-[#233a34] bg-white dark:bg-[#152420] px-4 transition hover:border-sirapi-green dark:hover:border-emerald-500 shadow-xs text-left cursor-pointer group w-full">
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-extrabold border {{ $badgeColor }}">{{ $fileExt }}</span>
+                            <span class="min-w-0 flex-1">
+                                <span class="block truncate text-xs font-extrabold text-gray-900 dark:text-white group-hover:text-sirapi-green dark:group-hover:text-emerald-400 transition">{{ $fileName }}</span>
+                                <span class="block text-[11px] font-medium text-[#9CA5A0] dark:text-gray-400">Klik untuk melihat lampiran</span>
                             </span>
-                        </a>
+                            <svg class="w-4 h-4 text-gray-400 group-hover:text-sirapi-green dark:group-hover:text-emerald-400 shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        </button>
                     @else
                         <p class="text-sm font-medium text-[#9CA5A0] dark:text-gray-400">Tidak ada lampiran.</p>
                     @endif
@@ -494,6 +532,9 @@
             </div>
         </section>
     </div>
+
+    <!-- Document Preview Modal -->
+    @include('admin.layout.document-preview-modal')
 
     <script src="{{ asset('js/face-api.min.js') }}"></script>
     <script>

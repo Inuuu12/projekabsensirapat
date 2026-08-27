@@ -49,7 +49,7 @@
                 return $visible . '***@' . $domain;
             };
             $aduanDetailItems = $masukanItems->mapWithKeys(fn ($aduan) => [
-                $aduan->id_datamasukan => [
+                $aduan->id_dataaduan => [
                     'nama_pengadu' => $aduan->nama_pengadu,
                     'email' => $maskEmail($aduan->email),
                     'isi_aduan' => $aduan->isi_aduan,
@@ -94,7 +94,7 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-[#233a34] font-medium text-gray-700 dark:text-gray-200">
                         @forelse ($masukanItems as $aduan)
-                            <tr class="aduan-row cursor-pointer hover:bg-gray-50/80 dark:hover:bg-white/5 transition" data-aduan-id="{{ $aduan->id_datamasukan }}" title="Klik untuk melihat detail aduan">
+                            <tr class="aduan-row cursor-pointer hover:bg-gray-50/80 dark:hover:bg-white/5 transition" data-aduan-id="{{ $aduan->id_dataaduan }}" title="Klik untuk melihat detail aduan">
                                 <td class="p-3 font-bold text-gray-900 dark:text-white whitespace-nowrap">{{ $aduan->nama_pengadu }}</td>
                                 <td class="p-3 text-gray-500 dark:text-gray-300 min-w-[260px]">{{ $aduan->isi_aduan }}</td>
                                 <td class="p-3 text-gray-500 dark:text-gray-300 min-w-[180px]">{{ $maskEmail($aduan->email) }}</td>

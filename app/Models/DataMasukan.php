@@ -2,29 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class DataMasukan extends Model
+class DataMasukan extends DataAduan
 {
-    use HasFactory;
-
-    protected $table = 'sirapi_md_datamasukan';
-    protected $primaryKey = 'id_datamasukan';
-
-    protected $fillable = [
-        'nama_pengadu',
-        'nomor_pengadu',
-        'email',
-        'foto',
-        'isi_aduan',
-        'balasan_admin',
-        'status',
-        'id_admin',
-    ];
-
+    // Alias model for backwards-compatibility
     public static function kelolaMasukan()
     {
-        return self::latest('id_datamasukan')->get();
+        return self::kelolaAduan();
     }
 }

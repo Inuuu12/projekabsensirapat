@@ -41,7 +41,7 @@
             $ulangTahunUtama = $ulangTahunHariIni ?? $ulangTahunItems->first();
             $infoItems = $agendaTerbaruItems->pluck('nama_agenda')->merge($beritaItems->pluck('judul'))->take(4);
             $initial = fn ($name) => collect(explode(' ', trim((string) $name)))->filter()->take(2)->map(fn ($word) => strtoupper(substr($word, 0, 1)))->join('') ?: 'DB';
-            $imageUrl = function ($path, $fallback = 'assets/foto/Suratlogo.png') {
+            $imageUrl = function ($path, $fallback = 'assets/foto/Agendahariini.png') {
                 if (! $path) {
                     return asset($fallback);
                 }
@@ -74,7 +74,7 @@
                 return $visible . '***@' . $domain;
             };
             $aduanDetailItems = $masukanItems->mapWithKeys(fn ($aduan) => [
-                $aduan->id_datamasukan => [
+                $aduan->id_dataaduan => [
                     'nama_pengadu' => $aduan->nama_pengadu,
                     'email' => $maskEmail($aduan->email),
                     'isi_aduan' => $aduan->isi_aduan,
@@ -209,9 +209,16 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4 flex-grow">
                     @forelse ($galeriItems->take(4) as $item)
-                        <div class="h-28 md:h-36 rounded-2xl overflow-hidden shadow-xs bg-gray-200 dark:bg-[#152420] border border-transparent dark:border-[#233a34] group relative">
-                            <img src="{{ $imageUrl($item->gambar) }}" alt="{{ $item->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        </div>
+                        @php
+                            $fotoPath = $item->file_path ?? $item->gambar ?? null;
+                            $fotoJudul = $item->agenda?->nama_agenda ?? $item->judul ?? $item->nama_file ?? 'Dokumentasi Kegiatan';
+                        @endphp
+                        <a href="{{ route('publik.galeri') }}" class="h-28 md:h-36 rounded-2xl overflow-hidden shadow-xs bg-gray-200 dark:bg-[#152420] border border-transparent dark:border-[#233a34] group relative block">
+                            <img src="{{ $imageUrl($fotoPath) }}" alt="{{ $fotoJudul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
+                                <span class="text-[10px] text-white font-medium truncate">{{ $fotoJudul }}</span>
+                            </div>
+                        </a>
                     @empty
                         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl flex-1 shadow-xs flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold text-sm col-span-2 p-6">
                             Belum ada foto galeri
@@ -326,7 +333,7 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-[#233a34] font-medium text-gray-700 dark:text-gray-200">
                         @forelse ($masukanItems as $aduan)
-                            <tr class="home-aduan-row cursor-pointer hover:bg-gray-50/80 dark:hover:bg-white/5 transition" data-aduan-id="{{ $aduan->id_datamasukan }}" title="Klik untuk melihat detail aduan">
+                            <tr class="home-aduan-row cursor-pointer hover:bg-gray-50/80 dark:hover:bg-white/5 transition" data-aduan-id="{{ $aduan->id_dataaduan }}" title="Klik untuk melihat detail aduan">
                                 <td class="p-3 font-bold text-gray-900 dark:text-white">{{ $aduan->nama_pengadu }}</td>
                                 <td class="p-3 text-gray-500 dark:text-gray-300">{{ \Illuminate\Support\Str::limit($aduan->isi_aduan, 55) }}</td>
                                 <td class="p-3 text-gray-500 dark:text-gray-300">{{ $aduan->balasan_admin ? \Illuminate\Support\Str::limit($aduan->balasan_admin, 55) : 'Belum ada balasan' }}</td>

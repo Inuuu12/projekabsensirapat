@@ -237,11 +237,17 @@ class AdminPublikController extends Controller
 
     private function dokumentasiAgendaGaleri()
     {
-        return DokumenNotulen::with('agenda')
+        $dokumentasi = DokumenNotulen::with('agenda')
             ->where('jenis_dokumen', 'dokumentasi')
             ->latest('id_dokumen')
             ->get()
-            ->filter(fn ($item) => in_array(strtolower(pathinfo((string) $item->file_path, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp'], true))
-            ->values();
+            ->filter(fn ($item) => in_array(strtolower(pathinfo((string) $item->file_path, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp'], true));
+
+        $galeri = Galeri::latest('id_galeri')->get()->map(function ($item) {
+            $item->file_path = $item->gambar;
+            return $item;
+        });
+
+        return $dokumentasi->concat($galeri)->values();
     }
 }

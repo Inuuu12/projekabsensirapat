@@ -39,11 +39,11 @@
         </div>
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
             <div>
-                <p class="text-[11px] font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Masukkan Baru</p>
-                <p class="mt-3 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalMasukkanBaru ?? 0) }}</p>
+                <p class="text-[11px] font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aduan Baru</p>
+                <p class="mt-3 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalAduanBaru ?? $totalMasukkanBaru ?? 0) }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-[#f3f7f6] dark:bg-white/10 p-2.5 shrink-0">
-                <img src="{{ asset('assets/foto/Suratlogo.png') }}" alt="Masukkan Baru" class="w-full h-full object-contain">
+                <img src="{{ asset('assets/foto/Suratlogo.png') }}" alt="Aduan Baru" class="w-full h-full object-contain">
             </div>
         </div>
     </div>

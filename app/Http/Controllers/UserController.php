@@ -28,7 +28,7 @@ class UserController extends Controller
     public function TampilkanRingkasan()
     {
         $totalAgenda = DB::table('sirapi_md_agenda')->count();
-        $totalAduan = DB::table('sirapi_md_datamasukan')->count();
+        $totalAduan = DB::table('sirapi_md_dataaduan')->count();
 
         return response()->json([
             'success' => true,
@@ -96,9 +96,9 @@ class UserController extends Controller
 
         try {
             Mail::raw(
-                "Kode OTP masukan SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::ADUAN_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta kode OTP.",
+                "Kode OTP aduan SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::ADUAN_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta kode OTP.",
                 function ($message) use ($email) {
-                    $message->to($email)->subject('Kode OTP Masukan SIRAPI');
+                    $message->to($email)->subject('Kode OTP Aduan SIRAPI');
                 }
             );
         } catch (\Throwable) {
@@ -143,7 +143,7 @@ class UserController extends Controller
             $validated['foto'] = $request->file('foto')->store('aduan', 'public');
         }
 
-        $idAduan = DB::table('sirapi_md_datamasukan')->insertGetId([
+        $idAduan = DB::table('sirapi_md_dataaduan')->insertGetId([
             'nama_pengadu' => $validated['nama_pengadu'],
             'nomor_pengadu' => $validated['nomor_pengadu'],
             'email' => $validated['email'],
@@ -169,7 +169,7 @@ class UserController extends Controller
 
     public function cekStatusAduan($id)
     {
-        $aduan = DB::table('sirapi_md_datamasukan')->where('id_datamasukan', $id)->first();
+        $aduan = DB::table('sirapi_md_dataaduan')->where('id_dataaduan', $id)->first();
 
         if (!$aduan) {
             return response()->json(['success' => false, 'message' => 'Data aduan tidak ditemukan.'], 404);

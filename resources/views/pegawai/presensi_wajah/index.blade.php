@@ -76,7 +76,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         </div>
                         <h2 class="text-xl font-bold" id="success-name">Bagus Wihandono</h2>
-                        <p class="text-sm mt-2 font-medium">Presensi Berhasil Dicatat!</p>
+                        <p class="text-sm mt-2 font-medium px-4 text-center" id="success-msg">Presensi Berhasil Dicatat!</p>
                     </div>
 
                     <div id="error-overlay" class="absolute inset-0 bg-red-900/95 z-30 flex flex-col items-center justify-center text-white p-6 text-center hidden">
@@ -259,6 +259,12 @@
                             resumeScanning();
                         }
                     } else {
+                        const successMsgEl = document.getElementById('success-msg');
+                        if (successMsgEl) {
+                            successMsgEl.innerText = result.already_present 
+                                ? (result.message || 'Anda sudah melakukan presensi sebelumnya.') 
+                                : 'Presensi Berhasil Dicatat!';
+                        }
                         setTimeout(() => {
                             window.location.href = result.redirect_url || "{{ route('pegawai.presensi.index', $routeParams) }}";
                         }, 2500);

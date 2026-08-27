@@ -1,6 +1,6 @@
 @extends('admin.layout.app')
 
-@section('title', 'Masukkan')
+@section('title', 'Pengaduan')
 
 @section('content')
 @php
@@ -144,7 +144,7 @@
                                 {{ optional($item->created_at)->translatedFormat('d M Y') ?? '-' }}
                             </td>
                             <td class="px-6 py-8">
-                                <form method="POST" action="{{ route('admin.masukkan.update', $item->id_datamasukan) }}">
+                                <form method="POST" action="{{ route('admin.masukkan.update', $item->id_dataaduan) }}">
                                     @csrf
                                     @method('PUT')
                                     <select
@@ -168,7 +168,7 @@
                                     <button
                                         type="button"
                                         onclick="openMasukkanDetail(this)"
-                                        data-action="{{ route('admin.masukkan.update', $item->id_datamasukan) }}"
+                                        data-action="{{ route('admin.masukkan.update', $item->id_dataaduan) }}"
                                         data-name="{{ $item->nama_pengadu }}"
                                         data-email="{{ $item->email }}"
                                         data-phone="{{ $item->nomor_pengadu }}"
@@ -187,7 +187,7 @@
                                     <button
                                         type="button"
                                         onclick="openMasukkanReply(this)"
-                                        data-action="{{ route('admin.masukkan.reply', $item->id_datamasukan) }}"
+                                        data-action="{{ route('admin.masukkan.reply', $item->id_dataaduan) }}"
                                         data-name="{{ $item->nama_pengadu }}"
                                         data-email="{{ $item->email }}"
                                         data-message="{{ $item->isi_aduan }}"
@@ -199,13 +199,13 @@
 
                                     <button
                                         type="button"
-                                        onclick="openDeleteModal('{{ route('admin.masukkan.destroy', $item->id_datamasukan) }}', 'Hapus Masukkan?', 'Apakah Anda yakin ingin menghapus masukkan ini?')"
+                                        onclick="openDeleteModal('{{ route('admin.masukkan.destroy', $item->id_dataaduan) }}', 'Hapus Aduan?', 'Apakah Anda yakin ingin menghapus aduan ini?')"
                                         class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer"
                                         title="Hapus">
                                         <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                         <span class="sr-only">Hapus</span>
-                                    </button>
-                                </div>
+                                     </button>
+                                 </div>
                             </td>
                         </tr>
                     @empty
@@ -301,7 +301,7 @@
 <div id="modal-reply-masukkan" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4">
     <div class="relative w-full max-w-2xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden">
         <div class="flex items-center justify-between rounded-t-2xl border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 shrink-0 bg-white dark:bg-[#163830]">
-            <h3 class="text-base sm:text-lg font-black text-[#0f513f] dark:text-white">Reply Masukkan</h3>
+            <h3 class="text-base sm:text-lg font-black text-[#0f513f] dark:text-white">Balas Aduan</h3>
             <button type="button" onclick="closeMasukkanReply()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-white/80 dark:hover:bg-white/10 cursor-pointer" title="Tutup">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
@@ -331,7 +331,7 @@
             </div>
             <div class="grid grid-cols-2 sm:flex sm:justify-end gap-2.5 sm:gap-3 border-t border-gray-100 dark:border-[#233a34] p-3 sm:px-6 sm:py-4 bg-gray-50 dark:bg-[#0f1c19] rounded-b-2xl shrink-0">
                 <button type="button" onclick="closeMasukkanReply()" class="w-full sm:w-auto h-10 rounded-xl px-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-[#152420] border border-gray-300 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer flex items-center justify-center">Batal</button>
-                <button type="submit" class="w-full sm:w-auto inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#35635b] dark:bg-[#107050] hover:bg-[#2b4f49] dark:hover:bg-[#0c5940] px-5 text-xs sm:text-sm font-bold text-white cursor-pointer transition shadow-sm">Kirim Reply</button>
+                <button type="submit" class="w-full sm:w-auto inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#35635b] dark:bg-[#107050] hover:bg-[#2b4f49] dark:hover:bg-[#0c5940] px-5 text-xs sm:text-sm font-bold text-white cursor-pointer transition shadow-sm">Kirim Balasan</button>
             </div>
         </form>
     </div>
