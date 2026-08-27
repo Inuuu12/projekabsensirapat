@@ -175,11 +175,6 @@
                         <li class="flex items-start space-x-2.5">
                             <span class="w-5 h-5 rounded-full bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43] flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">✓</span>
                             <span>Jelaskan kronologi kejadian secara singkat & jelas</span>
-                        </li>
-                        <li class="flex items-start space-x-2.5">
-                            <span class="w-5 h-5 rounded-full bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43] flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">✓</span>
-                            <span>Sertakan waktu & lokasi kejadian jika relevan</span>
-                        </li>
                         <li class="flex items-start space-x-2.5">
                             <span class="w-5 h-5 rounded-full bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43] flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">✓</span>
                             <span>Gunakan bahasa yang sopan dan mudah dipahami</span>

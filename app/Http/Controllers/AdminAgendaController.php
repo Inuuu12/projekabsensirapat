@@ -140,7 +140,15 @@ class AdminAgendaController extends Controller
     public function detail_Agenda(Request $request, ?int $id = null)
     {
         $agendaId = $id ?? $request->query('id');
-        $agenda = Agenda::findOrFail($agendaId);
+        if (! $agendaId) {
+            return redirect()->route('admin.agenda.lihat');
+        }
+
+        $agenda = Agenda::find($agendaId);
+        if (! $agenda) {
+            return redirect()->route('admin.agenda.lihat')->with('error', 'Agenda tidak ditemukan atau telah dihapus.');
+        }
+
         $ruang = RuangRapat::find($agenda->id_ruangrapat);
         $dokumen = DokumenNotulen::where('id_agenda', $agenda->id_agenda)
             ->latest('id_dokumen')
@@ -402,9 +410,12 @@ class AdminAgendaController extends Controller
 
     public function hapus_Agenda($id)
     {
-        Agenda::findOrFail($id)->delete();
+        $agenda = Agenda::find($id);
+        if ($agenda) {
+            $agenda->delete();
+        }
 
-        return back()->with('success', 'Agenda berhasil dihapus.');
+        return redirect()->route('admin.agenda.lihat')->with('success', 'Agenda berhasil dihapus.');
     }
 
     private function statusAgendaIdFor(array $agenda): int

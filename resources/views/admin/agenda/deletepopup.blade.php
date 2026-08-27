@@ -29,7 +29,7 @@
             
             <!-- Tombol Hapus -->
             <button type="submit" class="w-full sm:w-auto h-10 px-4 text-xs font-bold text-white bg-[#B91C1C] hover:bg-[#991B1B] dark:bg-red-700 dark:hover:bg-red-800 rounded-xl flex items-center justify-center gap-2 shadow-xs transition cursor-pointer">
-                <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="w-3.5 h-3.5 object-contain brightness-0 invert">
+               
                 <span>Hapus</span>
             </button>
         </form>
