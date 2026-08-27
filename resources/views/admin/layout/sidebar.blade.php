@@ -135,19 +135,19 @@
             </div>
             
             <!-- Bagian Tombol Aksi (Ya atau Batal) -->
-            <div class="bg-gray-50 dark:bg-[#0f1c19] px-4 py-3 grid grid-cols-2 sm:flex sm:flex-row-reverse sm:px-6 gap-2.5 sm:gap-3 border-t border-gray-100 dark:border-[#233a34]">
+            <div class="bg-gray-50 dark:bg-[#0f1c19] px-4 py-3 sm:px-6 grid grid-cols-2 gap-3 border-t border-gray-100 dark:border-[#233a34]">
+                <!-- Tombol Batal untuk menutup modal -->
+                <button type="button" onclick="document.getElementById('logoutModal').classList.add('hidden')" class="inline-flex w-full h-10 items-center justify-center rounded-xl bg-white dark:bg-[#152420] px-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-[#284c43] hover:bg-gray-50 dark:hover:bg-white/5 transition cursor-pointer">
+                    Batal
+                </button>
+
                 <!-- Form Laravel untuk eksekusi POST /logout -->
-                <form action="{{ route('admin.logout') }}" method="POST" class="inline-block m-0 w-full sm:w-auto">
+                <form action="{{ route('admin.logout') }}" method="POST" class="m-0 w-full">
                     @csrf 
                     <button type="submit" class="inline-flex w-full h-10 items-center justify-center rounded-xl bg-red-600 hover:bg-red-700 px-4 text-xs sm:text-sm font-bold text-white shadow-sm transition cursor-pointer">
                         Ya, Keluar
                     </button>
                 </form>
-                
-                <!-- Tombol Batal untuk menutup modal -->
-                <button type="button" onclick="document.getElementById('logoutModal').classList.add('hidden')" class="inline-flex w-full h-10 items-center justify-center rounded-xl bg-white dark:bg-[#152420] px-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-[#284c43] hover:bg-gray-50 dark:hover:bg-white/5 transition cursor-pointer">
-                    Batal
-                </button>
             </div>
         </div>
     </div>

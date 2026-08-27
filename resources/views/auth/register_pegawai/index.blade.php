@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Daftar Pegawai - SIRAPI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,10 +30,20 @@
         }
     </script>
 </head>
-<body class="min-h-screen bg-white dark:bg-[#0d1614] font-sans text-sirapi-ink dark:text-slate-100 antialiased transition-colors duration-200 flex flex-col">
-    <header class="relative flex h-[180px] sm:h-[220px] items-center justify-center overflow-hidden bg-sirapi-green dark:bg-[#0f1c19] dark:border-b dark:border-[#233a34] text-white shrink-0">
+<body class="min-h-screen bg-gray-50/70 dark:bg-[#0d1614] font-sans text-sirapi-ink dark:text-slate-100 antialiased transition-colors duration-200 flex flex-col">
+    <!-- Header -->
+    <header class="relative flex min-h-[170px] sm:min-h-[220px] py-6 sm:py-8 items-center justify-center overflow-hidden bg-sirapi-green dark:bg-[#0f1c19] dark:border-b dark:border-[#233a34] text-white shrink-0">
         <div class="absolute -left-20 -top-24 h-72 w-72 rounded-full bg-white/10 dark:bg-white/5"></div>
+        <div class="absolute -right-20 -bottom-24 h-72 w-72 rounded-full bg-white/5 dark:bg-white/5"></div>
         
+        <!-- Back Button Top-Left -->
+        <a href="{{ route('pegawai.login') }}" 
+           class="absolute top-4 left-4 sm:top-5 sm:left-5 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white/90 hover:text-white bg-white/10 hover:bg-white/20 dark:bg-[#152420] dark:border dark:border-[#284c43] transition cursor-pointer z-20"
+           title="Kembali ke Login">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Kembali</span>
+        </a>
+
         <!-- Theme Toggle Top-Right -->
         <button type="button" 
                 onclick="toggleSirapiTheme()" 
@@ -47,18 +57,23 @@
             </svg>
         </button>
 
-        <div class="relative flex flex-col items-center text-center px-4">
-            <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-18 sm:h-24 w-auto drop-shadow">
-            <h1 class="mt-3 sm:mt-4 text-xl sm:text-2xl font-extrabold tracking-wide">SIRAPI</h1>
-            <p class="mt-1 sm:mt-2 text-xs sm:text-sm font-bold">Daftar Akun Pegawai</p>
+        <div class="relative flex flex-col items-center text-center px-4 z-10">
+            <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-16 sm:h-22 w-auto drop-shadow">
+            <h1 class="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-wide">SIRAPI</h1>
+            <p class="mt-0.5 sm:mt-1 text-xs sm:text-sm font-semibold text-emerald-100 dark:text-gray-300">Pendaftaran Akun Pegawai</p>
         </div>
     </header>
 
-    <main class="flex flex-1 justify-center px-4 sm:px-6 py-6 sm:py-10">
-        <section class="w-full max-w-2xl">
+    <!-- Main Content -->
+    <main class="flex flex-1 justify-center px-3.5 sm:px-6 py-6 sm:py-10">
+        <section class="w-full max-w-xl md:max-w-2xl lg:max-w-3xl">
             @if ($errors->any())
-                <div class="mb-5 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-4 py-3 text-sm font-semibold text-red-700 dark:text-red-300">
-                    <ul class="list-inside list-disc">
+                <div class="mb-5 rounded-2xl border border-red-200 dark:border-red-800/80 bg-red-50 dark:bg-red-950/40 p-4 text-xs sm:text-sm font-medium text-red-700 dark:text-red-300 shadow-xs">
+                    <div class="flex items-center gap-2 font-bold mb-1.5 text-red-800 dark:text-red-200">
+                        <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+                        <span>Mohon periksa kesalahan berikut:</span>
+                    </div>
+                    <ul class="list-inside list-disc space-y-0.5 pl-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -66,103 +81,208 @@
                 </div>
             @endif
 
-            <div class="mb-6 rounded-2xl border border-blue-200 dark:border-blue-800/60 bg-blue-50 dark:bg-blue-950/40 p-4 text-xs text-blue-800 dark:text-blue-200 flex items-center gap-3 shadow-xs">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <div class="leading-snug">
-                    <strong class="font-bold text-sm text-blue-900 dark:text-blue-100">Informasi:</strong>
+            <div class="mb-5 sm:mb-6 rounded-2xl border border-blue-200 dark:border-blue-800/60 bg-blue-50/80 dark:bg-blue-950/40 p-4 text-xs sm:text-sm text-blue-800 dark:text-blue-200 flex items-start sm:items-center gap-3 shadow-xs">
+                <i data-lucide="info" class="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5 sm:mt-0"></i>
+                <div class="leading-relaxed">
+                    <strong class="font-bold text-blue-900 dark:text-blue-100">Informasi Pendaftaran:</strong>
                     Akun baru memerlukan verifikasi Administrator sebelum dapat digunakan untuk login dan presensi.
                 </div>
             </div>
 
-            <form action="{{ route('pegawai.register.submit') }}" method="POST" class="grid gap-5 rounded-2xl border border-[#DDE3DF] dark:border-[#233a34] bg-white dark:bg-[#152420] p-6 shadow-xs sm:grid-cols-2 transition-colors">
+            <form action="{{ route('pegawai.register.submit') }}" method="POST" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 rounded-2xl sm:rounded-3xl border border-[#DDE3DF] dark:border-[#233a34] bg-white dark:bg-[#152420] p-4.5 sm:p-7 md:p-8 shadow-xs transition-colors">
                 @csrf
 
-                <label class="sm:col-span-2">
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Nama Lengkap</span>
-                    <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai') }}" required autofocus
-                        class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-semibold text-gray-800 dark:text-white outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
-                        placeholder="Nama pegawai">
-                </label>
+                <!-- Nama Lengkap -->
+                <div class="sm:col-span-2">
+                    <label for="nama_pegawai" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
+                        Nama Lengkap <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 sm:pl-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="user" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </span>
+                        <input id="nama_pegawai" type="text" name="nama_pegawai" value="{{ old('nama_pegawai') }}" required autofocus
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-4 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15"
+                            placeholder="Masukkan nama lengkap beserta gelar jika ada">
+                    </div>
+                </div>
 
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">NIP</span>
-                    <input type="text" name="nip" value="{{ old('nip') }}" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                        class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-semibold text-gray-800 dark:text-white outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
-                        placeholder="Nomor induk pegawai">
-                </label>
+                <!-- NIP -->
+                <div>
+                    <label for="nip" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
+                        NIP <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 sm:pl-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="badge-check" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </span>
+                        <input id="nip" type="text" inputmode="numeric" name="nip" value="{{ old('nip') }}" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-4 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15"
+                            placeholder="18 digit Nomor Induk Pegawai">
+                    </div>
+                </div>
 
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Tanggal Lahir</span>
-                    <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}"
-                        class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-semibold text-gray-800 dark:text-white outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15">
-                </label>
+                <!-- Tanggal Lahir -->
+                <div>
+                    <label for="tanggal_lahir" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
+                        Tanggal Lahir
+                    </label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 sm:pl-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="calendar" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </span>
+                        <input id="tanggal_lahir" type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}"
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-4 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15">
+                    </div>
+                </div>
 
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Jabatan</span>
-                    <select name="jabatan" required
-                        class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-semibold text-gray-800 dark:text-white outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15">
-                        <option value="">Pilih jabatan</option>
-                        @foreach ($jabatanOptions as $jabatan)
-                            <option value="{{ $jabatan }}" @selected(old('jabatan') === $jabatan)>{{ $jabatan }}</option>
-                        @endforeach
-                    </select>
-                </label>
+                <!-- Jabatan -->
+                <div>
+                    <label for="jabatan" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
+                        Jabatan <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 sm:pl-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="briefcase" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </span>
+                        <select id="jabatan" name="jabatan" required
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-8 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15 cursor-pointer appearance-none">
+                            <option value="">Pilih jabatan</option>
+                            @foreach ($jabatanOptions as $jabatan)
+                                <option value="{{ $jabatan }}" @selected(old('jabatan') === $jabatan)>{{ $jabatan }}</option>
+                            @endforeach
+                        </select>
+                        <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        </span>
+                    </div>
+                </div>
 
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Bidang</span>
-                    <select name="bidang"
-                        class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-semibold text-gray-800 dark:text-white outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15">
-                        <option value="">Pilih bidang</option>
-                        @foreach ($bidangOptions as $bidang)
-                            <option value="{{ $bidang }}" @selected(old('bidang') === $bidang)>{{ $bidang }}</option>
-                        @endforeach
-                    </select>
-                </label>
+                <!-- Bidang -->
+                <div>
+                    <label for="bidang" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
+                        Bidang / Bagian
+                    </label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 sm:pl-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="building" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </span>
+                        <select id="bidang" name="bidang"
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-8 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15 cursor-pointer appearance-none">
+                            <option value="">Pilih bidang (opsional)</option>
+                            @foreach ($bidangOptions as $bidang)
+                                <option value="{{ $bidang }}" @selected(old('bidang') === $bidang)>{{ $bidang }}</option>
+                            @endforeach
+                        </select>
+                        <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        </span>
+                    </div>
+                </div>
 
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">No. HP</span>
-                    <input type="text" name="nomor_hp" value="{{ old('nomor_hp') }}" required pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                        class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-semibold text-gray-800 dark:text-white outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
-                        placeholder="08xxxxxxxxxx">
-                </label>
+                <!-- No. HP -->
+                <div>
+                    <label for="nomor_hp" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
+                        No. HP / WhatsApp <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 sm:pl-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="phone" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </span>
+                        <input id="nomor_hp" type="tel" inputmode="numeric" name="nomor_hp" value="{{ old('nomor_hp') }}" required pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-4 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15"
+                            placeholder="08xxxxxxxxxx">
+                    </div>
+                </div>
 
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Email</span>
-                    <input type="email" name="email" value="{{ old('email') }}" required
-                        class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-semibold text-gray-800 dark:text-white outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
-                        placeholder="Masukkan email anda">
-                </label>
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
+                        Email Resmi <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 sm:pl-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="mail" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </span>
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-4 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15"
+                            placeholder="nama@domain.go.id">
+                    </div>
+                </div>
 
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Password</span>
-                    <input type="password" name="password" required minlength="8"
-                        class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-semibold text-gray-800 dark:text-white outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
-                        placeholder="Minimal 8 karakter">
-                </label>
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
+                        Kata Sandi <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 sm:pl-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="lock" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </span>
+                        <input id="password" type="password" name="password" required minlength="8"
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-11 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15"
+                            placeholder="Minimal 8 karakter">
+                        <button type="button" onclick="togglePasswordVisibility('password', 'eye-icon-pass')" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition cursor-pointer" title="Lihat/Sembunyikan Sandi">
+                            <i id="eye-icon-pass" data-lucide="eye" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </button>
+                    </div>
+                </div>
 
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Konfirmasi Password</span>
-                    <input type="password" name="password_confirmation" required
-                        class="mt-2 h-12 w-full rounded-lg border border-[#DDE3DF] dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-semibold text-gray-800 dark:text-white outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/15"
-                        placeholder="Ulangi password">
-                </label>
+                <!-- Konfirmasi Password -->
+                <div>
+                    <label for="password_confirmation" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
+                        Konfirmasi Kata Sandi <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 sm:pl-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="lock-keyhole" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </span>
+                        <input id="password_confirmation" type="password" name="password_confirmation" required minlength="8"
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-11 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15"
+                            placeholder="Ulangi kata sandi">
+                        <button type="button" onclick="togglePasswordVisibility('password_confirmation', 'eye-icon-confirm')" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition cursor-pointer" title="Lihat/Sembunyikan Sandi">
+                            <i id="eye-icon-confirm" data-lucide="eye" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </button>
+                    </div>
+                </div>
 
-                <div class="flex flex-col gap-3 pt-2 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-                    <a href="{{ route('pegawai.login') }}" class="text-sm font-bold text-[#27364A] dark:text-emerald-400 hover:underline">
-                        Sudah punya akun?
+                <!-- Form Action Buttons -->
+                <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3.5 pt-4 sm:col-span-2 border-t border-gray-100 dark:border-[#233a34] mt-2">
+                    <a href="{{ route('pegawai.login') }}" class="inline-flex items-center justify-center sm:justify-start gap-1.5 text-xs sm:text-sm font-bold text-gray-600 dark:text-emerald-400 hover:text-sirapi-green dark:hover:underline py-1.5 transition">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        <span>Sudah punya akun? Masuk di sini</span>
                     </a>
-                    <button type="submit" class="h-12 rounded-lg bg-sirapi-green hover:bg-sirapi-greenSoft dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-8 text-sm font-extrabold text-white shadow-xs transition focus:outline-none focus:ring-2 focus:ring-sirapi-green/25 cursor-pointer">
-                        Daftar
+                    
+                    <button type="submit" class="w-full sm:w-auto h-11 sm:h-12 rounded-xl bg-sirapi-green hover:bg-sirapi-greenSoft dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-7 sm:px-8 text-xs sm:text-sm font-extrabold text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-sirapi-green/25 cursor-pointer flex items-center justify-center gap-2">
+                        <span>Daftar Akun</span>
+                        <i data-lucide="user-plus" class="w-4 h-4"></i>
                     </button>
                 </div>
             </form>
         </section>
     </main>
 
+    <footer class="py-4 text-center text-xs text-gray-400 dark:text-gray-500 shrink-0">
+        &copy; {{ date('Y') }} SIRAPI - Pemerintah Kabupaten Bogor.
+    </footer>
+
     <script>
         lucide.createIcons();
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (!input || !icon) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
     </script>
 </body>
 </html>

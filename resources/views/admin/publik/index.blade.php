@@ -39,7 +39,7 @@
                 <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Pilih jenis konten publik yang ingin ditambahkan.</p>
             </div>
         </div>
-        <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button type="button" onclick="openPublicModal('modal-tambah-berita')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50 dark:hover:bg-[#1b3832] cursor-pointer">
                 <span>
                     <span class="block text-sm font-extrabold text-gray-800 dark:text-white">Berita</span>
@@ -49,15 +49,6 @@
                     <img src="{{ asset('foto/Beritalogo.png') }}" alt="Berita" class="h-full w-full object-contain">
                 </span>
             </button>
-            <a href="{{ route('admin.agenda.lihat') }}" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50 dark:hover:bg-[#1b3832] cursor-pointer">
-                <span>
-                    <span class="block text-sm font-extrabold text-gray-800 dark:text-white">Galeri</span>
-                    <span class="mt-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Unggah dokumentasi agenda</span>
-                </span>
-                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 dark:bg-[#152420] p-2">
-                    <img src="{{ asset('foto/Galerilogo.png') }}" alt="Galeri" class="h-full w-full object-contain">
-                </span>
-            </a>
             <button type="button" onclick="openPublicModal('modal-tambah-video')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50 dark:hover:bg-[#1b3832] cursor-pointer">
                 <span>
                     <span class="block text-sm font-extrabold text-gray-800 dark:text-white">Video</span>
