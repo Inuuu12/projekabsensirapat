@@ -48,6 +48,25 @@ class Agenda extends Model
         return $this->belongsTo(StatusAgenda::class, 'id_statusagenda', 'id_statusagenda');
     }
 
+    public function ruangRapat()
+    {
+        return $this->belongsTo(RuangRapat::class, 'id_ruangrapat', 'id_ruangrapat');
+    }
+
+    public function getLokasiDisplayAttribute(): string
+    {
+        if (strtolower((string) ($this->kategori_surat ?? '')) !== 'masuk' && $this->ruangRapat) {
+            return $this->ruangRapat->nama_ruang;
+        }
+
+        $lokasi = (string) ($this->lokasi ?? '');
+        if (str_contains($lokasi, '(')) {
+            $lokasi = trim(explode('(', $lokasi)[0]);
+        }
+
+        return $lokasi ?: ($this->ruangRapat?->nama_ruang ?? '-');
+    }
+
     public function getStatusLabelAttribute(): string
     {
         return self::resolveStatusLabel($this->tanggal, $this->waktu, $this->waktu_selesai);

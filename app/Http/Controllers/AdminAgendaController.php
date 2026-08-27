@@ -46,6 +46,8 @@ class AdminAgendaController extends Controller
         if (! $isMasuk && ! empty($validated['id_ruangrapat'])) {
             $ruang = RuangRapat::find($validated['id_ruangrapat']);
             if ($ruang) {
+                $validated['lokasi'] = $ruang->nama_ruang;
+
                 $conflict = $ruang->checkConflict(
                     $validated['tanggal'],
                     $validated['waktu'],
@@ -311,6 +313,8 @@ class AdminAgendaController extends Controller
         if (! $isMasuk && ! empty($validated['id_ruangrapat'])) {
             $ruang = RuangRapat::find($validated['id_ruangrapat']);
             if ($ruang) {
+                $validated['lokasi'] = $ruang->nama_ruang;
+
                 $conflict = $ruang->checkConflict(
                     $validated['tanggal'],
                     $validated['waktu'],

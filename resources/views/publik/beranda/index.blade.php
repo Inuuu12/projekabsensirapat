@@ -168,7 +168,7 @@
                                 <span class="bg-gray-100 dark:bg-[#1b3832] text-gray-700 dark:text-emerald-300 text-[10px] font-medium px-2.5 py-0.5 rounded-full border border-transparent dark:border-emerald-500/20">{{ $agenda->status_label }}</span>
                             </div>
                             <h4 class="font-bold text-sm leading-snug text-gray-900 dark:text-white">{{ $agenda->nama_agenda }}</h4>
-                            <p class="text-xs text-gray-500 dark:text-gray-300">{{ $agenda->lokasi ?? '-' }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-300">{{ $agenda->lokasi_display ?? '-' }}</p>
                         </div>
                         <div class="flex items-center justify-between border-t border-gray-100 dark:border-[#233a34] pt-3 text-xs">
                             @if (strtolower((string) ($agenda->kategori_surat ?? '')) !== 'masuk')

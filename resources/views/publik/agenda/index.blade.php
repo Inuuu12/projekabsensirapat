@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="space-y-1">
                                     <h4 class="font-bold text-sm text-gray-900 dark:text-white">{{ $item->nama_agenda }}</h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-300">{{ $item->lokasi ?? '-' }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-300">{{ $item->lokasi_display ?? '-' }}</p>
                                 </div>
                             </div>
                             <div class="flex items-center justify-between md:justify-end space-x-4 shrink-0">

@@ -193,7 +193,7 @@
                 </div>
                 <div class="py-3">
                     <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Lokasi</p>
-                    <p class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">{{ $agendaAktif?->lokasi ?? '-' }}</p>
+                    <p class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">{{ $agendaAktif?->lokasi_display ?? '-' }}</p>
                 </div>
                 <div class="{{ $agendaAktif?->ditugaskan ? 'py-3' : 'pt-3' }}">
                     <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Penyelenggara</p>

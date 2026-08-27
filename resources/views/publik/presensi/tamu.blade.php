@@ -43,7 +43,7 @@
             <div class="space-y-1">
                 <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Form Tamu Rapat</h1>
                 <p class="text-xs text-gray-500 dark:text-gray-300 font-medium">{{ $agendaAktif?->nama_agenda ?? 'Belum ada agenda tersedia' }}</p>
-                <p class="text-xs text-gray-400 dark:text-gray-400">{{ substr((string) $agendaAktif?->waktu, 0, 5) ?: '-' }} WIB &bull; {{ $agendaAktif?->lokasi ?? '-' }}</p>
+                <p class="text-xs text-gray-400 dark:text-gray-400">{{ substr((string) $agendaAktif?->waktu, 0, 5) ?: '-' }} WIB &bull; {{ $agendaAktif?->lokasi_display ?? '-' }}</p>
             </div>
 
             <hr class="border-gray-100 dark:border-[#233a34]">

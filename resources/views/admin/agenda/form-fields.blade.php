@@ -117,7 +117,7 @@
         <select id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" required data-agenda-room-select="{{ $prefix }}" class="h-10 sm:h-11 w-full appearance-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 pr-10 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
             <option value="">Pilih ruang</option>
             @foreach ($ruang as $item)
-                <option value="{{ $item->id_ruangrapat }}">
+                <option value="{{ $item->id_ruangrapat }}" data-nama-ruang="{{ $item->nama_ruang }}">
                     {{ $item->nama_ruang }} (Kapasitas: {{ $item->kapasitas }} org{{ $item->dynamic_status === 'terpakai' ? ' • Ruangan Terpakai' : ' • Tersedia' }})
                 </option>
             @endforeach

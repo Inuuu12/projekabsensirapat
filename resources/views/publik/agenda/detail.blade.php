@@ -70,7 +70,7 @@
                 <div class="flex flex-wrap items-center gap-4 text-xs text-gray-600 dark:text-gray-300 font-medium pt-1">
                     <span>{{ substr((string) $agendaAktif->waktu, 0, 5) ?: '-' }} WIB</span>
                     <span>{{ $agendaAktif->tanggal?->translatedFormat('l, d F Y') ?? '-' }}</span>
-                    <span>{{ $agendaAktif->lokasi ?? '-' }}</span>
+                    <span>{{ $agendaAktif->lokasi_display ?? '-' }}</span>
                 </div>
             </div>
 
@@ -165,7 +165,7 @@
                             </div>
                             <div class="pt-3">
                                 <p class="text-[10px] uppercase font-semibold text-gray-400">Lokasi</p>
-                                <p class="font-bold text-gray-800 dark:text-gray-200 mt-0.5">{{ $agendaAktif->lokasi ?? '-' }}</p>
+                                <p class="font-bold text-gray-800 dark:text-gray-200 mt-0.5">{{ $agendaAktif->lokasi_display ?? '-' }}</p>
                             </div>
                             @if (!empty($agendaAktif->ditugaskan))
                                 <div class="pt-3">
@@ -372,7 +372,7 @@
                     <div class="bg-ijo-sangatmuda/60 dark:bg-[#152420] rounded-3xl p-6 border border-ijo-sangatmuda dark:border-[#233a34] text-center space-y-2 flex flex-col items-center justify-center min-h-[140px]">
                         <div class="w-8 h-8 rounded-full bg-ijo-tua dark:bg-[#107050] text-white flex items-center justify-center text-xs">PIN</div>
                         <div>
-                            <h5 class="font-bold text-xs text-gray-900 dark:text-white">{{ $agendaAktif->lokasi ?? 'Lokasi belum diisi' }}</h5>
+                            <h5 class="font-bold text-xs text-gray-900 dark:text-white">{{ $agendaAktif->lokasi_display ?? 'Lokasi belum diisi' }}</h5>
                             <p class="text-[10px] text-gray-500 dark:text-gray-400">Lokasi Pelaksanaan Kegiatan</p>
                         </div>
                     </div>
