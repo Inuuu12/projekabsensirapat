@@ -142,17 +142,26 @@
                             <p class="truncate text-xs font-bold text-gray-800 dark:text-white">{{ $galleryTitle($item) }}</p>
                             <p class="mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">{{ optional($galleryDate($item))->translatedFormat('d M Y') ?? '-' }}</p>
                         </div>
+                        @php
+                            $hasAgenda = !empty($item->id_agenda);
+                            $editAction = $hasAgenda
+                                ? route('admin.agenda.dokumen.store', $item->id_agenda)
+                                : ($item->id_galeri ? route('admin.publik.galeri.update', $item->id_galeri) : '#');
+                            $deleteAction = $hasAgenda
+                                ? route('admin.agenda.dokumen.destroy', [$item->id_agenda, $item->id_dokumen])
+                                : ($item->id_galeri ? route('admin.publik.galeri.destroy', $item->id_galeri) : '#');
+                        @endphp
                         <div class="flex justify-center gap-2 p-2">
                             <button
                                 type="button"
                                 onclick="openEditGaleri(this)"
-                                data-action="{{ route('admin.agenda.dokumen.store', $item->id_agenda) }}"
+                                data-action="{{ $editAction }}"
                                 class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Ganti Dokumentasi">
                                 <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
                             </button>
-                            <form method="POST" action="{{ route('admin.agenda.dokumen.destroy', [$item->id_agenda, $item->id_dokumen]) }}">
+                            <form method="POST" action="{{ $deleteAction }}">
                                 @csrf
                                 @method('DELETE')
                                 <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Dokumentasi">
@@ -270,17 +279,26 @@
                             <p class="truncate text-xs font-bold text-gray-800 dark:text-white">{{ $galleryTitle($item) }}</p>
                             <p class="mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">{{ optional($galleryDate($item))->translatedFormat('d M Y') ?? '-' }}</p>
                         </div>
+                        @php
+                            $hasAgenda = !empty($item->id_agenda);
+                            $editAction = $hasAgenda
+                                ? route('admin.agenda.dokumen.store', $item->id_agenda)
+                                : ($item->id_galeri ? route('admin.publik.galeri.update', $item->id_galeri) : '#');
+                            $deleteAction = $hasAgenda
+                                ? route('admin.agenda.dokumen.destroy', [$item->id_agenda, $item->id_dokumen])
+                                : ($item->id_galeri ? route('admin.publik.galeri.destroy', $item->id_galeri) : '#');
+                        @endphp
                         <div class="flex justify-end gap-2 p-2 bg-gray-50/50 dark:bg-[#152420]/50">
                             <button
                                 type="button"
                                 onclick="openEditGaleri(this)"
-                                data-action="{{ route('admin.agenda.dokumen.store', $item->id_agenda) }}"
+                                data-action="{{ $editAction }}"
                                 class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Ganti Dokumentasi">
                                 <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
                             </button>
-                            <form method="POST" action="{{ route('admin.agenda.dokumen.destroy', [$item->id_agenda, $item->id_dokumen]) }}">
+                            <form method="POST" action="{{ $deleteAction }}">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Dokumentasi">

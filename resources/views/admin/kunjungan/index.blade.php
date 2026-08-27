@@ -21,16 +21,21 @@
     </div>
 
     <form id="form-search-kunjungan" method="GET" action="{{ route('admin.kunjungan.lihat') }}" class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] p-5 transition-colors">
-        <div class="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_220px_220px_180px] xl:items-end">
+        <div class="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_200px_200px_180px_auto] xl:items-end">
             <div>
                 <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Search</label>
-                <input
-                    id="keyword"
-                    name="keyword"
-                    value="{{ $keyword ?? request('keyword') }}"
-                    type="search"
-                    class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
-                    placeholder="Cari pengunjung, pihak dituju, instansi, no HP, email, keperluan...">
+                <div class="relative">
+                    <input
+                        id="keyword"
+                        name="keyword"
+                        value="{{ $keyword ?? request('keyword') }}"
+                        type="search"
+                        class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] pl-10 pr-4 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
+                        placeholder="Cari pengunjung, pihak dituju, instansi, no HP, email, keperluan...">
+                    <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
             </div>
             <div>
                 <label for="pihak-dituju-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Pihak Dituju</label>
@@ -57,13 +62,24 @@
                 </select>
             </div>
             <div>
-                <label for="tanggal-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Tanggal</label>
-                <input
-                    id="tanggal-filter"
-                    name="tanggal"
-                    value="{{ $tanggalFilter ?? request('tanggal') }}"
-                    type="date"
-                    class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                <div class="flex items-center justify-between mb-2">
+                    <label for="tanggal-filter" class="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Tanggal</label>
+                    <button type="button" onclick="clearTanggalFilter()" id="btn-reset-tanggal" class="{{ empty($tanggalFilter) ? 'hidden' : '' }} text-[11px] font-bold text-red-500 hover:underline cursor-pointer">Reset Tgl</button>
+                </div>
+                <div class="relative">
+                    <input
+                        id="tanggal-filter"
+                        name="tanggal"
+                        value="{{ $tanggalFilter ?? request('tanggal') }}"
+                        type="date"
+                        class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3.5 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                </div>
+            </div>
+            <div>
+                <a href="{{ route('admin.kunjungan.lihat') }}" class="h-11 inline-flex items-center justify-center gap-1.5 px-4 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition whitespace-nowrap w-full" title="Reset Semua Filter">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <span>Reset</span>
+                </a>
             </div>
         </div>
     </form>
@@ -316,7 +332,23 @@
             keperluanFilter.addEventListener('change', fetchResults);
         }
         if(tanggalFilter) {
-            tanggalFilter.addEventListener('change', fetchResults);
+            tanggalFilter.addEventListener('change', function() {
+                const btnReset = document.getElementById('btn-reset-tanggal');
+                if (btnReset) {
+                    btnReset.classList.toggle('hidden', !tanggalFilter.value);
+                }
+                fetchResults();
+            });
+        }
+    }
+
+    function clearTanggalFilter() {
+        const input = document.getElementById('tanggal-filter');
+        const btnReset = document.getElementById('btn-reset-tanggal');
+        if (input) {
+            input.value = '';
+            if (btnReset) btnReset.classList.add('hidden');
+            input.dispatchEvent(new Event('change'));
         }
     }
 
