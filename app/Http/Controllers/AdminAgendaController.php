@@ -42,11 +42,20 @@ class AdminAgendaController extends Controller
             $validated['id_ruangrapat'] = $defaultRuang?->id_ruangrapat ?? 1;
         }
 
-        // Validasi Bentrok Jadwal Ruangan
+        // Validasi Kapasitas Ruangan & Bentrok Jadwal
         if (! $isMasuk && ! empty($validated['id_ruangrapat'])) {
             $ruang = RuangRapat::find($validated['id_ruangrapat']);
             if ($ruang) {
                 $validated['lokasi'] = $ruang->nama_ruang;
+
+                // Cek Kapasitas Ruangan
+                if (! empty($validated['kuota']) && $ruang->kapasitas && $validated['kuota'] > $ruang->kapasitas) {
+                    $msg = "Jumlah kuota ({$validated['kuota']} orang) melebihi kapasitas {$ruang->nama_ruang} (maksimal {$ruang->kapasitas} orang).";
+                    if ($request->wantsJson()) {
+                        return response()->json(['success' => false, 'message' => $msg], 422);
+                    }
+                    return back()->withInput()->with('error', $msg);
+                }
 
                 $conflict = $ruang->checkConflict(
                     $validated['tanggal'],
@@ -137,14 +146,48 @@ class AdminAgendaController extends Controller
             ->latest('id_dokumen')
             ->get();
         $qrCode = QRCode::where('id_agenda', $agenda->id_agenda)->first();
-        $pesertaHadir = DB::table('sirapi_md_kehadiran')
+
+        // 1. Data Kehadiran Pegawai (HANYA foto snapshot hasil scan wajah di agenda ini, BUKAN foto profil)
+        $pesertaPegawai = DB::table('sirapi_md_kehadiran')
             ->join('sirapi_md_peserta', 'sirapi_md_kehadiran.id_peserta', '=', 'sirapi_md_peserta.id_peserta')
             ->where('sirapi_md_kehadiran.id_agenda', $agenda->id_agenda)
-            ->select('sirapi_md_peserta.nama', 'sirapi_md_peserta.jabatan', 'sirapi_md_kehadiran.created_at')
-            ->latest('sirapi_md_kehadiran.created_at')
+            ->select(
+                'sirapi_md_peserta.nama',
+                'sirapi_md_peserta.jabatan',
+                'sirapi_md_peserta.instansi',
+                'sirapi_md_kehadiran.created_at',
+                'sirapi_md_kehadiran.lokasi_presensi',
+                DB::raw("'Pegawai' as tipe_peserta"),
+                'sirapi_md_kehadiran.foto_kehadiran as foto_bukti'
+            )
             ->get();
 
-        return view('admin.agenda.detail', compact('agenda', 'ruang', 'dokumen', 'qrCode', 'pesertaHadir'));
+        // 2. Data Kehadiran Tamu (termasuk foto selfie presensi)
+        $pesertaTamu = DB::table('sirapi_md_tamu')
+            ->where('id_agenda', $agenda->id_agenda)
+            ->select(
+                'nama',
+                'jabatan',
+                'asal_instansi as instansi',
+                'created_at',
+                'lokasi_presensi',
+                DB::raw("'Tamu' as tipe_peserta"),
+                DB::raw("foto_selfie as foto_bukti")
+            )
+            ->get();
+
+        // Gabung dan urutkan kehadiran terbaru
+        $pesertaHadir = $pesertaPegawai->concat($pesertaTamu)->sortByDesc('created_at')->values();
+
+        return view('admin.agenda.detail', compact(
+            'agenda',
+            'ruang',
+            'dokumen',
+            'qrCode',
+            'pesertaHadir',
+            'pesertaPegawai',
+            'pesertaTamu'
+        ));
     }
 
     public function upload_DokumenAgenda($id, Request $request)
@@ -309,11 +352,17 @@ class AdminAgendaController extends Controller
             $validated['id_ruangrapat'] = $defaultRuang?->id_ruangrapat ?? 1;
         }
 
-        // Validasi Bentrok Jadwal Ruangan
+        // Validasi Kapasitas Ruangan & Bentrok Jadwal
         if (! $isMasuk && ! empty($validated['id_ruangrapat'])) {
             $ruang = RuangRapat::find($validated['id_ruangrapat']);
             if ($ruang) {
                 $validated['lokasi'] = $ruang->nama_ruang;
+
+                // Cek Kapasitas Ruangan
+                if (! empty($validated['kuota']) && $ruang->kapasitas && $validated['kuota'] > $ruang->kapasitas) {
+                    $msg = "Jumlah kuota ({$validated['kuota']} orang) melebihi kapasitas {$ruang->nama_ruang} (maksimal {$ruang->kapasitas} orang).";
+                    return back()->withInput()->with('error', $msg);
+                }
 
                 $conflict = $ruang->checkConflict(
                     $validated['tanggal'],

@@ -259,6 +259,7 @@
             setAgendaFileLabel('', '');
             syncAgendaRoomLocation('');
             setDitugaskanFromValue('', '');
+            validateRoomCapacity('');
         }
         if (modal) {
             if (modal.parentElement !== document.body) {
@@ -296,6 +297,7 @@
         if(document.getElementById('edit-status_fr')) document.getElementById('edit-status_fr').value = button.dataset.statusfr === '1' ? '1' : '0';
         setAgendaFileLabel('edit-', '');
         if (!button.dataset.lokasi) syncAgendaRoomLocation('edit-');
+        validateRoomCapacity('edit-');
         
         openModal('modal-edit-agenda');
     }
@@ -308,6 +310,34 @@
         const selected = select.options[select.selectedIndex];
         if (selected && selected.value) {
             location.value = selected.dataset.namaRuang || selected.text.split('(')[0].trim();
+        }
+        validateRoomCapacity(prefix);
+    }
+
+    function validateRoomCapacity(prefix) {
+        const roomSelect = document.getElementById(prefix + 'id_ruangrapat');
+        const kuotaInput = document.getElementById(prefix + 'kuota');
+        const warningEl = document.getElementById(prefix + 'kuota-warning');
+        const warningText = document.getElementById(prefix + 'kuota-warning-text');
+        
+        if (!roomSelect || !kuotaInput || !warningEl || !warningText) return true;
+        
+        const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+        const kapasitas = selectedOption ? parseInt(selectedOption.dataset.kapasitas || '0', 10) : 0;
+        const kuota = parseInt(kuotaInput.value || '0', 10);
+        const namaRuang = selectedOption ? (selectedOption.dataset.namaRuang || selectedOption.text.split('(')[0].trim()) : 'Ruangan';
+        
+        if (kapasitas > 0 && kuota > kapasitas) {
+            warningText.textContent = `Jumlah kuota (${kuota} orang) melebihi kapasitas ${namaRuang} (maksimal ${kapasitas} orang).`;
+            warningEl.classList.remove('hidden');
+            warningEl.classList.add('flex');
+            kuotaInput.classList.add('border-red-500', 'dark:border-red-500', 'focus:border-red-500', 'focus:ring-red-500/20');
+            return false;
+        } else {
+            warningEl.classList.add('hidden');
+            warningEl.classList.remove('flex');
+            kuotaInput.classList.remove('border-red-500', 'dark:border-red-500', 'focus:border-red-500', 'focus:ring-red-500/20');
+            return true;
         }
     }
 
@@ -429,6 +459,39 @@
             setAgendaFileLabel(prefix, file ? file.name : '');
         });
     });
+
+    ['', 'edit-'].forEach(prefix => {
+        const kuotaInput = document.getElementById(prefix + 'kuota');
+        const roomSelect = document.getElementById(prefix + 'id_ruangrapat');
+        if (kuotaInput) {
+            kuotaInput.addEventListener('input', () => validateRoomCapacity(prefix));
+        }
+        if (roomSelect) {
+            roomSelect.addEventListener('change', () => validateRoomCapacity(prefix));
+        }
+    });
+
+    const formTambah = document.getElementById('form-tambah-agenda');
+    if (formTambah) {
+        formTambah.addEventListener('submit', function (e) {
+            if (!validateRoomCapacity('')) {
+                e.preventDefault();
+                const kuotaInput = document.getElementById('kuota');
+                if (kuotaInput) kuotaInput.focus();
+            }
+        });
+    }
+
+    const formEdit = document.getElementById('form-edit-agenda');
+    if (formEdit) {
+        formEdit.addEventListener('submit', function (e) {
+            if (!validateRoomCapacity('edit-')) {
+                e.preventDefault();
+                const kuotaInput = document.getElementById('edit-kuota');
+                if (kuotaInput) kuotaInput.focus();
+            }
+        });
+    }
 </script>
 @endpush
 @endsection

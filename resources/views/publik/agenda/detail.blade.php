@@ -36,8 +36,13 @@
                 : null;
             $lampiranExtension = strtolower(pathinfo((string) $agendaAktif?->lampiran, PATHINFO_EXTENSION));
             $lampiranPreviewable = in_array($lampiranExtension, ['pdf', 'jpg', 'jpeg', 'png'], true);
-            $qrPayload = $qrCode?->qr_codepath;
-            $qrImageUrl = $qrPayload ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayload) : null;
+            $qrPayloadPegawai = $qrCode?->qr_codepath ?: ($agendaAktif ? route('publik.presensi.pegawai', ['agenda_id' => $agendaAktif->id_agenda]) : null);
+            $qrImageUrlPegawai = $qrPayloadPegawai ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayloadPegawai) : null;
+            $qrImageUrl = $qrImageUrlPegawai;
+
+            $qrPayloadTamu = $agendaAktif ? route('publik.presensi.tamu', ['agenda_id' => $agendaAktif->id_agenda]) : null;
+            $qrImageUrlTamu = $qrPayloadTamu ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayloadTamu) : null;
+
             $isSuratMasuk = strtolower((string) ($agendaAktif?->kategori_surat ?? '')) === 'masuk';
         @endphp
 
@@ -279,13 +284,13 @@
                                     <p class="text-[10px] text-gray-400 mt-0.5">Scan kode QR berikut untuk melakukan absensi pegawai</p>
                                 </div>
 
-                                @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrl)
+                                @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlPegawai)
                                     <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-4 text-center">
                                         <div class="inline-block rounded-2xl bg-white p-3 shadow-xs border border-gray-100 dark:border-[#284c43]">
-                                            <img src="{{ $qrImageUrl }}" alt="QR Presensi {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
+                                            <img src="{{ $qrImageUrlPegawai }}" alt="QR Presensi Pegawai {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
                                         </div>
                                         <div class="mt-4">
-                                            <a href="{{ $qrPayload ?: route('publik.presensi.pegawai', ['agenda_id' => $agendaAktif->id_agenda]) }}" class="inline-flex w-full items-center justify-center rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition">
+                                            <a href="{{ $qrPayloadPegawai }}" class="inline-flex w-full items-center justify-center rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition">
                                                 <span>Buka Presensi Pegawai</span>
                                                 <span class="ml-1.5">&rarr;</span>
                                             </a>
@@ -299,71 +304,30 @@
                             </div>
 
                             @if (! $isSuratMasuk)
-                                <!-- Panel Presensi Tamu (Formulir Kehadiran - Hanya untuk Non-Surat Masuk) -->
+                                <!-- Panel Presensi Tamu (QR Code) -->
                                 <div id="panel-presensi-tamu" class="hidden space-y-4">
-                                    <div class="bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34]">
-                                        <p class="text-[11px] font-bold text-gray-800 dark:text-white">Formulir Kehadiran Tamu</p>
-                                        <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">Silakan isi data kehadiran Anda di bawah ini:</p>
+                                    <div class="bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] text-center">
+                                        <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">QR Absen Tamu</p>
+                                        <p class="text-[10px] text-gray-400 mt-0.5">Scan kode QR berikut untuk mengisi formulir presensi tamu rapat</p>
                                     </div>
 
-                                    <form action="{{ route('publik.tamu.hadir') }}" method="POST" enctype="multipart/form-data" class="space-y-3.5">
-                                        @csrf
-                                        <input type="hidden" name="id_agenda" value="{{ $agendaAktif->id_agenda }}">
-
-                                        <!-- Foto / Swafoto -->
-                                        <div class="space-y-1">
-                                            <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200">Foto / Swafoto Tamu <span class="text-gray-400 font-normal">(Opsional)</span></label>
-                                            <label class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-gray-200 dark:border-[#284c43] rounded-2xl cursor-pointer bg-gray-50 dark:bg-[#0f1c19] hover:bg-gray-100 dark:hover:bg-[#152420] transition-all relative overflow-hidden group">
-                                                <div class="flex flex-col items-center justify-center p-3 text-center" id="tamu-upload-placeholder">
-                                                    <svg class="w-6 h-6 mb-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                    </svg>
-                                                    <p class="text-[11px] text-gray-600 dark:text-gray-300 font-semibold">Ambil / Unggah Foto</p>
-                                                    <p class="text-[9px] text-gray-400">PNG, JPG, WebP (Maks. 5MB)</p>
-                                                </div>
-                                                <img id="tamu-foto-preview" class="hidden absolute inset-0 w-full h-full object-cover rounded-2xl" />
-                                                <input type="file" name="foto" id="tamu-foto-input" accept="image/*" capture="user" class="hidden" onchange="previewTamuImage(event)" />
-                                            </label>
+                                    @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlTamu)
+                                        <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-4 text-center">
+                                            <div class="inline-block rounded-2xl bg-white p-3 shadow-xs border border-gray-100 dark:border-[#284c43]">
+                                                <img src="{{ $qrImageUrlTamu }}" alt="QR Presensi Tamu {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
+                                            </div>
+                                            <div class="mt-4">
+                                                <a href="{{ $qrPayloadTamu }}" class="inline-flex w-full items-center justify-center rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition">
+                                                    <span>Buka Form Presensi Tamu</span>
+                                                    <span class="ml-1.5">&rarr;</span>
+                                                </a>
+                                            </div>
                                         </div>
-
-                                        <!-- Nama Lengkap -->
-                                        <div class="space-y-1">
-                                            <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200">Nama Lengkap *</label>
-                                            <input type="text" name="nama" value="{{ old('nama') }}" required placeholder="Masukkan nama lengkap" class="w-full bg-gray-50 dark:bg-[#0f1c19] border border-gray-200 dark:border-[#284c43] focus:border-ijo-semitua focus:bg-white dark:focus:bg-[#152420] text-xs rounded-xl px-3.5 py-2.5 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none transition-all">
+                                    @else
+                                        <div class="rounded-2xl border border-dashed border-gray-200 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-5 text-center">
+                                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">QR presensi tamu belum diaktifkan admin untuk agenda ini.</p>
                                         </div>
-
-                                        <!-- NIK / NIP -->
-                                        <div class="space-y-1">
-                                            <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200">NIK / Nomor Induk <span class="text-gray-400 font-normal">(Opsional)</span></label>
-                                            <input type="text" name="nik" value="{{ old('nik') }}" pattern="[0-9]+" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Masukkan NIK/NIP" class="w-full bg-gray-50 dark:bg-[#0f1c19] border border-gray-200 dark:border-[#284c43] focus:border-ijo-semitua focus:bg-white dark:focus:bg-[#152420] text-xs rounded-xl px-3.5 py-2.5 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none transition-all">
-                                        </div>
-
-                                        <!-- Jabatan -->
-                                        <div class="space-y-1">
-                                            <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200">Jabatan <span class="text-gray-400 font-normal">(Opsional)</span></label>
-                                            <input type="text" name="jabatan" value="{{ old('jabatan') }}" placeholder="Contoh: Kepala Bidang / Staf" class="w-full bg-gray-50 dark:bg-[#0f1c19] border border-gray-200 dark:border-[#284c43] focus:border-ijo-semitua focus:bg-white dark:focus:bg-[#152420] text-xs rounded-xl px-3.5 py-2.5 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none transition-all">
-                                        </div>
-
-                                        <!-- No. HP / WhatsApp -->
-                                        <div class="space-y-1">
-                                            <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200">No. HP / WhatsApp *</label>
-                                            <input type="text" name="no_hp" value="{{ old('no_hp') }}" required pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="08xxxxxxxxxx" class="w-full bg-gray-50 dark:bg-[#0f1c19] border border-gray-200 dark:border-[#284c43] focus:border-ijo-semitua focus:bg-white dark:focus:bg-[#152420] text-xs rounded-xl px-3.5 py-2.5 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none transition-all">
-                                        </div>
-
-                                        <!-- Instansi / Asal -->
-                                        <div class="space-y-1">
-                                            <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200">Instansi / Asal *</label>
-                                            <input type="text" name="asal_instansi" value="{{ old('asal_instansi') }}" required placeholder="Contoh: Dinas Kominfo / Umum" class="w-full bg-gray-50 dark:bg-[#0f1c19] border border-gray-200 dark:border-[#284c43] focus:border-ijo-semitua focus:bg-white dark:focus:bg-[#152420] text-xs rounded-xl px-3.5 py-2.5 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none transition-all">
-                                        </div>
-
-                                        <div class="pt-2">
-                                            <button type="submit" class="w-full bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white font-bold text-xs py-3 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-xs cursor-pointer">
-                                                <span>Kirim Kehadiran Tamu</span>
-                                                <span>&rarr;</span>
-                                            </button>
-                                        </div>
-                                    </form>
+                                    @endif
                                 </div>
                             @endif
                         @endif
@@ -458,13 +422,13 @@
             if (!btnPegawai || !btnTamu || !panelPegawai || !panelTamu) return;
 
             if (type === 'pegawai') {
-                btnPegawai.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua text-white shadow-sm';
-                btnTamu.className = 'py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 hover:text-gray-900 transition-all flex items-center justify-center space-x-2';
+                btnPegawai.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua dark:bg-[#107050] text-white shadow-xs';
+                btnTamu.className = 'py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all flex items-center justify-center space-x-2';
                 panelPegawai.classList.remove('hidden');
                 panelTamu.classList.add('hidden');
             } else {
-                btnTamu.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua text-white shadow-sm';
-                btnPegawai.className = 'py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 hover:text-gray-900 transition-all flex items-center justify-center space-x-2';
+                btnTamu.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua dark:bg-[#107050] text-white shadow-xs';
+                btnPegawai.className = 'py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all flex items-center justify-center space-x-2';
                 panelTamu.classList.remove('hidden');
                 panelPegawai.classList.add('hidden');
             }

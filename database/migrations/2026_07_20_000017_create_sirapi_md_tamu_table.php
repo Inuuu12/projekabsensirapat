@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('no_hp');
             $table->string('asal_instansi');
             $table->string('foto_selfie')->nullable();
+            $table->text('lokasi_presensi')->nullable();
             $table->timestamps();
 
-            $table->foreignId('id_agenda')->constraide('sirapi_md_agenda', 'id_agenda')->cascadeOnDelete();
+            $table->foreignId('id_agenda')->constrained('sirapi_md_agenda', 'id_agenda')->cascadeOnDelete();
         });
     }
 

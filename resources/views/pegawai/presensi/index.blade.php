@@ -36,6 +36,25 @@
             }
         }
     </script>
+    <!-- Leaflet CSS & JS for Live Real-Time Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        .custom-live-marker {
+            width: 22px;
+            height: 22px;
+            background: #10b981;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.4);
+            animation: live-marker-pulse 1.8s infinite;
+        }
+        @keyframes live-marker-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+    </style>
     <style>
         /* Custom Modern Scrollbars */
         * {
@@ -201,9 +220,39 @@
                     <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Tanggal</p>
                     <p class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">{{ $tanggalAgenda }}</p>
                 </div>
-                <div class="py-3">
-                    <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Lokasi</p>
-                    <p class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">{{ $agendaAktif?->lokasi_display ?? '-' }}</p>
+                <div class="py-3.5 space-y-3">
+                    <div>
+                        <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Lokasi Agenda</p>
+                        <p class="mt-0.5 text-sm font-extrabold text-gray-900 dark:text-white">{{ $agendaAktif?->lokasi_display ?? '-' }}</p>
+                    </div>
+
+                    <!-- Live Real-Time Location Proof Card Box -->
+                    <div id="live-location-box" class="rounded-2xl border border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/40 dark:bg-emerald-950/20 p-4 space-y-3 shadow-2xs">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                <span class="text-xs font-extrabold text-emerald-800 dark:text-emerald-300">Bukti Lokasi Presensi (Real-Time)</span>
+                            </div>
+                            <span id="live-time-badge" class="text-[10px] font-bold text-gray-500 dark:text-gray-400 bg-white/80 dark:bg-[#152420] px-2.5 py-0.5 rounded-full border border-gray-200/60 dark:border-[#233a34]">
+                                Memuat waktu...
+                            </span>
+                        </div>
+
+                        <!-- Real-Time Address Details -->
+                        <div class="space-y-1">
+                            <p id="live-address-text" class="text-xs font-bold text-gray-900 dark:text-white leading-snug">
+                                Sedang melacak posisi & alamat GPS Anda...
+                            </p>
+                            <p id="live-region-text" class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
+                                📍 Wilayah: Mendeteksi...
+                            </p>
+                        </div>
+
+                        <!-- Interactive Leaflet Mini-Map -->
+                        <div id="presensi-map-container" class="relative rounded-xl overflow-hidden border border-emerald-200/80 dark:border-[#233a34] bg-gray-100 dark:bg-[#152420] h-40 w-full z-0 shadow-inner">
+                            <div id="presensi-live-map" class="h-full w-full"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="{{ $agendaAktif?->ditugaskan ? 'py-3' : 'pt-3' }}">
                     <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Penyelenggara</p>
@@ -886,6 +935,172 @@
         @if ($errors->any() && ! $errors->has('presensi'))
             openProfileModal();
         @endif
+
+        /* ========================================================
+           LIVE REAL-TIME LOCATION & MAP SCRIPT
+        ======================================================== */
+        let presensiMap = null;
+        let presensiMarker = null;
+        let presensiCircle = null;
+        let presensiWatchId = null;
+
+        async function fetchReadableAddress(lat, lng) {
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
+                    headers: { 'Accept-Language': 'id-ID,id;q=0.9,en;q=0.8' }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const addr = data.address || {};
+                    const road = addr.road || addr.street || addr.neighbourhood || addr.suburb || addr.village || addr.city_district || '';
+                    const district = addr.city_district || addr.district || addr.suburb || addr.town || addr.village || '';
+                    const city = addr.city || addr.regency || addr.county || 'Kabupaten Bogor';
+                    const state = addr.state || 'Jawa Barat';
+                    
+                    const fullAddress = data.display_name ? data.display_name : [road, district, city, state].filter(Boolean).join(', ');
+                    const regionSummary = [district, city, state].filter(Boolean).join(', ');
+
+                    return {
+                        full: fullAddress,
+                        region: regionSummary || "Kabupaten Bogor, Jawa Barat"
+                    };
+                }
+            } catch (e) {
+                console.warn("Nominatim reverse geocode error:", e);
+            }
+
+            // Fallback: BigDataCloud Reverse Geocoding API
+            try {
+                const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=id`);
+                if (res.ok) {
+                    const data = await res.json();
+                    const full = [data.locality, data.city, data.principalSubdivision, data.countryName].filter(Boolean).join(', ');
+                    return {
+                        full: full || "Kabupaten Bogor, Jawa Barat",
+                        region: [data.city, data.principalSubdivision].filter(Boolean).join(', ') || "Kabupaten Bogor"
+                    };
+                }
+            } catch (e) {}
+
+            return {
+                full: "Area Kantor / Lokasi Kegiatan, Kabupaten Bogor, Jawa Barat",
+                region: "Kabupaten Bogor, Jawa Barat"
+            };
+        }
+
+        function initOrUpdatePresensiMap(lat, lng, accuracy = 25) {
+            const mapContainer = document.getElementById('presensi-map-container');
+            if (mapContainer) mapContainer.classList.remove('hidden');
+
+            if (!presensiMap) {
+                presensiMap = L.map('presensi-live-map', {
+                    zoomControl: false,
+                    attributionControl: false
+                }).setView([lat, lng], 16);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19
+                }).addTo(presensiMap);
+
+                const pulseIcon = L.divIcon({
+                    className: 'custom-live-marker',
+                    iconSize: [22, 22],
+                    iconAnchor: [11, 11]
+                });
+
+                presensiMarker = L.marker([lat, lng], { icon: pulseIcon }).addTo(presensiMap);
+                presensiMarker.bindPopup("<b>📍 Lokasi Presensi Anda</b>").openPopup();
+
+                presensiCircle = L.circle([lat, lng], {
+                    radius: accuracy || 25,
+                    color: '#10b981',
+                    fillColor: '#10b981',
+                    fillOpacity: 0.15,
+                    weight: 1
+                }).addTo(presensiMap);
+            } else {
+                presensiMap.setView([lat, lng], 16);
+                if (presensiMarker) presensiMarker.setLatLng([lat, lng]);
+                if (presensiCircle) {
+                    presensiCircle.setLatLng([lat, lng]);
+                    presensiCircle.setRadius(accuracy || 25);
+                }
+            }
+
+            setTimeout(() => {
+                if (presensiMap) presensiMap.invalidateSize();
+            }, 250);
+        }
+
+        async function updateLiveLocationUI(coords) {
+            const addressText = document.getElementById('live-address-text');
+            const regionText = document.getElementById('live-region-text');
+            const timeBadge = document.getElementById('live-time-badge');
+
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB';
+            if (timeBadge) timeBadge.textContent = timeString;
+
+            initOrUpdatePresensiMap(coords.latitude, coords.longitude, coords.accuracy);
+
+            const addressData = await fetchReadableAddress(coords.latitude, coords.longitude);
+            if (addressText) addressText.textContent = addressData.full;
+            if (regionText) regionText.textContent = `📍 ${addressData.region}`;
+        }
+
+        function refreshLiveLocation() {
+            const addressText = document.getElementById('live-address-text');
+            const refreshIcon = document.getElementById('refresh-loc-icon');
+            if (refreshIcon) refreshIcon.classList.add('animate-spin');
+
+            if (!navigator.geolocation) {
+                if (addressText) addressText.textContent = "Geolocation tidak didukung pada browser ini.";
+                if (refreshIcon) refreshIcon.classList.remove('animate-spin');
+                return;
+            }
+
+            if (addressText) addressText.textContent = "Memperbarui lokasi GPS real-time...";
+
+            navigator.geolocation.getCurrentPosition(
+                async function (position) {
+                    if (refreshIcon) refreshIcon.classList.remove('animate-spin');
+                    const coords = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                    };
+                    await updateLiveLocationUI(coords);
+                },
+                function (error) {
+                    if (refreshIcon) refreshIcon.classList.remove('animate-spin');
+                    if (addressText) addressText.textContent = "Gagal mengakses GPS: " + (error.message || "Izin lokasi diperlukan.");
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 12000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Auto start live location tracking
+            refreshLiveLocation();
+
+            if (navigator.geolocation && navigator.geolocation.watchPosition) {
+                presensiWatchId = navigator.geolocation.watchPosition(
+                    function (pos) {
+                        updateLiveLocationUI({
+                            latitude: pos.coords.latitude,
+                            longitude: pos.coords.longitude,
+                            accuracy: pos.coords.accuracy
+                        });
+                    },
+                    function (err) { console.warn("Watch position error:", err); },
+                    { enableHighAccuracy: true, maximumAge: 5000 }
+                );
+            }
+        });
     </script>
 </body>
 </html>

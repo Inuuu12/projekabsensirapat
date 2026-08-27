@@ -640,12 +640,40 @@ class PegawaiAuthController extends Controller
             }
         }
 
+        $fotoScanPath = null;
+        if ($request->filled('foto_scan')) {
+            try {
+                $imageParts = explode(';base64,', (string) $request->input('foto_scan'));
+                $imageTypeAux = explode('image/', $imageParts[0] ?? '');
+                $imageType = $imageTypeAux[1] ?? 'jpeg';
+                if (isset($imageParts[1])) {
+                    $imageBase64 = base64_decode($imageParts[1]);
+                    $fileName = 'presensi_face_' . $agenda->id_agenda . '_' . $pegawai->id_pegawai . '_' . time() . '.' . $imageType;
+                    Storage::disk('public')->put('presensi/' . $fileName, $imageBase64);
+                    $fotoScanPath = 'presensi/' . $fileName;
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Gagal menyimpan foto scan wajah: ' . $e->getMessage());
+            }
+        }
+
         $kehadiran = $this->kehadiranPegawai($agenda->id_agenda, $pegawai->email);
         if ($kehadiran) {
+            // Update foto bukti kehadiran dari hasil scan kamera saat ini jika tersedia
+            if ($fotoScanPath) {
+                DB::table('sirapi_md_kehadiran')
+                    ->where('id_kehadiran', $kehadiran->id_kehadiran)
+                    ->update([
+                        'foto_kehadiran' => $fotoScanPath,
+                        'lokasi_presensi' => $request->input('lokasi_presensi') ?: $kehadiran->lokasi_presensi,
+                        'updated_at' => Carbon::now(self::TIMEZONE),
+                    ]);
+            }
+
             $waktuHadir = $kehadiran->created_at ? Carbon::parse($kehadiran->created_at)->timezone(self::TIMEZONE)->format('H:i') : null;
-            $pesan = "Anda telah melakukan presensi sebelumnya" . ($waktuHadir ? " pada pukul {$waktuHadir} WIB." : ".");
+            $pesan = "Presensi Wajah berhasil untuk {$pegawai->nama_pegawai}!";
             if ($request->hasSession()) {
-                $request->session()->flash('info', $pesan);
+                $request->session()->flash('success', $pesan);
             }
 
             return response()->json([
@@ -663,7 +691,13 @@ class PegawaiAuthController extends Controller
             ], 403);
         }
 
-        $this->catatKehadiranPegawai($agenda, $pegawai, 'Hadir lewat Scan Wajah (Face Recognition)');
+        $this->catatKehadiranPegawai(
+            $agenda,
+            $pegawai,
+            'Hadir lewat Scan Wajah (Face Recognition)',
+            $request->input('lokasi_presensi'),
+            $fotoScanPath
+        );
 
         if ($request->hasSession()) {
             $request->session()->flash('success', "Presensi berhasil dicatat untuk {$pegawai->nama_pegawai}!");
@@ -676,7 +710,7 @@ class PegawaiAuthController extends Controller
         ]);
     }
 
-    private function catatKehadiranPegawai(Agenda $agenda, mixed $pegawai, string $catatan = 'Presensi pegawai otomatis'): void
+    private function catatKehadiranPegawai(Agenda $agenda, mixed $pegawai, string $catatan = 'Presensi pegawai otomatis', ?string $lokasiPresensi = null, ?string $fotoKehadiran = null): void
     {
         $now = Carbon::now(self::TIMEZONE);
         $nama = is_object($pegawai) ? ($pegawai->nama_pegawai ?? $pegawai->nama ?? '-') : '-';
@@ -684,8 +718,13 @@ class PegawaiAuthController extends Controller
         $instansi = is_object($pegawai) ? ($pegawai->bidang ?? 'Diskominfo Kabupaten Bogor') : 'Diskominfo Kabupaten Bogor';
         $noHp = is_object($pegawai) ? ($pegawai->nomor_hp ?? '-') : '-';
         $email = is_object($pegawai) ? ($pegawai->email ?? '') : '';
+        $lokasi = $lokasiPresensi ?: request()->input('lokasi_presensi');
+        if (! $lokasi) {
+            $lokasi = $agenda->lokasi ?: 'Dinas Komunikasi dan Informasi Kabupaten Bogor, Jalan Tegar Beriman, Pakansari, Cibinong, Bogor, Jawa Barat';
+        }
+        $fotoBukti = $fotoKehadiran ?: request()->input('foto_kehadiran');
 
-        DB::transaction(function () use ($agenda, $nama, $jabatan, $instansi, $noHp, $email, $now, $catatan) {
+        DB::transaction(function () use ($agenda, $nama, $jabatan, $instansi, $noHp, $email, $now, $catatan, $lokasi, $fotoBukti) {
             $pesertaData = [
                 'nama' => $nama,
                 'jabatan' => $jabatan ?: '-',
@@ -720,7 +759,7 @@ class PegawaiAuthController extends Controller
             if (! $existingKehadiran) {
                 $idLog = DB::table('sirapi_md_logbook')->insertGetId([
                     'Id_agenda' => $agenda->id_agenda,
-                    'catatan' => $catatan . ': ' . $nama,
+                    'catatan' => $catatan . ': ' . $nama . ' [Lokasi: ' . $lokasi . ']',
                     'waktu_isi' => $now,
                     'created_at' => $now,
                     'updated_at' => $now,
@@ -730,6 +769,8 @@ class PegawaiAuthController extends Controller
                     'id_agenda' => $agenda->id_agenda,
                     'id_peserta' => $idPeserta,
                     'id_log' => $idLog,
+                    'lokasi_presensi' => $lokasi,
+                    'foto_kehadiran' => $fotoBukti,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ]);

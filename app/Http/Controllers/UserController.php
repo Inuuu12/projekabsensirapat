@@ -221,8 +221,10 @@ class UserController extends Controller
             'asal_instansi' => 'required|string|max:255',
             'id_agenda'     => 'required|integer|exists:sirapi_md_agenda,id_agenda',
             'foto'          => 'nullable|file|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'foto_captured' => 'nullable|string',
             'foto_selfie'   => 'nullable',
             'tanda_tangan'  => 'nullable|string',
+            'lokasi_presensi' => 'nullable|string',
         ], [
             'nama.required' => 'Nama lengkap tamu wajib diisi.',
             'no_hp.required' => 'Nomor HP / WhatsApp wajib diisi.',
@@ -268,27 +270,73 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => $pesanPenuh], 400);
         }
 
+        $fotoPath = null;
         if ($request->hasFile('foto')) {
-            $validated['foto_selfie'] = $request->file('foto')->store('tamu', 'public');
+            $fotoPath = $request->file('foto')->store('tamu', 'public');
+        } elseif ($request->filled('foto_captured')) {
+            try {
+                $imageParts = explode(';base64,', (string) $request->input('foto_captured'));
+                $imageTypeAux = explode('image/', $imageParts[0] ?? '');
+                $imageType = $imageTypeAux[1] ?? 'jpeg';
+                if (isset($imageParts[1])) {
+                    $imageBase64 = base64_decode($imageParts[1]);
+                    $fileName = 'tamu_snap_' . $validated['id_agenda'] . '_' . time() . '_' . rand(100, 999) . '.' . $imageType;
+                    \Illuminate\Support\Facades\Storage::disk('public')->put('tamu/' . $fileName, $imageBase64);
+                    $fotoPath = 'tamu/' . $fileName;
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Gagal menyimpan live capture tamu: ' . $e->getMessage());
+            }
         } elseif ($request->hasFile('foto_selfie')) {
-            $validated['foto_selfie'] = $request->file('foto_selfie')->store('tamu', 'public');
+            $fotoPath = $request->file('foto_selfie')->store('tamu', 'public');
+        } elseif ($request->filled('foto_selfie') && str_contains((string) $request->input('foto_selfie'), ';base64,')) {
+            try {
+                $imageParts = explode(';base64,', (string) $request->input('foto_selfie'));
+                $imageTypeAux = explode('image/', $imageParts[0] ?? '');
+                $imageType = $imageTypeAux[1] ?? 'jpeg';
+                if (isset($imageParts[1])) {
+                    $imageBase64 = base64_decode($imageParts[1]);
+                    $fileName = 'tamu_snap_' . $validated['id_agenda'] . '_' . time() . '_' . rand(100, 999) . '.' . $imageType;
+                    \Illuminate\Support\Facades\Storage::disk('public')->put('tamu/' . $fileName, $imageBase64);
+                    $fotoPath = 'tamu/' . $fileName;
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Gagal menyimpan live capture tamu: ' . $e->getMessage());
+            }
         }
 
-        unset($validated['foto'], $validated['tanda_tangan']);
+        if (! $fotoPath) {
+            $pesanFoto = 'Foto presensi / swafoto wajib diambil melalui kamera atau diunggah.';
+            if (! $request->wantsJson()) {
+                return back()->withErrors(['foto' => $pesanFoto])->withInput();
+            }
+            return response()->json(['success' => false, 'message' => $pesanFoto], 400);
+        }
+
+        $validated['foto_selfie'] = $fotoPath;
+        unset($validated['foto'], $validated['foto_captured'], $validated['tanda_tangan']);
+
+        if (empty($validated['lokasi_presensi'])) {
+            $validated['lokasi_presensi'] = $agenda?->lokasi ?: 'Dinas Komunikasi dan Informasi Kabupaten Bogor, Jalan Tegar Beriman, Pakansari, Cibinong, Bogor, Jawa Barat';
+        }
 
         $idTamu = DB::table('sirapi_md_tamu')->insertGetId(array_merge($validated, [
             'created_at' => now(),
             'updated_at' => now()
         ]));
 
-        if (! $request->wantsJson()) {
-            return back()->with('success', 'Data kehadiran tamu berhasil disimpan!');
+        $redirectUrl = route('publik.agenda.detail', $validated['id_agenda']);
+
+        if (! $request->wantsJson() && !$request->ajax()) {
+            return redirect($redirectUrl)->with('success', 'Data kehadiran tamu berhasil disimpan!');
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Data kehadiran tamu berhasil disimpan!',
-            'id_non_pegawai' => $idTamu
+            'id_non_pegawai' => $idTamu,
+            'nama' => $validated['nama'],
+            'redirect_url' => $redirectUrl
         ], 201);
     }
 }

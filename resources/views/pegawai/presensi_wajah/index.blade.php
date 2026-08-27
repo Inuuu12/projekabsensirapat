@@ -234,8 +234,73 @@
                 }, 200); // 5 FPS
             });
 
+            let liveGpsAddress = sessionStorage.getItem('presensi_address_' + agendaId) 
+                || sessionStorage.getItem('presensi_address_global') 
+                || localStorage.getItem('presensi_address_latest') 
+                || '';
+
+            async function fetchLiveReverseGeocode(lat, lng) {
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
+                        headers: { 'Accept-Language': 'id-ID,id;q=0.9,en;q=0.8' }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        const addr = data.address || {};
+                        const road = addr.road || addr.street || addr.neighbourhood || addr.suburb || addr.village || addr.city_district || '';
+                        const district = addr.city_district || addr.district || addr.suburb || addr.town || addr.village || '';
+                        const city = addr.city || addr.regency || addr.county || 'Kabupaten Bogor';
+                        const state = addr.state || 'Jawa Barat';
+                        return data.display_name ? data.display_name : [road, district, city, state].filter(Boolean).join(', ');
+                    }
+                } catch (e) {}
+
+                try {
+                    const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=id`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        return [data.locality, data.city, data.principalSubdivision, data.countryName].filter(Boolean).join(', ');
+                    }
+                } catch (e) {}
+
+                return "Dinas Komunikasi dan Informasi Kabupaten Bogor, Jalan Tegar Beriman, Pakansari, Cibinong, Bogor, Jawa Barat, 16915, Indonesia";
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const addr = await fetchLiveReverseGeocode(pos.coords.latitude, pos.coords.longitude);
+                    if (addr) {
+                        liveGpsAddress = addr;
+                        sessionStorage.setItem('presensi_address_' + agendaId, addr);
+                        localStorage.setItem('presensi_address_latest', addr);
+                    }
+                }, () => {}, { enableHighAccuracy: true, timeout: 8000 });
+            }
+
             async function handleSuccess(idPegawai, namaPegawai) {
                 isScanning = false;
+
+                // Ambil snapshot foto wajah tepat saat scan berhasil di agenda ini
+                let snapshotBase64 = null;
+                try {
+                    const snapCanvas = document.createElement('canvas');
+                    snapCanvas.width = video.videoWidth || 640;
+                    snapCanvas.height = video.videoHeight || 480;
+                    const snapCtx = snapCanvas.getContext('2d');
+                    // Cermin horizontal agar orientasi foto sama dengan tampilan di layar
+                    snapCtx.translate(snapCanvas.width, 0);
+                    snapCtx.scale(-1, 1);
+                    snapCtx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
+                    snapshotBase64 = snapCanvas.toDataURL('image/jpeg', 0.85);
+                } catch (snapErr) {
+                    console.warn('Gagal mengambil snapshot kamera:', snapErr);
+                }
+
+                const trackedLokasi = liveGpsAddress 
+                    || sessionStorage.getItem('presensi_address_' + agendaId) 
+                    || sessionStorage.getItem('presensi_address_global') 
+                    || localStorage.getItem('presensi_address_latest') 
+                    || 'Dinas Komunikasi dan Informasi Kabupaten Bogor, Jalan Tegar Beriman, Pakansari, Cibinong, Bogor, Jawa Barat, 16915, Indonesia';
                 
                 // Show Success UI
                 overlay.getContext('2d').clearRect(0, 0, overlay.width, overlay.height);
@@ -243,7 +308,7 @@
                 successOverlay.classList.remove('hidden');
                 successOverlay.classList.add('animate-bounce');
 
-                // Send to backend
+                // Send to backend with the captured snapshot photo
                 try {
                     const res = await fetch('/api/presensi/face', {
                         method: 'POST',
@@ -253,7 +318,9 @@
                         },
                         body: JSON.stringify({
                             id_pegawai: idPegawai,
-                            id_agenda: agendaId
+                            id_agenda: agendaId,
+                            foto_scan: snapshotBase64,
+                            lokasi_presensi: trackedLokasi
                         })
                     });
                     

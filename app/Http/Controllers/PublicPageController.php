@@ -318,7 +318,8 @@ class PublicPageController extends Controller
 
     public function presensiTamu(Request $request)
     {
-        $agenda = $this->agendaPresensi($request);
+        $agendaId = $request->input('agenda_id');
+        $agenda = $agendaId ? Agenda::find($agendaId) : $this->agendaPresensi($request);
 
         return view('publik.presensi.tamu', compact('agenda'));
     }

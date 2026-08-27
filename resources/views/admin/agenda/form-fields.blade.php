@@ -96,6 +96,12 @@
 <div>
     <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Kuota</label>
     <input id="{{ $prefix }}kuota" name="kuota" type="number" min="0" placeholder="Kuota agenda" class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
+    <p id="{{ $prefix }}kuota-warning" class="mt-1.5 hidden text-xs font-semibold text-red-600 dark:text-red-400 items-center gap-1.5">
+        <svg class="h-4 w-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+        <span id="{{ $prefix }}kuota-warning-text"></span>
+    </p>
 </div>
 @endif
 
@@ -115,9 +121,9 @@
     <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Tempat</label>
     <div class="relative">
         <select id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" required data-agenda-room-select="{{ $prefix }}" class="h-10 sm:h-11 w-full appearance-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 pr-10 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
-            <option value="">Pilih ruang</option>
+            <option value="" data-kapasitas="0">Pilih ruang</option>
             @foreach ($ruang as $item)
-                <option value="{{ $item->id_ruangrapat }}" data-nama-ruang="{{ $item->nama_ruang }}">
+                <option value="{{ $item->id_ruangrapat }}" data-nama-ruang="{{ $item->nama_ruang }}" data-kapasitas="{{ $item->kapasitas }}">
                     {{ $item->nama_ruang }} (Kapasitas: {{ $item->kapasitas }} org{{ $item->dynamic_status === 'terpakai' ? ' • Ruangan Terpakai' : ' • Tersedia' }})
                 </option>
             @endforeach
