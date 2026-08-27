@@ -311,8 +311,8 @@
     <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[88vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43]">
         <div class="flex items-center justify-between rounded-t-2xl bg-[#3f8078] px-4 py-3.5 sm:px-6 sm:py-4 text-white shrink-0">
             <div>
-                <h3 class="text-base sm:text-lg font-bold">Semua Berita Publik</h3>
-                <p class="mt-0.5 text-xs text-white/70">{{ $berita->count() }} berita di database</p>
+                <h3 class="text-base sm:text-lg font-bold">Semua Berita Indonesia (Live API)</h3>
+                <p class="mt-0.5 text-xs text-white/70">{{ $berita->count() }} feed berita aktif (LKBN Antara, CNN Indonesia, Tempo)</p>
             </div>
             <button type="button" onclick="closePublicModal('modal-semua-berita')" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white cursor-pointer" aria-label="Tutup modal semua berita">
                 <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -331,7 +331,7 @@
                              data-sumber="{{ $item->sumber }}"
                              data-gambar="{{ $imageUrl($item->gambar) }}"
                              class="h-14 w-14 sm:h-16 sm:w-16 shrink-0 rounded-lg bg-gray-100 dark:bg-[#152420] bg-cover bg-center cursor-pointer transition-transform duration-200 group-hover:scale-105 border border-gray-100 dark:border-[#284c43]" 
-                             title="Klik untuk membaca berita"
+                             title="Klik untuk membaca ringkasan"
                              style="background-image: url('{{ $imageUrl($item->gambar) }}')"></div>
                         <div class="min-w-0 flex-1 cursor-pointer"
                              onclick="openDetailBerita(this)"
@@ -341,34 +341,19 @@
                              data-sumber="{{ $item->sumber }}"
                              data-gambar="{{ $imageUrl($item->gambar) }}">
                              <h4 class="line-clamp-2 text-xs sm:text-sm font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-snug">{{ $item->judul }}</h4>
-                            <p class="mt-1 text-[10px] text-gray-500 dark:text-gray-300">{{ $item->tanggal?->translatedFormat('d M Y') }} &bull; {{ $item->sumber }}</p>
+                            <p class="mt-1 text-[10px] text-gray-500 dark:text-gray-300">{{ $item->tanggal?->translatedFormat('d M Y') }} &bull; <span class="font-bold text-[#35635b] dark:text-emerald-400">{{ $item->sumber }}</span></p>
                         </div>
                         <div class="flex flex-col justify-center gap-1.5 shrink-0">
-                            <button
-                                type="button"
-                                onclick="openEditBerita(this)"
-                                data-action="{{ route('admin.publik.berita.update', $item->id_berita) }}"
-                                data-judul="{{ $item->judul }}"
-                                data-isi="{{ $item->isi_berita }}"
-                                data-tanggal="{{ $item->tanggal?->format('Y-m-d') }}"
-                                data-sumber="{{ $item->sumber }}"
-                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
-                                title="Edit Berita">
-                                <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
-                                <span class="sr-only">Edit</span>
-                            </button>
-                            <form method="POST" action="{{ route('admin.publik.berita.destroy', $item->id_berita) }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Berita">
-                                    <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
-                                    <span class="sr-only">Hapus</span>
-                                </button>
-                            </form>
+                            @if (!empty($item->url))
+                                <a href="{{ $item->url }}" target="_blank" rel="noopener noreferrer" class="flex h-7 px-2 items-center justify-center gap-1 rounded-lg bg-gray-100 dark:bg-[#152420] hover:bg-gray-200 dark:hover:bg-[#23423b] border border-gray-200 dark:border-[#284c43] text-[10px] font-bold text-gray-700 dark:text-gray-300 transition" title="Buka artikel di sumber resmi">
+                                    <span>Buka</span>
+                                    <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 @empty
-                    <p class="p-6 text-sm text-gray-500 dark:text-gray-400 sm:col-span-2 lg:col-span-3">Belum ada berita publik.</p>
+                    <p class="p-6 text-sm text-gray-500 dark:text-gray-400 sm:col-span-2 lg:col-span-3">Belum ada feed berita.</p>
                 @endforelse
             </div>
         </div>
