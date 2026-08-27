@@ -58,11 +58,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/umpanbalik', [AdminMasukkanController::class, 'umpanBalik'])->name('admin.umpanbalik');
         Route::get('/masukkan', [AdminMasukkanController::class, 'umpanBalik'])->name('admin.masukkan.lihat');
         Route::get('/konten-publik', [AdminPublikController::class, 'index'])->name('admin.publik.index');
-        Route::post('/konten-publik/berita', [AdminPublikController::class, 'storeBerita'])->name('admin.publik.berita.store');
-        Route::post('/konten-publik/berita/fetch-meta', [AdminPublikController::class, 'fetchLinkMeta'])->name('admin.publik.berita.fetch-meta');
-        Route::post('/konten-publik/berita/sync', [AdminPublikController::class, 'syncBerita'])->name('admin.publik.berita.sync');
-        Route::put('/konten-publik/berita/{id}', [AdminPublikController::class, 'updateBerita'])->name('admin.publik.berita.update');
-        Route::delete('/konten-publik/berita/{id}', [AdminPublikController::class, 'destroyBerita'])->name('admin.publik.berita.destroy');
+        Route::post('/konten-publik/berita/refresh', [AdminPublikController::class, 'refreshBerita'])->name('admin.publik.berita.refresh');
         Route::post('/konten-publik/galeri', [AdminPublikController::class, 'storeGaleri'])->name('admin.publik.galeri.store');
         Route::put('/konten-publik/galeri/{id}', [AdminPublikController::class, 'updateGaleri'])->name('admin.publik.galeri.update');
         Route::delete('/konten-publik/galeri/{id}', [AdminPublikController::class, 'destroyGaleri'])->name('admin.publik.galeri.destroy');

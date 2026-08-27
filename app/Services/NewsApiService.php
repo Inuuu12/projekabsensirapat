@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Berita;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -40,19 +39,15 @@ class NewsApiService
     ];
 
     /**
-     * Mengambil seluruh daftar berita terkini (dari API/Feed dengan Cache).
+     * Mengambil seluruh daftar berita terkini dari API/Feed dengan Cache.
      *
      * @return Collection<int, object>
      */
     public function getNews(array $filters = []): Collection
     {
-        $allNews = Cache::remember(self::CACHE_KEY, self::CACHE_TTL_SECONDS, function () {
+        $merged = Cache::remember(self::CACHE_KEY, self::CACHE_TTL_SECONDS, function () {
             return $this->fetchFromAllSources();
         });
-
-        // Sertakan juga berita internal manual dari database jika ada (diprioritaskan di atas)
-        $dbNews = $this->getDatabaseNews();
-        $merged = $dbNews->concat($allNews);
 
         // Filter berdasarkan kata kunci pencarian
         if (! empty($filters['keyword'])) {
@@ -74,6 +69,18 @@ class NewsApiService
         }
 
         return $merged->values();
+    }
+
+    /**
+     * Memaksa refresh cache feed berita API.
+     */
+    public function refreshCache(): int
+    {
+        Cache::forget(self::CACHE_KEY);
+        $news = $this->fetchFromAllSources();
+        Cache::put(self::CACHE_KEY, $news, self::CACHE_TTL_SECONDS);
+
+        return $news->count();
     }
 
     /**
@@ -226,29 +233,5 @@ class NewsApiService
         }
 
         return null;
-    }
-
-    /**
-     * Mengambil berita internal manual yang dibuat admin di database.
-     */
-    protected function getDatabaseNews(): Collection
-    {
-        try {
-            return Berita::latest('tanggal')->latest('id_berita')->get()->map(function ($item) {
-                return (object) [
-                    'id_berita' => $item->id_berita,
-                    'judul' => $item->judul,
-                    'isi_berita' => $item->isi_berita,
-                    'gambar' => $item->gambar,
-                    'sumber' => $item->sumber ?: 'Diskominfo Kab. Bogor',
-                    'sumber_slug' => 'diskominfo',
-                    'tanggal' => $item->tanggal ? Carbon::parse($item->tanggal) : Carbon::now(self::TIMEZONE),
-                    'url' => $item->url ?: route('publik.berita.detail', $item->id_berita),
-                    'is_internal' => true,
-                ];
-            });
-        } catch (\Throwable) {
-            return collect();
-        }
     }
 }
