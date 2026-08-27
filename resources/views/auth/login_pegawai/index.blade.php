@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login Pegawai - SIRAPI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -123,41 +124,53 @@
 
     <div data-forgot-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 backdrop-blur-xs px-5">
         <section class="w-full max-w-md rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 p-6 shadow-xl border border-transparent dark:border-[#233a34]">
-            <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start justify-between gap-4 border-b border-gray-100 dark:border-[#233a34] pb-4">
                 <div>
                     <h2 class="text-lg font-extrabold text-sirapi-ink dark:text-white">Reset Kata Sandi</h2>
-                    <p class="mt-1 text-sm font-medium text-gray-500 dark:text-gray-400">Kirim OTP ke email pegawai, lalu masukkan password baru.</p>
+                    <p class="mt-0.5 text-xs font-medium text-gray-500 dark:text-gray-400">Kirim kode OTP ke email pegawai, lalu buat kata sandi baru.</p>
                 </div>
-                <button type="button" data-close-forgot class="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-gray-200" aria-label="Tutup">
+                <button type="button" data-close-forgot class="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer" aria-label="Tutup">
                     <i data-lucide="x" class="h-5 w-5"></i>
                 </button>
             </div>
 
-            <form action="{{ route('pegawai.password.otp') }}" method="POST" class="mt-6 space-y-3">
+            <form id="form-reset-password" action="{{ route('pegawai.password.reset') }}" method="POST" class="mt-5 space-y-4">
                 @csrf
-                <label class="block">
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Email Pegawai</span>
-                    <input name="reset_email" type="email" value="{{ old('reset_email') }}" required data-reset-email-input class="mt-2 h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-gray-800 dark:text-white px-3 text-sm font-bold outline-none focus:border-sirapi-green" placeholder="Masukkan email anda">
-                </label>
-                <button type="submit" class="h-11 w-full rounded-xl border border-sirapi-green dark:border-emerald-500/40 px-4 text-sm font-extrabold text-sirapi-green dark:text-emerald-400 transition hover:bg-sirapi-green dark:hover:bg-[#107050] hover:text-white cursor-pointer">Kirim OTP</button>
-            </form>
+                <!-- Email Pegawai + Tombol Kirim OTP -->
+                <div>
+                    <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Email Pegawai <span class="text-red-500">*</span></label>
+                    <div class="flex gap-2">
+                        <input id="reset_email" name="reset_email" type="email" value="{{ old('reset_email') }}" required placeholder="Masukkan email terdaftar" class="h-11 min-w-0 flex-1 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-gray-800 dark:text-white px-3 text-xs sm:text-sm font-bold outline-none focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/20">
+                        <button type="button" id="btn-send-reset-otp" class="h-11 shrink-0 rounded-xl bg-[#04733f] hover:bg-[#035f35] dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 text-xs font-extrabold text-white transition shadow-xs cursor-pointer inline-flex items-center gap-1.5">
+                            <i data-lucide="send" class="h-3.5 w-3.5"></i>
+                            <span>Kirim OTP</span>
+                        </button>
+                    </div>
+                    <p id="reset-otp-status" class="mt-1.5 hidden text-xs font-bold"></p>
+                    <p class="mt-1 text-[11px] text-gray-400 dark:text-gray-400">Klik <strong>Kirim OTP</strong> untuk menerima kode verifikasi 6 digit di email Anda.</p>
+                </div>
 
-            <form action="{{ route('pegawai.password.reset') }}" method="POST" class="mt-5 grid grid-cols-1 gap-3">
-                @csrf
-                <input name="reset_email" type="hidden" value="{{ old('reset_email') }}" data-reset-email-hidden>
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Kode OTP</span>
-                    <input name="otp" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required class="mt-2 h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-gray-800 dark:text-white px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                </label>
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Password Baru</span>
-                    <input name="password" type="password" required minlength="8" class="mt-2 h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-gray-800 dark:text-white px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                </label>
-                <label>
-                    <span class="text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400">Konfirmasi Password</span>
-                    <input name="password_confirmation" type="password" required minlength="8" class="mt-2 h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-gray-800 dark:text-white px-3 text-sm font-bold outline-none focus:border-sirapi-green">
-                </label>
-                <button type="submit" class="mt-1 h-11 rounded-xl bg-sirapi-green hover:bg-sirapi-greenSoft dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 text-sm font-extrabold text-white transition cursor-pointer">Simpan Password Baru</button>
+                <!-- Kode OTP -->
+                <div>
+                    <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Kode OTP <span class="text-red-500">*</span></label>
+                    <input name="otp" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required placeholder="Masukkan 6 digit kode OTP" class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-gray-800 dark:text-white px-3 text-xs sm:text-sm font-bold outline-none focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/20">
+                </div>
+
+                <!-- Password Baru -->
+                <div>
+                    <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Password Baru <span class="text-red-500">*</span></label>
+                    <input name="password" type="password" required minlength="8" placeholder="Minimal 8 karakter" class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-gray-800 dark:text-white px-3 text-xs sm:text-sm font-bold outline-none focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/20">
+                </div>
+
+                <!-- Konfirmasi Password -->
+                <div>
+                    <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Konfirmasi Password <span class="text-red-500">*</span></label>
+                    <input name="password_confirmation" type="password" required minlength="8" placeholder="Ulangi password baru" class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-gray-800 dark:text-white px-3 text-xs sm:text-sm font-bold outline-none focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/20">
+                </div>
+
+                <div class="pt-1">
+                    <button type="submit" class="h-11 w-full rounded-xl bg-[#04733f] hover:bg-[#035f35] dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 text-sm font-extrabold text-white transition shadow-xs cursor-pointer">Simpan Password Baru</button>
+                </div>
             </form>
         </section>
     </div>
@@ -170,8 +183,16 @@
         const forgotModal = document.querySelector('[data-forgot-modal]');
         const openForgotButton = document.querySelector('[data-open-forgot]');
         const closeForgotButton = document.querySelector('[data-close-forgot]');
-        const resetEmailInput = document.querySelector('[data-reset-email-input]');
-        const resetEmailHidden = document.querySelector('[data-reset-email-hidden]');
+        const resetEmailInput = document.getElementById('reset_email');
+        const sendResetOtpButton = document.getElementById('btn-send-reset-otp');
+        const resetOtpStatus = document.getElementById('reset-otp-status');
+
+        function showResetOtpStatus(message, isSuccess) {
+            if (!resetOtpStatus) return;
+            resetOtpStatus.textContent = message;
+            resetOtpStatus.classList.remove('hidden', 'text-red-600', 'text-emerald-600');
+            resetOtpStatus.classList.add(isSuccess ? 'text-emerald-600' : 'text-red-600');
+        }
 
         function openForgotModal() {
             forgotModal?.classList.remove('hidden');
@@ -185,14 +206,45 @@
 
         openForgotButton?.addEventListener('click', openForgotModal);
         closeForgotButton?.addEventListener('click', closeForgotModal);
-        resetEmailInput?.addEventListener('input', () => {
-            if (resetEmailHidden) {
-                resetEmailHidden.value = resetEmailInput.value;
-            }
-        });
+
         forgotModal?.addEventListener('click', (event) => {
             if (event.target === forgotModal) {
                 closeForgotModal();
+            }
+        });
+
+        sendResetOtpButton?.addEventListener('click', async () => {
+            const email = resetEmailInput?.value.trim();
+            if (!email) {
+                showResetOtpStatus('Isi email pegawai terlebih dahulu.', false);
+                resetEmailInput?.focus();
+                return;
+            }
+
+            sendResetOtpButton.disabled = true;
+            sendResetOtpButton.innerHTML = '<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>Mengirim...</span>';
+            lucide.createIcons();
+            showResetOtpStatus('Mengirim kode OTP ke email...', true);
+
+            try {
+                const response = await fetch('{{ route('pegawai.password.otp') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    },
+                    body: JSON.stringify({ reset_email: email }),
+                });
+                const data = await response.json();
+
+                showResetOtpStatus(data.message || 'Kode OTP sudah dikirim ke email.', response.ok && data.success);
+            } catch (error) {
+                showResetOtpStatus('OTP gagal dikirim. Periksa koneksi atau konfigurasi email.', false);
+            } finally {
+                sendResetOtpButton.disabled = false;
+                sendResetOtpButton.innerHTML = '<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Kirim OTP</span>';
+                lucide.createIcons();
             }
         });
 

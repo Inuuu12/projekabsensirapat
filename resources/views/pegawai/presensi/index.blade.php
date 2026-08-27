@@ -17,6 +17,9 @@
             theme: {
                 extend: {
                     colors: {
+                        'ijo-tua': '#04733f',
+                        'ijo-semitua': '#035f35',
+                        'ijo-sangatmuda': '#e3eeea',
                         sirapi: {
                             green: '#35635b',
                             green2: '#2b4f49',
@@ -33,6 +36,41 @@
             }
         }
     </script>
+    <style>
+        /* Custom Modern Scrollbars */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
+        .dark * {
+            scrollbar-color: #284c43 #152420;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #152420;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #284c43;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #35635b;
+        }
+    </style>
 </head>
 <body class="min-h-screen bg-[#F8F7F4] dark:bg-[#0d1614] font-sans text-sirapi-ink dark:text-slate-100 antialiased transition-colors duration-200">
     @php
@@ -264,16 +302,16 @@
         </section>
     </main>
 
-    <!-- Edit Profile Modal (Gaya Admin Popup) -->
-    <div data-profile-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4">
-        <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 shadow-2xl sm:max-h-[calc(100vh-2rem)] border border-transparent dark:border-[#233a34]">
-            <!-- Header Popup Admin Style -->
-            <div class="flex items-center justify-between bg-ijo-tua dark:bg-[#0f1c19] px-5 py-4 text-white sm:px-6 border-b border-transparent dark:border-[#233a34]">
+    <!-- Edit Profile Modal -->
+    <div data-profile-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-2.5 sm:p-4 overflow-y-auto">
+        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-xl sm:max-w-2xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 shadow-2xl border border-gray-100 dark:border-[#233a34]">
+            <!-- Header Modal -->
+            <div class="flex items-center justify-between border-b border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] px-4 py-3 sm:px-6 sm:py-4 shrink-0">
                 <div>
-                    <h3 class="text-lg font-bold text-white">Edit Profil Pegawai</h3>
-                    <p class="text-xs text-white/80 dark:text-emerald-400 font-medium">{{ $pegawai->email }}</p>
+                    <h3 class="text-base sm:text-lg font-extrabold text-gray-900 dark:text-white">Edit Profil Pegawai</h3>
+                    <p class="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 truncate max-w-[240px] sm:max-w-none">{{ $pegawai->email }}</p>
                 </div>
-                <button type="button" data-close-profile class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 dark:hover:bg-white/5 hover:text-white cursor-pointer" title="Tutup">
+                <button type="button" data-close-profile class="rounded-xl p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-200 cursor-pointer" title="Tutup">
                     <i data-lucide="x" class="h-5 w-5"></i>
                 </button>
             </div>
@@ -283,54 +321,55 @@
                 @method('PUT')
 
                 @if ($errors->any() && ! $errors->has('presensi'))
-                    <div class="px-5 pt-4 sm:px-6">
-                        <div class="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-4 py-3 text-xs font-semibold text-red-700 dark:text-red-300">
+                    <div class="px-4 pt-3 sm:px-6 sm:pt-4">
+                        <div class="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 px-3.5 py-2.5 text-xs font-semibold text-red-700 dark:text-red-300">
                             {{ $errors->first() }}
                         </div>
                     </div>
                 @endif
 
-                <div class="grid grid-cols-1 gap-x-4 gap-y-4 overflow-y-auto px-5 py-5 sm:grid-cols-2 sm:px-6">
+                <div class="grid grid-cols-1 gap-x-3 gap-y-3 sm:gap-x-4 sm:gap-y-3.5 overflow-y-auto px-4 py-3.5 sm:px-6 sm:py-5 sm:grid-cols-2">
                     <!-- Foto Profil -->
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Foto Profil</label>
-                        <input type="file" name="foto" accept="image/*" class="block w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 py-2 text-xs font-medium text-gray-700 dark:text-gray-300 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-[11px] sm:text-xs font-extrabold uppercase text-gray-600 dark:text-gray-400 mb-1">Foto Profil</label>
+                        <input type="file" name="foto" accept="image/*" class="block w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 py-1.5 sm:py-2 text-xs font-medium text-gray-700 dark:text-gray-300 outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- Record Wajah Box -->
-                    <div class="sm:col-span-2 rounded-xl border border-sirapi-green/20 dark:border-[#284c43] bg-sirapi-green/5 dark:bg-[#0f1c19] p-3.5">
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-3">
-                                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ijo-tua dark:bg-[#107050] text-white shadow-xs">
-                                    <i data-lucide="scan-face" class="h-5 w-5"></i>
+                    <div class="sm:col-span-2 rounded-xl border border-emerald-200/80 dark:border-[#284c43] bg-[#f0fdf4] dark:bg-[#0f1c19] p-3 sm:p-3.5">
+                        <div class="flex items-center justify-between gap-2.5">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <span class="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 dark:bg-[#107050] text-[#04733f] dark:text-white shadow-xs">
+                                    <i data-lucide="scan-face" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                                 </span>
-                                <div>
-                                    <span class="block text-xs font-extrabold text-[#35635b] dark:text-emerald-400">Record / Rekam Ulang Wajah</span>
-                                    <span class="block text-[11px] font-medium text-gray-500 dark:text-gray-400">Ambil ulang foto wajah untuk presensi Face Recognition</span>
+                                <div class="min-w-0">
+                                    <span class="block text-xs font-extrabold text-gray-900 dark:text-white truncate">Rekam Wajah Biometrik</span>
+                                    <span class="block text-[10px] sm:text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-tight">Untuk presensi Face Recognition</span>
                                 </div>
                             </div>
-                            <button type="button" data-open-face class="shrink-0 rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-3.5 py-2 text-xs font-extrabold text-white transition shadow-xs cursor-pointer">
-                                Rekam Wajah
+                            <button type="button" data-open-face class="shrink-0 rounded-xl bg-[#04733f] hover:bg-[#035f35] dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-3 py-2 sm:px-3.5 sm:py-2 text-[11px] sm:text-xs font-extrabold text-white transition shadow-xs cursor-pointer inline-flex items-center gap-1.5">
+                                <i data-lucide="camera" class="h-3.5 w-3.5"></i>
+                                <span>Rekam Wajah</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Nama Pegawai -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Nama Lengkap *</label>
-                        <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai', $pegawai->nama_pegawai) }}" required class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-[11px] sm:text-xs font-extrabold uppercase text-gray-600 dark:text-gray-400 mb-1">Nama Lengkap *</label>
+                        <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai', $pegawai->nama_pegawai) }}" required class="h-9.5 sm:h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- NIP -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">NIP *</label>
-                        <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-[11px] sm:text-xs font-extrabold uppercase text-gray-600 dark:text-gray-400 mb-1">NIP *</label>
+                        <input type="text" name="nip" value="{{ old('nip', $pegawai->nip) }}" required pattern="[0-9]+" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="h-9.5 sm:h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- Jabatan -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Jabatan *</label>
-                        <select name="jabatan" required class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-[11px] sm:text-xs font-extrabold uppercase text-gray-600 dark:text-gray-400 mb-1">Jabatan *</label>
+                        <select name="jabatan" required class="h-9.5 sm:h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                             <option value="">Pilih jabatan</option>
                             @foreach ($jabatanOptions->merge([$pegawai->jabatan])->filter()->unique() as $jabatan)
                                 <option value="{{ $jabatan }}" @selected(old('jabatan', $pegawai->jabatan) === $jabatan)>{{ $jabatan }}</option>
@@ -340,8 +379,8 @@
 
                     <!-- Bidang -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Bidang</label>
-                        <select name="bidang" class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-[11px] sm:text-xs font-extrabold uppercase text-gray-600 dark:text-gray-400 mb-1">Bidang</label>
+                        <select name="bidang" class="h-9.5 sm:h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                             <option value="">Pilih bidang</option>
                             @foreach ($bidangOptions->merge([$pegawai->bidang])->filter()->unique() as $bidang)
                                 <option value="{{ $bidang }}" @selected(old('bidang', $pegawai->bidang) === $bidang)>{{ $bidang }}</option>
@@ -351,44 +390,48 @@
 
                     <!-- No HP -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">No. HP / WhatsApp</label>
-                        <input type="text" name="nomor_hp" value="{{ old('nomor_hp', $pegawai->nomor_hp) }}" pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-[11px] sm:text-xs font-extrabold uppercase text-gray-600 dark:text-gray-400 mb-1">No. HP / WhatsApp</label>
+                        <input type="text" name="nomor_hp" value="{{ old('nomor_hp', $pegawai->nomor_hp) }}" pattern="[0-9]+" maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="h-9.5 sm:h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- Email -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Email *</label>
-                        <input type="email" name="email" value="{{ old('email', $pegawai->email) }}" required class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-[11px] sm:text-xs font-extrabold uppercase text-gray-600 dark:text-gray-400 mb-1">Email *</label>
+                        <input type="email" name="email" value="{{ old('email', $pegawai->email) }}" required class="h-9.5 sm:h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- Password Baru -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Password Baru</label>
-                        <input type="password" name="password" placeholder="Kosongkan jika tidak diubah" class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-[11px] sm:text-xs font-extrabold uppercase text-gray-600 dark:text-gray-400 mb-1">Password Baru</label>
+                        <input type="password" name="password" placeholder="Kosongkan jika tidak diubah" class="h-9.5 sm:h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- Konfirmasi Password -->
                     <div>
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">Konfirmasi Password</label>
-                        <input type="password" name="password_confirmation" placeholder="Ulangi password baru" class="h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <label class="block text-[11px] sm:text-xs font-extrabold uppercase text-gray-600 dark:text-gray-400 mb-1">Konfirmasi Password</label>
+                        <input type="password" name="password_confirmation" placeholder="Ulangi password baru" class="h-9.5 sm:h-10 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                     </div>
 
                     <!-- OTP Password -->
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-extrabold uppercase text-gray-500 dark:text-gray-400 mb-1">OTP Password (Diperlukan jika ubah password)</label>
+                        <label class="block text-[11px] sm:text-xs font-extrabold uppercase text-gray-600 dark:text-gray-400 mb-1">OTP Password (Jika ubah password)</label>
                         <div class="flex gap-2">
-                            <input type="text" name="password_otp" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Kode OTP 6 digit" class="h-10 min-w-0 flex-1 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                            <button type="button" data-send-password-otp class="h-10 shrink-0 rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 text-xs font-extrabold text-white transition shadow-xs cursor-pointer">Kirim OTP</button>
+                            <input type="text" name="password_otp" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Kode OTP 6 digit" class="h-9.5 sm:h-10 min-w-0 flex-1 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-xs font-bold text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            <button type="button" data-send-password-otp class="h-9.5 sm:h-10 shrink-0 rounded-xl bg-[#04733f] hover:bg-[#035f35] dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-3.5 sm:px-4 text-xs font-extrabold text-white transition shadow-xs cursor-pointer inline-flex items-center gap-1.5">
+                                <i data-lucide="send" class="h-3.5 w-3.5"></i>
+                                <span>Kirim OTP</span>
+                            </button>
                         </div>
-                        <p data-password-otp-status class="mt-2 hidden text-xs font-bold"></p>
+                        <p class="mt-1 text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400">Klik <strong>Kirim OTP</strong> untuk menerima kode verifikasi di email Anda.</p>
+                        <p data-password-otp-status class="mt-1 text-xs font-bold hidden"></p>
                     </div>
                 </div>
 
-                <!-- Footer Buttons Admin Style -->
-                <div class="flex flex-col-reverse gap-3 border-t border-gray-100 dark:border-[#233a34] bg-gray-50/50 dark:bg-[#0f1c19] px-5 py-4 sm:flex-row sm:justify-end sm:px-6">
-                    <button type="button" data-close-profile class="h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#152420] px-5 text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
-                    <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] hover:bg-[#035f35] dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-5 text-xs font-bold text-white transition shadow-xs cursor-pointer">
-                        <i data-lucide="save" class="h-4 w-4"></i>
+                <!-- Footer Buttons: Responsive Grid / Flex -->
+                <div class="grid grid-cols-2 sm:flex sm:justify-end gap-2.5 sm:gap-3 border-t border-gray-100 dark:border-[#233a34] bg-gray-50/80 dark:bg-[#0f1c19] p-3 sm:px-6 sm:py-3.5 shrink-0">
+                    <button type="button" data-close-profile class="w-full sm:w-auto h-9.5 sm:h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#152420] px-4 text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer flex items-center justify-center">Batal</button>
+                    <button type="submit" class="w-full sm:w-auto inline-flex h-9.5 sm:h-10 items-center justify-center gap-1.5 sm:gap-2 rounded-xl bg-[#04733f] hover:bg-[#035f35] dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 sm:px-5 text-xs font-bold text-white transition shadow-xs cursor-pointer">
+                        <i data-lucide="save" class="h-3.5 w-3.5 sm:h-4 sm:w-4"></i>
                         <span>Simpan Perubahan</span>
                     </button>
                 </div>
@@ -396,21 +439,21 @@
         </div>
     </div>
 
-    <!-- Face Registration Modal (Gaya Admin Popup) -->
-    <div data-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4">
-        <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 shadow-2xl sm:max-h-[calc(100vh-2rem)] border border-transparent dark:border-[#233a34]">
-            <div class="flex items-center justify-between bg-ijo-tua dark:bg-[#0f1c19] px-5 py-4 text-white sm:px-6 border-b border-transparent dark:border-[#233a34]">
+    <!-- Face Registration Modal -->
+    <div data-face-modal class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-2.5 sm:p-4 overflow-y-auto">
+        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-md sm:max-w-lg flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 shadow-2xl border border-gray-100 dark:border-[#233a34]">
+            <div class="flex items-center justify-between border-b border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] px-4 py-3 sm:px-6 sm:py-4 shrink-0">
                 <div>
-                    <h3 class="text-lg font-bold text-white">Daftarkan / Record Wajah</h3>
-                    <p class="text-xs text-white/80 dark:text-emerald-400 font-medium">Kamera Presensi Face Recognition</p>
+                    <h3 class="text-base sm:text-lg font-extrabold text-gray-900 dark:text-white">Daftarkan / Record Wajah</h3>
+                    <p class="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-emerald-400">Kamera Presensi Face Recognition</p>
                 </div>
-                <button type="button" data-close-face class="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 dark:hover:bg-white/5 hover:text-white cursor-pointer" title="Tutup">
+                <button type="button" data-close-face class="rounded-xl p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-200 cursor-pointer" title="Tutup">
                     <i data-lucide="x" class="h-5 w-5"></i>
                 </button>
             </div>
 
-            <div class="p-5 sm:p-6 text-center space-y-4">
-                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Posisikan wajah Anda dengan jelas di tengah kamera, lalu klik tombol Ambil Wajah.</p>
+            <div class="p-3.5 sm:p-5 text-center space-y-3 overflow-y-auto">
+                <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium">Posisikan wajah Anda dengan jelas di tengah kamera, lalu klik tombol Ambil Wajah.</p>
                 
                 <div class="relative w-full aspect-[4/3] bg-gray-900 rounded-2xl overflow-hidden shadow-inner border border-gray-200 dark:border-[#284c43]">
                     <p id="face-status" class="absolute inset-0 flex items-center justify-center text-white text-xs font-medium z-10 animate-pulse px-4">Memuat kamera dan model...</p>
@@ -418,9 +461,9 @@
                     <canvas id="face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
                 </div>
 
-                <div class="flex gap-3 pt-2">
-                    <button type="button" data-close-face class="flex-1 h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer">Batal</button>
-                    <button type="button" id="btn-capture-face" class="flex-1 inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] hover:bg-[#035f35] dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-xs font-bold text-white transition hidden shadow-xs cursor-pointer">
+                <div class="grid grid-cols-2 gap-2.5 pt-1">
+                    <button type="button" data-close-face class="h-9.5 sm:h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer flex items-center justify-center">Batal</button>
+                    <button type="button" id="btn-capture-face" class="inline-flex h-9.5 sm:h-10 items-center justify-center gap-1.5 rounded-xl bg-[#04733f] hover:bg-[#035f35] dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-xs font-bold text-white transition hidden shadow-xs cursor-pointer">
                         <i data-lucide="scan" class="h-4 w-4"></i>
                         <span>Ambil Wajah</span>
                     </button>
@@ -498,11 +541,16 @@
             
             try {
                 await Promise.all([
-                    faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
-                    faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-                    faceapi.nets.faceRecognitionNet.loadFromUri('/models')
+                    faceapi.nets.ssdMobilenetv1.loadFromUri('{{ asset('models') }}'),
+                    faceapi.nets.faceLandmark68Net.loadFromUri('{{ asset('models') }}'),
+                    faceapi.nets.faceRecognitionNet.loadFromUri('{{ asset('models') }}')
                 ]);
                 
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    faceStatus.innerText = "Kamera tidak didukung pada koneksi ini (perlu HTTPS atau localhost).";
+                    return;
+                }
+
                 faceStream = await navigator.mediaDevices.getUserMedia({
                     video: {
                         facingMode: "user",
@@ -611,10 +659,15 @@
         let presensiDetectionInterval = null;
         let isPresensiScanning = true;
 
+        let presensiFaceMatcher = null;
         @if (!empty($pegawai->face_descriptor))
-        const myDescriptor = new Float32Array(JSON.parse(`{!! $pegawai->face_descriptor !!}`));
-        const myLabeledDescriptor = new faceapi.LabeledFaceDescriptors('me', [myDescriptor]);
-        const presensiFaceMatcher = new faceapi.FaceMatcher([myLabeledDescriptor], 0.45);
+        try {
+            const myDescriptor = new Float32Array(JSON.parse(`{!! $pegawai->face_descriptor !!}`));
+            const myLabeledDescriptor = new faceapi.LabeledFaceDescriptors('me', [myDescriptor]);
+            presensiFaceMatcher = new faceapi.FaceMatcher([myLabeledDescriptor], 0.45);
+        } catch (e) {
+            console.error("Error initializing face descriptor matcher:", e);
+        }
         @endif
 
         async function openPresensiModal() {
@@ -624,11 +677,28 @@
             
             try {
                 await Promise.all([
-                    faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
-                    faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-                    faceapi.nets.faceRecognitionNet.loadFromUri('/models')
+                    faceapi.nets.ssdMobilenetv1.loadFromUri('{{ asset('models') }}'),
+                    faceapi.nets.faceLandmark68Net.loadFromUri('{{ asset('models') }}'),
+                    faceapi.nets.faceRecognitionNet.loadFromUri('{{ asset('models') }}')
                 ]);
+
+                if (!presensiFaceMatcher) {
+                    @if (!empty($pegawai->face_descriptor))
+                    try {
+                        const myDescriptor = new Float32Array(JSON.parse(`{!! $pegawai->face_descriptor !!}`));
+                        const myLabeledDescriptor = new faceapi.LabeledFaceDescriptors('me', [myDescriptor]);
+                        presensiFaceMatcher = new faceapi.FaceMatcher([myLabeledDescriptor], 0.45);
+                    } catch (e) {
+                        console.error("Error creating matcher:", e);
+                    }
+                    @endif
+                }
                 
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    presensiStatus.innerText = "Kamera tidak didukung pada koneksi ini (perlu HTTPS atau localhost).";
+                    return;
+                }
+
                 presensiStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
                 presensiVideo.srcObject = presensiStream;
                 presensiVideo.classList.remove('hidden');
@@ -730,8 +800,9 @@
 
         sendPasswordOtpButton?.addEventListener('click', async () => {
             sendPasswordOtpButton.disabled = true;
-            sendPasswordOtpButton.textContent = 'Mengirim...';
-            showPasswordOtpStatus('Mengirim kode OTP...', true);
+            sendPasswordOtpButton.innerHTML = '<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>Mengirim...</span>';
+            lucide.createIcons();
+            showPasswordOtpStatus('Mengirim kode OTP ke email...', true);
 
             try {
                 const response = await fetch('{{ route('pegawai.profil.password-otp') }}', {
@@ -750,7 +821,8 @@
                 showPasswordOtpStatus('OTP gagal dikirim. Coba lagi nanti.', false);
             } finally {
                 sendPasswordOtpButton.disabled = false;
-                sendPasswordOtpButton.textContent = 'Kirim OTP';
+                sendPasswordOtpButton.innerHTML = '<i data-lucide="send" class="h-3.5 w-3.5"></i><span>Kirim OTP</span>';
+                lucide.createIcons();
             }
         });
 

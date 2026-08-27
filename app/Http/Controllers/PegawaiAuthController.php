@@ -165,6 +165,13 @@ class PegawaiAuthController extends Controller
             ($existingOtp['email'] ?? null) === $email
             && ($existingOtp['sent_at'] ?? 0) > $now->copy()->subSeconds(self::PASSWORD_OTP_RESEND_SECONDS)->timestamp
         ) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'OTP sudah dikirim. Tunggu 60 detik sebelum meminta kode baru.',
+                ], 429);
+            }
+
             return back()
                 ->withErrors(['reset_email' => 'OTP sudah dikirim. Tunggu 60 detik sebelum meminta kode baru.'])
                 ->withInput($request->only('reset_email'))
@@ -181,6 +188,13 @@ class PegawaiAuthController extends Controller
                 }
             );
         } catch (\Throwable) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'OTP gagal dikirim. Periksa konfigurasi email aplikasi.',
+                ], 500);
+            }
+
             return back()
                 ->withErrors(['reset_email' => 'OTP gagal dikirim. Periksa konfigurasi email aplikasi.'])
                 ->withInput($request->only('reset_email'))
@@ -193,6 +207,13 @@ class PegawaiAuthController extends Controller
             'expires_at' => $now->copy()->addMinutes(self::PASSWORD_OTP_TTL_MINUTES)->timestamp,
             'sent_at' => $now->timestamp,
         ]);
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Kode OTP reset password sudah dikirim ke email tujuan.',
+            ]);
+        }
 
         return back()
             ->with('status', 'Kode OTP reset password sudah dikirim ke email tujuan.')
