@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class Agenda extends Model
 {
@@ -47,51 +49,59 @@ class Agenda extends Model
     {
         static::deleting(function (Agenda $agenda) {
             // 1. Hapus semua foto presensi pegawai (scan wajah) agenda ini dari storage & database
-            $kehadiranList = DB::table('sirapi_md_kehadiran')
-                ->where('id_agenda', $agenda->id_agenda)
-                ->get();
+            if (Schema::hasTable('sirapi_md_kehadiran')) {
+                $kehadiranList = DB::table('sirapi_md_kehadiran')
+                    ->where('id_agenda', $agenda->id_agenda)
+                    ->get();
 
-            foreach ($kehadiranList as $k) {
-                if (!empty($k->foto_kehadiran) && \Illuminate\Support\Facades\Storage::disk('public')->exists($k->foto_kehadiran)) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($k->foto_kehadiran);
+                foreach ($kehadiranList as $k) {
+                    if (!empty($k->foto_kehadiran) && Storage::disk('public')->exists($k->foto_kehadiran)) {
+                        Storage::disk('public')->delete($k->foto_kehadiran);
+                    }
                 }
-            }
 
-            DB::table('sirapi_md_kehadiran')->where('id_agenda', $agenda->id_agenda)->delete();
+                DB::table('sirapi_md_kehadiran')->where('id_agenda', $agenda->id_agenda)->delete();
+            }
 
             // 2. Hapus semua foto presensi tamu agenda ini dari storage & database
-            $tamuList = DB::table('sirapi_md_tamu')
-                ->where('id_agenda', $agenda->id_agenda)
-                ->get();
+            if (Schema::hasTable('sirapi_md_tamu')) {
+                $tamuList = DB::table('sirapi_md_tamu')
+                    ->where('id_agenda', $agenda->id_agenda)
+                    ->get();
 
-            foreach ($tamuList as $t) {
-                if (!empty($t->foto_selfie) && \Illuminate\Support\Facades\Storage::disk('public')->exists($t->foto_selfie)) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($t->foto_selfie);
+                foreach ($tamuList as $t) {
+                    if (!empty($t->foto_selfie) && Storage::disk('public')->exists($t->foto_selfie)) {
+                        Storage::disk('public')->delete($t->foto_selfie);
+                    }
                 }
-            }
 
-            DB::table('sirapi_md_tamu')->where('id_agenda', $agenda->id_agenda)->delete();
+                DB::table('sirapi_md_tamu')->where('id_agenda', $agenda->id_agenda)->delete();
+            }
 
             // 3. Hapus dokumen/notulen/dokumentasi agenda dari storage & database
-            $dokumenList = DB::table('sirapi_md_agenda_dokumen')
-                ->where('id_agenda', $agenda->id_agenda)
-                ->get();
+            if (Schema::hasTable('sirapi_md_dokumen_notulen')) {
+                $dokumenList = DB::table('sirapi_md_dokumen_notulen')
+                    ->where('id_agenda', $agenda->id_agenda)
+                    ->get();
 
-            foreach ($dokumenList as $d) {
-                if (!empty($d->file_path) && \Illuminate\Support\Facades\Storage::disk('public')->exists($d->file_path)) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($d->file_path);
+                foreach ($dokumenList as $d) {
+                    if (!empty($d->file_path) && Storage::disk('public')->exists($d->file_path)) {
+                        Storage::disk('public')->delete($d->file_path);
+                    }
                 }
+
+                DB::table('sirapi_md_dokumen_notulen')->where('id_agenda', $agenda->id_agenda)->delete();
             }
 
-            DB::table('sirapi_md_agenda_dokumen')->where('id_agenda', $agenda->id_agenda)->delete();
-
             // 4. Hapus file lampiran surat agenda dari storage jika ada
-            if (!empty($agenda->lampiran) && \Illuminate\Support\Facades\Storage::disk('public')->exists($agenda->lampiran)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($agenda->lampiran);
+            if (!empty($agenda->lampiran) && Storage::disk('public')->exists($agenda->lampiran)) {
+                Storage::disk('public')->delete($agenda->lampiran);
             }
 
             // 5. Hapus QR Code terkait
-            DB::table('sirapi_md_qr')->where('id_agenda', $agenda->id_agenda)->delete();
+            if (Schema::hasTable('sirapi_md_qrcode')) {
+                DB::table('sirapi_md_qrcode')->where('id_agenda', $agenda->id_agenda)->delete();
+            }
         });
     }
 

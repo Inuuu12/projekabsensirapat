@@ -29,8 +29,7 @@
             
             <!-- Tombol Hapus -->
             <button type="submit" class="w-full sm:w-auto h-10 px-4 text-xs font-bold text-white bg-[#B91C1C] hover:bg-[#991B1B] dark:bg-red-700 dark:hover:bg-red-800 rounded-xl flex items-center justify-center gap-2 shadow-xs transition cursor-pointer">
-            
-            <span>Hapus</span>
+                <span>Hapus</span>
             </button>
         </form>
     </div>

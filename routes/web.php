@@ -42,6 +42,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/agenda/lihat', [AdminAgendaController::class, 'lihat_Agenda'])->name('admin.agenda.lihat');
         
         Route::get('/agenda/detail', [AdminAgendaController::class, 'detail_Agenda']);
+        Route::get('/agenda/{id}', [AdminAgendaController::class, 'detail_Agenda']);
         Route::get('/agenda/{id}/detail', [AdminAgendaController::class, 'detail_Agenda'])->name('admin.agenda.detail');
 
         Route::redirect('/agenda', '/admin/agenda/lihat')->name('admin.agenda');
