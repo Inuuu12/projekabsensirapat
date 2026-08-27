@@ -37,6 +37,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/layout', [AdminDashboardController::class, 'layout'])->name('admin.layout');
 
         // Agenda & Kehadiran Internal
+        Route::get('/agenda/tambah', fn () => redirect()->route('admin.agenda.lihat'));
         Route::post('/agenda/tambah', [AdminAgendaController::class, 'kelola_Agenda'])->name('admin.agenda.store');
         Route::get('/agenda/lihat', [AdminAgendaController::class, 'lihat_Agenda'])->name('admin.agenda.lihat');
         
@@ -86,6 +87,7 @@ Route::prefix('admin')->group(function () {
         // Aduan & Kunjungan
         Route::get('/aduan/lihat', [AdminAduanController::class, 'lihat_Aduan']);
         Route::put('/aduan/{id}/verifikasi', [AdminAduanController::class, 'verifikasi_Aduan']);
+        Route::get('/kunjungan/kelola', fn () => redirect()->route('admin.kunjungan.lihat'));
         Route::post('/kunjungan/kelola', [AdminKunjunganController::class, 'kelola_Kunjungan'])->name('admin.kunjungan.store');
         Route::put('/kunjungan/{id}', [AdminKunjunganController::class, 'update_Kunjungan'])->name('admin.kunjungan.update');
         Route::delete('/kunjungan/{id}', [AdminKunjunganController::class, 'hapus_Kunjungan'])->name('admin.kunjungan.destroy');
