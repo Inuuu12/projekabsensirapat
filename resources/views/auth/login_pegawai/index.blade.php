@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    @include('publik.layout_publik.theme_script')
+    @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -48,7 +48,7 @@
         </button>
 
         <div class="relative flex flex-col items-center text-center px-4">
-            <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-20 sm:h-28 w-auto drop-shadow">
+            <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-20 sm:h-28 w-auto drop-shadow">
             <h1 class="mt-3 sm:mt-5 text-xl sm:text-2xl font-extrabold tracking-wide">SIRAPI</h1>
             <p class="mt-1 sm:mt-2 text-xs sm:text-sm font-bold">Sistem Informasi Rapat dan Presensi</p>
         </div>

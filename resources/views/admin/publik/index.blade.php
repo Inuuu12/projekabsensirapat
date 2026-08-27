@@ -4,7 +4,7 @@
 
 @section('content')
 @php
-    $imageUrl = function ($path, $fallback = 'foto/Suratlogo.png') {
+    $imageUrl = function ($path, $fallback = 'assets/foto/Suratlogo.png') {
         if (! $path) {
             return asset($fallback);
         }
@@ -15,7 +15,7 @@
 
         $path = ltrim($path, '/');
 
-        if (str_starts_with($path, 'foto/') || str_starts_with($path, 'uploads/')) {
+        if (str_starts_with($path, 'assets/foto/') || str_starts_with($path, 'foto/') || str_starts_with($path, 'uploads/')) {
             return asset($path);
         }
 
@@ -46,7 +46,7 @@
                     <span class="mt-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Tambah berita publik</span>
                 </span>
                 <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 dark:bg-[#152420] p-2">
-                    <img src="{{ asset('foto/Beritalogo.png') }}" alt="Berita" class="h-full w-full object-contain">
+                    <img src="{{ asset('assets/foto/Beritalogo.png') }}" alt="Berita" class="h-full w-full object-contain">
                 </span>
             </button>
             <button type="button" onclick="openPublicModal('modal-tambah-video')" class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50 dark:hover:bg-[#1b3832] cursor-pointer">
@@ -55,7 +55,7 @@
                     <span class="mt-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Tambah link YouTube</span>
                 </span>
                 <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 dark:bg-[#152420] p-2">
-                    <img src="{{ asset('foto/Videologo.png') }}" alt="Video" class="h-full w-full object-contain">
+                    <img src="{{ asset('assets/foto/Videologo.png') }}" alt="Video" class="h-full w-full object-contain">
                 </span>
             </button>
         </div>
@@ -118,14 +118,14 @@
                                 data-sumber="{{ $item->sumber }}"
                                 class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Edit Berita">
-                                <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
                             </button>
                             <form method="POST" action="{{ route('admin.publik.berita.destroy', $item->id_berita) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Berita">
-                                    <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                    <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                     <span class="sr-only">Hapus</span>
                                 </button>
                             </form>
@@ -152,10 +152,10 @@
             <div class="grid grid-cols-2 md:grid-cols-3 gap-3 p-4">
                 @forelse ($galeri->take(6) as $item)
                     <div class="rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] overflow-hidden group">
-                        <div onclick="openDocumentPreview('{{ $imageUrl($galleryImagePath($item), 'foto/Agendahariini.png') }}', 'Dokumentasi - {{ addslashes($galleryTitle($item)) }}', '{{ addslashes(basename($galleryImagePath($item))) }}')" 
+                        <div onclick="openDocumentPreview('{{ $imageUrl($galleryImagePath($item), 'assets/foto/Agendahariini.png') }}', 'Dokumentasi - {{ addslashes($galleryTitle($item)) }}', '{{ addslashes(basename($galleryImagePath($item))) }}')" 
                              class="aspect-[4/3] bg-gray-100 dark:bg-[#152420] bg-cover bg-center cursor-pointer transition-transform duration-200 group-hover:scale-105" 
                              title="Klik untuk melihat foto"
-                             style="background-image: url('{{ $imageUrl($galleryImagePath($item), 'foto/Agendahariini.png') }}')"></div>
+                             style="background-image: url('{{ $imageUrl($galleryImagePath($item), 'assets/foto/Agendahariini.png') }}')"></div>
                         <div class="border-b border-gray-100 dark:border-[#233a34] px-3 py-2">
                             <p class="truncate text-xs font-bold text-gray-800 dark:text-white">{{ $galleryTitle($item) }}</p>
                             <p class="mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">{{ optional($galleryDate($item))->translatedFormat('d M Y') ?? '-' }}</p>
@@ -167,14 +167,14 @@
                                 data-action="{{ route('admin.agenda.dokumen.store', $item->id_agenda) }}"
                                 class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Ganti Dokumentasi">
-                                <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
                             </button>
                             <form method="POST" action="{{ route('admin.agenda.dokumen.destroy', [$item->id_agenda, $item->id_dokumen]) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Dokumentasi">
-                                    <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                    <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                     <span class="sr-only">Hapus</span>
                                 </button>
                             </form>
@@ -242,14 +242,14 @@
                                 data-url="{{ $item->youtube_url }}"
                                 class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Edit Video">
-                                <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
                             </button>
                             <form method="POST" action="{{ route('admin.publik.video.destroy', $item->id_video) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Video">
-                                    <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                    <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                     <span class="sr-only">Hapus</span>
                                 </button>
                             </form>
@@ -280,10 +280,10 @@
             <div class="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 @forelse ($galeri as $item)
                     <div class="overflow-hidden rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] group shadow-xs transition hover:border-[#35635b] dark:hover:border-emerald-500/40">
-                        <div onclick="openDocumentPreview('{{ $imageUrl($galleryImagePath($item), 'foto/Agendahariini.png') }}', 'Dokumentasi - {{ addslashes($galleryTitle($item)) }}', '{{ addslashes(basename($galleryImagePath($item))) }}')" 
+                        <div onclick="openDocumentPreview('{{ $imageUrl($galleryImagePath($item), 'assets/foto/Agendahariini.png') }}', 'Dokumentasi - {{ addslashes($galleryTitle($item)) }}', '{{ addslashes(basename($galleryImagePath($item))) }}')" 
                              class="aspect-[4/3] bg-gray-100 dark:bg-[#152420] bg-cover bg-center cursor-pointer transition-transform duration-200 group-hover:scale-105" 
                              title="Klik untuk melihat foto"
-                             style="background-image: url('{{ $imageUrl($galleryImagePath($item), 'foto/Agendahariini.png') }}')"></div>
+                             style="background-image: url('{{ $imageUrl($galleryImagePath($item), 'assets/foto/Agendahariini.png') }}')"></div>
                         <div class="border-b border-gray-100 dark:border-[#233a34] px-3.5 py-2.5">
                             <p class="truncate text-xs font-bold text-gray-800 dark:text-white">{{ $galleryTitle($item) }}</p>
                             <p class="mt-0.5 text-[10px] text-gray-500 dark:text-gray-400">{{ optional($galleryDate($item))->translatedFormat('d M Y') ?? '-' }}</p>
@@ -295,14 +295,14 @@
                                 data-action="{{ route('admin.agenda.dokumen.store', $item->id_agenda) }}"
                                 class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Ganti Dokumentasi">
-                                <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
                             </button>
                             <form method="POST" action="{{ route('admin.agenda.dokumen.destroy', [$item->id_agenda, $item->id_dokumen]) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Dokumentasi">
-                                    <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                    <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                     <span class="sr-only">Hapus</span>
                                 </button>
                             </form>
@@ -363,14 +363,14 @@
                                 data-sumber="{{ $item->sumber }}"
                                 class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Edit Berita">
-                                <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
                             </button>
                             <form method="POST" action="{{ route('admin.publik.berita.destroy', $item->id_berita) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Berita">
-                                    <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                    <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                     <span class="sr-only">Hapus</span>
                                 </button>
                             </form>
@@ -458,14 +458,14 @@
                                 data-url="{{ $item->youtube_url }}"
                                 class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                 title="Edit Video">
-                                <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                 <span class="sr-only">Edit</span>
                             </button>
                             <form method="POST" action="{{ route('admin.publik.video.destroy', $item->id_video) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Video">
-                                    <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                    <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                     <span class="sr-only">Hapus</span>
                                 </button>
                             </form>

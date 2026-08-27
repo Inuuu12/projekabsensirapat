@@ -9,7 +9,7 @@
         
         <!-- Logo & Branding -->
         <a href="{{ route('publik.beranda') }}" class="flex items-center space-x-3.5 group">
-            <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo" class="w-11 h-11 object-contain shrink-0 group-hover:scale-105 transition-transform">
+            <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo" class="w-11 h-11 object-contain shrink-0 group-hover:scale-105 transition-transform">
             <div class="flex flex-col justify-center">
                 <p class="text-[9px] font-bold tracking-wider text-ijo-sangatmuda dark:text-emerald-400 uppercase leading-tight">{{ $regionName }}</p>
                 <h1 class="font-black text-lg leading-tight tracking-wide text-white">{{ $appName }}</h1>

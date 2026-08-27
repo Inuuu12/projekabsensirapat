@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pilih Metode Presensi Pegawai - SIRAPI</title>
-    @include('publik.layout_publik.theme_script')
+    @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -22,7 +22,7 @@
     </script>
 </head>
 <body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
-    @include('publik.layout_publik.navbarpublik')
+    @include('publik.layout.navbarpublik')
 
     <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-12 flex items-center justify-center">
         @php
@@ -97,6 +97,6 @@
         </div>
     </main>
 
-    @include('publik.layout_publik.footer')
+    @include('publik.layout.footer')
 </body>
 </html>

@@ -55,7 +55,7 @@
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-200/80 dark:bg-emerald-900/50 p-2.5">
-                <img src="{{ asset('foto/Total Aduan.png') }}" alt="Total Aduan" class="h-full w-full object-contain">
+                <img src="{{ asset('assets/foto/Total Aduan.png') }}" alt="Total Aduan" class="h-full w-full object-contain">
             </div>
             <div>
                 <p class="text-sm font-extrabold text-slate-600 dark:text-gray-300">Total Aduan</p>
@@ -65,7 +65,7 @@
 
         <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 p-2.5">
-                <img src="{{ asset('foto/Menunggu.png') }}" alt="Menunggu" class="h-full w-full object-contain">
+                <img src="{{ asset('assets/foto/Menunggu.png') }}" alt="Menunggu" class="h-full w-full object-contain">
             </div>
             <div>
                 <p class="text-sm font-extrabold text-slate-600 dark:text-gray-300">Menunggu</p>
@@ -75,7 +75,7 @@
 
         <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f0ed] dark:bg-[#1b3832] p-2.5">
-                <img src="{{ asset('foto/process.png') }}" alt="Diproses" class="h-full w-full object-contain">
+                <img src="{{ asset('assets/foto/process.png') }}" alt="Diproses" class="h-full w-full object-contain">
             </div>
             <div>
                 <p class="text-sm font-extrabold text-slate-600 dark:text-gray-300">Diproses</p>
@@ -85,7 +85,7 @@
 
         <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f0ed] dark:bg-[#1b3832] p-2.5">
-                <img src="{{ asset('foto/Selesai.png') }}" alt="Selesai" class="h-full w-full object-contain">
+                <img src="{{ asset('assets/foto/Selesai.png') }}" alt="Selesai" class="h-full w-full object-contain">
             </div>
             <div>
                 <p class="text-sm font-extrabold text-slate-600 dark:text-gray-300">Selesai</p>
@@ -180,7 +180,7 @@
                                         data-reply="{{ $item->balasan_admin }}"
                                         class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-gray-100 dark:hover:bg-[#23423b] cursor-pointer"
                                         title="Lihat Detail">
-                                        <img src="{{ asset('foto/Detaillogo.png') }}" alt="Detail" class="h-full w-full object-contain">
+                                        <img src="{{ asset('assets/foto/Detaillogo.png') }}" alt="Detail" class="h-full w-full object-contain">
                                         <span class="sr-only">Lihat Detail</span>
                                     </button>
 
@@ -194,7 +194,7 @@
                                         data-reply="{{ $item->balasan_admin }}"
                                         class="text-[#0f6b52] dark:text-emerald-400 transition hover:text-[#083c30] cursor-pointer"
                                         title="Reply">
-                                        <img src="{{ asset('foto/Reply.png') }}" alt="Reply" class="h-6 w-6 object-contain">
+                                        <img src="{{ asset('assets/foto/Reply.png') }}" alt="Reply" class="h-6 w-6 object-contain">
                                     </button>
 
                                     <button
@@ -202,7 +202,7 @@
                                         onclick="openDeleteModal('{{ route('admin.masukkan.destroy', $item->id_datamasukan) }}', 'Hapus Masukkan?', 'Apakah Anda yakin ingin menghapus masukkan ini?')"
                                         class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer"
                                         title="Hapus">
-                                        <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                        <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                         <span class="sr-only">Hapus</span>
                                     </button>
                                 </div>

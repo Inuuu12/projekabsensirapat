@@ -51,7 +51,7 @@ class PublicPageController extends Controller
         $videoTerbaru = $this->queryOrDefault(fn () => VideoPublik::latest()->latest('id_video')->first());
         $youtubeEmbedUrl = $videoTerbaru?->youtube_embed_url ?? $this->defaultYoutubeEmbedUrl();
 
-        return view('publik.index', compact(
+        return view('publik.beranda.index', compact(
             'agendaHariIni',
             'agendaBeranda',
             'agendaBerandaLabel',
@@ -85,7 +85,7 @@ class PublicPageController extends Controller
             ->orderBy('waktu')
             ->get(), collect());
 
-        return view('publik.agenda', compact('agenda', 'keyword'));
+        return view('publik.agenda.index', compact('agenda', 'keyword'));
     }
 
     public function agendaDetail(?int $id = null)
@@ -104,7 +104,7 @@ class PublicPageController extends Controller
         $notulen = $dokumenList->firstWhere('jenis_dokumen', 'notulen');
         $dokumentasi = $dokumenList->where('jenis_dokumen', 'dokumentasi')->values();
 
-        return view('publik.agenda-detail', compact('agenda', 'qrCode', 'notulen', 'dokumentasi'));
+        return view('publik.agenda.detail', compact('agenda', 'qrCode', 'notulen', 'dokumentasi'));
     }
 
     public function lampiranAgenda(int $id)
@@ -128,7 +128,7 @@ class PublicPageController extends Controller
         $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true);
         $isPdf = $extension === 'pdf';
 
-        return view('publik.agenda-lampiran', compact('agenda', 'fileUrl', 'fileName', 'extension', 'isImage', 'isPdf'));
+        return view('publik.agenda.lampiran', compact('agenda', 'fileUrl', 'fileName', 'extension', 'isImage', 'isPdf'));
     }
 
     public function fileLampiranAgenda(int $id)
@@ -165,7 +165,7 @@ class PublicPageController extends Controller
             ->paginate(6)
             ->withQueryString(), collect());
 
-        return view('publik.berita', compact('berita', 'keyword'));
+        return view('publik.berita.index', compact('berita', 'keyword'));
     }
 
     public function beritaDetail(?int $id = null)
@@ -179,14 +179,14 @@ class PublicPageController extends Controller
             ->take(3)
             ->get(), collect());
 
-        return view('publik.berita-detail', compact('berita', 'beritaTerkait'));
+        return view('publik.berita.detail', compact('berita', 'beritaTerkait'));
     }
 
     public function galeri()
     {
         $galeri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri(), collect());
 
-        return view('publik.galeri', compact('galeri'));
+        return view('publik.galeri.index', compact('galeri'));
     }
 
     public function video()
@@ -199,7 +199,7 @@ class PublicPageController extends Controller
         $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', '>=', $today)->orderBy('tanggal')->orderBy('waktu')->take(6)->get(), collect());
         $beritaTerbaru = $this->queryOrDefault(fn () => Berita::latest('tanggal')->latest('id_berita')->take(6)->get(), collect());
 
-        return view('publik.video', compact('youtubeEmbedUrl', 'youtubeChannelUrl', 'videoUtama', 'videoList', 'agendaTerbaru', 'beritaTerbaru'));
+        return view('publik.video.index', compact('youtubeEmbedUrl', 'youtubeChannelUrl', 'videoUtama', 'videoList', 'agendaTerbaru', 'beritaTerbaru'));
     }
 
     public function ulangTahun()
@@ -208,26 +208,26 @@ class PublicPageController extends Controller
         $ulangTahun = $this->queryOrDefault(fn () => UlangTahun::tampilkanUlangTahunPegawai(), collect());
         $ulangTahunHariIni = $ulangTahun->first(fn ($item) => $item->tanggal?->format('m-d') === $today->format('m-d'));
 
-        return view('publik.ulang-tahun', compact('ulangTahun', 'ulangTahunHariIni'));
+        return view('publik.ulang_tahun.index', compact('ulangTahun', 'ulangTahunHariIni'));
     }
 
     public function masukan()
     {
         $aduans = $this->queryOrDefault(fn () => DataMasukan::latest('id_datamasukan')->get(), collect());
 
-        return view('publik.masukan', compact('aduans'));
+        return view('publik.masukan.index', compact('aduans'));
     }
 
     public function petaSitus()
     {
-        return view('publik.peta-sitemap');
+        return view('publik.sitemap.index');
     }
 
     public function riwayatAduan()
     {
         $masukan = $this->queryOrDefault(fn () => DataMasukan::latest('id_datamasukan')->paginate(10), collect());
 
-        return view('publik.riwayat-aduan', compact('masukan'));
+        return view('publik.masukan.riwayat', compact('masukan'));
     }
 
     public function cuacaApi()
@@ -311,14 +311,14 @@ class PublicPageController extends Controller
     {
         $agenda = $this->agendaPresensi($request);
 
-        return view('publik.presensi-tamu', compact('agenda'));
+        return view('publik.presensi.tamu', compact('agenda'));
     }
 
     public function formKunjungan()
     {
         $pegawaiList = $this->queryOrDefault(fn () => Pegawai::orderBy('nama_pegawai')->get(), collect());
 
-        return view('publik.form-kunjungan', compact('pegawaiList'));
+        return view('publik.kunjungan.index', compact('pegawaiList'));
     }
 
     public function simpanKunjungan(Request $request)
@@ -367,7 +367,7 @@ class PublicPageController extends Controller
     public function qrHadir(Agenda $agenda)
     {
         if ($agenda->status_qr !== 'aktif') {
-            return view('publik.presensi-qr-result', [
+            return view('publik.presensi.qr_result', [
                 'success' => false,
                 'agenda' => $agenda,
                 'message' => 'QR presensi agenda ini belum diaktifkan oleh admin.',
@@ -376,7 +376,7 @@ class PublicPageController extends Controller
 
         $qrWindow = $this->qrWindow($agenda);
         if (! $this->nowWib()->betweenIncluded($qrWindow['start'], $qrWindow['end'])) {
-            return view('publik.presensi-qr-result', [
+            return view('publik.presensi.qr_result', [
                 'success' => false,
                 'agenda' => $agenda,
                 'message' => 'QR presensi hanya aktif pada ' . $qrWindow['start']->translatedFormat('d F Y H:i') . ' sampai ' . $qrWindow['end']->translatedFormat('H:i') . ' WIB.',
@@ -386,21 +386,21 @@ class PublicPageController extends Controller
         if (Auth::guard('pegawai')->check()) {
             $pegawaiUser = Auth::guard('pegawai')->user();
             if (! $agenda->canPegawaiPresensi($pegawaiUser)) {
-                return view('publik.presensi-qr-result', [
+                return view('publik.presensi.qr_result', [
                     'success' => false,
                     'agenda' => $agenda,
                     'message' => 'Presensi ditolak. Agenda surat masuk ini hanya dikhususkan untuk pegawai yang ditugaskan (' . ($agenda->ditugaskan ?: '-') . ').',
                 ]);
             }
             if (! $agenda->isPegawaiSudahHadir($pegawaiUser) && $agenda->isKuotaPenuh()) {
-                return view('publik.presensi-qr-result', [
+                return view('publik.presensi.qr_result', [
                     'success' => false,
                     'agenda' => $agenda,
                     'message' => 'Presensi ditolak karena kuota peserta agenda ini sudah penuh.',
                 ]);
             }
         } elseif ($agenda->isKuotaPenuh()) {
-            return view('publik.presensi-qr-result', [
+            return view('publik.presensi.qr_result', [
                 'success' => false,
                 'agenda' => $agenda,
                 'message' => 'Presensi ditolak karena kuota peserta agenda ini sudah penuh.',
@@ -410,7 +410,7 @@ class PublicPageController extends Controller
         $qrCode = $this->queryOrDefault(fn () => QRCode::where('id_agenda', $agenda->id_agenda)->first());
 
         if (! $qrCode) {
-            return view('publik.presensi-qr-result', [
+            return view('publik.presensi.qr_result', [
                 'success' => false,
                 'agenda' => $agenda,
                 'message' => 'QR presensi belum dibuat oleh admin.',
@@ -423,7 +423,7 @@ class PublicPageController extends Controller
             'waktu_isi' => $this->nowWib(),
         ]);
 
-        return view('publik.presensi-qr-result', [
+        return view('publik.presensi.qr_result', [
             'success' => true,
             'agenda' => $agenda,
             'message' => 'Scan QR berhasil, kehadiran sudah dicatat.',

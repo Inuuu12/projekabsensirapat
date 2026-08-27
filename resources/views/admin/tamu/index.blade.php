@@ -63,7 +63,7 @@
                                          alt="{{ $item->nama }}" 
                                          class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
                                 @else
-                                    <img src="{{ asset('foto/profile.png') }}" alt="{{ $item->nama }}" class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
+                                    <img src="{{ asset('assets/foto/profile.png') }}" alt="{{ $item->nama }}" class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
                                 @endif
                             </td>
                         
@@ -88,7 +88,7 @@
                                         data-agenda="{{ $item->id_agenda }}"
                                         class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                         title="Edit Tamu">
-                                        <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                        <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                         <span class="sr-only">Edit</span>
                                     </button>
                                     <button
@@ -96,7 +96,7 @@
                                         onclick="openDeleteModal('{{ route('admin.tamu.destroy', $item->id_tamu) }}', 'Hapus Tamu?', 'Apakah Anda yakin ingin menghapus tamu ini?')"
                                         class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer"
                                         title="Hapus Tamu">
-                                        <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                        <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                         <span class="sr-only">Hapus</span>
                                     </button>
                                 </div>
@@ -213,7 +213,7 @@
             if (icon) icon.classList.add('hidden');
             if (hapusBtn) hapusBtn.classList.remove('hidden');
         } else {
-            preview.src = '{{ asset("foto/profile.png") }}';
+            preview.src = '{{ asset("assets/foto/profile.png") }}';
             preview.classList.remove('hidden');
             if (icon) icon.classList.add('hidden');
             if (hapusBtn) hapusBtn.classList.add('hidden');

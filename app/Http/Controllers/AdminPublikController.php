@@ -82,7 +82,7 @@ class AdminPublikController extends Controller
         } elseif (!empty($validated['gambar_url'])) {
             $validated['gambar'] = $validated['gambar_url'];
         } else {
-            $validated['gambar'] = 'foto/Suratlogo.png';
+            $validated['gambar'] = 'assets/foto/Suratlogo.png';
         }
         unset($validated['gambar_url']);
 

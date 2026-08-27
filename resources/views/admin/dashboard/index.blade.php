@@ -16,7 +16,7 @@
                 <p class="mt-3 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalAgendaHariIni ?? 0) }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-[#f3f7f6] dark:bg-white/10 p-2.5 shrink-0">
-                <img src="{{ asset('foto/Agendahariini.png') }}" alt="Agenda Hari Ini" class="w-full h-full object-contain">
+                <img src="{{ asset('assets/foto/Agendahariini.png') }}" alt="Agenda Hari Ini" class="w-full h-full object-contain">
             </div>
         </div>
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
@@ -25,7 +25,7 @@
                 <p class="mt-3 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalRuangRapat ?? 0) }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-[#f3f7f6] dark:bg-white/10 p-2.5 shrink-0">
-                <img src="{{ asset('foto/Ruanganlogo.png') }}" alt="Ruang Rapat" class="w-full h-full object-contain">
+                <img src="{{ asset('assets/foto/Ruanganlogo.png') }}" alt="Ruang Rapat" class="w-full h-full object-contain">
             </div>
         </div>
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
@@ -34,7 +34,7 @@
                 <p class="mt-3 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalKunjungan ?? 0) }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-[#f3f7f6] dark:bg-white/10 p-2.5 shrink-0">
-                <img src="{{ asset('foto/Pengunjunglogo.png') }}" alt="Kunjungan" class="w-full h-full object-contain">
+                <img src="{{ asset('assets/foto/Pengunjunglogo.png') }}" alt="Kunjungan" class="w-full h-full object-contain">
             </div>
         </div>
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
@@ -43,7 +43,7 @@
                 <p class="mt-3 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalMasukkanBaru ?? 0) }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-[#f3f7f6] dark:bg-white/10 p-2.5 shrink-0">
-                <img src="{{ asset('foto/Suratlogo.png') }}" alt="Masukkan Baru" class="w-full h-full object-contain">
+                <img src="{{ asset('assets/foto/Suratlogo.png') }}" alt="Masukkan Baru" class="w-full h-full object-contain">
             </div>
         </div>
     </div>

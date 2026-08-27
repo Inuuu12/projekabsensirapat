@@ -85,7 +85,7 @@ class NewsFetcherService
         return [
             'judul' => trim($judul),
             'isi_berita' => trim($isiBerita),
-            'gambar' => $gambar ?: 'foto/Beritalogo.png',
+            'gambar' => $gambar ?: 'assets/foto/Beritalogo.png',
             'sumber' => trim($siteName),
             'tanggal' => $tanggal,
             'url' => $url,
@@ -211,7 +211,7 @@ class NewsFetcherService
                     'judul' => $title,
                     'isi_berita' => $snippet ?: "Berita terkini dari Tribunnews Bogor: {$title}",
                     'tanggal' => $tanggal,
-                    'gambar' => $img ?: 'foto/Beritalogo.png',
+                    'gambar' => $img ?: 'assets/foto/Beritalogo.png',
                     'sumber' => 'Tribunnews Bogor',
                 ];
             }
@@ -254,7 +254,7 @@ class NewsFetcherService
                 if (empty($title)) continue;
 
                 $imgNode = $xpath->query('.//img[contains(@class, "card-img-top")]/@src', $card)->item(0);
-                $img = $imgNode ? trim($imgNode->nodeValue) : 'foto/Beritalogo.png';
+                $img = $imgNode ? trim($imgNode->nodeValue) : 'assets/foto/Beritalogo.png';
 
                 $textNode = $xpath->query('.//p[contains(@class, "card-text")]', $card)->item(0);
                 $text = $textNode ? trim(str_replace(['Selengkapnya', "\n", "\r"], ' ', $textNode->nodeValue)) : '';
@@ -310,14 +310,14 @@ class NewsFetcherService
                 'judul' => 'Kadiskominfo Kabupaten Bogor Nobar Final Piala Dunia 2026 Bersama Bupati di Alun-Alun Tegar Beriman',
                 'isi_berita' => 'Kepala Dinas Komunikasi dan Informatika (Diskominfo) Kabupaten Bogor turut menghadiri kegiatan nonton bareng (nobar) Final Piala Dunia 2026 bersama jajaran Pemkab dan masyarakat di Alun-Alun Tegar Beriman Cibinong.',
                 'tanggal' => '2026-07-20',
-                'gambar' => 'foto/Beritalogo.png',
+                'gambar' => 'assets/foto/Beritalogo.png',
                 'sumber' => 'Diskominfo Kab. Bogor',
             ],
             [
                 'judul' => 'Pemkab Bogor Perkuat Tata Kelola Digital Demi Tingkatkan Pelayanan Publik',
                 'isi_berita' => 'CIBINONG – Atas arahan Bupati Bogor, Pemerintah Kabupaten Bogor berkomitmen untuk memperkuat infrastruktur dan tata kelola digital di seluruh Perangkat Daerah demi meningkatkan efisiensi dan kualitas pelayanan publik.',
                 'tanggal' => '2026-07-14',
-                'gambar' => 'foto/Suratlogo.png',
+                'gambar' => 'assets/foto/Suratlogo.png',
                 'sumber' => 'Pemkab Bogor',
             ],
         ];

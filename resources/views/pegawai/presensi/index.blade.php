@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    @include('publik.layout_publik.theme_script')
+    @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -50,7 +50,7 @@
         $namaDepan = trim(explode(' ', $pegawai->nama_pegawai)[0] ?? $pegawai->nama_pegawai);
         $initials = collect(explode(' ', $pegawai->nama_pegawai))->filter()->take(2)->map(fn ($part) => strtoupper(substr($part, 0, 1)))->implode('');
         $fotoPegawai = $pegawai->foto
-            ? (str_starts_with($pegawai->foto, 'foto/') ? asset($pegawai->foto) : asset('storage/' . $pegawai->foto))
+            ? (str_starts_with($pegawai->foto, 'assets/foto/') || str_starts_with($pegawai->foto, 'foto/') ? asset($pegawai->foto) : asset('storage/' . $pegawai->foto))
             : null;
         $routeParams = $agendaAktif ? ['agenda_id' => $agendaAktif->id_agenda] : [];
         $lampiranAgenda = $agendaAktif?->lampiran ? basename($agendaAktif->lampiran) : null;
@@ -59,7 +59,7 @@
     <header class="h-[72px] bg-sirapi-green dark:bg-[#0f1c19] dark:border-b dark:border-[#233a34] text-white">
         <div class="mx-auto flex h-full w-full max-w-[700px] items-center justify-between px-4 sm:px-6">
             <a href="{{ route('publik.beranda') }}" class="flex min-w-0 items-center gap-3">
-                <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-11 w-11 shrink-0 object-contain">
+                <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-11 w-11 shrink-0 object-contain">
                 <span class="min-w-0 flex flex-col justify-center">
                     <span class="block text-[9px] font-bold tracking-wider uppercase text-emerald-200/90 dark:text-emerald-400 leading-tight">{{ config('sirapi.region', 'Pemerintah Kabupaten Bogor') }}</span>
                     <span class="block text-base font-black leading-tight tracking-wide">{{ config('sirapi.name', 'SIRAPI') }}</span>

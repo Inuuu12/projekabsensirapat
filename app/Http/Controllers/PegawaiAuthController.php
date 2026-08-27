@@ -304,7 +304,7 @@ class PegawaiAuthController extends Controller
         unset($validated['password_otp']);
 
         if ($request->hasFile('foto')) {
-            if ($pegawai->foto && ! str_starts_with($pegawai->foto, 'foto/') && Storage::disk('public')->exists($pegawai->foto)) {
+            if ($pegawai->foto && ! str_starts_with($pegawai->foto, 'assets/foto/') || str_starts_with($pegawai->foto, 'foto/') && Storage::disk('public')->exists($pegawai->foto)) {
                 Storage::disk('public')->delete($pegawai->foto);
             }
 

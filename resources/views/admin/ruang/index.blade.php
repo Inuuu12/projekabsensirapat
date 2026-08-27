@@ -22,7 +22,7 @@
                 <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalTersedia ?? $ruang->where('status', 'tersedia')->count() }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-transparent dark:border-[#233a34] flex items-center justify-center p-2">
-                <img src="{{ asset('foto/ruangantersedia.png') }}" alt="Ruangan Tersedia" class="w-full h-full object-contain">
+                <img src="{{ asset('assets/foto/ruangantersedia.png') }}" alt="Ruangan Tersedia" class="w-full h-full object-contain">
             </div>
         </div>
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between transition-colors">
@@ -31,7 +31,7 @@
                 <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalTerpakai ?? $ruang->where('status', 'terpakai')->count() }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-transparent dark:border-[#233a34] flex items-center justify-center p-2">
-                <img src="{{ asset('foto/ruanganterpakai.png') }}" alt="Ruangan Terpakai" class="w-full h-full object-contain">
+                <img src="{{ asset('assets/foto/ruanganterpakai.png') }}" alt="Ruangan Terpakai" class="w-full h-full object-contain">
             </div>
         </div>
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between transition-colors">
@@ -40,7 +40,7 @@
                 <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalRuangan ?? $ruang->count() }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-transparent dark:border-[#233a34] flex items-center justify-center p-2">
-                <img src="{{ asset('foto/totalruangan.png') }}" alt="Total Ruangan" class="w-full h-full object-contain">
+                <img src="{{ asset('assets/foto/totalruangan.png') }}" alt="Total Ruangan" class="w-full h-full object-contain">
             </div>
         </div>
     </div>
@@ -94,7 +94,7 @@
                                         data-keterangan="{{ $item->keterangan }}"
                                         class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b]"
                                         title="Edit Ruangan">
-                                        <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                        <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                         <span class="sr-only">Edit</span>
                                     </button>
                                     <button
@@ -102,7 +102,7 @@
                                         onclick="openDeleteModal('{{ route('admin.ruang.destroy', $item->id_ruangrapat) }}', 'Hapus Ruangan?', 'Apakah Anda yakin ingin menghapus ruangan ini?')"
                                         class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60"
                                         title="Hapus Ruangan">
-                                        <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                        <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                         <span class="sr-only">Hapus</span>
                                     </button>
                                 </div>

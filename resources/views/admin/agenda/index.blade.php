@@ -34,7 +34,7 @@
                     <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $agendaStats[$key] ?? 0 }}</p>
                 </div>
                 <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-transparent dark:border-[#233a34] flex items-center justify-center p-2">
-                    <img src="{{ asset('foto/Suratlogo.png') }}" alt="{{ $label }}" class="w-full h-full object-contain">
+                    <img src="{{ asset('assets/foto/Suratlogo.png') }}" alt="{{ $label }}" class="w-full h-full object-contain">
                 </div>
             </a>
         @endforeach
@@ -109,7 +109,7 @@
                                     <button type="button" 
                                             onclick="openDocumentPreview('{{ asset('storage/' . $item->lampiran) }}', 'Lampiran Surat - {{ addslashes($item->nama_agenda) }}', '{{ addslashes(basename($item->lampiran)) }}')" 
                                             class="inline-flex items-center gap-1.5 font-bold text-[#35635b] dark:text-emerald-400 hover:underline cursor-pointer">
-                                        <img src="{{ asset('foto/Lampiranlogo.png') }}" alt="Lampiran" class="w-4 h-4 object-contain">
+                                        <img src="{{ asset('assets/foto/Lampiranlogo.png') }}" alt="Lampiran" class="w-4 h-4 object-contain">
                                         <span>Lihat</span>
                                     </button>
                                 @else
@@ -145,7 +145,7 @@
                                         data-statusfr="{{ (int) $item->status_fr }}"
                                         class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
                                         title="Edit Agenda">
-                                        <img src="{{ asset('foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
+                                        <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
                                         <span class="sr-only">Edit</span>
                                     </button>
 
@@ -153,14 +153,14 @@
                                             onclick="openDeleteModal('{{ route('admin.agenda.destroy', $item->id_agenda) }}', 'Hapus Agenda?', 'Apakah Anda yakin ingin menghapus agenda ini?')"
                                             class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" 
                                             title="Hapus Agenda">
-                                        <img src="{{ asset('foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
+                                        <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
                                         <span class="sr-only">Hapus</span>
                                     </button>
 
                                     <a href="{{ route('admin.agenda.detail', ['id' => $item->id_agenda]) }}" 
                                        class="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-50 dark:bg-[#1e2f2b] border border-transparent dark:border-[#38564f] p-1.5 transition hover:bg-gray-100 dark:hover:bg-[#2e4c45] cursor-pointer" 
                                        title="Lihat Detail Agenda">
-                                        <img src="{{ asset('foto/Detaillogo.png') }}" alt="Detail Agenda" class="h-full w-full object-contain">
+                                        <img src="{{ asset('assets/foto/Detaillogo.png') }}" alt="Detail Agenda" class="h-full w-full object-contain">
                                         <span class="sr-only">Detail</span>
                                     </a>
 

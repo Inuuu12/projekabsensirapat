@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    @include('publik.layout_publik.theme_script')
+    @include('publik.layout.theme_script')
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -53,7 +53,7 @@
             <!-- Konten Tengah (Logo & Judul) -->
             <div class="my-auto flex flex-col items-center text-center z-10 py-6 md:py-0">
                 <div class="mb-4 sm:mb-6">
-                    <img src="{{ asset('foto/logo-bappenda.png') }}" 
+                    <img src="{{ asset('assets/foto/logo-bappenda.png') }}" 
                          alt="Logo Kab. Bogor" 
                          class="h-24 sm:h-28 md:h-36 w-auto drop-shadow-md">
                 </div>

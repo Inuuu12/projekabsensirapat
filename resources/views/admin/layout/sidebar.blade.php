@@ -13,7 +13,7 @@
     <div>
         <!-- Logo & Header -->
         <div class="p-4 flex items-center space-x-3 border-b border-[#2a504a] dark:border-[#233a34]">
-            <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo" class="w-10 h-10 object-contain shrink-0">
+            <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo" class="w-10 h-10 object-contain shrink-0">
             <div class="min-w-0 flex-1">
                 <p class="text-[9px] font-bold tracking-wider text-[#a8d5ba] dark:text-emerald-400 uppercase truncate leading-tight">{{ $regionName }}</p>
                 <h1 class="font-black text-lg leading-tight tracking-wide text-white">{{ $appName }}</h1>

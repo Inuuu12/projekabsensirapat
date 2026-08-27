@@ -13,7 +13,7 @@
             <!-- Kolom 1: Logo, Deskripsi & Sosmed (4 Cols) -->
             <div class="lg:col-span-4 space-y-4">
                 <div class="flex items-center space-x-3.5">
-                    <img src="{{ asset('foto/logo-bappenda.png') }}" alt="Logo" class="w-11 h-11 object-contain shrink-0">
+                    <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo" class="w-11 h-11 object-contain shrink-0">
                     <div class="flex flex-col justify-center">
                         <p class="text-[9px] font-bold tracking-wider text-ijo-sangatmuda uppercase leading-tight">{{ $regionName }}</p>
                         <h1 class="font-black text-lg leading-tight tracking-wide text-white">{{ $appName }}</h1>

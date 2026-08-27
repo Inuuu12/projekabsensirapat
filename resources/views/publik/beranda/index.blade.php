@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Publik - SIRAPI</title>
-    @include('publik.layout_publik.theme_script')
+    @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -28,7 +28,7 @@
     </script>
 </head>
 <body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
-    @include('publik.layout_publik.navbarpublik')
+    @include('publik.layout.navbarpublik')
 
     <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-6 space-y-8">
         @php
@@ -41,7 +41,7 @@
             $ulangTahunUtama = $ulangTahunHariIni ?? $ulangTahunItems->first();
             $infoItems = $agendaTerbaruItems->pluck('nama_agenda')->merge($beritaItems->pluck('judul'))->take(4);
             $initial = fn ($name) => collect(explode(' ', trim((string) $name)))->filter()->take(2)->map(fn ($word) => strtoupper(substr($word, 0, 1)))->join('') ?: 'DB';
-            $imageUrl = function ($path, $fallback = 'foto/Suratlogo.png') {
+            $imageUrl = function ($path, $fallback = 'assets/foto/Suratlogo.png') {
                 if (! $path) {
                     return asset($fallback);
                 }
@@ -52,7 +52,7 @@
 
                 $path = ltrim($path, '/');
 
-                if (str_starts_with($path, 'foto/') || str_starts_with($path, 'uploads/')) {
+                if (str_starts_with($path, 'assets/foto/') || str_starts_with($path, 'foto/') || str_starts_with($path, 'uploads/')) {
                     return asset($path);
                 }
 
@@ -435,7 +435,7 @@
         </div>
     </div>
 
-    @include('publik.layout_publik.footer')
+    @include('publik.layout.footer')
     <script>
         const homeAduanDetails = @json($aduanDetailItems);
         const homeAduanModal = document.getElementById('home-aduan-modal');
