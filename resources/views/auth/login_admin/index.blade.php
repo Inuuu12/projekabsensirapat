@@ -128,19 +128,18 @@
                     <!-- Input Password -->
                     <div>
                         <label for="password" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">Kata sandi</label>
-                        <div class="relative rounded-md shadow-xs" x-data="{ show: false }">
+                        <div class="relative rounded-md shadow-xs">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                 <i data-lucide="lock" class="w-5 h-5"></i>
                             </div>
                             
-                            <input :type="show ? 'text' : 'password'" name="password" id="password" required
+                            <input type="password" name="password" id="password" required
                                 class="block w-full pl-10 pr-10 py-2.5 text-sm bg-gray-50/50 dark:bg-[#0f1c19] border border-gray-200 dark:border-[#284c43] rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-teal focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white transition duration-150"
                                 placeholder="Masukkan kata sandi">
 
                             <!-- Toggle Password Hide/Show -->
-                            <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none">
-                                <i data-lucide="eye-off" x-show="!show" class="w-5 h-5"></i>
-                                <i data-lucide="eye" x-show="show" class="w-5 h-5" style="display: none;"></i>
+                            <button type="button" onclick="togglePasswordVisibility('password', 'eye-icon-pass')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition focus:outline-none cursor-pointer" title="Lihat/Sembunyikan Kata Sandi">
+                                <i id="eye-icon-pass" data-lucide="eye" class="w-5 h-5"></i>
                             </button>
                         </div>
                     </div>
@@ -149,7 +148,7 @@
                     <div class="pt-2">
                         <button type="submit" 
                             class="w-full py-3 px-4 text-sm font-semibold text-white bg-brand-gold hover:bg-brand-goldHover dark:bg-[#107050] dark:hover:bg-[#0c5940] rounded-lg shadow-xs focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold transition duration-150 ease-in-out cursor-pointer">
-                            Log Masuk
+                            Masuk
                         </button>
                     </div>
                 </form>
@@ -159,10 +158,24 @@
 
     </div>
 
-    <!-- Script Lucide Icons & AlpineJS -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <!-- Script Lucide Icons -->
     <script>
         lucide.createIcons();
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (!input || !icon) return;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
     </script>
 </body>
 </html>
