@@ -230,6 +230,16 @@
                     <p class="text-sm font-extrabold text-amber-800 dark:text-amber-200">Agenda Rapat Telah Selesai</p>
                     <p class="mt-1 text-xs font-medium text-amber-700 dark:text-amber-300">Presensi untuk agenda rapat ini telah ditutup karena waktu rapat telah berakhir.</p>
                 </div>
+            @elseif ($agendaAktif->status_label === 'Mendatang')
+                <div class="w-full max-w-[450px] rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/40 p-6 text-center space-y-2">
+                    <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-400">
+                        <i data-lucide="lock" class="h-6 w-6"></i>
+                    </div>
+                    <p class="text-sm font-extrabold text-blue-900 dark:text-blue-200">Presensi Belum Dibuka (Terkunci)</p>
+                    <p class="text-xs font-medium text-blue-700 dark:text-blue-300 leading-relaxed">
+                        Presensi akan terbuka otomatis saat rapat dimulai pada pukul <strong>{{ substr((string) $agendaAktif->waktu, 0, 5) }} WIB</strong> ({{ $agendaAktif->tanggal?->translatedFormat('d F Y') }}).
+                    </p>
+                </div>
             @elseif (! $isDitugaskan)
                 <div class="w-full max-w-[450px] rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-6 text-center space-y-2">
                     <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/60 text-red-600 dark:text-red-400">

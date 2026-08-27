@@ -234,6 +234,15 @@ class UserController extends Controller
         ]);
 
         $agenda = \App\Models\Agenda::find($validated['id_agenda']);
+        if ($agenda && $agenda->status_label === \App\Models\Agenda::STATUS_MENDATANG) {
+            $pesanMendatang = 'Presensi belum dibuka. Agenda rapat baru dimulai pada pukul ' . (substr((string) $agenda->waktu, 0, 5) ?: '-') . ' WIB.';
+            if (! $request->wantsJson()) {
+                return back()->withErrors(['agenda' => $pesanMendatang]);
+            }
+
+            return response()->json(['success' => false, 'message' => $pesanMendatang], 400);
+        }
+
         if ($agenda && $agenda->status_label === \App\Models\Agenda::STATUS_SELESAI) {
             if (! $request->wantsJson()) {
                 return back()->withErrors(['agenda' => 'Agenda rapat telah selesai. Presensi sudah ditutup.']);

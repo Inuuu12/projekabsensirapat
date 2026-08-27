@@ -200,8 +200,8 @@
                                     {{ $isSuratMasuk ? 'Presensi pegawai yang ditugaskan' : 'Pilih kategori kehadiran Anda' }}
                                 </p>
                             </div>
-                            <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agendaAktif->status_label === 'Selesai' ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-200' : ($agendaAktif->isKuotaPenuh() ? 'bg-red-100 dark:bg-red-950/50 text-red-800 dark:text-red-200' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43]' : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400')) }}">
-                                {{ $agendaAktif->status_label === 'Selesai' ? 'Selesai' : ($agendaAktif->isKuotaPenuh() ? 'Kuota Penuh' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'Aktif' : 'Belum aktif')) }}
+                            <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agendaAktif->status_label === 'Selesai' ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-200' : ($agendaAktif->isKuotaPenuh() ? 'bg-red-100 dark:bg-red-950/50 text-red-800 dark:text-red-200' : ($agendaAktif->status_label === 'Mendatang' ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800/50' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43]' : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400'))) }}">
+                                {{ $agendaAktif->status_label === 'Selesai' ? 'Selesai' : ($agendaAktif->isKuotaPenuh() ? 'Kuota Penuh' : ($agendaAktif->status_label === 'Mendatang' ? 'Terkunci (Mendatang)' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'Aktif' : 'Belum aktif'))) }}
                             </span>
                         </div>
 
@@ -230,6 +230,24 @@
                                 </div>
                                 <h5 class="text-xs font-extrabold text-amber-900 dark:text-amber-200">Agenda Rapat Telah Selesai</h5>
                                 <p class="text-[11px] font-medium text-amber-700 dark:text-amber-300 leading-tight">Presensi tidak lagi dapat dilakukan karena waktu pelaksanaan agenda rapat telah berakhir.</p>
+                            </div>
+                        @elseif ($agendaAktif->status_label === 'Mendatang')
+                            <div class="rounded-2xl border border-blue-200/80 dark:border-blue-800/50 bg-blue-50/70 dark:bg-blue-950/30 p-6 text-center space-y-4">
+                                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 shadow-xs border border-blue-200/50 dark:border-blue-800/40">
+                                    <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                </div>
+                                <div class="space-y-1">
+                                    <h5 class="text-sm font-extrabold text-blue-950 dark:text-blue-200">Presensi Belum Dibuka (Terkunci)</h5>
+                                    <p class="text-xs font-medium text-blue-700 dark:text-blue-300 leading-relaxed max-w-xs mx-auto">
+                                        Presensi akan terbuka otomatis saat rapat dimulai pada pukul <span class="font-extrabold underline decoration-blue-400">{{ substr((string) $agendaAktif->waktu, 0, 5) }} WIB</span> ({{ $agendaAktif->tanggal?->translatedFormat('d F Y') }}).
+                                    </p>
+                                </div>
+                                <div class="pt-1">
+                                    <div class="inline-flex w-full items-center justify-center rounded-xl bg-gray-200/80 dark:bg-[#10201c] border border-gray-300/60 dark:border-[#233a34] text-gray-500 dark:text-gray-400 px-4 py-2.5 text-xs font-bold cursor-not-allowed select-none">
+                                        <svg class="w-4 h-4 mr-1.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                        <span>Presensi Terkunci</span>
+                                    </div>
+                                </div>
                             </div>
                         @elseif ($agendaAktif->isKuotaPenuh())
                             <div class="rounded-2xl border border-red-200 dark:border-red-800/60 bg-red-50 dark:bg-red-950/40 p-5 text-center space-y-2">

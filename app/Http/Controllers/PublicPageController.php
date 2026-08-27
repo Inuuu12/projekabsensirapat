@@ -374,6 +374,22 @@ class PublicPageController extends Controller
             ]);
         }
 
+        if ($agenda->status_label === Agenda::STATUS_MENDATANG) {
+            return view('publik.presensi.qr_result', [
+                'success' => false,
+                'agenda' => $agenda,
+                'message' => 'Presensi belum dibuka. Agenda rapat baru dimulai pada pukul ' . (substr((string) $agenda->waktu, 0, 5) ?: '-') . ' WIB (' . ($agenda->tanggal?->translatedFormat('d F Y') ?? '-') . ').',
+            ]);
+        }
+
+        if ($agenda->status_label === Agenda::STATUS_SELESAI) {
+            return view('publik.presensi.qr_result', [
+                'success' => false,
+                'agenda' => $agenda,
+                'message' => 'Presensi untuk agenda rapat ini telah ditutup karena waktu rapat telah berakhir.',
+            ]);
+        }
+
         $qrWindow = $this->qrWindow($agenda);
         if (! $this->nowWib()->betweenIncluded($qrWindow['start'], $qrWindow['end'])) {
             return view('publik.presensi.qr_result', [

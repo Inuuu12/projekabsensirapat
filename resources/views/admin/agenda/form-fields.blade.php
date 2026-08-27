@@ -118,7 +118,7 @@
             <option value="">Pilih ruang</option>
             @foreach ($ruang as $item)
                 <option value="{{ $item->id_ruangrapat }}">
-                    {{ $item->nama_ruang }} (Kapasitas: {{ $item->kapasitas }} org{{ $item->dynamic_status === 'terpakai' ? ' • Sedang Terpakai' : ' • Tersedia' }})
+                    {{ $item->nama_ruang }} (Kapasitas: {{ $item->kapasitas }} org{{ $item->dynamic_status === 'terpakai' ? ' • Ruangan Terpakai' : ' • Tersedia' }})
                 </option>
             @endforeach
         </select>

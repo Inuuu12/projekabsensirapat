@@ -280,6 +280,10 @@ class PegawaiAuthController extends Controller
             return back()->withErrors(['presensi' => 'Agenda presensi belum tersedia.']);
         }
 
+        if ($agenda->status_label === Agenda::STATUS_MENDATANG) {
+            return back()->withErrors(['presensi' => 'Presensi belum dibuka. Agenda rapat baru dimulai pada pukul ' . (substr((string) $agenda->waktu, 0, 5) ?: '-') . ' WIB.']);
+        }
+
         if ($agenda->status_label === Agenda::STATUS_SELESAI) {
             return back()->withErrors(['presensi' => 'Agenda rapat telah selesai. Presensi sudah ditutup.']);
         }
@@ -589,6 +593,13 @@ class PegawaiAuthController extends Controller
                 'success' => false,
                 'message' => 'Presensi ditolak. Akun pegawai Anda belum aktif atau belum diverifikasi oleh Administrator.'
             ], 403);
+        }
+
+        if ($agenda->status_label === Agenda::STATUS_MENDATANG) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Presensi belum dibuka. Agenda rapat baru dimulai pada pukul ' . (substr((string) $agenda->waktu, 0, 5) ?: '-') . ' WIB.'
+            ], 400);
         }
 
         if ($agenda->status_label === Agenda::STATUS_SELESAI) {

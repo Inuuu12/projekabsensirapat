@@ -53,6 +53,21 @@ class Agenda extends Model
         return self::resolveStatusLabel($this->tanggal, $this->waktu, $this->waktu_selesai);
     }
 
+    public function isMendatang(): bool
+    {
+        return $this->status_label === self::STATUS_MENDATANG;
+    }
+
+    public function isBerlangsung(): bool
+    {
+        return $this->status_label === self::STATUS_BERLANGSUNG;
+    }
+
+    public function isSelesai(): bool
+    {
+        return $this->status_label === self::STATUS_SELESAI;
+    }
+
     public function getStatusBadgeClassAttribute(): string
     {
         return match ($this->status_label) {
