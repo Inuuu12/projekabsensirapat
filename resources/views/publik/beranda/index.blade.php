@@ -209,8 +209,20 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4 flex-grow">
                     @forelse ($galeriItems->take(4) as $item)
-                        <div class="h-28 md:h-36 rounded-2xl overflow-hidden shadow-xs bg-gray-200 dark:bg-[#152420] border border-transparent dark:border-[#233a34] group relative">
-                            <img src="{{ $imageUrl($item->gambar) }}" alt="{{ $item->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        @php
+                            $fotoUrl = $imageUrl($item->file_path ?? $item->gambar, 'assets/foto/Agendahariini.png');
+                            $fotoTitle = $item->agenda?->nama_agenda ?? $item->nama_file ?? 'Dokumentasi Kegiatan';
+                            $fotoDate = optional($item->agenda?->tanggal ?? $item->created_at)->translatedFormat('d F Y') ?? '-';
+                        @endphp
+                        <div onclick="openImagePreview('{{ $fotoUrl }}', 'Dokumentasi - {{ addslashes($fotoTitle) }}', '{{ $fotoDate }}')" 
+                             class="h-28 md:h-36 rounded-2xl overflow-hidden shadow-xs bg-gray-200 dark:bg-[#152420] border border-transparent dark:border-[#233a34] group relative cursor-pointer"
+                             title="Klik untuk melihat & memperbesar foto">
+                            <img src="{{ $fotoUrl }}" alt="{{ $fotoTitle }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center">
+                                <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white rounded-full p-2 text-xs flex items-center justify-center">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
+                                </span>
+                            </div>
                         </div>
                     @empty
                         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl flex-1 shadow-xs flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold text-sm col-span-2 p-6">
@@ -568,5 +580,6 @@
             }
         });
     </script>
+    @include('publik.layout.image-preview-modal')
 </body>
 </html>
