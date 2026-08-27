@@ -69,11 +69,18 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse ($galeriItems as $foto)
-                <article class="bg-white dark:bg-[#152420] rounded-2xl overflow-hidden border border-gray-100 dark:border-[#233a34] shadow-xs transition-colors">
-                    <div class="aspect-[4/3] bg-ijo-sangatmuda dark:bg-[#0f1c19] bg-cover bg-center" style="background-image: url('{{ $imageUrl($foto->file_path ?? $foto->gambar) }}')"></div>
+                @php
+                    $url = $imageUrl($foto->file_path ?? $foto->gambar);
+                    $judul = $foto->agenda?->nama_agenda ?? $foto->nama_file ?? 'Dokumentasi Kegiatan';
+                    $tanggal = optional($foto->agenda?->tanggal ?? $foto->tanggal ?? $foto->created_at)->translatedFormat('d F Y') ?? '-';
+                @endphp
+                <article onclick="openImagePreview('{{ $url }}', 'Dokumentasi - {{ addslashes($judul) }}', '{{ $tanggal }}')" 
+                         class="bg-white dark:bg-[#152420] rounded-2xl overflow-hidden border border-gray-100 dark:border-[#233a34] shadow-xs transition hover:border-[#35635b] dark:hover:border-emerald-500/40 cursor-pointer group"
+                         title="Klik untuk memperbesar foto">
+                    <div class="aspect-[4/3] bg-ijo-sangatmuda dark:bg-[#0f1c19] bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style="background-image: url('{{ $url }}')"></div>
                     <div class="p-4 flex items-center justify-between">
-                        <span class="truncate text-xs font-bold text-gray-900 dark:text-white">{{ $foto->agenda?->nama_agenda ?? 'Dokumentasi Kegiatan' }}</span>
-                        <span class="ml-3 shrink-0 text-[11px] text-gray-400 dark:text-gray-400 font-mono">{{ optional($foto->agenda?->tanggal ?? $foto->tanggal ?? $foto->created_at)->translatedFormat('d M Y') ?? '-' }}</span>
+                        <span class="truncate text-xs font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{{ $judul }}</span>
+                        <span class="ml-3 shrink-0 text-[11px] text-gray-400 dark:text-gray-400 font-mono">{{ $tanggal }}</span>
                     </div>
                 </article>
             @empty
@@ -86,5 +93,6 @@
     </main>
 
     @include('publik.layout.footer')
+    @include('publik.layout.image-preview-modal')
 </body>
 </html>

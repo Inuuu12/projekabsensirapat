@@ -75,8 +75,15 @@
                             <td class="px-6 py-4 font-bold text-gray-800 dark:text-white">{{ $item->nama_ruang }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->kapasitas }} orang</td>
                             <td class="px-6 py-4">
-                                @if (($item->status ?? 'tersedia') === 'terpakai')
-                                    <span class="inline-flex rounded-lg bg-amber-50 dark:bg-amber-950/50 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300 border border-transparent dark:border-amber-800/50">Terpakai</span>
+                                @if ($item->dynamic_status === 'terpakai')
+                                    <div class="flex flex-col gap-1">
+                                        <span class="inline-flex w-fit rounded-lg bg-amber-50 dark:bg-amber-950/50 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300 border border-transparent dark:border-amber-800/50">Terpakai</span>
+                                        @if ($activeAgenda = $item->currentActiveAgenda())
+                                            <span class="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
+                                                Sedang berlangsung: {{ \Illuminate\Support\Str::limit($activeAgenda->nama_agenda, 24) }} ({{ substr((string)$activeAgenda->waktu, 0, 5) }} - {{ substr((string)$activeAgenda->waktu_selesai, 0, 5) ?: 'Selesai' }})
+                                            </span>
+                                        @endif
+                                    </div>
                                 @else
                                     <span class="inline-flex rounded-lg bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 border border-transparent dark:border-emerald-800/50">Tersedia</span>
                                 @endif

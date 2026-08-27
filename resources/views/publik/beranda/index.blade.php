@@ -168,7 +168,7 @@
                                 <span class="bg-gray-100 dark:bg-[#1b3832] text-gray-700 dark:text-emerald-300 text-[10px] font-medium px-2.5 py-0.5 rounded-full border border-transparent dark:border-emerald-500/20">{{ $agenda->status_label }}</span>
                             </div>
                             <h4 class="font-bold text-sm leading-snug text-gray-900 dark:text-white">{{ $agenda->nama_agenda }}</h4>
-                            <p class="text-xs text-gray-500 dark:text-gray-300">{{ $agenda->lokasi ?? '-' }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-300">{{ $agenda->lokasi_display ?? '-' }}</p>
                         </div>
                         <div class="flex items-center justify-between border-t border-gray-100 dark:border-[#233a34] pt-3 text-xs">
                             @if (strtolower((string) ($agenda->kategori_surat ?? '')) !== 'masuk')
@@ -210,15 +210,20 @@
                 <div class="grid grid-cols-2 gap-4 flex-grow">
                     @forelse ($galeriItems->take(4) as $item)
                         @php
-                            $fotoPath = $item->file_path ?? $item->gambar ?? null;
-                            $fotoJudul = $item->agenda?->nama_agenda ?? $item->judul ?? $item->nama_file ?? 'Dokumentasi Kegiatan';
+                            $fotoUrl = $imageUrl($item->file_path ?? $item->gambar, 'assets/foto/Agendahariini.png');
+                            $fotoTitle = $item->agenda?->nama_agenda ?? $item->judul ?? $item->nama_file ?? 'Dokumentasi Kegiatan';
+                            $fotoDate = optional($item->agenda?->tanggal ?? $item->tanggal ?? $item->created_at)->translatedFormat('d F Y') ?? '-';
                         @endphp
-                        <a href="{{ route('publik.galeri') }}" class="h-28 md:h-36 rounded-2xl overflow-hidden shadow-xs bg-gray-200 dark:bg-[#152420] border border-transparent dark:border-[#233a34] group relative block">
-                            <img src="{{ $imageUrl($fotoPath) }}" alt="{{ $fotoJudul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
-                                <span class="text-[10px] text-white font-medium truncate">{{ $fotoJudul }}</span>
+                        <div onclick="openImagePreview('{{ $fotoUrl }}', 'Dokumentasi - {{ addslashes($fotoTitle) }}', '{{ $fotoDate }}')" 
+                             class="h-28 md:h-36 rounded-2xl overflow-hidden shadow-xs bg-gray-200 dark:bg-[#152420] border border-transparent dark:border-[#233a34] group relative cursor-pointer"
+                             title="Klik untuk melihat & memperbesar foto">
+                            <img src="{{ $fotoUrl }}" alt="{{ $fotoTitle }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center">
+                                <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white rounded-full p-2 text-xs flex items-center justify-center">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
+                                </span>
                             </div>
-                        </a>
+                        </div>
                     @empty
                         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl flex-1 shadow-xs flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold text-sm col-span-2 p-6">
                             Belum ada foto galeri
@@ -575,5 +580,6 @@
             }
         });
     </script>
+    @include('publik.layout.image-preview-modal')
 </body>
 </html>

@@ -57,6 +57,16 @@
                     <h3 class="text-base font-extrabold text-amber-900 dark:text-amber-200">Agenda Rapat Telah Selesai</h3>
                     <p class="text-xs font-medium text-amber-700 dark:text-amber-300 leading-relaxed">Presensi Face Recognition untuk agenda ini telah ditutup karena waktu pelaksanaan rapat telah berakhir.</p>
                 </div>
+            @elseif ($agendaAktif && $agendaAktif->status_label === 'Mendatang')
+                <div class="rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/40 p-6 text-center space-y-3 my-4">
+                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                    </div>
+                    <h3 class="text-base font-extrabold text-blue-900 dark:text-blue-200">Presensi Belum Dibuka (Terkunci)</h3>
+                    <p class="text-xs font-medium text-blue-700 dark:text-blue-300 leading-relaxed">
+                        Scanner wajah presensi untuk agenda ini masih terkunci dan baru aktif saat rapat dimulai pada pukul <strong>{{ substr((string) $agendaAktif->waktu, 0, 5) }} WIB</strong> ({{ $agendaAktif->tanggal?->translatedFormat('d F Y') }}).
+                    </p>
+                </div>
             @elseif ($agendaAktif && $agendaAktif->isKuotaPenuh())
                 <div class="rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-6 text-center space-y-3 my-4">
                     <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/60 text-red-600 dark:text-red-400">

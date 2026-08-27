@@ -43,7 +43,7 @@
             <div class="space-y-1">
                 <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Form Tamu Rapat</h1>
                 <p class="text-xs text-gray-500 dark:text-gray-300 font-medium">{{ $agendaAktif?->nama_agenda ?? 'Belum ada agenda tersedia' }}</p>
-                <p class="text-xs text-gray-400 dark:text-gray-400">{{ substr((string) $agendaAktif?->waktu, 0, 5) ?: '-' }} WIB &bull; {{ $agendaAktif?->lokasi ?? '-' }}</p>
+                <p class="text-xs text-gray-400 dark:text-gray-400">{{ substr((string) $agendaAktif?->waktu, 0, 5) ?: '-' }} WIB &bull; {{ $agendaAktif?->lokasi_display ?? '-' }}</p>
             </div>
 
             <hr class="border-gray-100 dark:border-[#233a34]">
@@ -67,6 +67,16 @@
                     </div>
                     <h3 class="text-base font-extrabold text-amber-900 dark:text-amber-200">Agenda Rapat Telah Selesai</h3>
                     <p class="text-xs font-medium text-amber-700 dark:text-amber-300 leading-relaxed">Presensi untuk agenda rapat ini telah ditutup karena waktu pelaksanaan rapat telah berakhir.</p>
+                </div>
+            @elseif ($agendaAktif && $agendaAktif->status_label === 'Mendatang')
+                <div class="rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/40 p-6 text-center space-y-3">
+                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                    </div>
+                    <h3 class="text-base font-extrabold text-blue-900 dark:text-blue-200">Presensi Belum Dibuka (Terkunci)</h3>
+                    <p class="text-xs font-medium text-blue-700 dark:text-blue-300 leading-relaxed">
+                        Presensi tamu untuk agenda ini masih terkunci dan baru dapat diisi saat rapat dimulai pada pukul <strong>{{ substr((string) $agendaAktif->waktu, 0, 5) }} WIB</strong> ({{ $agendaAktif->tanggal?->translatedFormat('d F Y') }}).
+                    </p>
                 </div>
             @elseif ($agendaAktif && strtolower((string) ($agendaAktif->kategori_surat ?? '')) === 'masuk')
                 <div class="rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 p-6 text-center space-y-3">

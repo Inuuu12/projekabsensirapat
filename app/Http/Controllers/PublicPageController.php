@@ -14,9 +14,12 @@ use App\Models\Pegawai;
 use App\Models\QRCode;
 use App\Models\UlangTahun;
 use App\Models\VideoPublik;
+use App\Services\NewsApiService;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,7 +27,7 @@ class PublicPageController extends Controller
 {
     private const PUBLIC_TIMEZONE = 'Asia/Jakarta';
 
-    public function index()
+    public function index(NewsApiService $newsService)
     {
         $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $agendaHariIni = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', $today)
@@ -43,7 +46,7 @@ class PublicPageController extends Controller
         $agendaBerandaDescription = $agendaHariIni->isNotEmpty()
             ? $today->translatedFormat('l, d F Y') . ' • ' . $totalAgendaHariIni . ' kegiatan terjadwal'
             : 'Belum ada agenda hari ini, menampilkan agenda terdekat';
-        $beritaTerbaru = $this->queryOrDefault(fn () => Berita::latest('tanggal')->latest('id_berita')->take(3)->get(), collect());
+        $beritaTerbaru = $newsService->getLatest(3);
         $galeri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri()->take(4), collect());
         $totalGaleri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri()->count(), 0);
         $ulangTahun = $this->queryOrDefault(fn () => UlangTahun::tampilkanUlangTahunPegawai(), collect());
@@ -150,35 +153,40 @@ class PublicPageController extends Controller
         return Storage::disk('public')->response($path, basename($path));
     }
 
-    public function berita(Request $request)
+    public function berita(Request $request, NewsApiService $newsService)
     {
         $keyword = $request->query('keyword');
-        $berita = $this->queryOrDefault(fn () => Berita::query()
-            ->when($keyword, function ($query, $keyword) {
-                $query->where(function ($search) use ($keyword) {
-                    $search->where('judul', 'like', "%{$keyword}%")
-                        ->orWhere('isi_berita', 'like', "%{$keyword}%")
-                        ->orWhere('sumber', 'like', "%{$keyword}%");
-                });
-            })
-            ->latest('tanggal')
-            ->latest('id_berita')
-            ->paginate(6)
-            ->withQueryString(), collect());
+        $sumber = $request->query('sumber', 'semua');
 
-        return view('publik.berita.index', compact('berita', 'keyword'));
+        $allNews = $newsService->getNews([
+            'keyword' => $keyword,
+            'sumber' => $sumber,
+        ]);
+
+        $currentPage = Paginator::resolveCurrentPage() ?: 1;
+        $perPage = 9;
+        $currentPageItems = $allNews->slice(($currentPage - 1) * $perPage, $perPage)->all();
+
+        $berita = new LengthAwarePaginator(
+            $currentPageItems,
+            $allNews->count(),
+            $perPage,
+            $currentPage,
+            ['path' => Paginator::resolveCurrentPath(), 'query' => $request->query()]
+        );
+
+        $availableSources = $newsService->getAvailableSources();
+
+        return view('publik.berita.index', compact('berita', 'keyword', 'sumber', 'availableSources'));
     }
 
-    public function beritaDetail(?int $id = null)
+    public function beritaDetail(NewsApiService $newsService, ?string $id = null)
     {
-        $berita = $this->queryOrDefault(fn () => $id
-            ? Berita::findOrFail($id)
-            : Berita::latest('tanggal')->latest('id_berita')->first());
-        $beritaTerkait = $this->queryOrDefault(fn () => Berita::when($berita, fn ($query) => $query->whereKeyNot($berita->getKey()))
-            ->latest('tanggal')
-            ->latest('id_berita')
-            ->take(3)
-            ->get(), collect());
+        $berita = $newsService->findNews($id);
+
+        $beritaTerkait = $newsService->getNews()
+            ->filter(fn ($item) => (string) $item->id_berita !== (string) ($berita?->id_berita ?? ''))
+            ->take(4);
 
         return view('publik.berita.detail', compact('berita', 'beritaTerkait'));
     }
@@ -190,7 +198,7 @@ class PublicPageController extends Controller
         return view('publik.galeri.index', compact('galeri'));
     }
 
-    public function video()
+    public function video(NewsApiService $newsService)
     {
         $videoList = $this->queryOrDefault(fn () => VideoPublik::latest()->latest('id_video')->get(), collect());
         $videoUtama = $videoList->first();
@@ -198,7 +206,7 @@ class PublicPageController extends Controller
         $youtubeChannelUrl = 'https://www.youtube.com/channel/UCJlX_73GqPvJlerJFN4cRgA';
         $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', '>=', $today)->orderBy('tanggal')->orderBy('waktu')->take(6)->get(), collect());
-        $beritaTerbaru = $this->queryOrDefault(fn () => Berita::latest('tanggal')->latest('id_berita')->take(6)->get(), collect());
+        $beritaTerbaru = $newsService->getLatest(6);
 
         return view('publik.video.index', compact('youtubeEmbedUrl', 'youtubeChannelUrl', 'videoUtama', 'videoList', 'agendaTerbaru', 'beritaTerbaru'));
     }
@@ -372,6 +380,22 @@ class PublicPageController extends Controller
                 'success' => false,
                 'agenda' => $agenda,
                 'message' => 'QR presensi agenda ini belum diaktifkan oleh admin.',
+            ]);
+        }
+
+        if ($agenda->status_label === Agenda::STATUS_MENDATANG) {
+            return view('publik.presensi.qr_result', [
+                'success' => false,
+                'agenda' => $agenda,
+                'message' => 'Presensi belum dibuka. Agenda rapat baru dimulai pada pukul ' . (substr((string) $agenda->waktu, 0, 5) ?: '-') . ' WIB (' . ($agenda->tanggal?->translatedFormat('d F Y') ?? '-') . ').',
+            ]);
+        }
+
+        if ($agenda->status_label === Agenda::STATUS_SELESAI) {
+            return view('publik.presensi.qr_result', [
+                'success' => false,
+                'agenda' => $agenda,
+                'message' => 'Presensi untuk agenda rapat ini telah ditutup karena waktu rapat telah berakhir.',
             ]);
         }
 

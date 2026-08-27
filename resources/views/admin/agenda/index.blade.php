@@ -307,7 +307,7 @@
 
         const selected = select.options[select.selectedIndex];
         if (selected && selected.value) {
-            location.value = selected.text.trim();
+            location.value = selected.dataset.namaRuang || selected.text.split('(')[0].trim();
         }
     }
 
