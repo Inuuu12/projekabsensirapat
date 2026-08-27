@@ -70,6 +70,12 @@
         .dark ::-webkit-scrollbar-thumb:hover {
             background: #35635b;
         }
+
+        /* Sembunyikan ikon mata bawaan browser Edge / IE */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-[#F8F7F4] dark:bg-[#0d1614] font-sans text-sirapi-ink dark:text-slate-100 antialiased transition-colors duration-200">

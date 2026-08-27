@@ -34,6 +34,13 @@
             }
         }
     </script>
+    <style>
+        /* Sembunyikan ikon mata / reveal bawaan browser Edge / IE */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none !important;
+        }
+    </style>
 </head>
 <body class="font-sans antialiased bg-gray-100 dark:bg-[#0d1614] min-h-screen flex items-center justify-center transition-colors duration-200">
 

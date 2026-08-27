@@ -30,6 +30,13 @@
             }
         }
     </script>
+    <style>
+        /* Sembunyikan ikon mata bawaan browser Edge / IE */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none !important;
+        }
+    </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-[#0d1614] font-sans text-sirapi-ink dark:text-slate-100 antialiased transition-colors duration-200 flex flex-col">
     <header class="relative flex h-[200px] sm:h-[240px] items-center justify-center overflow-hidden bg-sirapi-green dark:bg-[#0f1c19] dark:border-b dark:border-[#233a34] text-white shrink-0">
