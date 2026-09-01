@@ -253,12 +253,14 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => 'Agenda rapat telah selesai. Presensi sudah ditutup.'], 400);
         }
 
-        if ($agenda && strtolower((string) ($agenda->kategori_surat ?? '')) === 'masuk') {
+        if ($agenda && strtolower((string) ($agenda->kategori_surat ?? '')) !== 'keluar') {
+            $kategoriLabel = strtolower((string) ($agenda->kategori_surat ?? '')) === 'internal' ? 'Surat Internal' : 'Surat Masuk';
+            $pesanTamuDitolak = "Agenda ini bertipe {$kategoriLabel} dan hanya dapat diakses oleh Pegawai internal. Presensi tamu hanya diperuntukkan bagi agenda Surat Keluar.";
             if (! $request->wantsJson()) {
-                return back()->withErrors(['agenda' => 'Agenda surat masuk hanya diperuntukkan untuk presensi pegawai yang ditugaskan.']);
+                return back()->withErrors(['agenda' => $pesanTamuDitolak]);
             }
 
-            return response()->json(['success' => false, 'message' => 'Agenda surat masuk hanya diperuntukkan untuk presensi pegawai yang ditugaskan.'], 400);
+            return response()->json(['success' => false, 'message' => $pesanTamuDitolak], 400);
         }
 
         if ($agenda && $agenda->isKuotaPenuh()) {

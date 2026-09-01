@@ -43,7 +43,11 @@
             $qrPayloadTamu = $agendaAktif ? route('publik.presensi.tamu', ['agenda_id' => $agendaAktif->id_agenda]) : null;
             $qrImageUrlTamu = $qrPayloadTamu ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayloadTamu) : null;
 
-            $isSuratMasuk = strtolower((string) ($agendaAktif?->kategori_surat ?? '')) === 'masuk';
+            $kategoriSurat = strtolower((string) ($agendaAktif?->kategori_surat ?? 'internal'));
+            $isSuratInternal = $kategoriSurat === 'internal';
+            $isSuratMasuk = $kategoriSurat === 'masuk';
+            $isSuratKeluar = $kategoriSurat === 'keluar';
+            $allowsTamu = $isSuratKeluar;
         @endphp
 
         <div class="space-y-3">
@@ -83,8 +87,17 @@
                 <section class="lg:col-span-7 space-y-8">
                     <div class="space-y-2">
                         <h3 class="text-sm font-bold text-gray-900 dark:text-white">Deskripsi Kegiatan</h3>
-                        <div class="bg-white dark:bg-[#152420] rounded-2xl p-5 border border-gray-100 dark:border-[#233a34] shadow-xs text-xs text-gray-600 dark:text-gray-300 leading-relaxed space-y-2">
-                            <p><span class="font-bold text-gray-800 dark:text-white">Kategori:</span> {{ $agendaAktif->kategori_surat ?? '-' }}</p>
+                        <div class="bg-white dark:bg-[#152420] rounded-2xl p-5 border border-gray-100 dark:border-[#233a34] shadow-xs text-xs text-gray-600 dark:text-gray-300 leading-relaxed space-y-2.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <p><span class="font-bold text-gray-800 dark:text-white">Kategori Surat:</span> {{ ucfirst($agendaAktif->kategori_surat ?? 'Internal') }}</p>
+                                @if ($isSuratInternal)
+                                    <span class="bg-blue-50 dark:bg-sky-950/60 text-blue-700 dark:text-sky-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-blue-100 dark:border-sky-800/40">Khusus Pegawai</span>
+                                @elseif ($isSuratMasuk)
+                                    <span class="bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-amber-100 dark:border-amber-800/40">Pegawai Ditugaskan</span>
+                                @else
+                                    <span class="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-800/40">Pegawai & Tamu</span>
+                                @endif
+                            </div>
                             <p><span class="font-bold text-gray-800 dark:text-white">Asal Surat:</span> {{ $agendaAktif->asal_surat ?? '-' }}</p>
                             <p><span class="font-bold text-gray-800 dark:text-white">Ditugaskan:</span> {{ $agendaAktif->ditugaskan ?? '-' }}</p>
                         </div>
@@ -202,7 +215,13 @@
                             <div>
                                 <h4 class="font-bold text-sm text-gray-900 dark:text-white">Presensi Agenda</h4>
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
-                                    {{ $isSuratMasuk ? 'Presensi pegawai yang ditugaskan' : 'Pilih kategori kehadiran Anda' }}
+                                    @if ($isSuratKeluar)
+                                        Pilih kategori kehadiran Anda (Pegawai / Tamu)
+                                    @elseif ($isSuratMasuk)
+                                        Presensi pegawai yang ditugaskan
+                                    @else
+                                        Presensi khusus pegawai internal
+                                    @endif
                                 </p>
                             </div>
                             <span class="rounded-full px-2.5 py-1 text-[10px] font-bold {{ $agendaAktif->status_label === 'Selesai' ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-200' : ($agendaAktif->isKuotaPenuh() ? 'bg-red-100 dark:bg-red-950/50 text-red-800 dark:text-red-200' : ($agendaAktif->status_label === 'Mendatang' ? 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800/50' : ($agendaAktif->status_qr === 'aktif' && $qrImageUrl ? 'bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43]' : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400'))) }}">
@@ -263,14 +282,14 @@
                                 <p class="text-[11px] font-medium text-red-700 dark:text-red-300 leading-tight">Presensi untuk agenda ini telah ditutup karena kuota maksimal peserta telah terpenuhi.</p>
                             </div>
                         @else
-                            @if (! $isSuratMasuk)
-                                <!-- Tombol Pilihan Jenis Presensi (Hanya jika bukan Surat Masuk) -->
+                            @if ($isSuratKeluar)
+                                <!-- Tombol Pilihan Jenis Presensi (Hanya pada Surat Keluar yang bisa dihadiri Pegawai & Tamu) -->
                                 <div class="grid grid-cols-2 gap-2 bg-[#F4F3EE] dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-1.5 rounded-2xl">
-                                    <button type="button" id="tab-btn-pegawai" onclick="switchPresensiTab('pegawai')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua dark:bg-[#107050] text-white shadow-xs">
+                                    <button type="button" id="tab-btn-pegawai" onclick="switchPresensiTab('pegawai')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua dark:bg-[#107050] text-white shadow-xs cursor-pointer">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                                         <span>Presensi Pegawai</span>
                                     </button>
-                                    <button type="button" id="tab-btn-tamu" onclick="switchPresensiTab('tamu')" class="py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all flex items-center justify-center space-x-2">
+                                    <button type="button" id="tab-btn-tamu" onclick="switchPresensiTab('tamu')" class="py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all flex items-center justify-center space-x-2 cursor-pointer">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                                         <span>Presensi Tamu</span>
                                     </button>
@@ -280,8 +299,24 @@
                             <!-- Panel Presensi Pegawai (QR Code) -->
                             <div id="panel-presensi-pegawai" class="space-y-4">
                                 <div class="bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] text-center">
-                                    <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">QR Absen Pegawai</p>
-                                    <p class="text-[10px] text-gray-400 mt-0.5">Scan kode QR berikut untuk melakukan absensi pegawai</p>
+                                    <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">
+                                        @if ($isSuratInternal)
+                                            QR Absen Pegawai Internal
+                                        @elseif ($isSuratMasuk)
+                                            QR Absen Pegawai Ditugaskan
+                                        @else
+                                            QR Absen Pegawai
+                                        @endif
+                                    </p>
+                                    <p class="text-[10px] text-gray-400 mt-0.5">
+                                        @if ($isSuratInternal)
+                                            Scan kode QR berikut untuk presensi pegawai internal Diskominfo
+                                        @elseif ($isSuratMasuk)
+                                            Scan kode QR berikut untuk absensi pegawai yang ditugaskan
+                                        @else
+                                            Scan kode QR berikut untuk melakukan absensi pegawai
+                                        @endif
+                                    </p>
                                 </div>
 
                                 @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlPegawai)
@@ -297,8 +332,8 @@
                                 @endif
                             </div>
 
-                            @if (! $isSuratMasuk)
-                                <!-- Panel Presensi Tamu (QR Code) -->
+                            @if ($isSuratKeluar)
+                                <!-- Panel Presensi Tamu (QR Code - Hanya jika Surat Keluar) -->
                                 <div id="panel-presensi-tamu" class="hidden space-y-4">
                                     <div class="bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] text-center">
                                         <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">QR Absen Tamu</p>

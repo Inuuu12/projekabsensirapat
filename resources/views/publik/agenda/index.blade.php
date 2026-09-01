@@ -67,7 +67,16 @@
                                     <p class="text-[10px] opacity-75">WIB</p>
                                 </div>
                                 <div class="space-y-1">
-                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">{{ $item->nama_agenda }}</h4>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h4 class="font-bold text-sm text-gray-900 dark:text-white">{{ $item->nama_agenda }}</h4>
+                                        @if (strtolower((string) ($item->kategori_surat ?? 'internal')) === 'internal')
+                                            <span class="inline-flex items-center text-[10px] font-bold text-blue-700 dark:text-sky-300 bg-blue-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-md border border-blue-100 dark:border-sky-800/40">Khusus Pegawai</span>
+                                        @elseif (strtolower((string) ($item->kategori_surat ?? '')) === 'masuk')
+                                            <span class="inline-flex items-center text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-100 dark:border-amber-800/40">Pegawai Ditugaskan</span>
+                                        @else
+                                            <span class="inline-flex items-center text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800/40">Pegawai & Tamu</span>
+                                        @endif
+                                    </div>
                                     <p class="text-xs text-gray-500 dark:text-gray-300">{{ $item->lokasi_display ?? '-' }}</p>
                                 </div>
                             </div>

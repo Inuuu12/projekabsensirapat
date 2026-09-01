@@ -188,10 +188,30 @@ class Agenda extends Model
         return self::STATUS_SELESAI;
     }
 
+    public function isSuratInternal(): bool
+    {
+        return strtolower((string) ($this->kategori_surat ?? 'internal')) === 'internal';
+    }
+
+    public function isSuratMasuk(): bool
+    {
+        return strtolower((string) ($this->kategori_surat ?? '')) === 'masuk';
+    }
+
+    public function isSuratKeluar(): bool
+    {
+        return strtolower((string) ($this->kategori_surat ?? '')) === 'keluar';
+    }
+
+    public function allowsTamu(): bool
+    {
+        return $this->isSuratKeluar();
+    }
+
     public function canPegawaiPresensi(mixed $pegawai): bool
     {
         // Jika bukan agenda surat masuk, tidak dibatasi penugasan khusus
-        if (strtolower((string) ($this->kategori_surat ?? '')) !== 'masuk') {
+        if (! $this->isSuratMasuk()) {
             return true;
         }
 

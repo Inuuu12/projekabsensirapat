@@ -97,13 +97,15 @@
                         Presensi tamu untuk agenda ini masih terkunci dan baru dapat diisi saat rapat dimulai pada pukul <strong>{{ substr((string) $agendaAktif->waktu, 0, 5) }} WIB</strong> ({{ $agendaAktif->tanggal?->translatedFormat('d F Y') }}).
                     </p>
                 </div>
-            @elseif ($agendaAktif && strtolower((string) ($agendaAktif->kategori_surat ?? '')) === 'masuk')
+            @elseif ($agendaAktif && strtolower((string) ($agendaAktif->kategori_surat ?? '')) !== 'keluar')
                 <div class="rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 p-6 text-center space-y-3">
                     <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
-                    <h3 class="text-base font-extrabold text-amber-900 dark:text-amber-200">Agenda Surat Masuk</h3>
-                    <p class="text-xs font-medium text-amber-700 dark:text-amber-300 leading-relaxed">Agenda ini diadakan oleh pihak eksternal dan hanya diperuntukkan bagi kehadiran pegawai internal yang ditugaskan.</p>
+                    <h3 class="text-base font-extrabold text-amber-900 dark:text-amber-200">Presensi Tamu Tidak Tersedia</h3>
+                    <p class="text-xs font-medium text-amber-700 dark:text-amber-300 leading-relaxed">
+                        Agenda ini merupakan agenda <strong>{{ strtolower((string) ($agendaAktif->kategori_surat ?? '')) === 'internal' ? 'Surat Internal' : 'Surat Masuk' }}</strong> yang hanya diperuntukkan bagi Pegawai internal. Presensi tamu hanya tersedia untuk agenda <strong>Surat Keluar</strong>.
+                    </p>
                 </div>
             @elseif ($agendaAktif && $agendaAktif->isKuotaPenuh())
                 <div class="rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-6 text-center space-y-3">
