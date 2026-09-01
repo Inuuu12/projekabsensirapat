@@ -35,6 +35,47 @@
         input::-ms-clear {
             display: none !important;
         }
+
+        /* Autofill Styling (Mencegah background input berubah putih saat autofill di dark mode) */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active,
+        select:-webkit-autofill,
+        select:-webkit-autofill:hover,
+        select:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+            -webkit-text-fill-color: #1f2937 !important;
+            caret-color: #1f2937 !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        html.dark input:-webkit-autofill,
+        html.dark input:-webkit-autofill:hover,
+        html.dark input:-webkit-autofill:focus,
+        html.dark input:-webkit-autofill:active,
+        html.dark select:-webkit-autofill,
+        html.dark select:-webkit-autofill:hover,
+        html.dark select:-webkit-autofill:focus,
+        .dark input:-webkit-autofill,
+        .dark input:-webkit-autofill:hover,
+        .dark input:-webkit-autofill:focus,
+        .dark input:-webkit-autofill:active,
+        .dark select:-webkit-autofill,
+        .dark select:-webkit-autofill:hover,
+        .dark select:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px #0f1c19 inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            caret-color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        html.dark {
+            color-scheme: dark;
+        }
+        html:not(.dark) {
+            color-scheme: light;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50/70 dark:bg-[#0d1614] font-sans text-sirapi-ink dark:text-slate-100 antialiased transition-colors duration-200 flex flex-col">

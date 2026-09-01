@@ -256,6 +256,39 @@
             box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25) !important;
         }
 
+        /* Autofill Styling */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active,
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:hover,
+        textarea:-webkit-autofill:focus,
+        select:-webkit-autofill,
+        select:-webkit-autofill:hover,
+        select:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+            -webkit-text-fill-color: #1f2937 !important;
+            caret-color: #1f2937 !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        .dark input:-webkit-autofill,
+        .dark input:-webkit-autofill:hover,
+        .dark input:-webkit-autofill:focus,
+        .dark input:-webkit-autofill:active,
+        .dark textarea:-webkit-autofill,
+        .dark textarea:-webkit-autofill:hover,
+        .dark textarea:-webkit-autofill:focus,
+        .dark select:-webkit-autofill,
+        .dark select:-webkit-autofill:hover,
+        .dark select:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px #0f1c19 inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            caret-color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
         /* Remove duplicate native picker indicator on the right so only the single left icon appears */
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator,
@@ -359,7 +392,6 @@
         .dark img[src*="Reply.png"],
         .dark img[src*="Kunjunganlogo.png"],
         .dark img[src*="Pegawailogo.png"],
-        .dark img[src*="Container.png"],
         .dark img[src*="Akandatanglogo.png"],
         .dark img[src*="Agendalogo.png"] {
             filter: brightness(0) invert(1) !important;
