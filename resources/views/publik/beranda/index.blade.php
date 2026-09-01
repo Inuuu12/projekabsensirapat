@@ -280,7 +280,7 @@
                         <span class="text-base">🎂</span>
                         <h3 class="font-bold text-gray-900 dark:text-white text-sm">Ulang Tahun Pegawai</h3>
                     </div>
-                    <p class="text-xs text-gray-500 dark:text-gray-300">Jangan lupa ucapkan selamat ke rekan kerja</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-300">Jangan lupa ucapkan selamat kepada rekan kerja!</p>
 
                     <div class="mt-4 space-y-3">
                         @forelse ($ulangTahunItems->take(3) as $pegawai)

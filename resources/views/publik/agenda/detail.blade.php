@@ -289,12 +289,6 @@
                                         <div class="inline-block rounded-2xl bg-white p-3 shadow-xs border border-gray-100 dark:border-[#284c43]">
                                             <img src="{{ $qrImageUrlPegawai }}" alt="QR Presensi Pegawai {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
                                         </div>
-                                        <div class="mt-4">
-                                            <a href="{{ $qrPayloadPegawai }}" class="inline-flex w-full items-center justify-center rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition">
-                                                <span>Buka Presensi Pegawai</span>
-                                                <span class="ml-1.5">&rarr;</span>
-                                            </a>
-                                        </div>
                                     </div>
                                 @else
                                     <div class="rounded-2xl border border-dashed border-gray-200 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-5 text-center">
@@ -315,12 +309,6 @@
                                         <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-4 text-center">
                                             <div class="inline-block rounded-2xl bg-white p-3 shadow-xs border border-gray-100 dark:border-[#284c43]">
                                                 <img src="{{ $qrImageUrlTamu }}" alt="QR Presensi Tamu {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
-                                            </div>
-                                            <div class="mt-4">
-                                                <a href="{{ $qrPayloadTamu }}" class="inline-flex w-full items-center justify-center rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition">
-                                                    <span>Buka Form Presensi Tamu</span>
-                                                    <span class="ml-1.5">&rarr;</span>
-                                                </a>
                                             </div>
                                         </div>
                                     @else

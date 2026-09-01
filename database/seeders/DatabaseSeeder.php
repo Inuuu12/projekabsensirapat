@@ -78,13 +78,5 @@ class DatabaseSeeder extends Seeder
                 $jabatan + ['created_at' => $now, 'updated_at' => $now],
             );
         }
-
-        // 6. Master Status Aduan
-        foreach (['Pending', 'Di Baca', 'Diproses', 'Selesai'] as $statusAduan) {
-            DB::table('sirapi_md_statusaduan')->updateOrInsert(
-                ['nama_status' => $statusAduan],
-                ['created_at' => $now, 'updated_at' => $now],
-            );
-        }
     }
 }

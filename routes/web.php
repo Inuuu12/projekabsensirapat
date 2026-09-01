@@ -176,12 +176,6 @@ Route::prefix('user')->group(function () {
     Route::post('/tamu/hadir', [UserController::class, 'inputDataTamu'])->name('publik.tamu.hadir');
 });
 
-// Sidebar
-Route::get('/adminlayout', function () {
-    return redirect()->route('admin.layout');
-});
-
-
 Route::get('/publik/agenda', [PublicPageController::class, 'agenda'])->name('publik.agenda');
 
 Route::get('/publik/agenda/detail/{id?}', [PublicPageController::class, 'agendaDetail'])->name('publik.agenda.detail');
@@ -191,8 +185,6 @@ Route::get('/publik/agenda/{id}/lampiran/file', [PublicPageController::class, 'f
 Route::get('/publik/agenda/{id}/lampiran', [PublicPageController::class, 'lampiranAgenda'])->name('publik.agenda.lampiran');
 
 Route::get('/publik/agenda-detail/{id?}', [PublicPageController::class, 'agendaDetail'])->name('publik.agenda-detail');
-
-Route::redirect('/publik/index-v2', '/')->name('publik.index-v2');
 
 Route::get('/publik/berita', [PublicPageController::class, 'berita'])->name('publik.berita');
 
