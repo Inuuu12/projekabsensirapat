@@ -177,37 +177,77 @@
 
                             <!-- OPSI A: LIVE CAMERA CAPTURE -->
                             <div id="camera-capture-container" class="space-y-2.5">
-                                <div class="relative w-full rounded-2xl overflow-hidden aspect-[4/3] bg-gray-900 border-2 border-dashed border-gray-300 dark:border-[#284c43] flex items-center justify-center shadow-inner">
-                                    <video id="tamu-live-video" class="w-full h-full object-cover" autoplay muted playsinline style="transform: scaleX(-1);"></video>
+                                <div class="relative w-full rounded-2xl overflow-hidden aspect-[4/3] bg-gray-100 dark:bg-[#0f1c19] border-2 border-dashed border-gray-300 dark:border-[#284c43] flex items-center justify-center shadow-inner">
+                                    <!-- Live Video Element (Default Hidden) -->
+                                    <video id="tamu-live-video" class="hidden w-full h-full object-cover" autoplay muted playsinline style="transform: scaleX(-1);"></video>
                                     
+                                    <!-- Live Preview Image Element -->
                                     <img id="tamu-live-preview" class="hidden absolute inset-0 w-full h-full object-cover" alt="Hasil Foto Swafoto" />
                                     
-                                    <div id="camera-loading-overlay" class="absolute inset-0 bg-gray-900/90 flex flex-col items-center justify-center text-white p-4 text-center">
-                                        <svg class="animate-spin h-6 w-6 text-emerald-400 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-                                        <p class="text-xs font-semibold">Menyalakan kamera langsung...</p>
+                                    <!-- Placeholder Awal Sebelum Kamera Dinyalakan -->
+                                    <div id="camera-idle-placeholder" class="flex flex-col items-center justify-center p-5 text-center space-y-2 text-gray-500 dark:text-gray-400">
+                                        <div class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-2xs">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-800 dark:text-gray-200">Swafoto Presensi Tamu</p>
+                                            <p class="text-[10.5px] text-gray-400 dark:text-gray-500 mt-0.5">Klik tombol di bawah untuk meminta akses kamera dan mengambil foto swafoto.</p>
+                                        </div>
                                     </div>
 
-                                    <div id="camera-error-overlay" class="hidden absolute inset-0 bg-red-950/95 flex flex-col items-center justify-center text-white p-5 text-center space-y-2">
+                                    <!-- Camera Loading Overlay -->
+                                    <div id="camera-loading-overlay" class="hidden absolute inset-0 bg-gray-900/90 flex flex-col items-center justify-center text-white p-4 text-center z-10">
+                                        <svg class="animate-spin h-6 w-6 text-emerald-400 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                        <p class="text-xs font-semibold">Menghubungkan ke kamera...</p>
+                                    </div>
+
+                                    <!-- Camera Error Overlay -->
+                                    <div id="camera-error-overlay" class="hidden absolute inset-0 bg-red-950/95 flex flex-col items-center justify-center text-white p-5 text-center space-y-2 z-10">
                                         <div class="w-10 h-10 rounded-full bg-red-900/80 text-red-300 flex items-center justify-center mx-auto">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                                         </div>
                                         <p class="text-xs font-bold" id="camera-error-msg">Kamera tidak dapat diakses</p>
                                         <p class="text-[11px] text-gray-300">Silakan izinkan akses kamera di browser atau gunakan opsi Upload File.</p>
-                                        <button type="button" onclick="switchPhotoMode('upload')" class="mt-2 px-3 py-1.5 rounded-xl bg-white text-red-900 text-xs font-extrabold shadow-sm transition hover:bg-gray-100 cursor-pointer">
-                                            Gunakan Upload File &rarr;
-                                        </button>
+                                        <div class="flex gap-2 justify-center mt-1">
+                                            <button type="button" onclick="startLiveCamera()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition cursor-pointer">
+                                                Coba Lagi
+                                            </button>
+                                            <button type="button" onclick="switchPhotoMode('upload')" class="px-3 py-1.5 rounded-xl bg-white text-red-900 text-xs font-extrabold shadow-sm transition hover:bg-gray-100 cursor-pointer">
+                                                Upload File &rarr;
+                                            </button>
+                                        </div>
                                     </div>
+                                </div>
+
+                                <!-- Badge Konfirmasi Foto Berhasil Diambil -->
+                                <div id="photo-taken-badge" class="hidden rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 p-2.5 text-center">
+                                    <p class="text-xs font-extrabold text-emerald-700 dark:text-emerald-300 flex items-center justify-center gap-1.5">
+                                        <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        <span>Foto swafoto berhasil diambil!</span>
+                                    </p>
                                 </div>
 
                                 <!-- Camera Action Controls -->
                                 <div class="flex items-center gap-2">
-                                    <button type="button" id="btn-snap-photo" onclick="captureLivePhoto()" class="flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer">
+                                    <!-- Tombol 1: Buka Kamera (Saat Awal) -->
+                                    <button type="button" id="btn-open-camera" onclick="startLiveCamera()" class="flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                        <span>Buka Kamera</span>
+                                    </button>
+
+                                    <!-- Tombol 2: Jepret / Ambil Foto (Saat Kamera Aktif) -->
+                                    <button type="button" id="btn-snap-photo" onclick="captureLivePhoto()" class="hidden flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                         <span>Ambil Foto</span>
                                     </button>
-                                    <button type="button" id="btn-retake-photo" onclick="retakeLivePhoto()" class="hidden py-2.5 px-3 rounded-xl border border-gray-300 dark:border-[#284c43] bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-200 text-xs font-bold transition hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-1.5 cursor-pointer">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                                        <span>Foto Ulang</span>
+
+                                    <!-- Tombol 3: Foto Ulang (Setelah Foto Diambil) -->
+                                    <button type="button" id="btn-retake-photo" onclick="retakeLivePhoto()" class="hidden flex-1 py-2.5 px-4 rounded-xl border border-emerald-600 dark:border-emerald-500 bg-white dark:bg-[#152420] text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-xs font-extrabold transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                        <span>Ambil Ulang Foto</span>
                                     </button>
                                 </div>
                             </div>
@@ -315,8 +355,6 @@
 
                 tabBtnCamera.className = "px-2.5 py-1 text-[10px] font-extrabold rounded-lg transition-all bg-white dark:bg-[#152420] text-emerald-700 dark:text-emerald-400 shadow-2xs cursor-pointer";
                 tabBtnUpload.className = "px-2.5 py-1 text-[10px] font-bold rounded-lg transition-all text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white cursor-pointer";
-
-                startLiveCamera();
             } else {
                 cameraContainer.classList.add('hidden');
                 uploadContainer.classList.remove('hidden');
@@ -330,23 +368,33 @@
 
         async function startLiveCamera() {
             const video = document.getElementById('tamu-live-video');
+            const placeholder = document.getElementById('camera-idle-placeholder');
+            const preview = document.getElementById('tamu-live-preview');
+            const badge = document.getElementById('photo-taken-badge');
             const loadingOverlay = document.getElementById('camera-loading-overlay');
             const errorOverlay = document.getElementById('camera-error-overlay');
             const errorMsg = document.getElementById('camera-error-msg');
+            const btnOpen = document.getElementById('btn-open-camera');
+            const btnSnap = document.getElementById('btn-snap-photo');
+            const btnRetake = document.getElementById('btn-retake-photo');
 
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                 if (loadingOverlay) loadingOverlay.classList.add('hidden');
                 if (errorOverlay) errorOverlay.classList.remove('hidden');
-                if (errorMsg) errorMsg.textContent = "Browser tidak mendukung akses kamera langsung.";
+                if (errorMsg) errorMsg.textContent = "Browser Anda tidak mendukung fitur akses kamera langsung.";
                 return;
             }
 
             try {
                 if (loadingOverlay) loadingOverlay.classList.remove('hidden');
                 if (errorOverlay) errorOverlay.classList.add('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+                if (preview) preview.classList.add('hidden');
+                if (badge) badge.classList.add('hidden');
 
                 if (cameraStream) {
                     cameraStream.getTracks().forEach(t => t.stop());
+                    cameraStream = null;
                 }
 
                 cameraStream = await navigator.mediaDevices.getUserMedia({
@@ -359,8 +407,12 @@
                 });
 
                 video.srcObject = cameraStream;
+                video.classList.remove('hidden');
                 video.onloadedmetadata = () => {
                     if (loadingOverlay) loadingOverlay.classList.add('hidden');
+                    if (btnOpen) btnOpen.classList.add('hidden');
+                    if (btnSnap) btnSnap.classList.remove('hidden');
+                    if (btnRetake) btnRetake.classList.add('hidden');
                 };
             } catch (err) {
                 console.error("Camera error:", err);
@@ -368,9 +420,9 @@
                 if (errorOverlay) errorOverlay.classList.remove('hidden');
                 let message = "Kamera tidak dapat diakses.";
                 if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                    message = "Izin akses kamera ditolak oleh browser.";
+                    message = "Izin akses kamera ditolak oleh browser. Silakan berikan izin akses kamera pada peramban Anda.";
                 } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-                    message = "Perangkat kamera tidak ditemukan.";
+                    message = "Perangkat kamera tidak ditemukan pada perangkat ini.";
                 }
                 if (errorMsg) errorMsg.textContent = message;
             }
@@ -388,6 +440,8 @@
             const preview = document.getElementById('tamu-live-preview');
             const btnSnap = document.getElementById('btn-snap-photo');
             const btnRetake = document.getElementById('btn-retake-photo');
+            const btnOpen = document.getElementById('btn-open-camera');
+            const badge = document.getElementById('photo-taken-badge');
             const inputCaptured = document.getElementById('tamu-foto-captured-input');
 
             if (!video || !cameraStream) return;
@@ -397,7 +451,7 @@
             canvas.height = video.videoHeight || 480;
             const ctx = canvas.getContext('2d');
 
-            // Mirror capture
+            // Mirror capture agar swafoto natural
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -409,24 +463,26 @@
             preview.classList.remove('hidden');
             video.classList.add('hidden');
 
-            btnSnap.classList.add('hidden');
-            btnRetake.classList.remove('hidden');
+            // Matikan stream kamera setelah foto didapatkan
+            stopLiveCamera();
+
+            if (btnSnap) btnSnap.classList.add('hidden');
+            if (btnOpen) btnOpen.classList.add('hidden');
+            if (btnRetake) btnRetake.classList.remove('hidden');
+            if (badge) badge.classList.remove('hidden');
         }
 
         function retakeLivePhoto() {
-            const video = document.getElementById('tamu-live-video');
-            const preview = document.getElementById('tamu-live-preview');
-            const btnSnap = document.getElementById('btn-snap-photo');
-            const btnRetake = document.getElementById('btn-retake-photo');
             const inputCaptured = document.getElementById('tamu-foto-captured-input');
+            const preview = document.getElementById('tamu-live-preview');
+            const badge = document.getElementById('photo-taken-badge');
 
             inputCaptured.value = "";
             preview.src = "";
             preview.classList.add('hidden');
-            video.classList.remove('hidden');
+            if (badge) badge.classList.add('hidden');
 
-            btnSnap.classList.remove('hidden');
-            btnRetake.classList.add('hidden');
+            startLiveCamera();
         }
 
         function previewUploadedImage(event) {
@@ -558,9 +614,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Mulai nyalakan kamera langsung (default)
-            startLiveCamera();
-
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     async function (position) {
