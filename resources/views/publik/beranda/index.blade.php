@@ -193,7 +193,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-base font-bold text-gray-900 dark:text-white">Dokumentasi Video</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-300">{{ $videoTerbaru->judul ?? 'Publikasi video resmi terkait Diskominfo' }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-300">Publikasi video resmi terkait kegiatan dan informasi</p>
                     </div>
                     <a href="{{ route('publik.video') }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:underline">Lihat Semua &rarr;</a>
                 </div>

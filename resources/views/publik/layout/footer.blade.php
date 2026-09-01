@@ -39,8 +39,8 @@
                         FB
                     </a>
 
-                    <a href="https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy" 
-                       target="_blank" rel="noopener noreferrer" title="YouTube Kabupaten Bogor"
+                    <a href="{{ \Illuminate\Support\Facades\Cache::get('sirapi_youtube_channel_url', config('sirapi.youtube_channel_url', 'https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy')) }}" 
+                       target="_blank" rel="noopener noreferrer" title="YouTube Channel"
                        class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-bold flex items-center justify-center transition-colors">
                         YT
                     </a>

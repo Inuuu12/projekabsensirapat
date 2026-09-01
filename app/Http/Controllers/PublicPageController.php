@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\Agenda;
-use App\Models\Berita;
 use App\Models\DataAduan;
 use App\Models\DokumenNotulen;
 use App\Models\Galeri;
@@ -13,13 +12,13 @@ use App\Models\Logbook;
 use App\Models\Pegawai;
 use App\Models\QRCode;
 use App\Models\UlangTahun;
-use App\Models\VideoPublik;
 use App\Services\NewsApiService;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
@@ -52,8 +51,7 @@ class PublicPageController extends Controller
         $ulangTahun = $this->queryOrDefault(fn () => UlangTahun::tampilkanUlangTahunPegawai(), collect());
         $ulangTahunHariIni = $ulangTahun->first(fn ($item) => $item->tanggal?->format('m-d') === $today->format('m-d'));
         $masukan = $this->queryOrDefault(fn () => DataAduan::latest('id_dataaduan')->take(5)->get(), collect());
-        $videoTerbaru = $this->queryOrDefault(fn () => VideoPublik::latest()->latest('id_video')->first());
-        $youtubeEmbedUrl = $videoTerbaru?->youtube_embed_url ?? $this->defaultYoutubeEmbedUrl();
+        $youtubeEmbedUrl = $this->defaultYoutubeEmbedUrl();
 
         return view('publik.beranda.index', compact(
             'agendaHariIni',
@@ -68,7 +66,6 @@ class PublicPageController extends Controller
             'ulangTahun',
             'ulangTahunHariIni',
             'masukan',
-            'videoTerbaru',
             'youtubeEmbedUrl'
         ));
     }
@@ -200,15 +197,13 @@ class PublicPageController extends Controller
 
     public function video(NewsApiService $newsService)
     {
-        $videoList = $this->queryOrDefault(fn () => VideoPublik::latest()->latest('id_video')->get(), collect());
-        $videoUtama = $videoList->first();
-        $youtubeEmbedUrl = $videoUtama?->youtube_embed_url ?? $this->defaultYoutubeEmbedUrl();
-        $youtubeChannelUrl = 'https://www.youtube.com/channel/UCJlX_73GqPvJlerJFN4cRgA';
+        $youtubeEmbedUrl = $this->defaultYoutubeEmbedUrl();
+        $youtubeChannelUrl = Cache::get('sirapi_youtube_channel_url', config('sirapi.youtube_channel_url', 'https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy'));
         $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', '>=', $today)->orderBy('tanggal')->orderBy('waktu')->take(6)->get(), collect());
         $beritaTerbaru = $newsService->getLatest(6);
 
-        return view('publik.video.index', compact('youtubeEmbedUrl', 'youtubeChannelUrl', 'videoUtama', 'videoList', 'agendaTerbaru', 'beritaTerbaru'));
+        return view('publik.video.index', compact('youtubeEmbedUrl', 'youtubeChannelUrl', 'agendaTerbaru', 'beritaTerbaru'));
     }
 
     public function ulangTahun()
@@ -544,7 +539,9 @@ class PublicPageController extends Controller
 
     private function defaultYoutubeEmbedUrl(): string
     {
-        return 'https://www.youtube.com/embed/videoseries?list=UUJlX_73GqPvJlerJFN4cRgA';
+        $playlistId = Cache::get('sirapi_youtube_playlist_id', config('sirapi.youtube_playlist_id', 'UUJlX_73GqPvJlerJFN4cRgA'));
+
+        return 'https://www.youtube.com/embed/videoseries?list=' . $playlistId;
     }
 
     private function weatherCodeLabel(mixed $code): string

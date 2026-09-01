@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminAduanController;
 use App\Http\Controllers\AdminAgendaController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminDashboardController;
@@ -63,9 +62,7 @@ Route::prefix('admin')->group(function () {
         Route::post('/konten-publik/galeri', [AdminPublikController::class, 'storeGaleri'])->name('admin.publik.galeri.store');
         Route::put('/konten-publik/galeri/{id}', [AdminPublikController::class, 'updateGaleri'])->name('admin.publik.galeri.update');
         Route::delete('/konten-publik/galeri/{id}', [AdminPublikController::class, 'destroyGaleri'])->name('admin.publik.galeri.destroy');
-        Route::post('/konten-publik/video', [AdminPublikController::class, 'storeVideo'])->name('admin.publik.video.store');
-        Route::put('/konten-publik/video/{id}', [AdminPublikController::class, 'updateVideo'])->name('admin.publik.video.update');
-        Route::delete('/konten-publik/video/{id}', [AdminPublikController::class, 'destroyVideo'])->name('admin.publik.video.destroy');
+        Route::post('/konten-publik/youtube', [AdminPublikController::class, 'updateYoutube'])->name('admin.publik.youtube.update');
 
         // Filter agenda by kategori surat
         Route::get('/agenda/kategori/internal-to-internal', [AdminAgendaController::class, 'lihat_AgendaInternalToInternal']);
@@ -81,9 +78,7 @@ Route::prefix('admin')->group(function () {
         Route::delete('/agenda/{id}', [AdminAgendaController::class, 'hapus_Agenda'])->name('admin.agenda.destroy');
         Route::post('/kehadiran/verifikasi', [AdminKehadiranController::class, 'verifikasi_Kehadiran']);
 
-        // Aduan & Kunjungan
-        Route::get('/aduan/lihat', [AdminAduanController::class, 'lihat_Aduan']);
-        Route::put('/aduan/{id}/verifikasi', [AdminAduanController::class, 'verifikasi_Aduan']);
+        // Kunjungan
         Route::get('/kunjungan/kelola', fn () => redirect()->route('admin.kunjungan.lihat'));
         Route::post('/kunjungan/kelola', [AdminKunjunganController::class, 'kelola_Kunjungan'])->name('admin.kunjungan.store');
         Route::put('/kunjungan/{id}', [AdminKunjunganController::class, 'update_Kunjungan'])->name('admin.kunjungan.update');

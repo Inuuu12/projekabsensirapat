@@ -29,7 +29,6 @@
         @php
             $agendaItems = collect($agendaTerbaru ?? []);
             $beritaItems = collect($beritaTerbaru ?? []);
-            $videoItems = collect($videoList ?? []);
         @endphp
 
         <div class="space-y-3">
@@ -41,7 +40,7 @@
 
             <div>
                 <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">Semua Video</h1>
-                <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">{{ $videoUtama->judul ?? 'Publikasi video resmi terkait Diskominfo dan Kabupaten Bogor dari YouTube' }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Publikasi video resmi terkait kegiatan dan informasi dari YouTube</p>
             </div>
         </div>
 
@@ -50,7 +49,7 @@
                 <iframe
                     class="w-full h-full"
                     src="{{ $youtubeEmbedUrl }}"
-                    title="Video Diskominfo Kabupaten Bogor"
+                    title="Video YouTube Channel"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowfullscreen>
                 </iframe>
@@ -58,26 +57,12 @@
 
             <aside class="lg:col-span-4 bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4 transition-colors">
                 <h2 class="font-bold text-sm text-gray-900 dark:text-white">Sumber Video</h2>
-                <p class="text-xs text-gray-500 dark:text-gray-300 leading-relaxed">{{ $videoUtama->deskripsi ?? 'Video ditampilkan dari kanal YouTube resmi Kabupaten Bogor/Diskominfo.' }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-300 leading-relaxed">Video otomatis diputar langsung dari playlist unggahan resmi kanal YouTube.</p>
                 <a href="{{ $youtubeChannelUrl }}" target="_blank" rel="noopener" class="inline-flex items-center justify-center bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white text-xs font-bold px-4 py-2 rounded-full shadow-xs">
                     Buka Kanal YouTube
                 </a>
             </aside>
         </section>
-
-        @if ($videoItems->count() > 1)
-            <section class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4 transition-colors">
-                <h2 class="font-bold text-sm text-gray-900 dark:text-white">Video Lainnya</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @foreach ($videoItems->skip(1)->take(6) as $video)
-                        <a href="{{ $video->youtube_url }}" target="_blank" rel="noopener" class="block rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4 hover:bg-ijo-sangatmuda dark:hover:bg-[#1b3832] transition-colors">
-                            <h3 class="text-xs font-bold text-gray-900 dark:text-white">{{ $video->judul }}</h3>
-                            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">{{ optional($video->created_at)->translatedFormat('d F Y') ?? '-' }}</p>
-                        </a>
-                    @endforeach
-                </div>
-            </section>
-        @endif
 
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4 transition-colors">

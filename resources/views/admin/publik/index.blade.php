@@ -32,26 +32,6 @@
         <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300 mt-1">Kelola dan publikasikan informasi berita, galeri, ucapan ulang tahun, serta video ke portal publik.</p>
     </div>
 
-    <section class="bg-white dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#233a34] shadow-xs p-5 transition-colors">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Tambah Konten</h2>
-                <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Pilih jenis konten publik yang ingin ditambahkan.</p>
-            </div>
-        </div>
-        <div class="mt-5">
-            <button type="button" onclick="openPublicModal('modal-tambah-video')" class="w-full flex items-center justify-between gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-4 text-left shadow-xs transition hover:border-[#35635b] hover:bg-gray-50 dark:hover:bg-[#1b3832] cursor-pointer">
-                <span>
-                    <span class="block text-sm font-extrabold text-gray-800 dark:text-white">Video</span>
-                    <span class="mt-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Tambah link YouTube</span>
-                </span>
-                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-50 dark:bg-[#152420] p-2">
-                    <img src="{{ asset('assets/foto/Videologo.png') }}" alt="Video" class="h-full w-full object-contain">
-                </span>
-            </button>
-        </div>
-    </section>
-
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <section class="bg-white dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#233a34] shadow-xs overflow-hidden transition-colors">
             <div class="flex items-center justify-between gap-3 border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
@@ -207,49 +187,46 @@
         <section class="bg-white dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#233a34] shadow-xs overflow-hidden transition-colors">
             <div class="flex items-center justify-between gap-3 border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
                 <div>
-                    <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Video Publik</h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">{{ $video->count() }} video di database.</p>
+                    <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Pengaturan Channel YouTube Publik</h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Video di Beranda dan Halaman Video otomatis memutar unggahan terbaru dari channel ini.</p>
                 </div>
-                @if ($video->count() > 6)
-                    <button type="button" onclick="openPublicModal('modal-semua-video')" class="rounded-lg border border-gray-200 dark:border-[#284c43] px-3 py-2 text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer">
-                        Selengkapnya
-                    </button>
-                @endif
             </div>
-            <div class="divide-y divide-gray-100 dark:divide-[#233a34]">
-                @forelse ($video->take(6) as $item)
-                    <div class="p-4 flex items-center justify-between gap-4 hover:bg-gray-50/50 dark:hover:bg-[#1b332d] transition">
-                        <div class="min-w-0">
-                            <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $item->judul }}</h3>
-                            <p class="text-xs text-gray-500 dark:text-gray-300">{{ optional($item->created_at)->translatedFormat('d M Y') }} &bull; YouTube</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button
-                                type="button"
-                                onclick="openEditVideo(this)"
-                                data-action="{{ route('admin.publik.video.update', $item->id_video) }}"
-                                data-judul="{{ $item->judul }}"
-                                data-deskripsi="{{ $item->deskripsi }}"
-                                data-url="{{ $item->youtube_url }}"
-                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
-                                title="Edit Video">
-                                <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
-                                <span class="sr-only">Edit</span>
-                            </button>
-                            <form method="POST" action="{{ route('admin.publik.video.destroy', $item->id_video) }}">
-                                @csrf
-                                @method('DELETE')
-                                <button class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Video">
-                                    <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
-                                    <span class="sr-only">Hapus</span>
-                                </button>
-                            </form>
-                        </div>
+            <form action="{{ route('admin.publik.youtube.update') }}" method="POST" class="p-6 space-y-5">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-200 mb-1.5">Link / URL Channel YouTube</label>
+                        <input type="url" name="youtube_channel_url" required value="{{ old('youtube_channel_url', $youtubeChannelUrl) }}"
+                            placeholder="https://youtube.com/@kabupatenbogor"
+                            class="h-10 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20">
+                        <p class="mt-1 text-[11px] text-gray-500 dark:text-gray-400">Tautan channel untuk tombol di Footer dan halaman Video Publik.</p>
                     </div>
-                @empty
-                    <p class="p-6 text-sm text-gray-500 dark:text-gray-400">Belum ada data video.</p>
-                @endforelse
-            </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-200 mb-1.5">ID Playlist / Channel YouTube</label>
+                        <input type="text" name="youtube_playlist_id" required value="{{ old('youtube_playlist_id', $youtubePlaylistId) }}"
+                            placeholder="Contoh: UUJlX_73GqPvJlerJFN4cRgA atau UC..."
+                            class="h-10 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20">
+                        <p class="mt-1 text-[11px] text-gray-500 dark:text-gray-400">Gunakan ID playlist unggahan channel (awalan <strong>UU</strong>) atau ID Channel (awalan <strong>UC</strong>).</p>
+                    </div>
+                </div>
+
+                <div class="rounded-xl bg-[#f4faf7] dark:bg-[#0f1c19] p-4 border border-[#c9ddd4]/60 dark:border-[#284c43] flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+                    <div class="space-y-1">
+                        <p class="text-xs font-bold text-gray-800 dark:text-white flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Preview Video yang Sedang Aktif
+                        </p>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-mono break-all">{{ $youtubeEmbedUrl }}</p>
+                    </div>
+                    <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] px-5 text-xs font-bold text-white transition cursor-pointer shadow-xs shrink-0">
+                        Simpan Pengaturan Channel
+                    </button>
+                </div>
+
+                <div class="aspect-video max-h-60 rounded-xl overflow-hidden bg-black shadow-inner border border-gray-200 dark:border-[#284c43]">
+                    <iframe class="w-full h-full" src="{{ $youtubeEmbedUrl }}" title="Preview YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </form>
         </section>
     </div>
 </div>
@@ -400,70 +377,6 @@
     </div>
 </div>
 
-<div id="modal-semua-video" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-2.5 sm:p-4 overflow-y-auto">
-    <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[88vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43]">
-        <div class="flex items-center justify-between rounded-t-2xl bg-[#3f8078] px-4 py-3.5 sm:px-6 sm:py-4 text-white shrink-0">
-            <div>
-                <h3 class="text-base sm:text-lg font-bold">Semua Video Publik</h3>
-                <p class="mt-0.5 text-xs text-white/70">{{ $video->count() }} video di database</p>
-            </div>
-            <button type="button" onclick="closePublicModal('modal-semua-video')" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white cursor-pointer" aria-label="Tutup modal semua video">
-                <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
-                </svg>
-            </button>
-        </div>
-        <div class="flex-1 min-h-0 overflow-y-auto p-4 sm:p-5">
-            <div class="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2">
-                @forelse ($video as $item)
-                    <div class="overflow-hidden rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] shadow-xs">
-                        <div class="aspect-video bg-gray-100 dark:bg-[#152420]">
-                            <iframe
-                                src="{{ $item->youtube_embed_url }}"
-                                title="{{ $item->judul }}"
-                                class="h-full w-full"
-                                loading="lazy"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                allowfullscreen></iframe>
-                        </div>
-                        <div class="border-b border-gray-100 dark:border-[#233a34] px-4 py-3">
-                            <h4 class="truncate text-xs sm:text-sm font-bold text-gray-900 dark:text-white">{{ $item->judul }}</h4>
-                            <p class="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-300">{{ optional($item->created_at)->translatedFormat('d M Y') }} &bull; YouTube</p>
-                            @if ($item->deskripsi)
-                                <p class="mt-1.5 line-clamp-2 text-xs text-gray-600 dark:text-gray-300">{{ $item->deskripsi }}</p>
-                            @endif
-                        </div>
-                        <div class="flex justify-end gap-2 p-2.5 bg-gray-50/50 dark:bg-[#152420]/50">
-                            <button
-                                type="button"
-                                onclick="openEditVideo(this)"
-                                data-action="{{ route('admin.publik.video.update', $item->id_video) }}"
-                                data-judul="{{ $item->judul }}"
-                                data-deskripsi="{{ $item->deskripsi }}"
-                                data-url="{{ $item->youtube_url }}"
-                                class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-green-100 dark:hover:bg-[#23423b] cursor-pointer"
-                                title="Edit Video">
-                                <img src="{{ asset('assets/foto/Editlogo.png') }}" alt="Edit" class="h-full w-full object-contain">
-                                <span class="sr-only">Edit</span>
-                            </button>
-                            <form method="POST" action="{{ route('admin.publik.video.destroy', $item->id_video) }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer" title="Hapus Video">
-                                    <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
-                                    <span class="sr-only">Hapus</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                @empty
-                    <p class="p-6 text-sm text-gray-500 dark:text-gray-400 lg:col-span-2">Belum ada data video.</p>
-                @endforelse
-            </div>
-        </div>
-    </div>
-</div>
-
 <div id="modal-detail-berita" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-2.5 sm:p-4 overflow-y-auto">
     <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43]">
         <div class="flex items-center justify-between rounded-t-2xl bg-[#3f8078] px-4 py-3.5 sm:px-6 sm:py-4 text-white shrink-0">
@@ -524,74 +437,6 @@
     </div>
 </div>
 
-<div id="modal-tambah-video" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4">
-    <div class="relative flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43]">
-        <div class="flex items-center justify-between rounded-t-2xl bg-[#3f8078] px-4 py-3.5 sm:px-6 sm:py-4 text-white shrink-0">
-            <h3 class="text-base sm:text-lg font-bold">Tambah Video</h3>
-            <button type="button" onclick="closePublicModal('modal-tambah-video')" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white cursor-pointer" aria-label="Tutup modal tambah video">
-                <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
-                </svg>
-            </button>
-        </div>
-        <form method="POST" action="{{ route('admin.publik.video.store') }}" class="flex min-h-0 flex-1 flex-col">
-            @csrf
-            <div class="flex-1 min-h-0 space-y-3.5 sm:space-y-4 overflow-y-auto p-4 sm:p-6">
-                <div>
-                    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Judul Video</label>
-                    <input name="judul" required class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20" placeholder="Judul video">
-                </div>
-                <div>
-                    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Link YouTube</label>
-                    <input name="youtube_url" type="url" required class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20" placeholder="https://www.youtube.com/watch?v=...">
-                </div>
-                <div>
-                    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Deskripsi</label>
-                    <textarea name="deskripsi" rows="3" class="w-full resize-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20" placeholder="Deskripsi video opsional"></textarea>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 sm:flex sm:justify-end gap-2.5 sm:gap-3 border-t border-gray-100 dark:border-[#233a34] p-3 sm:px-6 sm:py-4 bg-gray-50 dark:bg-[#0f1c19] rounded-b-2xl shrink-0">
-                <button type="button" onclick="closePublicModal('modal-tambah-video')" class="w-full sm:w-auto h-10 rounded-xl px-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-[#152420] border border-gray-300 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer flex items-center justify-center">Batal</button>
-                <button type="submit" class="w-full sm:w-auto inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] dark:bg-[#107050] hover:bg-[#035f35] dark:hover:bg-[#0c5940] px-5 text-xs sm:text-sm font-bold text-white transition cursor-pointer shadow-sm">Simpan</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div id="modal-edit-video" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4">
-    <div class="relative flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43]">
-        <div class="flex items-center justify-between rounded-t-2xl bg-[#3f8078] px-4 py-3.5 sm:px-6 sm:py-4 text-white shrink-0">
-            <h3 class="text-base sm:text-lg font-bold">Edit Video</h3>
-            <button type="button" onclick="closePublicModal('modal-edit-video')" class="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white cursor-pointer" aria-label="Tutup modal edit video">
-                <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
-                </svg>
-            </button>
-        </div>
-        <form id="form-edit-video" method="POST" class="flex min-h-0 flex-1 flex-col">
-            @csrf
-            @method('PUT')
-            <div class="flex-1 min-h-0 space-y-3.5 sm:space-y-4 overflow-y-auto p-4 sm:p-6">
-                <div>
-                    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Judul Video</label>
-                    <input id="edit-video-judul" name="judul" required class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20">
-                </div>
-                <div>
-                    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Link YouTube</label>
-                    <input id="edit-video-url" name="youtube_url" type="url" required class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20">
-                </div>
-                <div>
-                    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Deskripsi</label>
-                    <textarea id="edit-video-deskripsi" name="deskripsi" rows="3" class="w-full resize-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20"></textarea>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 sm:flex sm:justify-end gap-2.5 sm:gap-3 border-t border-gray-100 dark:border-[#233a34] p-3 sm:px-6 sm:py-4 bg-gray-50 dark:bg-[#0f1c19] rounded-b-2xl shrink-0">
-                <button type="button" onclick="closePublicModal('modal-edit-video')" class="w-full sm:w-auto h-10 rounded-xl px-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-[#152420] border border-gray-300 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer flex items-center justify-center">Batal</button>
-                <button type="submit" class="w-full sm:w-auto inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#04733f] dark:bg-[#107050] hover:bg-[#035f35] dark:hover:bg-[#0c5940] px-5 text-xs sm:text-sm font-bold text-white transition cursor-pointer shadow-sm">Simpan</button>
-            </div>
-        </form>
-    </div>
-</div>
 @endsection
 
 @push('scripts')
@@ -649,15 +494,6 @@
         document.getElementById('form-edit-galeri').action = button.dataset.action;
         closePublicModal('modal-semua-galeri');
         openPublicModal('modal-edit-galeri');
-    }
-
-    function openEditVideo(button) {
-        document.getElementById('form-edit-video').action = button.dataset.action;
-        document.getElementById('edit-video-judul').value = button.dataset.judul || '';
-        document.getElementById('edit-video-deskripsi').value = button.dataset.deskripsi || '';
-        document.getElementById('edit-video-url').value = button.dataset.url || '';
-        closePublicModal('modal-semua-video');
-        openPublicModal('modal-edit-video');
     }
 </script>
 @endpush

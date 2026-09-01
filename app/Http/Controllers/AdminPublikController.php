@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\DokumenNotulen;
 use App\Models\Galeri;
 use App\Models\UlangTahun;
-use App\Models\VideoPublik;
 use App\Services\NewsApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 
 class AdminPublikController extends Controller
 {
@@ -20,9 +19,29 @@ class AdminPublikController extends Controller
         $berita = $newsService->getNews();
         $galeri = $this->dokumentasiAgendaGaleri();
         $ulangTahun = UlangTahun::tampilkanUlangTahunPegawai();
-        $video = VideoPublik::latest()->latest('id_video')->get();
+        $youtubeChannelUrl = Cache::get('sirapi_youtube_channel_url', config('sirapi.youtube_channel_url', 'https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy'));
+        $youtubePlaylistId = Cache::get('sirapi_youtube_playlist_id', config('sirapi.youtube_playlist_id', 'UUJlX_73GqPvJlerJFN4cRgA'));
+        $youtubeEmbedUrl = 'https://www.youtube.com/embed/videoseries?list=' . $youtubePlaylistId;
 
-        return view('admin.publik.index', compact('admin', 'berita', 'galeri', 'ulangTahun', 'video'));
+        return view('admin.publik.index', compact('admin', 'berita', 'galeri', 'ulangTahun', 'youtubeChannelUrl', 'youtubePlaylistId', 'youtubeEmbedUrl'));
+    }
+
+    public function updateYoutube(Request $request)
+    {
+        $validated = $request->validate([
+            'youtube_channel_url' => 'required|url|max:255',
+            'youtube_playlist_id' => 'required|string|max:100',
+        ]);
+
+        $playlistId = trim($validated['youtube_playlist_id']);
+        if (str_starts_with($playlistId, 'UC') && strlen($playlistId) === 24) {
+            $playlistId = 'UU' . substr($playlistId, 2);
+        }
+
+        Cache::forever('sirapi_youtube_channel_url', trim($validated['youtube_channel_url']));
+        Cache::forever('sirapi_youtube_playlist_id', $playlistId);
+
+        return back()->with('success', 'Pengaturan Channel YouTube Publik berhasil disimpan.');
     }
 
     public function refreshBerita(NewsApiService $newsService)
@@ -72,43 +91,6 @@ class AdminPublikController extends Controller
         return back()->with('success', 'Foto galeri berhasil dihapus.');
     }
 
-    public function storeVideo(Request $request)
-    {
-        $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'youtube_url' => 'required|url|max:255',
-        ]);
-
-        $validated['youtube_embed_url'] = $this->youtubeEmbedUrl($validated['youtube_url']);
-
-        VideoPublik::create($validated);
-
-        return back()->with('success', 'Video publik berhasil ditambahkan.');
-    }
-
-    public function updateVideo(Request $request, int $id)
-    {
-        $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'youtube_url' => 'required|url|max:255',
-        ]);
-
-        $validated['youtube_embed_url'] = $this->youtubeEmbedUrl($validated['youtube_url']);
-
-        VideoPublik::findOrFail($id)->update($validated);
-
-        return back()->with('success', 'Video publik berhasil diperbarui.');
-    }
-
-    public function destroyVideo(int $id)
-    {
-        VideoPublik::findOrFail($id)->delete();
-
-        return back()->with('success', 'Video publik berhasil dihapus.');
-    }
-
     private function storePublicImage(Request $request, string $field, string $folder): string
     {
         $file = $request->file($field);
@@ -122,35 +104,6 @@ class AdminPublikController extends Controller
         $file->move($directory, $filename);
 
         return 'uploads/' . $folder . '/' . $filename;
-    }
-
-    private function youtubeEmbedUrl(string $url): string
-    {
-        $parts = parse_url($url);
-        $host = strtolower($parts['host'] ?? '');
-        $path = trim($parts['path'] ?? '', '/');
-        parse_str($parts['query'] ?? '', $query);
-
-        $videoId = null;
-        if (str_contains($host, 'youtu.be')) {
-            $videoId = explode('/', $path)[0] ?? null;
-        } elseif (str_contains($host, 'youtube.com')) {
-            if (str_starts_with($path, 'shorts/')) {
-                $videoId = explode('/', substr($path, 7))[0] ?? null;
-            } elseif (($query['v'] ?? null) !== null) {
-                $videoId = $query['v'];
-            } elseif (str_starts_with($path, 'embed/')) {
-                $videoId = explode('/', substr($path, 6))[0] ?? null;
-            }
-        }
-
-        if (! preg_match('/^[A-Za-z0-9_-]{6,20}$/', (string) $videoId)) {
-            throw ValidationException::withMessages([
-                'youtube_url' => 'Link YouTube tidak valid.',
-            ]);
-        }
-
-        return 'https://www.youtube.com/embed/' . $videoId;
     }
 
     private function dokumentasiAgendaGaleri()
