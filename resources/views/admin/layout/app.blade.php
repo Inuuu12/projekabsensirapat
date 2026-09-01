@@ -392,6 +392,8 @@
         .dark img[src*="Reply.png"],
         .dark img[src*="Kunjunganlogo.png"],
         .dark img[src*="Pegawailogo.png"],
+        .dark img[src*="Ruanganlogo.png"],
+        .dark img[src*="Container.png"],
         .dark img[src*="Akandatanglogo.png"],
         .dark img[src*="Agendalogo.png"] {
             filter: brightness(0) invert(1) !important;
