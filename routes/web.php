@@ -24,6 +24,13 @@ Route::redirect('/login', '/admin/login')->name('login');
 Route::post('/login/proses', [AdminAuthController::class, 'login'])->name('login.proses');
 
 // ROUTE GRUP ADMIN
+Route::get('/admin', function () {
+    if (\Illuminate\Support\Facades\Auth::guard('admin')->check()) {
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect()->route('admin.login');
+})->name('admin');
+
 Route::prefix('admin')->group(function () {
     // Show login form
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
@@ -226,3 +233,14 @@ Route::redirect('/publik/kunjungan', '/publik/form-kunjungan');
 Route::get('/publik/presensi/qr/{agenda}/hadir', [PublicPageController::class, 'qrHadir'])->name('publik.presensi.qr.hadir');
 
 Route::get('/peta-situs', [PublicPageController::class, 'petaSitus'])->name('peta.situs');
+
+// Fallback jika symlink storage cPanel hilang/belum dibuat
+Route::get('/storage/{path}', function (string $path) {
+    if (str_contains($path, '..')) {
+        abort(400);
+    }
+    abort_if(! \Illuminate\Support\Facades\Storage::disk('public')->exists($path), 404);
+
+    return \Illuminate\Support\Facades\Storage::disk('public')->response($path);
+})->where('path', '.*')->name('storage.fallback');
+

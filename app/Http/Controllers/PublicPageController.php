@@ -12,6 +12,7 @@ use App\Models\Logbook;
 use App\Models\Pegawai;
 use App\Models\QRCode;
 use App\Models\UlangTahun;
+use App\Services\AppSetting;
 use App\Services\NewsApiService;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
@@ -20,6 +21,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class PublicPageController extends Controller
@@ -31,20 +33,29 @@ class PublicPageController extends Controller
         $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $agendaHariIni = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', $today)
             ->orderBy('waktu')
-            ->take(3)
+            ->take(6)
             ->get(), collect());
         $totalAgendaHariIni = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', $today)->count(), 0);
         $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::query()
             ->whereDate('tanggal', '>=', $today)
             ->orderBy('tanggal')
             ->orderBy('waktu')
-            ->take(3)
+            ->take(6)
             ->get(), collect());
+
+        if ($agendaHariIni->isEmpty() && $agendaTerbaru->isEmpty()) {
+            $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::query()
+                ->orderBy('tanggal', 'desc')
+                ->orderBy('waktu', 'desc')
+                ->take(3)
+                ->get(), collect());
+        }
+
         $agendaBeranda = $agendaHariIni->isNotEmpty() ? $agendaHariIni : $agendaTerbaru;
         $agendaBerandaLabel = $agendaHariIni->isNotEmpty() ? 'Agenda Hari Ini' : 'Agenda Terdekat';
         $agendaBerandaDescription = $agendaHariIni->isNotEmpty()
             ? $today->translatedFormat('l, d F Y') . ' • ' . $totalAgendaHariIni . ' kegiatan terjadwal'
-            : 'Belum ada agenda hari ini, menampilkan agenda terdekat';
+            : ($agendaBeranda->isNotEmpty() ? 'Menampilkan agenda terkini' : 'Belum ada agenda terjadwal');
         $beritaTerbaru = $newsService->getLatest(3);
         $galeri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri()->take(4), collect());
         $totalGaleri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri()->count(), 0);
@@ -74,19 +85,27 @@ class PublicPageController extends Controller
     {
         $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $keyword = $request->query('keyword');
-        $agenda = $this->queryOrDefault(fn () => Agenda::query()
-            ->whereDate('tanggal', '>=', $today)
-            ->when($keyword, function ($query, $keyword) {
-                $query->where(function ($search) use ($keyword) {
-                    $search->where('nama_agenda', 'like', "%{$keyword}%")
-                        ->orWhere('lokasi', 'like', "%{$keyword}%");
-                });
-            })
-            ->orderBy('tanggal')
-            ->orderBy('waktu')
-            ->get(), collect());
+        $tab = $request->query('tab', 'semua');
 
-        return view('publik.agenda.index', compact('agenda', 'keyword'));
+        $agenda = $this->queryOrDefault(function () use ($today, $keyword, $tab) {
+            return Agenda::query()
+                ->when($keyword, function ($query, $keyword) {
+                    $query->where(function ($search) use ($keyword) {
+                        $search->where('nama_agenda', 'like', "%{$keyword}%")
+                            ->orWhere('lokasi', 'like', "%{$keyword}%")
+                            ->orWhere('ditugaskan', 'like', "%{$keyword}%");
+                    });
+                })
+                ->when($tab === 'mendatang', fn ($q) => $q->whereDate('tanggal', '>=', $today))
+                ->when($tab === 'selesai', fn ($q) => $q->whereDate('tanggal', '<', $today))
+                ->orderByRaw('tanggal >= ? desc', [$today->toDateString()])
+                ->orderByRaw('CASE WHEN tanggal >= ? THEN tanggal END ASC', [$today->toDateString()])
+                ->orderByRaw('CASE WHEN tanggal < ? THEN tanggal END DESC', [$today->toDateString()])
+                ->orderBy('waktu', 'asc')
+                ->get();
+        }, collect());
+
+        return view('publik.agenda.index', compact('agenda', 'keyword', 'tab'));
     }
 
     public function agendaDetail(?int $id = null)
@@ -198,7 +217,7 @@ class PublicPageController extends Controller
     public function video(NewsApiService $newsService)
     {
         $youtubeEmbedUrl = $this->defaultYoutubeEmbedUrl();
-        $youtubeChannelUrl = Cache::get('sirapi_youtube_channel_url', config('sirapi.youtube_channel_url', 'https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy'));
+        $youtubeChannelUrl = AppSetting::get('sirapi_youtube_channel_url', config('sirapi.youtube_channel_url', 'https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy'));
         $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', '>=', $today)->orderBy('tanggal')->orderBy('waktu')->take(6)->get(), collect());
         $beritaTerbaru = $newsService->getLatest(6);
@@ -455,7 +474,11 @@ class PublicPageController extends Controller
     {
         try {
             return $query();
-        } catch (QueryException) {
+        } catch (QueryException $e) {
+            Log::warning('PublicPageController: QueryException tertangkap: ' . $e->getMessage());
+            return $default;
+        } catch (\Throwable $e) {
+            Log::error('PublicPageController: Exception tertangkap: ' . $e->getMessage());
             return $default;
         }
     }
@@ -539,7 +562,7 @@ class PublicPageController extends Controller
 
     private function defaultYoutubeEmbedUrl(): string
     {
-        $playlistId = Cache::get('sirapi_youtube_playlist_id', config('sirapi.youtube_playlist_id', 'UUJlX_73GqPvJlerJFN4cRgA'));
+        $playlistId = AppSetting::get('sirapi_youtube_playlist_id', config('sirapi.youtube_playlist_id', 'UUJlX_73GqPvJlerJFN4cRgA'));
 
         return 'https://www.youtube.com/embed/videoseries?list=' . $playlistId;
     }

@@ -31,5 +31,16 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale(self::APP_LOCALE);
 
         date_default_timezone_set(self::APP_TIMEZONE);
+
+        if (!app()->runningInConsole()) {
+            $host = request()->getHost();
+            $isLocal = in_array($host, ['localhost', '127.0.0.1', '::1'])
+                || str_ends_with($host, '.test')
+                || str_ends_with($host, '.local');
+
+            if (!$isLocal && (app()->environment('production') || str_starts_with((string) config('app.url'), 'https://'))) {
+                \Illuminate\Support\Facades\URL::forceScheme('https');
+            }
+        }
     }
 }

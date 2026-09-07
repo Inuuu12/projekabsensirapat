@@ -30,7 +30,7 @@ class AdminAgendaController extends Controller
             'waktu' => 'required',
             'waktu_selesai' => 'nullable',
             'kuota' => 'nullable|integer|min:0',
-            'lokasi' => 'required|string|max:255',
+            'lokasi' => $isMasuk ? 'required|string|max:255' : 'nullable|string|max:255',
             'status_fr' => 'nullable|boolean',
             'status_qr' => 'nullable|string|max:50',
             'id_ruangrapat' => $isMasuk ? 'nullable|exists:sirapi_md_ruangrapat,id_ruangrapat' : 'required|exists:sirapi_md_ruangrapat,id_ruangrapat',
@@ -45,8 +45,8 @@ class AdminAgendaController extends Controller
         // Validasi Kapasitas Ruangan & Bentrok Jadwal
         if (! $isMasuk && ! empty($validated['id_ruangrapat'])) {
             $ruang = RuangRapat::find($validated['id_ruangrapat']);
+            $validated['lokasi'] = $ruang?->nama_ruang ?? ($validated['lokasi'] ?? 'Ruang Rapat');
             if ($ruang) {
-                $validated['lokasi'] = $ruang->nama_ruang;
 
                 // Cek Kapasitas Ruangan
                 if (! empty($validated['kuota']) && $ruang->kapasitas && $validated['kuota'] > $ruang->kapasitas) {
@@ -348,7 +348,7 @@ class AdminAgendaController extends Controller
             'waktu' => 'required',
             'waktu_selesai' => 'nullable',
             'kuota' => 'nullable|integer|min:0',
-            'lokasi' => 'required|string|max:255',
+            'lokasi' => $isMasuk ? 'required|string|max:255' : 'nullable|string|max:255',
             'status_fr' => 'nullable|boolean',
             'status_qr' => 'nullable|string|max:50',
             'id_ruangrapat' => $isMasuk ? 'nullable|exists:sirapi_md_ruangrapat,id_ruangrapat' : 'required|exists:sirapi_md_ruangrapat,id_ruangrapat',
@@ -363,8 +363,8 @@ class AdminAgendaController extends Controller
         // Validasi Kapasitas Ruangan & Bentrok Jadwal
         if (! $isMasuk && ! empty($validated['id_ruangrapat'])) {
             $ruang = RuangRapat::find($validated['id_ruangrapat']);
+            $validated['lokasi'] = $ruang?->nama_ruang ?? ($validated['lokasi'] ?? 'Ruang Rapat');
             if ($ruang) {
-                $validated['lokasi'] = $ruang->nama_ruang;
 
                 // Cek Kapasitas Ruangan
                 if (! empty($validated['kuota']) && $ruang->kapasitas && $validated['kuota'] > $ruang->kapasitas) {

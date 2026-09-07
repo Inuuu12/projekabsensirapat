@@ -124,6 +124,7 @@
                                 @if (!empty($item->foto))
                                     <img src="{{ asset('storage/' . $item->foto) }}" 
                                          alt="{{ $item->nama_pegawai }}" 
+                                         onerror="this.onerror=null;this.src='{{ asset('assets/foto/profile.png') }}';"
                                          class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
                                 @else
                                     <img src="{{ asset('assets/foto/profile.png') }}" alt="{{ $item->nama_pegawai }}" class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
@@ -145,7 +146,10 @@
                                 @if (!is_null($item->face_descriptor))
                                     @if ($item->foto_wajah)
                                         <div class="flex items-center gap-2">
-                                            <img src="{{ asset('storage/' . $item->foto_wajah) }}" alt="Bukti Wajah" class="w-8 h-8 rounded-lg object-cover border border-green-200 dark:border-emerald-800 shadow-xs cursor-pointer hover:scale-150 transition-transform origin-left">
+                                            <img src="{{ asset('storage/' . $item->foto_wajah) }}" 
+                                                 alt="Bukti Wajah" 
+                                                 onerror="this.onerror=null;this.src='{{ asset('assets/foto/profile.png') }}';"
+                                                 class="w-8 h-8 rounded-lg object-cover border border-green-200 dark:border-emerald-800 shadow-xs cursor-pointer hover:scale-150 transition-transform origin-left">
                                             <span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold bg-green-100 dark:bg-emerald-950/60 text-green-700 dark:text-emerald-300 border border-transparent dark:border-emerald-800/50">Terdaftar</span>
                                         </div>
                                     @else

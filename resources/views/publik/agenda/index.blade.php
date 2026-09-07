@@ -48,9 +48,23 @@
                 </div>
 
                 <form method="GET" action="{{ route('publik.agenda') }}" class="relative w-full md:w-72">
+                    <input type="hidden" name="tab" value="{{ $tab ?? 'semua' }}">
                     <input type="text" name="keyword" value="{{ $keyword ?? '' }}" placeholder="Cari agenda atau lokasi" class="w-full bg-gray-200/70 dark:bg-[#152420] border border-transparent dark:border-[#284c43] text-gray-800 dark:text-white placeholder-gray-400 rounded-full py-2 pl-4 pr-20 text-xs focus:ring-2 focus:ring-ijo-tua focus:outline-none">
                     <button type="submit" class="absolute right-1 top-1 bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white text-xs font-bold px-4 py-1.5 rounded-full transition-colors cursor-pointer">Cari</button>
                 </form>
+            </div>
+
+            <!-- Tab Filter Agenda -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                <a href="{{ route('publik.agenda', array_filter(['tab' => 'semua', 'keyword' => $keyword])) }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors shrink-0 {{ ($tab ?? 'semua') === 'semua' ? 'bg-ijo-tua text-white dark:bg-[#107050]' : 'bg-gray-200/70 dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-300/70 dark:hover:bg-[#1e342e]' }}">
+                    Semua Agenda ({{ $agendaItems->count() }})
+                </a>
+                <a href="{{ route('publik.agenda', array_filter(['tab' => 'mendatang', 'keyword' => $keyword])) }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors shrink-0 {{ ($tab ?? '') === 'mendatang' ? 'bg-ijo-tua text-white dark:bg-[#107050]' : 'bg-gray-200/70 dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-300/70 dark:hover:bg-[#1e342e]' }}">
+                    Hari Ini & Mendatang
+                </a>
+                <a href="{{ route('publik.agenda', array_filter(['tab' => 'selesai', 'keyword' => $keyword])) }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors shrink-0 {{ ($tab ?? '') === 'selesai' ? 'bg-ijo-tua text-white dark:bg-[#107050]' : 'bg-gray-200/70 dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-300/70 dark:hover:bg-[#1e342e]' }}">
+                    Selesai
+                </a>
             </div>
         </div>
 

@@ -39,11 +39,32 @@
                         FB
                     </a>
 
-                    <a href="{{ \Illuminate\Support\Facades\Cache::get('sirapi_youtube_channel_url', config('sirapi.youtube_channel_url', 'https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy')) }}" 
+                    <a href="{{ \App\Services\AppSetting::get('sirapi_youtube_channel_url', config('sirapi.youtube_channel_url', 'https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy')) }}" 
                        target="_blank" rel="noopener noreferrer" title="YouTube Channel"
                        class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-bold flex items-center justify-center transition-colors">
                         YT
                     </a>
+                </div>
+
+                <!-- Tombol Login Admin -->
+                <div class="pt-3">
+                    @if (Auth::guard('admin')->check())
+                        <a href="{{ route('admin.dashboard') }}" 
+                           class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-xs hover:shadow-md">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                            </svg>
+                            <span>Dashboard Admin</span>
+                        </a>
+                    @else
+                        <a href="{{ route('admin.login') }}" 
+                           class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-oren-utama text-white hover:text-white border border-white/15 text-xs font-bold transition-all shadow-xs hover:shadow-md group">
+                            <svg class="w-4 h-4 text-oren-utama group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                            <span>Login Admin</span>
+                        </a>
+                    @endif
                 </div>
             </div>
 
@@ -110,11 +131,23 @@
                 <span>Layanan Aktif</span>
             </div>
 
-            <!-- Links Legal (DI SINI PERUBAHANNYA) -->
-            <div class="flex items-center space-x-4">
+            <!-- Links Legal & Akses Admin -->
+            <div class="flex items-center space-x-3 sm:space-x-4">
                 <a href="#" class="hover:text-white transition-colors">Kebijakan Privasi</a>
                 <a href="#" class="hover:text-white transition-colors">Syarat & Ketentuan</a>
                 <a href="{{ route('peta.situs') }}" class="hover:text-white transition-colors">Peta Situs</a>
+                <span class="text-white/20">•</span>
+                @if (Auth::guard('admin')->check())
+                    <a href="{{ route('admin.dashboard') }}" class="text-emerald-400 hover:text-emerald-300 font-bold transition-colors flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Dashboard Admin</span>
+                    </a>
+                @else
+                    <a href="{{ route('admin.login') }}" class="text-gray-300 hover:text-oren-muda font-bold transition-colors flex items-center gap-1">
+                        <svg class="w-3 h-3 text-oren-utama" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        <span>Login Admin</span>
+                    </a>
+                @endif
             </div>
         </div>
 

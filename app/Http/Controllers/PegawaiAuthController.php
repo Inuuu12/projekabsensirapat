@@ -13,10 +13,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use App\Services\SirapiMailer;
 
 class PegawaiAuthController extends Controller
 {
@@ -192,22 +194,26 @@ class PegawaiAuthController extends Controller
         $otp = (string) random_int(100000, 999999);
 
         try {
-            Mail::raw(
-                "Kode OTP reset password SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::PASSWORD_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta reset password.",
-                function ($message) use ($email) {
-                    $message->to($email)->subject('Kode OTP Reset Password SIRAPI');
-                }
+            SirapiMailer::send(
+                $email,
+                'Kode OTP Reset Password SIRAPI',
+                "Kode OTP reset password SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::PASSWORD_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta reset password."
             );
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            Log::error('PegawaiAuthController: Gagal mengirim OTP reset password ke ' . $email . ': ' . $e->getMessage(), ['exception' => $e]);
+            $msg = 'OTP gagal dikirim. Periksa konfigurasi email aplikasi.';
+            if (config('app.debug')) {
+                $msg .= ' (Detail: ' . $e->getMessage() . ')';
+            }
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'OTP gagal dikirim. Periksa konfigurasi email aplikasi.',
+                    'message' => $msg,
                 ], 500);
             }
 
             return back()
-                ->withErrors(['reset_email' => 'OTP gagal dikirim. Periksa konfigurasi email aplikasi.'])
+                ->withErrors(['reset_email' => $msg])
                 ->withInput($request->only('reset_email'))
                 ->with('forgot_open', true);
         }
@@ -388,16 +394,20 @@ class PegawaiAuthController extends Controller
         $otp = (string) random_int(100000, 999999);
 
         try {
-            Mail::raw(
-                "Kode OTP ubah password SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::PASSWORD_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta perubahan password.",
-                function ($message) use ($email) {
-                    $message->to($email)->subject('Kode OTP Ubah Password SIRAPI');
-                }
+            SirapiMailer::send(
+                $email,
+                'Kode OTP Ubah Password SIRAPI',
+                "Kode OTP ubah password SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::PASSWORD_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta perubahan password."
             );
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            Log::error('PegawaiAuthController: Gagal mengirim OTP ubah password ke ' . $email . ': ' . $e->getMessage(), ['exception' => $e]);
+            $msg = 'OTP gagal dikirim. Periksa konfigurasi email aplikasi.';
+            if (config('app.debug')) {
+                $msg .= ' (Detail: ' . $e->getMessage() . ')';
+            }
             return response()->json([
                 'success' => false,
-                'message' => 'OTP gagal dikirim. Periksa konfigurasi email aplikasi.',
+                'message' => $msg,
             ], 500);
         }
 
