@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Tamu Rapat - SIRAPI</title>
+    <title>Form Tamu Rapat - RAPID</title>
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -49,7 +49,7 @@
             $routeParams = $agendaAktif ? ['agenda_id' => $agendaAktif->id_agenda] : [];
         @endphp
 
-        <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-lg relative space-y-6 transition-colors">
+        <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-xl md:shadow-2xl relative space-y-6 transition-all duration-300">
             <div class="flex items-center justify-between">
                 <a href="{{ $agendaAktif ? route('publik.agenda.detail', $agendaAktif->id_agenda) : route('publik.agenda') }}" class="inline-flex items-center space-x-1.5 text-xs font-bold text-ijo-semitua dark:text-emerald-400 hover:underline">
                     <span>&larr;</span>
@@ -218,7 +218,7 @@
                                                 Coba Lagi
                                             </button>
                                             <button type="button" onclick="switchPhotoMode('upload')" class="px-3 py-1.5 rounded-xl bg-white text-red-900 text-xs font-extrabold shadow-sm transition hover:bg-gray-100 cursor-pointer">
-                                                Upload File &rarr;
+                                                Upload File
                                             </button>
                                         </div>
                                     </div>
@@ -304,7 +304,6 @@
                         <div class="pt-4">
                             <button type="submit" id="btn-submit-tamu" class="w-full bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white font-bold text-xs py-3.5 rounded-2xl transition-colors flex items-center justify-center space-x-2 shadow-xs cursor-pointer">
                                 <span>Kirim Data Presensi</span>
-                                <span>&rarr;</span>
                             </button>
                         </div>
                     </form>
@@ -697,7 +696,7 @@
                             }
                         } else {
                             btnSubmit.disabled = false;
-                            btnSubmit.innerHTML = `<span>Kirim Data Presensi</span><span>&rarr;</span>`;
+                            btnSubmit.innerHTML = `<span>Kirim Data Presensi</span>`;
                             if (errorAlert && errorAlertText) {
                                 errorAlertText.textContent = result.message || "Terjadi kesalahan saat menyimpan data presensi.";
                                 errorAlert.classList.remove('hidden');
@@ -709,7 +708,7 @@
                     } catch (err) {
                         console.error("Presensi form error:", err);
                         btnSubmit.disabled = false;
-                        btnSubmit.innerHTML = `<span>Kirim Data Presensi</span><span>&rarr;</span>`;
+                        btnSubmit.innerHTML = `<span>Kirim Data Presensi</span>`;
                         if (errorAlert && errorAlertText) {
                             errorAlertText.textContent = "Gagal terhubung ke server. Silakan coba lagi.";
                             errorAlert.classList.remove('hidden');

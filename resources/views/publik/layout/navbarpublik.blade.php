@@ -1,5 +1,5 @@
 @php
-    $appName = config('sirapi.name', 'SIRAPI');
+    $appName = config('sirapi.name', 'RAPID');
     $organizationName = config('sirapi.organization', 'Dinas Komunikasi & Informatika');
     $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
 @endphp
@@ -8,11 +8,10 @@
     <div class="w-full max-w-[1680px] mx-auto px-3.5 sm:px-6 lg:px-8 2xl:px-10 flex items-center justify-between h-16 sm:h-20">
         
         <!-- Logo & Branding -->
-        <a href="{{ route('publik.beranda') }}" class="flex items-center gap-2.5 sm:gap-3.5 group min-w-0 pr-2">
-            <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 object-contain shrink-0 group-hover:scale-105 transition-transform drop-shadow-sm">
+        <a href="{{ route('publik.beranda') }}" class="flex items-center gap-2.5 sm:gap-3 group min-w-0 pr-2">
+            <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 object-contain group-hover:scale-105 transition-transform drop-shadow-sm shrink-0">
             <div class="flex flex-col justify-center min-w-0">
-                <p class="text-[8px] sm:text-[9px] font-bold tracking-widest text-ijo-sangatmuda dark:text-emerald-400 uppercase leading-none truncate">{{ $regionName }}</p>
-                <span class="font-black text-base sm:text-lg md:text-xl tracking-wide text-white leading-tight mt-0.5">{{ $appName }}</span>
+                <span class="font-black text-base sm:text-lg md:text-xl tracking-wide text-white leading-tight">{{ $appName }}</span>
                 <p class="text-[9.5px] sm:text-[11px] font-medium text-white/80 dark:text-gray-300 leading-none truncate mt-0.5">{{ $organizationName }}</p>
             </div>
         </a>
@@ -28,6 +27,12 @@
                 <a href="{{ route('publik.masukan') }}" 
                    class="px-3 sm:px-4 py-1.5 sm:py-2 bg-oren-utama hover:bg-oren-tua dark:bg-[#d97706] dark:hover:bg-[#b45309] text-white font-bold rounded-xl shadow-xs text-xs transition-colors">
                     Aduan
+                </a>
+
+                <a href="{{ route('pegawai.login') }}" 
+                   class="px-3 sm:px-3.5 py-1.5 sm:py-2 bg-white/15 hover:bg-white/25 dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold rounded-xl shadow-xs text-xs transition-colors flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    <span>Portal Pegawai</span>
                 </a>
             </nav>
 

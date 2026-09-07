@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard') - SIRAPI</title>
+    <title>@yield('title', 'Admin Dashboard') - RAPID</title>
     
     <!-- Script Anti-FOUC Tema Gelap/Terang -->
     <script>
@@ -101,6 +101,20 @@
             background-color: #152420 !important;
             color: #f1f5f9 !important;
             border-color: #233a34 !important;
+        }
+
+        /* Enhanced Card & Container Shadows */
+        main .shadow-xs,
+        main .shadow-sm,
+        main .shadow-md,
+        main .shadow {
+            box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04) !important;
+        }
+        .dark main .shadow-xs,
+        .dark main .shadow-sm,
+        .dark main .shadow-md,
+        .dark main .shadow {
+            box-shadow: 0 6px 24px -2px rgba(0, 0, 0, 0.45) !important;
         }
         .dark .bg-gray-50, 
         .dark .bg-slate-50, 
@@ -409,7 +423,8 @@
         }
 
         /* Brand Seal Logo in Dark Mode */
-        .dark img[src*="logo-bappenda.png"] {
+        .dark img[src*="logo-bappenda.png"],
+        .dark img[src*="logo.png"] {
             filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6)) !important;
         }
 

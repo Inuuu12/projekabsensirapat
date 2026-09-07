@@ -154,8 +154,13 @@ class PegawaiAuthController extends Controller
             'bidang' => ['nullable', 'string', 'max:255'],
             'nomor_hp' => ['required', 'string', 'max:13', 'regex:/^[0-9]+$/'],
             'email' => ['required', 'email', 'max:255', 'unique:sirapi_md_pegawai,email'],
+            'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
+
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('pegawai', 'public');
+        }
 
         $validated['status_verifikasi'] = Pegawai::STATUS_PENDING;
 
@@ -196,8 +201,8 @@ class PegawaiAuthController extends Controller
         try {
             SirapiMailer::send(
                 $email,
-                'Kode OTP Reset Password SIRAPI',
-                "Kode OTP reset password SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::PASSWORD_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta reset password."
+                'Kode OTP Reset Password RAPID',
+                "Kode OTP reset password RAPID Anda: {$otp}\n\nKode ini berlaku selama " . self::PASSWORD_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta reset password."
             );
         } catch (\Throwable $e) {
             Log::error('PegawaiAuthController: Gagal mengirim OTP reset password ke ' . $email . ': ' . $e->getMessage(), ['exception' => $e]);
@@ -284,8 +289,9 @@ class PegawaiAuthController extends Controller
         $kehadiran = $agenda ? $this->kehadiranPegawai($agenda->id_agenda, $pegawai->email) : null;
         [$bidangOptions, $jabatanOptions] = $this->masterPegawaiOptions();
         $isDitugaskan = $agenda ? $agenda->canPegawaiPresensi($pegawai) : true;
+        $daftarAgenda = $this->queryOrDefault(fn () => Agenda::latest('id_agenda')->take(20)->get(), collect());
 
-        return view('pegawai.presensi.index', compact('pegawai', 'agenda', 'dokumen', 'kehadiran', 'bidangOptions', 'jabatanOptions', 'isDitugaskan'));
+        return view('pegawai.presensi.index', compact('pegawai', 'agenda', 'dokumen', 'kehadiran', 'bidangOptions', 'jabatanOptions', 'isDitugaskan', 'daftarAgenda'));
     }
 
     public function simpanPresensi(Request $request)
@@ -396,8 +402,8 @@ class PegawaiAuthController extends Controller
         try {
             SirapiMailer::send(
                 $email,
-                'Kode OTP Ubah Password SIRAPI',
-                "Kode OTP ubah password SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::PASSWORD_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta perubahan password."
+                'Kode OTP Ubah Password RAPID',
+                "Kode OTP ubah password RAPID Anda: {$otp}\n\nKode ini berlaku selama " . self::PASSWORD_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta perubahan password."
             );
         } catch (\Throwable $e) {
             Log::error('PegawaiAuthController: Gagal mengirim OTP ubah password ke ' . $email . ': ' . $e->getMessage(), ['exception' => $e]);

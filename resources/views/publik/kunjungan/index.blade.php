@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Kunjungan - SIRAPI</title>
+    <title>Form Kunjungan - RAPID</title>
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -156,7 +156,6 @@
 
                         <button type="button" id="btn-toggle-pegawai" class="w-full text-center text-xs md:text-sm font-bold text-ijo-semitua dark:text-emerald-400 hover:underline mt-3 flex items-center justify-center space-x-1 py-1 cursor-pointer">
                             <span id="toggle-text">Lihat semua pegawai</span>
-                            <span>&rarr;</span>
                         </button>
                     @endif
                 </div>

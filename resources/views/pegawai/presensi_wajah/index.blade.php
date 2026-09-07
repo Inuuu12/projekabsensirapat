@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner Wajah Pegawai - SIRAPI</title>
+    <title>Scanner Wajah Pegawai - RAPID</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Daftar Pegawai - SIRAPI</title>
+    <title>Daftar Pegawai - RAPID</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -106,8 +106,8 @@
         </button>
 
         <div class="relative flex flex-col items-center text-center px-4 z-10">
-            <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-16 sm:h-22 w-auto drop-shadow">
-            <h1 class="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-wide">SIRAPI</h1>
+            <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-14 sm:h-20 w-auto object-contain drop-shadow">
+            <h1 class="mt-2.5 sm:mt-3 text-xl sm:text-2xl font-extrabold tracking-wide">RAPID</h1>
             <p class="mt-0.5 sm:mt-1 text-xs sm:text-sm font-semibold text-emerald-100 dark:text-gray-300">Pendaftaran Akun Pegawai</p>
         </div>
     </header>
@@ -137,8 +137,23 @@
                 </div>
             </div>
 
-            <form action="{{ route('pegawai.register.submit') }}" method="POST" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 rounded-2xl sm:rounded-3xl border border-[#DDE3DF] dark:border-[#233a34] bg-white dark:bg-[#152420] p-4.5 sm:p-7 md:p-8 shadow-xs transition-colors">
+            <form action="{{ route('pegawai.register.submit') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 rounded-2xl sm:rounded-3xl border border-[#DDE3DF] dark:border-[#233a34] bg-white dark:bg-[#152420] p-4.5 sm:p-7 md:p-8 shadow-xs transition-colors">
                 @csrf
+
+                <!-- Upload Foto Profil -->
+                <div class="sm:col-span-2 flex flex-col items-center justify-center py-2 border-b border-gray-100 dark:border-[#233a34] mb-2">
+                    <input id="foto" name="foto" type="file" accept="image/*" class="hidden">
+                    <label for="foto" class="relative flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-[#7b8d86] dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] text-[#6f7d78] dark:text-gray-400 transition hover:border-sirapi-green hover:text-sirapi-green shadow-xs group">
+                        <img id="foto-preview" src="{{ asset('assets/foto/profile.png') }}" alt="Preview foto" class="h-full w-full rounded-full object-cover">
+                        <span class="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white dark:border-[#152420] bg-sirapi-green text-white shadow-sm group-hover:scale-110 transition-transform">
+                            <i data-lucide="camera" class="h-4 w-4"></i>
+                        </span>
+                    </label>
+                    <div class="flex gap-2 mt-2 items-center">
+                        <label for="foto" class="cursor-pointer text-xs font-bold text-sirapi-green dark:text-emerald-400 hover:underline">Unggah Foto Profil</label>
+                        <span class="text-xs text-gray-400">(Opsional, max 2MB)</span>
+                    </div>
+                </div>
 
                 <!-- Nama Lengkap -->
                 <div class="sm:col-span-2">
@@ -331,6 +346,19 @@
             }
             lucide.createIcons();
         }
+
+        const fotoInput = document.getElementById('foto');
+        const fotoPreview = document.getElementById('foto-preview');
+        fotoInput?.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (fotoPreview) fotoPreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     </script>
 </body>
 </html>

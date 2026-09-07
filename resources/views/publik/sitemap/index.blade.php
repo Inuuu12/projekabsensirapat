@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peta Situs (Sitemap) - SIRAPI</title>
+    <title>Peta Situs (Sitemap) - RAPID</title>
     @include('publik.layout.theme_script')
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -36,7 +36,7 @@
         <!-- Header Page -->
         <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-3xl p-6 md:p-8 shadow-xs transition-colors">
             <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">Peta Situs (Sitemap)</h1>
-            <p class="text-xs md:text-sm text-gray-500 dark:text-gray-300 mt-1">Daftar struktur halaman dan layanan yang tersedia di website resmi SIRAPI.</p>
+            <p class="text-xs md:text-sm text-gray-500 dark:text-gray-300 mt-1">Daftar struktur halaman dan layanan yang tersedia di website resmi RAPID.</p>
         </div>
 
         <!-- Grid Sitemap / Daftar Isi Website -->

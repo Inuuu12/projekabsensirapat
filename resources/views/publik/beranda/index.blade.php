@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Publik - SIRAPI</title>
+    <title>Dashboard Publik - RAPID</title>
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -97,7 +97,7 @@
 
         <!-- 2. Header Grid (Widget Cuaca & Banner Ulang Tahun Pegawai Hari Ini) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <button type="button" id="open-weather-modal" class="lg:col-span-6 bg-ijo-tua dark:bg-[#152420] text-white rounded-3xl p-6 flex items-center justify-between shadow-md border border-transparent dark:border-[#233a34] text-left hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer">
+            <button type="button" id="open-weather-modal" class="lg:col-span-6 bg-ijo-tua dark:bg-[#152420] text-white rounded-3xl p-6 flex items-center justify-between shadow-lg hover:shadow-xl hover:-translate-y-0.5 border border-transparent dark:border-[#233a34] text-left transition-all cursor-pointer">
                 <div>
                     <p id="home-weather-location" class="text-xs text-gray-200 dark:text-gray-300">Cibinong, Kab. Bogor</p>
                     <h2 id="home-weather-temp" class="text-4xl font-extrabold mt-1 text-white dark:text-emerald-400">-</h2>
@@ -107,7 +107,7 @@
                 <div class="text-5xl">☁</div>
             </button>
 
-            <a href="#ulang-tahun-pegawai" class="lg:col-span-6 bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-between">
+            <a href="#ulang-tahun-pegawai" class="lg:col-span-6 bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <div class="w-14 h-14 rounded-2xl bg-ijo-semitua dark:bg-[#1b3832] text-white dark:text-emerald-400 font-extrabold text-lg flex items-center justify-center shrink-0 border border-transparent dark:border-emerald-500/30">
                         {{ $initial($ulangTahunUtama?->nama) }}
@@ -129,7 +129,7 @@
         </div>
 
         <!-- Banner Kunjungan Pejabat -->
-        <div class="bg-white dark:bg-[#152420] rounded-3xl p-5 md:p-6 border border-gray-100 dark:border-[#233a34] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6 hover:shadow-md transition-all">
+        <div class="bg-white dark:bg-[#152420] rounded-3xl p-5 md:p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
             <div class="flex items-center space-x-4">
                 <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-ijo-sangatmuda dark:bg-[#1b3832] text-ijo-tua dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-inner border border-transparent dark:border-emerald-500/20">
                     <svg class="w-6 h-6 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 24 24">
@@ -142,8 +142,7 @@
                 </div>
             </div>
             <a href="{{ route('publik.form-kunjungan') }}" class="w-full md:w-auto inline-flex items-center justify-center space-x-2 text-xs md:text-sm font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-6 py-3 rounded-full transition-all shadow-xs shrink-0 group">
-                <span>Isi Form Kunjungan </span>
-                <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+                <span>Isi Form Kunjungan</span>
             </a>
         </div>
 
@@ -161,7 +160,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @forelse ($agendaItems as $agenda)
-                    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] text-gray-800 dark:text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-xs">
+                    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] text-gray-800 dark:text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
                         <div class="space-y-2">
                             <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-300">
                                 <span>{{ substr((string) $agenda->waktu, 0, 5) ?: '-' }} WIB</span>
@@ -199,14 +198,14 @@
         </section>
 
         <!-- 4. Section Video Dokumentasi & Galeri Foto -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-8 space-y-4">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-base font-bold text-gray-900 dark:text-white">Dokumentasi Video</h3>
                         <p class="text-xs text-gray-500 dark:text-gray-300">Publikasi video resmi terkait kegiatan dan informasi</p>
                     </div>
-                    <a href="{{ route('publik.video') }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:underline">Lihat Semua &rarr;</a>
+                    <a href="{{ route('publik.video') }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:underline">Lihat Semua</a>
                 </div>
                 <div class="h-64 md:h-80 w-full bg-black rounded-3xl overflow-hidden shadow-xs border border-transparent dark:border-[#233a34]">
                     <iframe class="w-full h-full" src="{{ $youtubeEmbedUrl }}" title="Video Diskominfo Kabupaten Bogor" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -216,7 +215,7 @@
             <div class="lg:col-span-4 space-y-4 flex flex-col justify-between">
                 <div class="flex items-center justify-between">
                     <h3 class="text-base font-bold text-gray-900 dark:text-white">Galeri Foto</h3>
-                    <a href="{{ route('publik.galeri') }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:underline">Lihat Semua &rarr;</a>
+                    <a href="{{ route('publik.galeri') }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:underline">Lihat Semua</a>
                 </div>
                 <div class="grid grid-cols-2 gap-4 flex-grow">
                     @forelse ($galeriItems->take(4) as $item)
@@ -242,7 +241,7 @@
                     @endforelse
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- 5. Section Berita Terkini & Widget Ulang Tahun Pegawai List -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -259,7 +258,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @forelse ($beritaItems->take(2) as $berita)
-                        <div class="bg-white dark:bg-[#152420] rounded-3xl overflow-hidden shadow-xs border border-gray-100 dark:border-[#233a34] flex flex-col justify-between transition-colors">
+                        <div class="bg-white dark:bg-[#152420] rounded-3xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-0.5 border border-gray-100 dark:border-[#233a34] flex flex-col justify-between transition-all duration-300">
                             <div>
                                 <div class="h-40 bg-ijo-muda bg-cover bg-center relative p-4" style="background-image: url('{{ $imageUrl($berita->gambar) }}')">
                                     <span class="bg-white text-ijo-tua font-bold text-[10px] px-3 py-1 rounded-full shadow-xs">Berita</span>
@@ -273,7 +272,6 @@
                             <div class="p-5 pt-0">
                                 <a href="{{ route('publik.berita.detail', $berita->id_berita) }}" class="inline-flex items-center justify-center space-x-1.5 text-xs font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 py-2.5 rounded-2xl transition-all shadow-xs">
                                     <span>Baca Selengkapnya</span>
-                                    <span>&rarr;</span>
                                 </a>
                             </div>
                         </div>
@@ -285,7 +283,7 @@
                 </div>
             </div>
 
-            <div id="ulang-tahun-pegawai" class="lg:col-span-4 bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4 flex flex-col justify-between scroll-mt-24 transition-colors">
+            <div id="ulang-tahun-pegawai" class="lg:col-span-4 bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl space-y-4 flex flex-col justify-between scroll-mt-24 transition-all duration-300">
                 <div>
                     <div class="flex items-center space-x-2">
                         <span class="text-base">🎂</span>
@@ -319,14 +317,13 @@
                 <div class="border-t border-gray-100 dark:border-[#233a34] pt-3">
                     <a href="{{ route('publik.ulang-tahun') }}" class="w-full inline-flex items-center justify-center space-x-1.5 text-xs font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 py-2.5 rounded-2xl transition-all shadow-xs">
                         <span>Lihat Semua Pegawai</span>
-                        <span>&rarr;</span>
                     </a>
                 </div>
             </div>
         </div>
 
         <!-- 6. Section daftar Aduan -->
-        <section class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4 transition-colors">
+        <section class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl space-y-4 transition-all duration-300">
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-base font-bold text-gray-900 dark:text-white">Daftar Aduan</h3>
@@ -370,7 +367,6 @@
             <div class="flex justify-end pt-2 border-t border-gray-100 dark:border-[#233a34]">
                 <a href="{{ route('publik.masukan') }}" class="inline-flex items-center space-x-2 text-xs font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-5 py-2.5 rounded-2xl transition-all shadow-xs">
                     <span>Buat Aduan Baru</span>
-                    <span>&rarr;</span>
                 </a>
             </div>
         </section>

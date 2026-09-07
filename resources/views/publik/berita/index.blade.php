@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semua Berita - SIRAPI</title>
+    <title>Semua Berita - RAPID</title>
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -93,7 +93,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse ($beritaItems as $item)
-                <article class="bg-white dark:bg-[#152420] rounded-3xl overflow-hidden border border-gray-100 dark:border-[#233a34] shadow-xs flex flex-col justify-between hover:shadow-md transition-all group">
+                <article class="bg-white dark:bg-[#152420] rounded-3xl overflow-hidden border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between transition-all duration-300 group">
                     <div>
                         <div class="h-48 bg-[#6A9C95] relative p-4 bg-cover bg-center overflow-hidden" style="background-image: url('{{ $imageUrl($item->gambar) }}')">
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
@@ -117,7 +117,6 @@
                     <div class="px-6 pb-6 pt-2 flex items-center justify-between">
                         <a href="{{ route('publik.berita.detail', $item->id_berita) }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:text-ijo-semitua dark:hover:text-emerald-300 inline-flex items-center space-x-1">
                             <span>Baca Selengkapnya</span>
-                            <span>&rarr;</span>
                         </a>
                         @if (!empty($item->url) && !($item->is_internal ?? false))
                             <a href="{{ $item->url }}" target="_blank" rel="noopener noreferrer" class="text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex items-center gap-1" title="Buka artikel di sumber resmi">

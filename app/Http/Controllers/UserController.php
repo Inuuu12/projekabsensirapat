@@ -99,8 +99,8 @@ class UserController extends Controller
         try {
             SirapiMailer::send(
                 $email,
-                'Kode OTP Aduan SIRAPI',
-                "Kode OTP aduan SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::ADUAN_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta kode OTP."
+                'Kode OTP Aduan RAPID',
+                "Kode OTP aduan RAPID Anda: {$otp}\n\nKode ini berlaku selama " . self::ADUAN_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta kode OTP."
             );
         } catch (\Throwable $e) {
             Log::error('UserController: Gagal mengirim OTP aduan ke ' . $email . ': ' . $e->getMessage(), ['exception' => $e]);

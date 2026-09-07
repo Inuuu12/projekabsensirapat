@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Berita - SIRAPI</title>
+    <title>Detail Berita - RAPID</title>
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -103,7 +103,7 @@
                 </article>
 
                 <aside class="lg:col-span-4 space-y-6">
-                    <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4">
+                    <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-4">
                         <h3 class="font-bold text-sm text-gray-900 dark:text-white border-b border-gray-100 dark:border-[#233a34] pb-3">Informasi Artikel</h3>
                         <div class="space-y-3 text-xs">
                             <div class="flex justify-between items-center gap-4">
@@ -117,7 +117,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4">
+                    <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-4">
                         <h3 class="font-bold text-sm text-gray-900 dark:text-white border-b border-gray-100 dark:border-[#233a34] pb-3">Berita Terkait</h3>
 
                         <div class="space-y-4">
@@ -139,7 +139,6 @@
                         <div class="pt-2 text-center">
                             <a href="{{ route('publik.berita') }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:text-ijo-semitua dark:hover:text-emerald-300 inline-flex items-center space-x-1">
                                 <span>Lihat Semua Berita</span>
-                                <span>&rarr;</span>
                             </a>
                         </div>
                     </div>
