@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Services\SirapiMailer;
 
 class AdminPegawaiController extends Controller
 {
@@ -118,11 +119,10 @@ class AdminPegawaiController extends Controller
         Pegawai::create($validated);
 
         try {
-            Mail::raw(
-                "Akun pegawai SIRAPI Anda sudah dibuat.\n\nEmail: {$validated['email']}\nPassword sementara: {$defaultPassword}\n\nSilakan login dan ubah password dari menu profil.",
-                function ($message) use ($validated) {
-                    $message->to($validated['email'])->subject('Akun Pegawai SIRAPI');
-                }
+            SirapiMailer::send(
+                $validated['email'],
+                'Akun Pegawai SIRAPI',
+                "Akun pegawai SIRAPI Anda sudah dibuat.\n\nEmail: {$validated['email']}\nPassword sementara: {$defaultPassword}\n\nSilakan login dan ubah password dari menu profil."
             );
         } catch (\Throwable) {
             return back()->with('warning', 'Data pegawai berhasil ditambahkan, tetapi email password gagal dikirim. Periksa konfigurasi email aplikasi.');
@@ -150,11 +150,10 @@ class AdminPegawaiController extends Controller
 
         if ($validated['status_verifikasi'] === 'aktif') {
             try {
-                Mail::raw(
-                    "Halo {$pegawai->nama_pegawai},\n\nAkun Pegawai SIRAPI Anda telah DISETUJUI oleh Administrator.\nAnda sekarang dapat login ke sistem SIRAPI menggunakan email: {$pegawai->email}\n\nTerima kasih.",
-                    function ($message) use ($pegawai) {
-                        $message->to($pegawai->email)->subject('Pemberitahuan: Akun Pegawai SIRAPI Disetujui');
-                    }
+                SirapiMailer::send(
+                    $pegawai->email,
+                    'Pemberitahuan: Akun Pegawai SIRAPI Disetujui',
+                    "Halo {$pegawai->nama_pegawai},\n\nAkun Pegawai SIRAPI Anda telah DISETUJUI oleh Administrator.\nAnda sekarang dapat login ke sistem SIRAPI menggunakan email: {$pegawai->email}\n\nTerima kasih."
                 );
             } catch (\Throwable) {
                 // Email notification fail shouldn't break the approval

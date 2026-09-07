@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DokumenNotulen;
 use App\Models\Galeri;
 use App\Models\UlangTahun;
+use App\Services\AppSetting;
 use App\Services\NewsApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +20,8 @@ class AdminPublikController extends Controller
         $berita = $newsService->getNews();
         $galeri = $this->dokumentasiAgendaGaleri();
         $ulangTahun = UlangTahun::tampilkanUlangTahunPegawai();
-        $youtubeChannelUrl = Cache::get('sirapi_youtube_channel_url', config('sirapi.youtube_channel_url', 'https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy'));
-        $youtubePlaylistId = Cache::get('sirapi_youtube_playlist_id', config('sirapi.youtube_playlist_id', 'UUJlX_73GqPvJlerJFN4cRgA'));
+        $youtubeChannelUrl = AppSetting::get('sirapi_youtube_channel_url', config('sirapi.youtube_channel_url', 'https://youtube.com/@kabupatenbogor?si=PAPn9ARUMrvRwMYy'));
+        $youtubePlaylistId = AppSetting::get('sirapi_youtube_playlist_id', config('sirapi.youtube_playlist_id', 'UUJlX_73GqPvJlerJFN4cRgA'));
         $youtubeEmbedUrl = 'https://www.youtube.com/embed/videoseries?list=' . $youtubePlaylistId;
 
         return view('admin.publik.index', compact('admin', 'berita', 'galeri', 'ulangTahun', 'youtubeChannelUrl', 'youtubePlaylistId', 'youtubeEmbedUrl'));
@@ -38,8 +39,10 @@ class AdminPublikController extends Controller
             $playlistId = 'UU' . substr($playlistId, 2);
         }
 
-        Cache::forever('sirapi_youtube_channel_url', trim($validated['youtube_channel_url']));
-        Cache::forever('sirapi_youtube_playlist_id', $playlistId);
+        AppSetting::setMany([
+            'sirapi_youtube_channel_url' => trim($validated['youtube_channel_url']),
+            'sirapi_youtube_playlist_id' => $playlistId,
+        ]);
 
         return back()->with('success', 'Pengaturan Channel YouTube Publik berhasil disimpan.');
     }

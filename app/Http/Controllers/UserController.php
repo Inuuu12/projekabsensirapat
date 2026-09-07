@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use App\Models\Agenda; // Pastikan model agenda merujuk ke tabel tunggal 'agenda'
 use App\Models\QRCode;
+use App\Services\SirapiMailer;
 
 class UserController extends Controller
 {
@@ -95,16 +97,20 @@ class UserController extends Controller
         $otp = (string) random_int(100000, 999999);
 
         try {
-            Mail::raw(
-                "Kode OTP aduan SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::ADUAN_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta kode OTP.",
-                function ($message) use ($email) {
-                    $message->to($email)->subject('Kode OTP Aduan SIRAPI');
-                }
+            SirapiMailer::send(
+                $email,
+                'Kode OTP Aduan SIRAPI',
+                "Kode OTP aduan SIRAPI Anda: {$otp}\n\nKode ini berlaku selama " . self::ADUAN_OTP_TTL_MINUTES . " menit. Abaikan email ini jika Anda tidak meminta kode OTP."
             );
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            Log::error('UserController: Gagal mengirim OTP aduan ke ' . $email . ': ' . $e->getMessage(), ['exception' => $e]);
+            $msg = 'OTP gagal dikirim. Periksa konfigurasi email aplikasi.';
+            if (config('app.debug')) {
+                $msg .= ' (Detail: ' . $e->getMessage() . ')';
+            }
             return response()->json([
                 'success' => false,
-                'message' => 'OTP gagal dikirim. Periksa konfigurasi email aplikasi.',
+                'message' => $msg,
             ], 500);
         }
 

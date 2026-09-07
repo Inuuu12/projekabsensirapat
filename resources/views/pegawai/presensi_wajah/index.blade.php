@@ -136,20 +136,20 @@
             // Load Models
             try {
                 await Promise.all([
-                    faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
-                    faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-                    faceapi.nets.faceRecognitionNet.loadFromUri('/models')
+                    faceapi.nets.ssdMobilenetv1.loadFromUri('{{ asset('models') }}'),
+                    faceapi.nets.faceLandmark68Net.loadFromUri('{{ asset('models') }}'),
+                    faceapi.nets.faceRecognitionNet.loadFromUri('{{ asset('models') }}')
                 ]);
                 statusText.innerText = "Mengambil data pegawai...";
             } catch (err) {
-                console.error(err);
+                console.error("Gagal memuat model:", err);
                 statusText.innerText = "Gagal memuat model. Periksa koneksi atau file model.";
                 return;
             }
 
             // Fetch Registered Faces
             try {
-                const response = await fetch('/api/pegawai/faces');
+                const response = await fetch('{{ route('api.pegawai.faces') }}');
                 const pegawaiList = await response.json();
                 
                 if (pegawaiList.length === 0) {
@@ -169,8 +169,14 @@
                 faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.45); // 0.45 is distance threshold (lower is stricter)
                 statusText.innerText = "Menyalakan kamera...";
             } catch (err) {
-                console.error(err);
+                console.error("Gagal mengambil data pegawai:", err);
                 statusText.innerText = "Gagal mengambil data pegawai.";
+                return;
+            }
+
+            // Check Camera API support (requires HTTPS or localhost)
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                statusText.innerText = "Kamera tidak didukung pada koneksi ini. Pastikan menggunakan protokol HTTPS atau localhost.";
                 return;
             }
 
@@ -187,7 +193,7 @@
                 video.classList.remove('hidden');
                 statusText.classList.add('hidden');
             } catch (err) {
-                console.error(err);
+                console.error("Gagal akses kamera:", err);
                 statusText.innerText = "Tidak dapat mengakses kamera. Pastikan izin kamera sudah diizinkan di browser HP Anda.";
                 return;
             }
@@ -310,7 +316,7 @@
 
                 // Send to backend with the captured snapshot photo
                 try {
-                    const res = await fetch('/api/presensi/face', {
+                    const res = await fetch('{{ route('api.presensi.face') }}', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -352,6 +358,13 @@
                     resumeScanning();
                 }
             }
+
+            window.addEventListener('beforeunload', () => {
+                if (detectionInterval) clearInterval(detectionInterval);
+                if (video && video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
+            });
         });
     </script>
 </body>
