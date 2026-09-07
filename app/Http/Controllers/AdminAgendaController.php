@@ -410,10 +410,15 @@ class AdminAgendaController extends Controller
 
     public function hapus_Agenda($id)
     {
+        \Log::info("hapus_Agenda dipanggil untuk ID: " . $id);
+        
         $agenda = Agenda::find($id);
-        if ($agenda) {
-            $agenda->delete();
+        if (!$agenda) {
+            \Log::error("Agenda dengan ID $id tidak ditemukan di database!");
+            abort(404, "Agenda tidak ditemukan");
         }
+        
+        $agenda->delete();
 
         return redirect()->route('admin.agenda.lihat')->with('success', 'Agenda berhasil dihapus.');
     }

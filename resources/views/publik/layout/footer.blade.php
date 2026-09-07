@@ -22,7 +22,7 @@
                 </div>
 
                 <p class="text-xs text-gray-300 leading-relaxed pr-2">
-                    Melayani administrasi kependudukan, informasi publik, dan pengaduan masyarakat Kabupaten Bogor secara cepat, transparan, dan terintegrasi.
+                    Memfasilitasi pengelolaan agenda rapat kedinasan, presensi digital pegawai, dan dokumentasi koordinasi internal secara tertib, efisien, dan terintegrasi.
                 </p>
 
                 <!-- Social Media Buttons -->
