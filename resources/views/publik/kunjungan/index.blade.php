@@ -45,11 +45,11 @@
             $extraPejabat = $allPejabat->slice(3);
         @endphp
 
-        <div class="w-full max-w-xl bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-3xl md:rounded-[36px] p-6 md:p-10 shadow-xl space-y-6 my-4 transition-colors">
+        <div class="w-full max-w-xl bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-xl p-6 md:p-10 shadow-xl space-y-6 my-4 transition-colors">
             
             <!-- Success Alert -->
             @if (session('success'))
-                <div class="rounded-2xl bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 p-4 flex items-start space-x-3 text-xs md:text-sm font-bold shadow-xs border border-transparent dark:border-[#284c43]">
+                <div class="rounded-xl bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 p-4 flex items-start space-x-3 text-xs md:text-sm font-bold shadow-xs border border-transparent dark:border-[#284c43]">
                     <span class="text-base">✓</span>
                     <span>{{ session('success') }}</span>
                 </div>
@@ -57,7 +57,7 @@
 
             <!-- Validation Errors Alert -->
             @if ($errors->any())
-                <div class="rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 p-4 text-xs md:text-sm space-y-1">
+                <div class="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 p-4 text-xs md:text-sm space-y-1">
                     <p class="font-bold">Mohon periksa kembali isian form Anda:</p>
                     <ul class="list-disc list-inside">
                         @foreach ($errors->all() as $error)

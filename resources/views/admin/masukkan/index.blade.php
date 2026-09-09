@@ -46,7 +46,7 @@
 
 <div class="mx-auto max-w-[1500px] space-y-7 text-[#08251f] dark:text-slate-100">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
+        <div class="flex min-h-24 items-center gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-200/80 dark:bg-emerald-900/50 p-2.5">
                 <img src="{{ asset('assets/foto/Total Aduan.png') }}" alt="Total Aduan" class="h-full w-full object-contain">
             </div>
@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
+        <div class="flex min-h-24 items-center gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 p-2.5">
                 <img src="{{ asset('assets/foto/Menunggu.png') }}" alt="Menunggu" class="h-full w-full object-contain">
             </div>
@@ -66,7 +66,7 @@
             </div>
         </div>
 
-        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
+        <div class="flex min-h-24 items-center gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f0ed] dark:bg-[#1b3832] p-2.5">
                 <img src="{{ asset('assets/foto/process.png') }}" alt="Diproses" class="h-full w-full object-contain">
             </div>
@@ -76,7 +76,7 @@
             </div>
         </div>
 
-        <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
+        <div class="flex min-h-24 items-center gap-4 rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#e9f0ed] dark:bg-[#1b3832] p-2.5">
                 <img src="{{ asset('assets/foto/Selesai.png') }}" alt="Selesai" class="h-full w-full object-contain">
             </div>
@@ -87,7 +87,7 @@
         </div>
     </div>
 
-    <section class="overflow-hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] shadow-xs transition-colors">
+    <section class="overflow-hidden rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] shadow-xs transition-colors">
         <div class="flex flex-col gap-4 border-b border-gray-100 dark:border-[#233a34] px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
             <h2 class="text-2xl font-extrabold text-[#0f513f] dark:text-white">Log Aduan</h2>
             <form method="GET" action="{{ route('admin.masukkan.lihat') }}" class="flex items-center gap-3">

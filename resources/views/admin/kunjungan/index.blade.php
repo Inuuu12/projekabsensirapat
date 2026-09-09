@@ -12,13 +12,13 @@
 @section('content')
 <div class="max-w-[1400px] mx-auto space-y-6">
 
-    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs transition-colors">
+    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 shadow-xs transition-colors">
         <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Total Kunjungan</p>
         <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalKunjungan ?? $kunjungan->count() }}</p>
     </div>
 
-    <form id="form-search-kunjungan" method="GET" action="{{ route('admin.kunjungan.lihat') }}" class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] p-5 transition-colors">
-        <div class="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_200px_200px_180px_auto] xl:items-end">
+    <form id="form-search-kunjungan" method="GET" action="{{ route('admin.kunjungan.lihat') }}" class="bg-white dark:bg-[#152420] rounded-xl shadow-xs border border-gray-100 dark:border-[#233a34] p-4 sm:p-5 transition-colors">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-[1fr_200px_200px_180px_auto] xl:items-end gap-3 sm:gap-4">
             <div>
                 <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Search</label>
                 <div class="relative">
@@ -81,7 +81,7 @@
         </div>
     </form>
 
-    <div class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
+    <div class="bg-white dark:bg-[#152420] rounded-xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
         <div class="border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
             <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Daftar Kunjungan</h2>
             <p id="text-count-kunjungan" class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $kunjungan->count() }} dari {{ $totalKunjungan ?? $kunjungan->count() }} kunjungan.</p>

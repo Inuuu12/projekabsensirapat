@@ -6,7 +6,7 @@
 <div class="max-w-[1400px] mx-auto space-y-6">
 
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
+        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
             <div>
                 <p class="text-[11px] font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Agenda Hari Ini</p>
                 <p class="mt-3 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalAgendaHariIni ?? 0) }}</p>
@@ -15,7 +15,7 @@
                 <img src="{{ asset('assets/foto/Agendahariini.png') }}" alt="Agenda Hari Ini" class="w-full h-full object-contain">
             </div>
         </div>
-        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
+        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
             <div>
                 <p class="text-[11px] font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ruang Rapat</p>
                 <p class="mt-3 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalRuangRapat ?? 0) }}</p>
@@ -24,7 +24,7 @@
                 <img src="{{ asset('assets/foto/Ruanganlogo.png') }}" alt="Ruang Rapat" class="w-full h-full object-contain">
             </div>
         </div>
-        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
+        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
             <div>
                 <p class="text-[11px] font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Kunjungan</p>
                 <p class="mt-3 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalKunjungan ?? 0) }}</p>
@@ -33,7 +33,7 @@
                 <img src="{{ asset('assets/foto/Pengunjunglogo.png') }}" alt="Kunjungan" class="w-full h-full object-contain">
             </div>
         </div>
-        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
+        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">
             <div>
                 <p class="text-[11px] font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aduan Baru</p>
                 <p class="mt-3 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalAduanBaru ?? $totalMasukkanBaru ?? 0) }}</p>
@@ -45,7 +45,7 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <section class="lg:col-span-2 bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-6 shadow-xs transition-colors">
+        <section class="lg:col-span-2 bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-6 shadow-xs transition-colors">
             <div class="flex items-center justify-between mb-5">
                 <h2 class="text-lg font-bold text-gray-800 dark:text-white">Agenda Terdekat</h2>
                 <a href="{{ route('admin.agenda.lihat') }}" class="text-sm font-bold text-[#35635b] dark:text-emerald-400 hover:underline">Lihat semua</a>
@@ -74,7 +74,7 @@
             </div>
         </section>
 
-        <section class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-6 shadow-xs transition-colors">
+        <section class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-6 shadow-xs transition-colors">
             <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-5">Aktivitas Terbaru</h2>
             <div class="space-y-4">
                 @forelse ($aktivitasTerbaru as $aktivitas)

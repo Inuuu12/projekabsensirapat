@@ -76,6 +76,34 @@
         html:not(.dark) {
             color-scheme: light;
         }
+
+        @keyframes biometricScan {
+            0% {
+                top: 5%;
+                opacity: 0.2;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                top: 90%;
+                opacity: 0.2;
+            }
+        }
+        .biometric-laser-line {
+            position: absolute;
+            left: 4%;
+            right: 4%;
+            height: 2.5px;
+            background: linear-gradient(90deg, transparent 0%, rgba(52, 211, 153, 0.7) 15%, #10b981 50%, rgba(52, 211, 153, 0.7) 85%, transparent 100%);
+            box-shadow: 0 0 12px 2.5px rgba(16, 185, 129, 0.85), 0 0 4px rgba(255, 255, 255, 0.95);
+            animation: biometricScan 2s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 25;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50/70 dark:bg-[#0d1614] font-sans text-sirapi-ink dark:text-slate-100 antialiased transition-colors duration-200 flex flex-col">
@@ -137,7 +165,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('pegawai.register.submit') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 rounded-2xl sm:rounded-3xl border border-[#DDE3DF] dark:border-[#233a34] bg-white dark:bg-[#152420] p-4.5 sm:p-7 md:p-8 shadow-xs transition-colors">
+            <form action="{{ route('pegawai.register.submit') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 rounded-xl border border-[#DDE3DF] dark:border-[#233a34] bg-white dark:bg-[#152420] p-4.5 sm:p-7 md:p-8 shadow-xs transition-colors">
                 @csrf
 
                 <!-- Upload Foto Profil -->
@@ -309,6 +337,73 @@
                     </div>
                 </div>
 
+                <!-- Seksi Face Recognition (Perekaman Wajah) -->
+                <div class="sm:col-span-2 rounded-2xl border border-emerald-200/80 dark:border-[#233a34] bg-emerald-50/40 dark:bg-[#0f1c19]/60 p-4 sm:p-5 transition-colors">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-emerald-100 dark:border-[#233a34]">
+                        <div class="flex items-center gap-2.5">
+                            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-sirapi-green/10 dark:bg-emerald-500/15 text-sirapi-green dark:text-emerald-400">
+                                <i data-lucide="scan-face" class="h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xs sm:text-sm font-bold text-gray-800 dark:text-white">Perekaman Wajah (Face Recognition)</h3>
+                                <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Daftarkan wajah sekarang untuk kemudahan presensi rapat instan</p>
+                            </div>
+                        </div>
+
+                        <!-- Status Badge -->
+                        <div id="face-status-badge">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/60 px-3 py-1 text-[11px] font-bold text-amber-700 dark:text-amber-300">
+                                <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                                Belum Direkam
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Hidden Inputs for Form Submission -->
+                    <input type="hidden" name="face_descriptor" id="face_descriptor" value="{{ old('face_descriptor') }}">
+                    <input type="hidden" name="foto_wajah" id="foto_wajah" value="{{ old('foto_wajah') }}">
+
+                    <!-- State 1: Belum Direkam -->
+                    <div id="face-unrecorded-view" class="pt-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed max-w-md">
+                            Wajah yang didaftarkan akan tersimpan dan siap digunakan untuk presensi wajah secara otomatis setelah akun disetujui Administrator.
+                        </p>
+                        <button type="button" onclick="openFaceModal()" class="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-sirapi-green hover:bg-sirapi-greenSoft dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white text-xs font-bold shadow-xs transition cursor-pointer shrink-0">
+                            <i data-lucide="camera" class="h-4 w-4"></i>
+                            <span>Buka Kamera & Rekam Wajah</span>
+                        </button>
+                    </div>
+
+                    <!-- State 2: Sudah Direkam -->
+                    <div id="face-recorded-view" class="pt-3.5 hidden items-center justify-between gap-3 flex-wrap">
+                        <div class="flex items-center gap-3">
+                            <div class="relative h-12 w-12 rounded-xl overflow-hidden border-2 border-emerald-500 shadow-xs shrink-0">
+                                <img id="face-preview-thumb" src="" alt="Thumbnail Wajah" class="h-full w-full object-cover">
+                                <span class="absolute bottom-0 right-0 bg-emerald-500 text-white p-0.5 rounded-tl">
+                                    <i data-lucide="check" class="h-2.5 w-2.5"></i>
+                                </span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-800 dark:text-white flex items-center gap-1">
+                                    <span>Wajah Berhasil Direkam</span>
+                                    <i data-lucide="check-circle" class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400"></i>
+                                </p>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-400">Data biometrik 128-vektor siap didaftarkan ke sistem.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="openFaceModal()" class="inline-flex items-center gap-1.5 h-9 px-3 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#152420] text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition cursor-pointer">
+                                <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
+                                <span>Rekam Ulang</span>
+                            </button>
+                            <button type="button" onclick="resetFaceRecord()" class="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50/50 dark:bg-red-950/40 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-100/70 transition cursor-pointer" title="Hapus rekaman wajah">
+                                <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Form Action Buttons -->
                 <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3.5 pt-4 sm:col-span-2 border-t border-gray-100 dark:border-[#233a34] mt-2">
                     <a href="{{ route('pegawai.login') }}" class="inline-flex items-center justify-center sm:justify-start gap-1.5 text-xs sm:text-sm font-bold text-gray-600 dark:text-emerald-400 hover:text-sirapi-green dark:hover:underline py-1.5 transition">
@@ -325,10 +420,65 @@
         </section>
     </main>
 
+    <!-- Face Registration Modal -->
+    <div id="face-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-2.5 sm:p-4 overflow-y-auto">
+        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-md sm:max-w-lg flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] text-sirapi-ink dark:text-slate-100 shadow-2xl border border-gray-100 dark:border-[#233a34]">
+            <div class="flex items-center justify-between border-b border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] px-4 py-3 sm:px-6 sm:py-4 shrink-0">
+                <div>
+                    <h3 class="text-base sm:text-lg font-extrabold text-gray-900 dark:text-white">Perekaman Wajah Pegawai</h3>
+                    <p class="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-emerald-400">Kamera Pendaftaran Face Recognition</p>
+                </div>
+                <button type="button" onclick="closeFaceModal()" class="rounded-xl p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-200 cursor-pointer" title="Tutup">
+                    <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+            </div>
+
+            <div class="p-3.5 sm:p-5 text-center space-y-3 overflow-y-auto">
+                <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium">Posisikan wajah Anda dengan jelas di tengah lingkaran kamera, lalu klik tombol Ambil Wajah.</p>
+                
+                <div class="relative w-full aspect-[4/3] bg-gray-950 rounded-2xl overflow-hidden shadow-inner border border-gray-200 dark:border-[#284c43]">
+                    <div id="face-status-container" class="absolute inset-0 flex flex-col items-center justify-center text-white text-xs font-medium z-10 p-4 gap-2">
+                        <div class="w-8 h-8 border-2 border-white/20 border-t-emerald-400 rounded-full animate-spin"></div>
+                        <p id="face-status" class="animate-pulse text-center">Memuat kamera dan model AI...</p>
+                    </div>
+                    <video id="face-video" class="absolute top-0 left-0 w-full h-full object-cover hidden" style="transform: scaleX(-1);" autoplay muted playsinline></video>
+                    <canvas id="face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
+
+                    <!-- Target Face Guide Frame -->
+                    <div id="register-face-guide-frame" class="absolute inset-0 z-20 pointer-events-none flex items-center justify-center hidden">
+                        <div id="register-face-guide-box" class="relative w-[56%] h-[74%] rounded-[36px] border-2 border-dashed border-white/70 shadow-[0_0_0_9999px_rgba(0,0,0,0.38)] transition-all duration-300 flex flex-col justify-between items-center p-2.5 overflow-hidden">
+                            <!-- Laser scan bar -->
+                            <div id="register-biometric-laser" class="biometric-laser-line hidden"></div>
+
+                            <div class="w-full flex justify-between z-10">
+                                <span class="register-guide-corner w-4 h-4 border-t-3 border-l-3 border-white rounded-tl-xl transition-colors"></span>
+                                <span class="register-guide-corner w-4 h-4 border-t-3 border-r-3 border-white rounded-tr-xl transition-colors"></span>
+                            </div>
+                            <span id="register-face-guide-hint" class="bg-black/65 backdrop-blur-xs text-white text-[10.5px] font-bold px-3 py-1 rounded-full text-center tracking-wide transition-colors z-10">Arahkan Wajah ke Bingkai</span>
+                            <div class="w-full flex justify-between z-10">
+                                <span class="register-guide-corner w-4 h-4 border-b-3 border-l-3 border-white rounded-bl-xl transition-colors"></span>
+                                <span class="register-guide-corner w-4 h-4 border-b-3 border-r-3 border-white rounded-br-xl transition-colors"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5 pt-1">
+                    <button type="button" onclick="closeFaceModal()" class="h-9.5 sm:h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] text-xs font-bold text-gray-700 dark:text-gray-300 transition hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer flex items-center justify-center">Batal</button>
+                    <button type="button" id="btn-capture-face" class="inline-flex h-9.5 sm:h-10 items-center justify-center gap-1.5 rounded-xl bg-sirapi-green hover:bg-sirapi-greenSoft dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-xs font-bold text-white transition hidden shadow-xs cursor-pointer">
+                        <i data-lucide="scan" class="h-4 w-4"></i>
+                        <span>Ambil Wajah</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="py-4 text-center text-xs text-gray-400 dark:text-gray-500 shrink-0">
-        &copy; {{ date('Y') }} SIRAPI - Pemerintah Kabupaten Bogor.
+        &copy; {{ date('Y') }} RAPID - Pemerintah Kabupaten Bogor. Hak cipta dilindungi.
     </footer>
 
+    <script src="{{ asset('js/face-api.min.js') }}"></script>
     <script>
         lucide.createIcons();
 
@@ -357,6 +507,365 @@
                     if (fotoPreview) fotoPreview.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
+            }
+        });
+
+        // Face Recognition Variables & Logic
+        let faceModelsLoaded = false;
+        let faceStream = null;
+        const faceModal = document.getElementById('face-modal');
+        const faceVideo = document.getElementById('face-video');
+        const faceOverlay = document.getElementById('face-overlay');
+        const faceStatusContainer = document.getElementById('face-status-container');
+        const faceStatus = document.getElementById('face-status');
+        const btnCaptureFace = document.getElementById('btn-capture-face');
+        const registerFaceGuideFrame = document.getElementById('register-face-guide-frame');
+
+        const faceDescriptorInput = document.getElementById('face_descriptor');
+        const fotoWajahInput = document.getElementById('foto_wajah');
+        const faceStatusBadge = document.getElementById('face-status-badge');
+        const faceUnrecordedView = document.getElementById('face-unrecorded-view');
+        const faceRecordedView = document.getElementById('face-recorded-view');
+        const facePreviewThumb = document.getElementById('face-preview-thumb');
+
+        function setFaceRecordedState(imageUrl) {
+            if (!imageUrl) return;
+            if (faceStatusBadge) {
+                faceStatusBadge.innerHTML = `
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 px-3 py-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                        Wajah Terdaftar ✓
+                    </span>
+                `;
+            }
+            if (facePreviewThumb) {
+                facePreviewThumb.src = imageUrl;
+            }
+            if (faceUnrecordedView) faceUnrecordedView.classList.add('hidden');
+            if (faceRecordedView) {
+                faceRecordedView.classList.remove('hidden');
+                faceRecordedView.classList.add('flex');
+            }
+
+            // Jika user belum memilih file foto manual, update preview avatar utama
+            if (fotoInput && (!fotoInput.files || fotoInput.files.length === 0) && fotoPreview) {
+                fotoPreview.src = imageUrl;
+            }
+            lucide.createIcons();
+        }
+
+        function resetFaceRecord() {
+            if (faceDescriptorInput) faceDescriptorInput.value = '';
+            if (fotoWajahInput) fotoWajahInput.value = '';
+            if (faceStatusBadge) {
+                faceStatusBadge.innerHTML = `
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800/60 px-3 py-1 text-[11px] font-bold text-amber-700 dark:text-amber-300">
+                        <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                        Belum Direkam
+                    </span>
+                `;
+            }
+            if (faceRecordedView) {
+                faceRecordedView.classList.add('hidden');
+                faceRecordedView.classList.remove('flex');
+            }
+            if (faceUnrecordedView) faceUnrecordedView.classList.remove('hidden');
+
+            if (fotoInput && (!fotoInput.files || fotoInput.files.length === 0) && fotoPreview) {
+                fotoPreview.src = "{{ asset('assets/foto/profile.png') }}";
+            }
+            lucide.createIcons();
+        }
+
+        function drawBiometricLandmarks(ctx, targetFace) {
+            if (!targetFace || !targetFace.landmarks) return;
+            const points = targetFace.landmarks.positions;
+            ctx.save();
+            
+            // Gambar 68 cyber dots biometrik
+            ctx.fillStyle = '#34d399';
+            ctx.shadowColor = '#10b981';
+            ctx.shadowBlur = 6;
+            for (let i = 0; i < points.length; i++) {
+                ctx.beginPath();
+                ctx.arc(points[i].x, points[i].y, 2, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+
+            // Gambar garis kontur biometrik halus
+            ctx.strokeStyle = 'rgba(52, 211, 153, 0.45)';
+            ctx.lineWidth = 1.2;
+
+            const segments = [
+                targetFace.landmarks.getJawOutline(),
+                targetFace.landmarks.getLeftEyeBrow(),
+                targetFace.landmarks.getRightEyeBrow(),
+                targetFace.landmarks.getNose(),
+                targetFace.landmarks.getLeftEye(),
+                targetFace.landmarks.getRightEye(),
+                targetFace.landmarks.getMouth()
+            ];
+
+            for (const segment of segments) {
+                if (segment && segment.length > 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(segment[0].x, segment[0].y);
+                    for (let i = 1; i < segment.length; i++) {
+                        ctx.lineTo(segment[i].x, segment[i].y);
+                    }
+                    if (segment === targetFace.landmarks.getLeftEye() || 
+                        segment === targetFace.landmarks.getRightEye() || 
+                        segment === targetFace.landmarks.getMouth()) {
+                        ctx.closePath();
+                    }
+                    ctx.stroke();
+                }
+            }
+            ctx.restore();
+        }
+
+        function getGuideBoxRoi(guideBoxEl, videoEl, displaySize) {
+            if (!guideBoxEl || !videoEl) {
+                return {
+                    x: displaySize.width * 0.22,
+                    y: displaySize.height * 0.13,
+                    width: displaySize.width * 0.56,
+                    height: displaySize.height * 0.74
+                };
+            }
+            const boxRect = guideBoxEl.getBoundingClientRect();
+            const videoRect = videoEl.getBoundingClientRect();
+
+            if (videoRect.width <= 0 || videoRect.height <= 0) {
+                return {
+                    x: displaySize.width * 0.22,
+                    y: displaySize.height * 0.13,
+                    width: displaySize.width * 0.56,
+                    height: displaySize.height * 0.74
+                };
+            }
+
+            const leftPercent = Math.max(0, (boxRect.left - videoRect.left) / videoRect.width);
+            const topPercent = Math.max(0, (boxRect.top - videoRect.top) / videoRect.height);
+            const widthPercent = Math.min(1, boxRect.width / videoRect.width);
+            const heightPercent = Math.min(1, boxRect.height / videoRect.height);
+
+            return {
+                x: leftPercent * displaySize.width,
+                y: topPercent * displaySize.height,
+                width: widthPercent * displaySize.width,
+                height: heightPercent * displaySize.height
+            };
+        }
+
+        function checkFaceInRoi(detection, roi) {
+            const b = detection.detection.box;
+            const landmarks = detection.landmarks ? detection.landmarks.positions : null;
+
+            // Abaikan jika wajah terlalu kecil (orang di belakang)
+            if (b.width < roi.width * 0.28 || b.height < roi.height * 0.28) {
+                return { isFull: false, isCutting: false, reason: 'too_small' };
+            }
+
+            // Toleransi batas tepi border agar wajah harus benar-benar di dalam
+            const pad = 4;
+            const roiLeft = roi.x + pad;
+            const roiRight = roi.x + roi.width - pad;
+            const roiTop = roi.y + pad;
+            const roiBottom = roi.y + roi.height - pad;
+
+            // 1. Seluruh kotak wajah harus berada di dalam batas bingkai
+            const isBoxInside = (
+                b.x >= roiLeft &&
+                (b.x + b.width) <= roiRight &&
+                b.y >= roiTop &&
+                (b.y + b.height) <= roiBottom
+            );
+
+            // 2. Seluruh 68 titik biometrik (dagu, rahang, alis, mata) harus berada di dalam bingkai
+            let areLandmarksInside = true;
+            if (landmarks && landmarks.length > 0) {
+                for (let i = 0; i < landmarks.length; i++) {
+                    const p = landmarks[i];
+                    if (p.x < roiLeft || p.x > roiRight || p.y < roiTop || p.y > roiBottom) {
+                        areLandmarksInside = false;
+                        break;
+                    }
+                }
+            }
+
+            if (isBoxInside && areLandmarksInside) {
+                return { isFull: true, isCutting: false };
+            }
+
+            // Cek apakah sebagian wajah memotong/mengenai batas bingkai
+            const isOverlapping = (
+                (b.x + b.width) > roi.x &&
+                b.x < (roi.x + roi.width) &&
+                (b.y + b.height) > roi.y &&
+                b.y < (roi.y + roi.height)
+            );
+
+            if (isOverlapping) {
+                return { isFull: false, isCutting: true };
+            }
+
+            return { isFull: false, isCutting: false };
+        }
+
+        async function openFaceModal() {
+            if (!faceModal) return;
+            faceModal.classList.remove('hidden');
+            faceModal.classList.add('flex');
+            faceVideo.classList.add('hidden');
+            btnCaptureFace.classList.add('hidden');
+            faceStatusContainer.classList.remove('hidden');
+            faceStatus.innerText = "Memuat kamera dan model AI...";
+
+            try {
+                if (!faceModelsLoaded) {
+                    await Promise.all([
+                        faceapi.nets.ssdMobilenetv1.loadFromUri('{{ asset('models') }}'),
+                        faceapi.nets.faceLandmark68Net.loadFromUri('{{ asset('models') }}'),
+                        faceapi.nets.faceRecognitionNet.loadFromUri('{{ asset('models') }}')
+                    ]);
+                    faceModelsLoaded = true;
+                }
+
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    faceStatus.innerText = "Kamera tidak didukung pada browser/koneksi ini (perlu HTTPS atau localhost).";
+                    return;
+                }
+
+                faceStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: "user",
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                });
+
+                faceVideo.srcObject = faceStream;
+                faceVideo.onloadedmetadata = () => {
+                    faceVideo.play();
+                    faceVideo.classList.remove('hidden');
+                    if (registerFaceGuideFrame) registerFaceGuideFrame.classList.remove('hidden');
+                    const registerLaser = document.getElementById('register-biometric-laser');
+                    if (registerLaser) registerLaser.classList.remove('hidden');
+                    faceStatusContainer.classList.add('hidden');
+                    btnCaptureFace.classList.remove('hidden');
+                };
+            } catch (err) {
+                console.error("Error starting face camera:", err);
+                faceStatus.innerText = "Gagal mengakses kamera. Pastikan izin kamera telah diberikan.";
+            }
+        }
+
+        function closeFaceModal() {
+            if (!faceModal) return;
+            faceModal.classList.add('hidden');
+            faceModal.classList.remove('flex');
+            if (registerFaceGuideFrame) registerFaceGuideFrame.classList.add('hidden');
+            const registerLaser = document.getElementById('register-biometric-laser');
+            if (registerLaser) registerLaser.classList.add('hidden');
+            if (faceStream) {
+                faceStream.getTracks().forEach(track => track.stop());
+                faceStream = null;
+            }
+            faceVideo.classList.add('hidden');
+            btnCaptureFace.classList.add('hidden');
+            faceStatusContainer.classList.remove('hidden');
+            faceStatus.innerText = "Memuat kamera dan model AI...";
+            if (faceOverlay) {
+                const ctx = faceOverlay.getContext('2d');
+                ctx.clearRect(0, 0, faceOverlay.width, faceOverlay.height);
+            }
+        }
+
+        btnCaptureFace?.addEventListener('click', async () => {
+            btnCaptureFace.disabled = true;
+            btnCaptureFace.innerHTML = '<span>Memproses...</span>';
+
+            try {
+                const displaySize = { width: faceVideo.videoWidth || 640, height: faceVideo.videoHeight || 480 };
+                faceapi.matchDimensions(faceOverlay, displaySize);
+
+                const detections = await faceapi.detectAllFaces(faceVideo, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
+                                               .withFaceLandmarks()
+                                               .withFaceDescriptors();
+
+                const resizedDetections = faceapi.resizeResults(detections, displaySize);
+
+                const roi = getGuideBoxRoi(registerFaceGuideBox, faceVideo, displaySize);
+
+                let validFace = null;
+                let hasCuttingFace = false;
+
+                for (const d of resizedDetections) {
+                    const status = checkFaceInRoi(d, roi);
+                    if (status.isFull) {
+                        if (!validFace || (d.detection.box.width * d.detection.box.height) > (validFace.detection.box.width * validFace.detection.box.height)) {
+                            validFace = d;
+                        }
+                    } else if (status.isCutting) {
+                        hasCuttingFace = true;
+                    }
+                }
+
+                if (!validFace) {
+                    if (hasCuttingFace) {
+                        alert("Wajah Anda masih terpotong bingkai. Pastikan seluruh bagian wajah (termasuk dagu, dahi, dan pipi) berada penuh di dalam bingkai panduan.");
+                    } else {
+                        alert("Wajah tidak terdeteksi di dalam bingkai panduan. Pastikan posisi wajah Anda tepat di dalam bingkai kamera.");
+                    }
+                    btnCaptureFace.disabled = false;
+                    btnCaptureFace.innerHTML = '<i data-lucide="scan" class="h-4 w-4"></i><span>Ambil Wajah</span>';
+                    lucide.createIcons();
+                    return;
+                }
+
+                const targetFace = validFace;
+
+                // Gambar deteksi wajah & titik biometrik pada overlay
+                const ctx = faceOverlay.getContext('2d');
+                ctx.clearRect(0, 0, faceOverlay.width, faceOverlay.height);
+                drawBiometricLandmarks(ctx, targetFace);
+                faceapi.draw.drawDetections(faceOverlay, targetFace);
+
+                // Ekstrak array 128 float descriptor
+                const descriptorArray = Array.from(targetFace.descriptor);
+                faceDescriptorInput.value = JSON.stringify(descriptorArray);
+
+                // Tangkap frame foto dari video stream
+                const captureCanvas = document.createElement('canvas');
+                captureCanvas.width = faceVideo.videoWidth || 640;
+                captureCanvas.height = faceVideo.videoHeight || 480;
+                const captureCtx = captureCanvas.getContext('2d');
+                captureCtx.drawImage(faceVideo, 0, 0, captureCanvas.width, captureCanvas.height);
+                const dataUrl = captureCanvas.toDataURL('image/jpeg', 0.9);
+                fotoWajahInput.value = dataUrl;
+
+                // Terapkan state wajah terdaftar ke tampilan form
+                setFaceRecordedState(dataUrl);
+
+                // Tutup modal
+                closeFaceModal();
+            } catch (err) {
+                console.error("Error capturing face:", err);
+                alert("Terjadi kesalahan saat memproses data wajah.");
+            } finally {
+                btnCaptureFace.disabled = false;
+                btnCaptureFace.innerHTML = '<i data-lucide="scan" class="h-4 w-4"></i><span>Ambil Wajah</span>';
+                lucide.createIcons();
+            }
+        });
+
+        // Cek apakah ada old data foto_wajah dan face_descriptor (misal jika ada error validasi field lain)
+        document.addEventListener('DOMContentLoaded', function () {
+            const existingFotoWajah = fotoWajahInput?.value;
+            const existingDescriptor = faceDescriptorInput?.value;
+            if (existingFotoWajah && existingDescriptor) {
+                setFaceRecordedState(existingFotoWajah);
             }
         });
     </script>

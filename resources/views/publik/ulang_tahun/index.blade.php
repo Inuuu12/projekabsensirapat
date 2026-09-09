@@ -66,8 +66,8 @@
         </div>
 
         @if ($utama)
-            <section class="bg-ijo-tua dark:bg-[#152420] border border-transparent dark:border-[#233a34] rounded-3xl p-6 md:p-8 text-white relative overflow-hidden shadow-xl hover:shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 transition-all duration-300">
-                <div class="absolute top-0 left-0 bg-oren-utama dark:bg-[#d97706] text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-br-2xl shadow-xs">
+            <section class="bg-ijo-tua dark:bg-[#152420] border border-transparent dark:border-[#233a34] rounded-xl p-6 md:p-8 text-white relative overflow-hidden shadow-xl hover:shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 transition-all duration-300">
+                <div class="absolute top-0 left-0 bg-oren-utama dark:bg-[#d97706] text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-br-xl shadow-xs">
                     {{ $ulangTahunHariIni ? 'Ulang Tahun Hari Ini' : 'Ulang Tahun Terdekat' }}
                 </div>
 
@@ -96,7 +96,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 @forelse ($ulangTahunItems as $pegawai)
-                    <article class="bg-white dark:bg-[#152420] rounded-2xl p-5 border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl hover:-translate-y-1 flex flex-col items-center text-center space-y-3 transition-all duration-300">
+                    <article class="bg-white dark:bg-[#152420] rounded-xl p-5 border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl hover:-translate-y-1 flex flex-col items-center text-center space-y-3 transition-all duration-300">
                         @if ($imageUrl($pegawai->gambar))
                             <div class="w-14 h-14 rounded-full bg-cover bg-center shadow-xs border border-transparent dark:border-[#284c43]" style="background-image: url('{{ $imageUrl($pegawai->gambar) }}')"></div>
                         @else
@@ -115,7 +115,7 @@
                         </div>
                     </article>
                 @empty
-                    <div class="lg:col-span-4 sm:col-span-2 bg-white dark:bg-[#152420] rounded-2xl p-8 border border-gray-100 dark:border-[#233a34] shadow-xs text-center">
+                    <div class="lg:col-span-4 sm:col-span-2 bg-white dark:bg-[#152420] rounded-xl p-8 border border-gray-100 dark:border-[#233a34] shadow-xs text-center">
                         <h3 class="font-bold text-gray-900 dark:text-white">Belum ada data ulang tahun pegawai</h3>
                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Data akan tampil setelah tanggal lahir pegawai diisi oleh admin.</p>
                     </div>

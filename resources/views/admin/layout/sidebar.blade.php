@@ -1,5 +1,5 @@
 @php
-    $appName = config('sirapi.name', 'SIRAPI');
+    $appName = config('sirapi.name', 'RAPID');
     $organizationName = config('sirapi.organization', 'Dinas Komunikasi & Informatika');
     $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
 @endphp
@@ -52,6 +52,7 @@
                 
                 <div class="{{ $isAgendaActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
                     <a href="{{ route('admin.agenda.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.agenda.lihat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Daftar Agenda</a>
+                    <a href="{{ route('admin.agenda.riwayat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.agenda.riwayat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Riwayat Agenda</a>
                     <a href="{{ route('admin.ruang.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.ruang.lihat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Daftar Ruangan</a>
                 </div>
             </div>
@@ -121,7 +122,7 @@
 
 <!-- Modal Konfirmasi Logout (Styling Tajam & Bayangan Kunker) -->
 <div id="logoutModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs items-center justify-center p-4 transition-all duration-200" onclick="if(event.target === this) closeAdminLogoutModal()">
-    <div class="relative w-full max-w-sm rounded-3xl bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] text-center shadow-2xl p-6 sm:p-8 transform scale-95 transition-all">
+    <div class="relative w-full max-w-sm rounded-xl bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] text-center shadow-2xl p-6 sm:p-8 transform scale-95 transition-all">
         <!-- Ikon Peringatan -->
         <div class="mx-auto flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 mb-4 shadow-sm">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">

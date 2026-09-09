@@ -13,7 +13,7 @@
 <div class="max-w-[1400px] mx-auto space-y-6">
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between transition-colors">
+        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 shadow-xs flex items-center justify-between transition-colors">
             <div>
                 <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Ruangan Tersedia</p>
                 <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalTersedia ?? $ruang->where('status', 'tersedia')->count() }}</p>
@@ -22,7 +22,7 @@
                 <img src="{{ asset('assets/foto/ruangantersedia.png') }}" alt="Ruangan Tersedia" class="w-full h-full object-contain">
             </div>
         </div>
-        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between transition-colors">
+        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 shadow-xs flex items-center justify-between transition-colors">
             <div>
                 <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Ruangan Terpakai</p>
                 <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalTerpakai ?? $ruang->where('status', 'terpakai')->count() }}</p>
@@ -31,7 +31,7 @@
                 <img src="{{ asset('assets/foto/ruanganterpakai.png') }}" alt="Ruangan Terpakai" class="w-full h-full object-contain">
             </div>
         </div>
-        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between transition-colors">
+        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 shadow-xs flex items-center justify-between transition-colors">
             <div>
                 <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Total Ruangan</p>
                 <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalRuangan ?? $ruang->count() }}</p>
@@ -42,7 +42,7 @@
         </div>
     </div>
 
-    <section class="overflow-hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] shadow-xs transition-colors">
+    <section class="overflow-hidden rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] shadow-xs transition-colors">
         <div class="flex flex-col gap-4 border-b border-gray-100 dark:border-[#233a34] px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
             <h2 class="text-2xl font-extrabold text-[#0f513f] dark:text-white">Data Ruangan</h2>
             <form method="GET" action="{{ route('admin.ruang.lihat') }}" class="flex items-center gap-3">

@@ -156,10 +156,37 @@ class PegawaiAuthController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:sirapi_md_pegawai,email'],
             'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'face_descriptor' => ['nullable', 'string'],
+            'foto_wajah' => ['nullable', 'string'],
         ]);
 
         if ($request->hasFile('foto')) {
             $validated['foto'] = $request->file('foto')->store('pegawai', 'public');
+        }
+
+        // Simpan foto hasil scan wajah jika ada
+        if (!empty($request->input('foto_wajah'))) {
+            $imageParts = explode(';base64,', $request->input('foto_wajah'));
+            if (count($imageParts) === 2) {
+                $imageTypeAux = explode('image/', $imageParts[0]);
+                $imageType = $imageTypeAux[1] ?? 'jpeg';
+                $imageBase64 = base64_decode($imageParts[1]);
+                $cleanNip = preg_replace('/[^0-9]/', '', $validated['nip']) ?: 'face';
+                $fileName = 'face_scan_' . $cleanNip . '_' . time() . '.' . $imageType;
+
+                Storage::disk('public')->put('pegawai/' . $fileName, $imageBase64);
+                $fotoWajahPath = 'pegawai/' . $fileName;
+                $validated['foto_wajah'] = $fotoWajahPath;
+
+                // Jika belum upload foto profil terpisah, jadikan foto wajah sebagai foto profil
+                if (empty($validated['foto'])) {
+                    $validated['foto'] = $fotoWajahPath;
+                }
+            }
+        }
+
+        if (!empty($request->input('face_descriptor'))) {
+            $validated['face_descriptor'] = $request->input('face_descriptor');
         }
 
         $validated['status_verifikasi'] = Pegawai::STATUS_PENDING;

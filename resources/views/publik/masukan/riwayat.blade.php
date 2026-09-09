@@ -71,7 +71,7 @@
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">Daftar Aduan</h1>
-                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Melihat seluruh laporan aduan yang telah dikirimkan.</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Transparansi riwayat aspirasi, saran, dan tindak lanjut laporan pengaduan masyarakat seputar layanan Diskominfo Kabupaten Bogor.</p>
                 </div>
                 <a href="{{ route('publik.masukan') }}" class="bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white text-xs font-bold px-5 py-2.5 rounded-full self-start md:self-auto shadow-xs">
                     Buat Aduan Baru
@@ -79,7 +79,7 @@
             </div>
         </div>
 
-        <section class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xl space-y-4 transition-all duration-300">
+        <section class="bg-white dark:bg-[#152420] rounded-xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xl space-y-4 transition-all duration-300">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead>
@@ -124,7 +124,7 @@
     </main>
 
     <div id="aduan-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
-        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col rounded-3xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
+        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col rounded-xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
             <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34] shrink-0">
                 <div>
                     <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Detail Aduan</p>

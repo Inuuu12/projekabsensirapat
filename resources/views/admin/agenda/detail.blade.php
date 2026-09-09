@@ -31,7 +31,7 @@
         <!-- Kolom Kiri (7 Kolom): Info Agenda & Dokumen -->
         <section class="lg:col-span-7 space-y-6">
             <!-- Card Detail Agenda -->
-            <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-3xl p-6 sm:p-7 shadow-xs transition-colors space-y-5">
+            <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-6 sm:p-7 shadow-xs transition-colors space-y-5">
                 <div class="flex items-center justify-between">
                     <span class="inline-flex rounded-lg border px-3 py-1 text-xs font-extrabold tracking-wider uppercase {{ $agenda->status_badge_class }}">
                         {{ $agenda->status_label }}
@@ -84,7 +84,7 @@
             <!-- Notulen & Dokumentasi Row -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <!-- Notulen -->
-                <div class="border-2 border-dashed border-gray-200 dark:border-[#233a34] p-5 rounded-3xl bg-white dark:bg-[#152420] transition-colors flex flex-col justify-between">
+                <div class="border-2 border-dashed border-gray-200 dark:border-[#233a34] p-5 rounded-xl bg-white dark:bg-[#152420] transition-colors flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between">
                             <p class="text-xs font-bold text-gray-800 dark:text-white uppercase tracking-wider">Notulen Agenda</p>
@@ -116,7 +116,7 @@
                 </div>
 
                 <!-- Dokumentasi -->
-                <div class="border-2 border-dashed border-gray-200 dark:border-[#233a34] p-5 rounded-3xl bg-white dark:bg-[#152420] transition-colors flex flex-col justify-between">
+                <div class="border-2 border-dashed border-gray-200 dark:border-[#233a34] p-5 rounded-xl bg-white dark:bg-[#152420] transition-colors flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between">
                             <p class="text-xs font-bold text-gray-800 dark:text-white uppercase tracking-wider">Dokumentasi Foto</p>
@@ -157,7 +157,7 @@
 
         <!-- Kolom Kanan (5 Kolom): QR Code Presensi -->
         <section class="lg:col-span-5 space-y-6">
-            <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-3xl p-6 sm:p-7 shadow-xs transition-colors space-y-5">
+            <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-6 sm:p-7 shadow-xs transition-colors space-y-5">
                 <div class="flex items-center justify-between gap-3">
                     <div>
                         <h2 class="text-sm font-bold text-gray-800 dark:text-white tracking-wide uppercase">QR Presensi Agenda</h2>
@@ -169,7 +169,7 @@
                 </div>
 
                 @if ($agenda->status_label === 'Selesai')
-                    <div class="rounded-2xl border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 p-6 text-center space-y-2">
+                    <div class="rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 p-6 text-center space-y-2">
                         <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-300">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 11 0 0118 0z" /></svg>
                         </div>
@@ -178,10 +178,10 @@
                     </div>
                 @elseif ($qrImageUrl)
                     <div class="flex flex-col items-center gap-4">
-                        <div class="p-3 bg-white rounded-2xl border border-gray-200 dark:border-[#233a34] shadow-xs">
+                        <div class="p-3 bg-white rounded-xl border border-gray-200 dark:border-[#233a34] shadow-xs">
                             <img src="{{ $qrImageUrl }}" alt="QR Presensi {{ $agenda->nama_agenda }}" class="h-56 w-56 object-contain rounded-xl">
                         </div>
-                        <div class="w-full rounded-2xl bg-gray-50 dark:bg-[#1a2d29] border border-gray-200/60 dark:border-[#233a34] p-3 text-center">
+                        <div class="w-full rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-gray-200/60 dark:border-[#233a34] p-3 text-center">
                             <p class="break-all text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400">{{ $qrPayload }}</p>
                         </div>
                         <a href="{{ $qrPayload }}" target="_blank" rel="noopener" class="inline-flex w-full items-center justify-center rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] px-4 py-3 text-xs font-bold text-white transition shadow-2xs">
@@ -189,7 +189,7 @@
                         </a>
                     </div>
                 @else
-                    <div class="rounded-2xl border border-dashed border-gray-200 dark:border-[#233a34] bg-gray-50 dark:bg-[#1a2d29] p-6 text-center space-y-3">
+                    <div class="rounded-xl border border-dashed border-gray-200 dark:border-[#233a34] bg-gray-50 dark:bg-[#1a2d29] p-6 text-center space-y-3">
                         <p class="text-xs font-semibold text-gray-500 dark:text-gray-300">QR belum dibuat untuk agenda ini.</p>
                         <a href="{{ url('/admin/agenda/' . $agenda->id_agenda . '/generate-qr') }}" class="inline-flex items-center justify-center rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] px-4 py-2.5 text-xs font-bold text-white transition shadow-2xs">
                             Generate QR Sekarang
@@ -201,12 +201,12 @@
     </div>
 
     <!-- SEKSI TABEL REKAP KEHADIRAN (FULL-WIDTH, LUAS, & RAPI) -->
-    <section class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-3xl p-6 sm:p-8 shadow-xs transition-colors space-y-6">
+    <section class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-6 sm:p-8 shadow-xs transition-colors space-y-6">
         <!-- Table Header & Counter Badges -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-100 dark:border-[#233a34] pb-5">
             <div>
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                     </div>
                     <div>
@@ -232,7 +232,7 @@
         </div>
 
         <!-- Tabel Presensi Luas & Responsif -->
-        <div class="overflow-x-auto rounded-2xl border border-gray-100 dark:border-[#233a34]">
+        <div class="overflow-x-auto rounded-xl border border-gray-100 dark:border-[#233a34]">
             <table class="w-full text-left text-xs border-collapse">
                 <thead>
                     <tr class="bg-gray-50/80 dark:bg-[#1a2d29] text-gray-500 dark:text-gray-300 uppercase tracking-wider text-[11px] border-b border-gray-200/80 dark:border-[#233a34]">
