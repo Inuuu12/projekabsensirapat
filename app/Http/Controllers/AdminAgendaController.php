@@ -137,6 +137,52 @@ class AdminAgendaController extends Controller
         return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats'));
     }
 
+    public function riwayat_Agenda(Request $request)
+    {
+        $kategoriSurat = $request->query('kategori_surat', 'semua');
+        $validKategori = ['semua', 'internal', 'masuk', 'keluar'];
+
+        if (! in_array($kategoriSurat, $validKategori, true)) {
+            $kategoriSurat = 'semua';
+        }
+
+        $keyword = $request->query('keyword');
+        $query = Agenda::query();
+
+        if ($kategoriSurat !== 'semua') {
+            $query->where('kategori_surat', $kategoriSurat);
+        }
+
+        if ($keyword) {
+            $query->where(function ($search) use ($keyword) {
+                $search->where('nama_agenda', 'like', "%{$keyword}%")
+                    ->orWhere('lokasi', 'like', "%{$keyword}%")
+                    ->orWhere('asal_surat', 'like', "%{$keyword}%")
+                    ->orWhere('ditugaskan', 'like', "%{$keyword}%");
+            });
+        }
+
+        $allAgendas = $query->latest('tanggal')->latest('id_agenda')->get();
+        // Filter hanya agenda rapat yang sudah Selesai
+        $agenda = $allAgendas->filter(fn ($item) => $item->isSelesai())->values();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'data' => $agenda]);
+        }
+
+        $admin = Auth::guard('admin')->user();
+        $ruang = RuangRapat::latest('id_ruangrapat')->get();
+        $pegawaiList = Pegawai::orderBy('bidang')->orderBy('nama_pegawai')->get();
+        $isRiwayat = true;
+
+        $agendaStats = Agenda::query()
+            ->selectRaw('kategori_surat, COUNT(*) as total')
+            ->groupBy('kategori_surat')
+            ->pluck('total', 'kategori_surat');
+
+        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats', 'isRiwayat'));
+    }
+
     public function detail_Agenda(Request $request, ?int $id = null)
     {
         $agendaId = $id ?? $request->query('id');

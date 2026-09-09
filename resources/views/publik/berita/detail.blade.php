@@ -68,7 +68,7 @@
         @if ($beritaAktif)
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <article class="lg:col-span-8 space-y-6">
-                    <div class="w-full h-72 md:h-[400px] bg-[#6A9C95] bg-cover bg-center rounded-3xl relative p-6 shadow-xs overflow-hidden flex items-start border border-transparent dark:border-[#233a34]" style="background-image: url('{{ $imageUrl($beritaAktif->gambar) }}')">
+                    <div class="w-full h-72 md:h-[400px] bg-[#6A9C95] bg-cover bg-center rounded-xl relative p-6 shadow-xs overflow-hidden flex items-start border border-transparent dark:border-[#233a34]" style="background-image: url('{{ $imageUrl($beritaAktif->gambar) }}')">
                         <span class="bg-white dark:bg-[#0f1c19] text-gray-800 dark:text-slate-100 text-xs font-bold px-4 py-1.5 rounded-full shadow-xs border border-transparent dark:border-[#284c43]">Berita</span>
                     </div>
 
@@ -89,7 +89,7 @@
                     </div>
 
                     @if (!empty($beritaAktif->url) && !($beritaAktif->is_internal ?? false))
-                        <div class="pt-4 border-t border-gray-100 dark:border-[#233a34] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-50 dark:bg-[#0f1c19] p-5 rounded-2xl">
+                        <div class="pt-4 border-t border-gray-100 dark:border-[#233a34] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-50 dark:bg-[#0f1c19] p-5 rounded-xl">
                             <div>
                                 <p class="text-xs font-bold text-gray-800 dark:text-white">Baca artikel selengkapnya di portal resmi</p>
                                 <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Diterbitkan oleh: <span class="font-bold text-ijo-tua dark:text-emerald-400">{{ $beritaAktif->sumber ?? '-' }}</span></p>
@@ -103,7 +103,7 @@
                 </article>
 
                 <aside class="lg:col-span-4 space-y-6">
-                    <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-4">
+                    <div class="bg-white dark:bg-[#152420] rounded-xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-4">
                         <h3 class="font-bold text-sm text-gray-900 dark:text-white border-b border-gray-100 dark:border-[#233a34] pb-3">Informasi Artikel</h3>
                         <div class="space-y-3 text-xs">
                             <div class="flex justify-between items-center gap-4">
@@ -117,13 +117,13 @@
                         </div>
                     </div>
 
-                    <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-4">
+                    <div class="bg-white dark:bg-[#152420] rounded-xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-4">
                         <h3 class="font-bold text-sm text-gray-900 dark:text-white border-b border-gray-100 dark:border-[#233a34] pb-3">Berita Terkait</h3>
 
                         <div class="space-y-4">
                             @forelse ($terkaitItems as $item)
                                 <div class="flex space-x-3 items-center group">
-                                    <div class="w-16 h-16 bg-[#3B7A75] bg-cover bg-center rounded-2xl shrink-0 border border-transparent dark:border-[#284c43]" style="background-image: url('{{ $imageUrl($item->gambar) }}')"></div>
+                                    <div class="w-16 h-16 bg-[#3B7A75] bg-cover bg-center rounded-xl shrink-0 border border-transparent dark:border-[#284c43]" style="background-image: url('{{ $imageUrl($item->gambar) }}')"></div>
                                     <div class="space-y-1">
                                         <p class="text-[10px] text-gray-400 font-mono">{{ $item->tanggal?->translatedFormat('d M Y') ?? '-' }}</p>
                                         <h4 class="text-xs font-bold text-gray-900 dark:text-white group-hover:text-ijo-semitua dark:group-hover:text-emerald-400 transition-colors line-clamp-2">
@@ -145,7 +145,7 @@
                 </aside>
             </div>
         @else
-            <div class="bg-white dark:bg-[#152420] rounded-2xl p-8 border border-gray-100 dark:border-[#233a34] shadow-xs text-center">
+            <div class="bg-white dark:bg-[#152420] rounded-xl p-8 border border-gray-100 dark:border-[#233a34] shadow-xs text-center">
                 <h1 class="font-bold text-gray-900 dark:text-white">Berita tidak ditemukan</h1>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Tambahkan berita di admin agar detail berita bisa tampil.</p>
             </div>

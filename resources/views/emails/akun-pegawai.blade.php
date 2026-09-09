@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akun Pegawai SIRAPI</title>
+    <title>Akun Pegawai RAPID</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #2d3748;">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f7f6; padding: 30px 15px;">
@@ -18,7 +18,7 @@
                                 PEMERINTAH KABUPATEN BOGOR
                             </div>
                             <h1 style="margin: 0; font-size: 22px; font-weight: 900; color: #ffffff; letter-spacing: -0.5px;">
-                                RAPID &bull; SIRAPI
+                                RAPID
                             </h1>
                             <p style="margin: 6px 0 0 0; font-size: 13px; color: #d1fae5; font-weight: 500;">
                                 Rapat dan Presensi Integrasi Dashboard
@@ -33,7 +33,7 @@
                                 Halo, {{ $nama }}! 👋
                             </h2>
                             <p style="margin: 0 0 20px 0; font-size: 14px; line-height: 1.6; color: #4a5568;">
-                                Akun Pegawai Anda untuk portal **SIRAPI Kabupaten Bogor** telah berhasil dibuat oleh Administrator. Berikut adalah rincian kredensial akun Anda:
+                                Akun Pegawai Anda untuk portal **RAPID Kabupaten Bogor** telah berhasil dibuat oleh Administrator. Berikut adalah rincian kredensial akun Anda:
                             </p>
 
                             <!-- Credentials Box -->
@@ -73,7 +73,7 @@
                             <!-- CTA Button -->
                             <div style="text-align: center; margin: 28px 0;">
                                 <a href="{{ url('/') }}" target="_blank" style="display: inline-block; background-color: #0f513f; color: #ffffff; font-size: 14px; font-weight: 800; text-decoration: none; padding: 14px 32px; border-radius: 12px; box-shadow: 0 4px 12px rgba(15, 81, 63, 0.25); transition: background-color 0.2s;">
-                                    🚀 Login ke Portal SIRAPI
+                                    🚀 Login ke Portal RAPID
                                 </a>
                             </div>
 
@@ -93,7 +93,7 @@
                                 Dinas Komunikasi dan Informatika Kabupaten Bogor
                             </p>
                             <p style="margin: 0; font-size: 11px; color: #94a3b8;">
-                                Email ini dikirimkan secara otomatis oleh Sistem SIRAPI. Harap tidak membalas email ini secara langsung.
+                                Email ini dikirimkan secara otomatis oleh Sistem RAPID. Harap tidak membalas email ini secara langsung.
                             </p>
                         </td>
                     </tr>

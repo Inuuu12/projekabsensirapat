@@ -85,65 +85,36 @@
             ])->all();
         @endphp
 
-        <!-- 1. Running Text Info Terkini -->
-        <div class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs p-3 flex items-center space-x-3 border border-gray-100 dark:border-[#233a34] transition-colors">
-            <span class="bg-ijo-tua dark:bg-[#107050] text-white dark:text-emerald-100 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shrink-0">
-                INFO TERKINI
-            </span>
-            <marquee class="text-xs font-medium text-gray-700 dark:text-gray-300">
-                {{ $infoItems->isNotEmpty() ? $infoItems->join(' • ') : 'Belum ada info terbaru di database.' }}
-            </marquee>
-        </div>
-
-        <!-- 2. Header Grid (Widget Cuaca & Banner Ulang Tahun Pegawai Hari Ini) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <button type="button" id="open-weather-modal" class="lg:col-span-6 bg-ijo-tua dark:bg-[#152420] text-white rounded-3xl p-6 flex items-center justify-between shadow-lg hover:shadow-xl hover:-translate-y-0.5 border border-transparent dark:border-[#233a34] text-left transition-all cursor-pointer">
-                <div>
-                    <p id="home-weather-location" class="text-xs text-gray-200 dark:text-gray-300">Cibinong, Kab. Bogor</p>
-                    <h2 id="home-weather-temp" class="text-4xl font-extrabold mt-1 text-white dark:text-emerald-400">-</h2>
-                    <p id="home-weather-condition" class="text-xs text-gray-200 dark:text-gray-300 mt-1">Memuat data cuaca API...</p>
-                    <p id="home-weather-humidity" class="text-[10px] text-gray-300 dark:text-gray-400 mt-2">Kelembapan - • Klik untuk detail </p>
-                </div>
-                <div class="text-5xl">☁</div>
-            </button>
-
-            <a href="#ulang-tahun-pegawai" class="lg:col-span-6 bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-between">
+        <!-- Header Grid (Ingin Bertemu Kami & Widget Cuaca API Teks Hitam) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <!-- Sisi Kiri: Banner Kunjungan Pejabat / Ingin Bertemu Kami -->
+            <div class="lg:col-span-6 bg-white dark:bg-[#152420] rounded-xl p-5 md:p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div class="flex items-center space-x-4">
-                    <div class="w-14 h-14 rounded-2xl bg-ijo-semitua dark:bg-[#1b3832] text-white dark:text-emerald-400 font-extrabold text-lg flex items-center justify-center shrink-0 border border-transparent dark:border-emerald-500/30">
-                        {{ $initial($ulangTahunUtama?->nama) }}
+                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-ijo-sangatmuda dark:bg-[#1b3832] text-ijo-tua dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-inner border border-transparent dark:border-emerald-500/20">
+                        <svg class="w-6 h-6 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
+                        </svg>
                     </div>
                     <div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-base">🎂</span>
-                            <h3 class="font-bold text-gray-900 dark:text-white text-sm">
-                                {{ $ulangTahunUtama?->nama ? $ulangTahunUtama->nama . ($ulangTahunHariIni ? ' berulang tahun hari ini!' : ' berulang tahun terdekat') : 'Belum ada data ulang tahun' }}
-                            </h3>
-                        </div>
-                        <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">{{ $ulangTahunUtama?->tanggal?->translatedFormat('d F') ?? 'Data akan tampil setelah tanggal lahir pegawai diisi' }}</p>
+                        <h3 class="font-black text-gray-900 dark:text-white text-base md:text-lg leading-snug">Ingin Bertemu Kami?</h3>
+                        <p class="text-xs font-semibold text-gray-800 dark:text-gray-300 mt-0.5">Daftarkan kunjungan Anda</p>
                     </div>
                 </div>
-                <div class="flex flex-col items-end space-y-2 shrink-0">
-                    <span class="bg-oren-muda dark:bg-amber-950/60 text-oren-tua dark:text-amber-300 dark:border dark:border-amber-700/40 text-[10px] font-bold px-3 py-1 rounded-full">{{ $ulangTahunHariIni ? 'Hari Ini!' : 'Terdekat' }}</span>
-                </div>
-            </a>
-        </div>
-
-        <!-- Banner Kunjungan Pejabat -->
-        <div class="bg-white dark:bg-[#152420] rounded-3xl p-5 md:p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
-            <div class="flex items-center space-x-4">
-                <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-ijo-sangatmuda dark:bg-[#1b3832] text-ijo-tua dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-inner border border-transparent dark:border-emerald-500/20">
-                    <svg class="w-6 h-6 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-extrabold text-gray-900 dark:text-white text-sm md:text-base leading-snug">Ingin Bertemu Kami?</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-0.5">Daftarkan kunjungan Anda</p>
-                </div>
+                <a href="{{ route('publik.form-kunjungan') }}" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-xs md:text-sm font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-5 py-3 rounded-full transition-all shadow-xs shrink-0 group whitespace-nowrap">
+                    <span>Isi Form Kunjungan</span>
+                </a>
             </div>
-            <a href="{{ route('publik.form-kunjungan') }}" class="w-full md:w-auto inline-flex items-center justify-center space-x-2 text-xs md:text-sm font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-6 py-3 rounded-full transition-all shadow-xs shrink-0 group">
-                <span>Isi Form Kunjungan</span>
-            </a>
+
+            <!-- Sisi Kanan: Informasi Cuaca (Tanpa Card Container) -->
+            <button type="button" id="open-weather-modal" class="lg:col-span-6 flex items-center justify-between p-4 md:p-5 text-left transition-opacity hover:opacity-85 cursor-pointer">
+                <div>
+                    <p id="home-weather-location" class="text-xs font-semibold text-gray-600 dark:text-gray-300">Cibinong, Kab. Bogor</p>
+                    <h2 id="home-weather-temp" class="text-3xl md:text-4xl font-black mt-1 text-gray-900 dark:text-emerald-400">-</h2>
+                    <p id="home-weather-condition" class="text-xs font-bold text-gray-800 dark:text-gray-200 mt-1">Memuat data cuaca API...</p>
+                    <p id="home-weather-humidity" class="text-[10px] font-semibold text-gray-500 dark:text-gray-400 mt-2">Kelembapan - • Klik untuk detail </p>
+                </div>
+                <div class="text-4xl md:text-5xl shrink-0 text-gray-800 dark:text-emerald-400">☁</div>
+            </button>
         </div>
 
         <!-- 3. Section Agenda Hari Ini -->
@@ -160,7 +131,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @forelse ($agendaItems as $agenda)
-                    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] text-gray-800 dark:text-white rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] text-gray-800 dark:text-white rounded-xl p-5 flex flex-col justify-between space-y-4 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
                         <div class="space-y-2">
                             <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-300">
                                 <span>{{ substr((string) $agenda->waktu, 0, 5) ?: '-' }} WIB</span>
@@ -190,140 +161,54 @@
                         </div>
                     </div>
                 @empty
-                    <div class="md:col-span-3 bg-white dark:bg-[#152420] rounded-2xl p-8 text-center text-gray-500 dark:text-gray-400 text-sm border border-gray-100 dark:border-[#233a34]">
+                    <div class="md:col-span-3 bg-white dark:bg-[#152420] rounded-xl p-8 text-center text-gray-500 dark:text-gray-400 text-sm border border-gray-100 dark:border-[#233a34]">
                         Belum ada agenda kegiatan.
                     </div>
                 @endforelse
             </div>
         </section>
 
-        <!-- 4. Section Video Dokumentasi & Galeri Foto -->
-        <!-- <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-8 space-y-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-base font-bold text-gray-900 dark:text-white">Dokumentasi Video</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-300">Publikasi video resmi terkait kegiatan dan informasi</p>
-                    </div>
-                    <a href="{{ route('publik.video') }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:underline">Lihat Semua</a>
-                </div>
-                <div class="h-64 md:h-80 w-full bg-black rounded-3xl overflow-hidden shadow-xs border border-transparent dark:border-[#233a34]">
-                    <iframe class="w-full h-full" src="{{ $youtubeEmbedUrl }}" title="Video Diskominfo Kabupaten Bogor" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                </div>
-            </div>
-
-            <div class="lg:col-span-4 space-y-4 flex flex-col justify-between">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-base font-bold text-gray-900 dark:text-white">Galeri Foto</h3>
-                    <a href="{{ route('publik.galeri') }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:underline">Lihat Semua</a>
-                </div>
-                <div class="grid grid-cols-2 gap-4 flex-grow">
-                    @forelse ($galeriItems->take(4) as $item)
-                        @php
-                            $fotoUrl = $imageUrl($item->file_path ?? $item->gambar, 'assets/foto/Agendahariini.png');
-                            $fotoTitle = $item->agenda?->nama_agenda ?? $item->judul ?? $item->nama_file ?? 'Dokumentasi Kegiatan';
-                            $fotoDate = optional($item->agenda?->tanggal ?? $item->tanggal ?? $item->created_at)->translatedFormat('d F Y') ?? '-';
-                        @endphp
-                        <div onclick="openImagePreview('{{ $fotoUrl }}', 'Dokumentasi - {{ addslashes($fotoTitle) }}', '{{ $fotoDate }}')" 
-                             class="h-28 md:h-36 rounded-2xl overflow-hidden shadow-xs bg-gray-200 dark:bg-[#152420] border border-transparent dark:border-[#233a34] group relative cursor-pointer"
-                             title="Klik untuk melihat & memperbesar foto">
-                            <img src="{{ $fotoUrl }}" alt="{{ $fotoTitle }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center">
-                                <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white rounded-full p-2 text-xs flex items-center justify-center">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
-                                </span>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl flex-1 shadow-xs flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold text-sm col-span-2 p-6">
-                            Belum ada foto galeri
-                        </div>
-                    @endforelse
-                </div>
-            </div>
-        </div> -->
-
-        <!-- 5. Section Berita Terkini & Widget Ulang Tahun Pegawai List -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-8 space-y-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-base font-bold text-gray-900 dark:text-white">Berita Terkini</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-300">Kabar terbaru seputar Diskominfo Kabupaten Bogor</p>
-                    </div>
-                    <a href="{{ route('publik.berita') }}" class="text-xs font-semibold text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-[#152420] dark:border dark:border-[#284c43] hover:bg-gray-300 dark:hover:bg-[#1b3832] px-4 py-1.5 rounded-full transition-colors">
-                        Selengkapnya
-                    </a>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    @forelse ($beritaItems->take(2) as $berita)
-                        <div class="bg-white dark:bg-[#152420] rounded-3xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-0.5 border border-gray-100 dark:border-[#233a34] flex flex-col justify-between transition-all duration-300">
-                            <div>
-                                <div class="h-40 bg-ijo-muda bg-cover bg-center relative p-4" style="background-image: url('{{ $imageUrl($berita->gambar) }}')">
-                                    <span class="bg-white text-ijo-tua font-bold text-[10px] px-3 py-1 rounded-full shadow-xs">Berita</span>
-                                </div>
-                                <div class="p-5 space-y-2">
-                                    <p class="text-[10px] text-gray-400 dark:text-gray-400 font-semibold">{{ $berita->tanggal?->translatedFormat('d F Y') ?? '-' }}</p>
-                                    <h4 class="font-bold text-gray-900 dark:text-white text-sm leading-snug">{{ $berita->judul }}</h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-300 line-clamp-2">{{ \Illuminate\Support\Str::limit(strip_tags($berita->isi_berita), 90) }}</p>
-                                </div>
-                            </div>
-                            <div class="p-5 pt-0">
-                                <a href="{{ route('publik.berita.detail', $berita->id_berita) }}" class="inline-flex items-center justify-center space-x-1.5 text-xs font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 py-2.5 rounded-2xl transition-all shadow-xs">
-                                    <span>Baca Selengkapnya</span>
-                                </a>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="md:col-span-2 bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] text-sm font-medium text-gray-500 dark:text-gray-400">
-                            Belum ada berita terkini di database.
-                        </div>
-                    @endforelse
-                </div>
-            </div>
-
-            <div id="ulang-tahun-pegawai" class="lg:col-span-4 bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl space-y-4 flex flex-col justify-between scroll-mt-24 transition-all duration-300">
+        <!-- 5. Section Berita Terkini -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
                 <div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-base">🎂</span>
-                        <h3 class="font-bold text-gray-900 dark:text-white text-sm">Ulang Tahun Pegawai</h3>
-                    </div>
-                    <p class="text-xs text-gray-500 dark:text-gray-300">Jangan lupa ucapkan selamat kepada rekan kerja!</p>
-
-                    <div class="mt-4 space-y-3">
-                        @forelse ($ulangTahunItems->take(3) as $pegawai)
-                            <div class="{{ $pegawai->is($ulangTahunHariIni) ? 'bg-oren-muda dark:bg-amber-950/40 border border-transparent dark:border-amber-700/40' : 'bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34]' }} rounded-2xl p-3 flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 rounded-xl bg-ijo-tua dark:bg-[#1b3832] text-white dark:text-emerald-400 font-bold text-xs flex items-center justify-center shrink-0 border border-transparent dark:border-emerald-500/30">
-                                        {{ $initial($pegawai->nama) }}
-                                    </div>
-                                    <div>
-                                        <h5 class="text-xs font-bold text-gray-900 dark:text-white">{{ $pegawai->nama }}</h5>
-                                        <p class="text-[10px] text-gray-500 dark:text-gray-300">{{ $pegawai->tanggal?->translatedFormat('d F') ?? '-' }}</p>
-                                        @if ($pegawai->is($ulangTahunHariIni))
-                                            <span class="bg-oren-tua text-white text-[9px] font-bold px-2 py-0.5 rounded-full mt-0.5 inline-block">Hari Ini!</span>
-                                        @endif
-                                    </div>
-                                </div>
-                                <span class="text-[10px] font-bold text-oren-tua dark:text-amber-400">{{ $pegawai->tanggal?->translatedFormat('d M') ?? '-' }}</span>
-                            </div>
-                        @empty
-                            <p class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-3 text-xs text-gray-500 dark:text-gray-400">Belum ada pegawai yang memiliki tanggal lahir.</p>
-                        @endforelse
-                    </div>
+                    <h3 class="text-base font-bold text-gray-900 dark:text-white">Berita Terkini</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-300">Kabar terbaru seputar Diskominfo Kabupaten Bogor</p>
                 </div>
-
-                <div class="border-t border-gray-100 dark:border-[#233a34] pt-3">
-                    <a href="{{ route('publik.ulang-tahun') }}" class="w-full inline-flex items-center justify-center space-x-1.5 text-xs font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 py-2.5 rounded-2xl transition-all shadow-xs">
-                        <span>Lihat Semua Pegawai</span>
-                    </a>
-                </div>
+                <a href="{{ route('publik.berita') }}" class="text-xs font-semibold text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-[#152420] dark:border dark:border-[#284c43] hover:bg-gray-300 dark:hover:bg-[#1b3832] px-4 py-1.5 rounded-full transition-colors">
+                    Selengkapnya
+                </a>
             </div>
-        </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                @forelse ($beritaItems->take(3) as $berita)
+                    <div class="bg-white dark:bg-[#152420] rounded-xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-0.5 border border-gray-100 dark:border-[#233a34] flex flex-col justify-between transition-all duration-300">
+                        <div>
+                            <div class="h-40 bg-ijo-muda bg-cover bg-center relative p-4" style="background-image: url('{{ $imageUrl($berita->gambar) }}')">
+                                <span class="bg-white text-ijo-tua font-bold text-[10px] px-3 py-1 rounded-full shadow-xs">Berita</span>
+                            </div>
+                            <div class="p-5 space-y-2">
+                                <p class="text-[10px] text-gray-400 dark:text-gray-400 font-semibold">{{ $berita->tanggal?->translatedFormat('d F Y') ?? '-' }}</p>
+                                <h4 class="font-bold text-gray-900 dark:text-white text-sm leading-snug">{{ $berita->judul }}</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-300 line-clamp-2">{{ \Illuminate\Support\Str::limit(strip_tags($berita->isi_berita), 90) }}</p>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            <a href="{{ route('publik.berita.detail', $berita->id_berita) }}" class="inline-flex items-center justify-center space-x-1.5 text-xs font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-4 py-2.5 rounded-xl transition-all shadow-xs">
+                                <span>Baca Selengkapnya</span>
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div class="md:col-span-3 bg-white dark:bg-[#152420] rounded-xl p-6 border border-gray-100 dark:border-[#233a34] text-sm font-medium text-gray-500 dark:text-gray-400 text-center">
+                        Belum ada berita terkini di database.
+                    </div>
+                @endforelse
+            </div>
+        </section>
 
         <!-- 6. Section daftar Aduan -->
-        <section class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl space-y-4 transition-all duration-300">
+        <section class="bg-white dark:bg-[#152420] rounded-xl p-6 border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl space-y-4 transition-all duration-300">
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-base font-bold text-gray-900 dark:text-white">Daftar Aduan</h3>
@@ -373,7 +258,7 @@
     </main>
 
     <div id="home-aduan-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
-        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col rounded-3xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
+        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col rounded-xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
             <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34] shrink-0">
                 <div>       
                     <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Detail Aduan</p>
@@ -413,7 +298,7 @@
     </div>
 
     <div id="weather-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
-        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col rounded-3xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
+        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col rounded-xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
             <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34] shrink-0">
                 <div>
                     <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Cuaca API</p>

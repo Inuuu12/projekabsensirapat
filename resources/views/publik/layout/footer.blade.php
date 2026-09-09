@@ -64,7 +64,6 @@
                 <ul class="space-y-2.5 text-xs text-gray-300">
                     <li><a href="{{ route('pegawai.login') }}" class="hover:text-white transition-colors">Portal / Login Pegawai</a></li>
                     <li><a href="{{ route('publik.masukan') }}" class="hover:text-white transition-colors">Formulir Pengaduan</a></li>
-                    <li><a href="{{ route('publik.ulangtahun') }}" class="hover:text-white transition-colors">Info Ulang Tahun</a></li>
                 </ul>
             </div>
 
@@ -120,7 +119,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <!-- BOTTOM FOOTER / COPYRIGHT BAR -->
@@ -148,6 +146,5 @@
                 @endif
             </div>
         </div>
-
     </div>
 </footer>

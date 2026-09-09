@@ -46,6 +46,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/agenda/tambah', fn () => redirect()->route('admin.agenda.lihat'));
         Route::post('/agenda/tambah', [AdminAgendaController::class, 'kelola_Agenda'])->name('admin.agenda.store');
         Route::get('/agenda/lihat', [AdminAgendaController::class, 'lihat_Agenda'])->name('admin.agenda.lihat');
+        Route::get('/agenda/riwayat', [AdminAgendaController::class, 'riwayat_Agenda'])->name('admin.agenda.riwayat');
         
         Route::get('/agenda/detail', [AdminAgendaController::class, 'detail_Agenda']);
         Route::get('/agenda/{id}', [AdminAgendaController::class, 'detail_Agenda']);

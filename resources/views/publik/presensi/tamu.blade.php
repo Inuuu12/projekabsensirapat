@@ -49,7 +49,7 @@
             $routeParams = $agendaAktif ? ['agenda_id' => $agendaAktif->id_agenda] : [];
         @endphp
 
-        <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-xl md:shadow-2xl relative space-y-6 transition-all duration-300">
+        <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-xl p-6 md:p-8 max-w-lg w-full shadow-xl md:shadow-2xl relative space-y-6 transition-all duration-300">
             <div class="flex items-center justify-between">
                 <a href="{{ $agendaAktif ? route('publik.agenda.detail', $agendaAktif->id_agenda) : route('publik.agenda') }}" class="inline-flex items-center space-x-1.5 text-xs font-bold text-ijo-semitua dark:text-emerald-400 hover:underline">
                     <span>&larr;</span>

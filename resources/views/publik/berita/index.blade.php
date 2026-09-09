@@ -93,7 +93,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse ($beritaItems as $item)
-                <article class="bg-white dark:bg-[#152420] rounded-3xl overflow-hidden border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between transition-all duration-300 group">
+                <article class="bg-white dark:bg-[#152420] rounded-xl overflow-hidden border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between transition-all duration-300 group">
                     <div>
                         <div class="h-48 bg-[#6A9C95] relative p-4 bg-cover bg-center overflow-hidden" style="background-image: url('{{ $imageUrl($item->gambar) }}')">
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
@@ -127,7 +127,7 @@
                     </div>
                 </article>
             @empty
-                <div class="lg:col-span-3 md:col-span-2 bg-white dark:bg-[#152420] rounded-2xl p-8 border border-gray-100 dark:border-[#233a34] shadow-xs text-center space-y-2">
+                <div class="lg:col-span-3 md:col-span-2 bg-white dark:bg-[#152420] rounded-xl p-8 border border-gray-100 dark:border-[#233a34] shadow-xs text-center space-y-2">
                     <h3 class="font-bold text-gray-900 dark:text-white">Tidak ada berita yang ditemukan</h3>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Silakan gunakan kata kunci lain atau pilih portal sumber berita lain.</p>
                 </div>

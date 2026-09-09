@@ -1,5 +1,5 @@
 @php
-    $appName = config('sirapi.name', 'SIRAPI');
+    $appName = config('sirapi.name', 'RAPID');
     $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
 
     $routeName = request()->route() ? request()->route()->getName() : '';
@@ -7,6 +7,7 @@
     $defaultTitle = match(true) {
         str_contains($routeName, 'dashboard') => 'Dashboard',
         str_contains($routeName, 'agenda.detail') => 'Detail Agenda Rapat',
+        str_contains($routeName, 'agenda.riwayat') => 'Riwayat Agenda Rapat',
         str_contains($routeName, 'agenda') => 'Daftar Agenda',
         str_contains($routeName, 'ruang') => 'Daftar Ruangan',
         str_contains($routeName, 'pegawai') => 'Data Pegawai',
@@ -20,6 +21,7 @@
     $defaultSubtitle = match(true) {
         str_contains($routeName, 'dashboard') => 'Ringkasan aktivitas agenda dan kunjungan.',
         str_contains($routeName, 'agenda.detail') => 'Detail informasi dan daftar presensi kegiatan rapat.',
+        str_contains($routeName, 'agenda.riwayat') => 'Arsip dan riwayat seluruh agenda rapat yang telah selesai.',
         str_contains($routeName, 'agenda') => 'Kelola agenda kegiatan rapat dan acara instansi.',
         str_contains($routeName, 'ruang') => 'Kelola daftar dan kapasitas fasilitas ruang rapat.',
         str_contains($routeName, 'pegawai') => 'Kelola data dan verifikasi akun pegawai.',
@@ -31,25 +33,25 @@
     };
 @endphp
 
-<header class="bg-white dark:bg-[#152420] px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xs z-30 transition-colors duration-200 min-h-[72px]">
-    <!-- Left Side: Hamburger Menu & Title + Subtitle (Model Kunker) -->
-    <div class="flex items-center space-x-3.5 min-w-0 pr-3">
+<header class="bg-white dark:bg-[#152420] px-3 sm:px-8 py-3 flex items-center justify-between shadow-xs z-30 transition-colors duration-200 min-h-[64px] sm:min-h-[72px]">
+    <!-- Left Side: Hamburger Menu & Title + Subtitle -->
+    <div class="flex items-center space-x-2 sm:space-x-3.5 min-w-0 pr-2">
         <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-none shrink-0 transition-colors cursor-pointer" title="Menu Navigasi">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
 
         <div class="flex flex-col min-w-0 justify-center">
-            <h1 class="text-xl sm:text-2xl font-black text-[#1F2937] dark:text-white tracking-tight leading-tight truncate">
+            <h1 class="text-base sm:text-2xl font-black text-[#1F2937] dark:text-white tracking-tight leading-tight truncate">
                 @yield('header_title', $defaultTitle)
             </h1>
-            <p class="text-xs text-gray-500 dark:text-gray-300 font-medium leading-snug truncate mt-0.5">
+            <p class="hidden xs:block text-[11px] sm:text-xs text-gray-500 dark:text-gray-300 font-medium leading-snug truncate mt-0.5">
                 @yield('header_subtitle', $defaultSubtitle)
             </p>
         </div>
     </div>
 
     <!-- Right Side: Actions, Mode Gelap/Terang, Tanggal, dan Akun Profile Pill -->
-    <div class="flex items-center space-x-2.5 sm:space-x-4 shrink-0">
+    <div class="flex items-center space-x-1.5 sm:space-x-4 shrink-0">
         @yield('header_actions')
 
         <!-- Dark / Light Mode Switcher Button -->
@@ -66,7 +68,7 @@
         </div>
 
         <!-- User Profile Pill -->
-        <div class="bg-[#35635b] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] text-white py-1.5 px-3 sm:px-4 rounded-full flex items-center space-x-2.5 sm:space-x-3 shadow-md hover:opacity-95 dark:hover:border-emerald-500/50 transition cursor-pointer">
+        <div class="bg-[#35635b] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] text-white py-1 px-2.5 sm:py-1.5 sm:px-4 rounded-full flex items-center space-x-2 sm:space-x-3 shadow-md hover:opacity-95 dark:hover:border-emerald-500/50 transition cursor-pointer">
             <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 dark:bg-[#1b3832] flex items-center justify-center text-white dark:text-emerald-400 font-bold text-xs sm:text-sm overflow-hidden border border-white/30 dark:border-emerald-500/30 shrink-0">
                 @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->foto)
                     <img src="{{ asset('storage/' . Auth::guard('admin')->user()->foto) }}" class="w-full h-full object-cover">
@@ -74,7 +76,7 @@
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
                 @endif
             </div>
-            <div class="flex flex-col text-left">
+            <div class="hidden sm:flex flex-col text-left">
                 <span class="text-xs font-bold leading-tight text-white truncate max-w-[90px] sm:max-w-[140px]">{{ Auth::guard('admin')->user()->nama ?? 'Admin' }}</span>
                 <span class="text-[9.5px] sm:text-[10px] text-white/80 dark:text-emerald-400 font-semibold leading-tight">Super Admin</span>
             </div>
