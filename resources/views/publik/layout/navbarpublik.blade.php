@@ -5,14 +5,14 @@
 @endphp
 
 <header class="bg-[#35635b] dark:bg-[#0f1c19] text-white sticky top-0 z-50 shadow-md border-b border-transparent dark:border-[#233a34] transition-colors duration-200">
-    <div class="w-full max-w-[1680px] mx-auto px-3.5 sm:px-6 lg:px-8 2xl:px-10 flex items-center justify-between h-16 sm:h-20">
+    <div class="w-full max-w-[1680px] mx-auto px-3.5 sm:px-6 lg:px-8 2xl:px-10 flex items-center justify-between min-h-[4rem] sm:min-h-[5rem] py-2.5 sm:py-0">
         
         <!-- Logo & Branding -->
         <a href="{{ route('publik.beranda') }}" class="flex items-center gap-2 sm:gap-3 group min-w-0 pr-2">
             <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 object-contain group-hover:scale-105 transition-transform drop-shadow-sm shrink-0">
             <div class="flex flex-col justify-center min-w-0">
-                <span class="font-black text-sm sm:text-lg md:text-xl tracking-wide text-white leading-tight truncate">{{ $appName }}</span>
-                <p class="text-[9px] sm:text-[11px] font-medium text-white/80 dark:text-gray-300 leading-none truncate mt-0.5">{{ $organizationName }}</p>
+                <span class="font-black text-[13px] sm:text-lg md:text-xl tracking-wide text-white leading-tight line-clamp-2 sm:line-clamp-none">{{ $appName }}</span>
+                <p class="text-[9.5px] sm:text-[11px] font-medium text-white/80 dark:text-gray-300 leading-none truncate mt-0.5">{{ $organizationName }}</p>
             </div>
         </a>
 
