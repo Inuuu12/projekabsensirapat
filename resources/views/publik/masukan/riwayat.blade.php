@@ -71,7 +71,7 @@
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">Daftar Aduan</h1>
-                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Melihat seluruh laporan aduan yang telah dikirimkan.</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Transparansi riwayat aspirasi, saran, dan tindak lanjut laporan pengaduan masyarakat seputar layanan Diskominfo Kabupaten Bogor.</p>
                 </div>
                 <a href="{{ route('publik.masukan') }}" class="bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white text-xs font-bold px-5 py-2.5 rounded-full self-start md:self-auto shadow-xs">
                     Buat Aduan Baru

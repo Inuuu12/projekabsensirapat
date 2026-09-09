@@ -245,7 +245,7 @@
             <div class="border-b border-gray-100 dark:border-[#233a34] pb-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
                 <div>
                     <h2 class="text-lg font-bold text-gray-900 dark:text-white">Daftar Masukan & Aduan Publik</h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Daftar riwayat aduan publik beserta status tanggapan dari tim admin</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Daftar riwayat aduan publik beserta status tindak lanjut resmi dari tim Diskominfo Kabupaten Bogor</p>
                 </div>
             </div>
 

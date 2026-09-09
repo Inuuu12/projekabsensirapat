@@ -355,6 +355,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-base font-bold text-gray-900 dark:text-white">Daftar Aduan</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-300">Aspirasi, masukan, dan tindak lanjut pengaduan masyarakat seputar layanan Diskominfo Kabupaten Bogor</p>
                 </div>
                 <a href="{{ route('publik.riwayat-aduan') }}" class="text-xs font-semibold text-gray-700 dark:text-gray-200 bg-gray-200 dark:bg-[#152420] dark:border dark:border-[#284c43] hover:bg-gray-300 dark:hover:bg-[#1b3832] px-4 py-1.5 rounded-full transition-colors">
                     Selengkapnya
