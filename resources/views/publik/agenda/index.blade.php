@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semua Agenda Kegiatan - SIRAPI</title>
+    <title>Semua Agenda Kegiatan - RAPID</title>
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -74,7 +74,7 @@
                     <h3 class="text-xs font-bold text-gray-800 dark:text-gray-300 uppercase tracking-wide">{{ $tanggal }}</h3>
 
                     @foreach ($items as $item)
-                        <div class="bg-white dark:bg-[#152420] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-gray-200 dark:hover:border-[#284c43] transition-colors">
+                        <div class="bg-white dark:bg-[#152420] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl hover:-translate-y-0.5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-gray-200 dark:hover:border-[#284c43] transition-all duration-300">
                             <div class="flex items-center space-x-4">
                                 <div class="bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43] rounded-xl px-4 py-3 text-center shrink-0 w-24">
                                     <p class="text-xs font-bold">{{ substr((string) $item->waktu, 0, 5) ?: '-' }}</p>

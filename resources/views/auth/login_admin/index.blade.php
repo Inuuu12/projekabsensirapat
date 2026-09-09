@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - SIRAPI</title>
+    <title>Login Admin - RAPID</title>
     
     <!-- Font & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,17 +91,17 @@
 
             <!-- Konten Tengah (Logo & Judul) -->
             <div class="my-auto flex flex-col items-center text-center z-10 py-6 md:py-0">
-                <div class="mb-4 sm:mb-6">
+                <div class="mb-5 sm:mb-7">
                     <img src="{{ asset('assets/foto/logo-bappenda.png') }}" 
                          alt="Logo Kab. Bogor" 
-                         class="h-24 sm:h-28 md:h-36 w-auto drop-shadow-md">
+                         class="h-32 sm:h-40 md:h-48 w-auto object-contain drop-shadow-xl hover:scale-105 transition-transform duration-300">
                 </div>
                 
-                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2">{{ config('sirapi.name', 'SIRAPI') }}</h1>
-                <p class="text-xs sm:text-sm md:text-base font-medium opacity-90 max-w-xs mb-1 sm:mb-2">
-                    Sistem Informasi Rapat dan Presensi
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-3">{{ config('sirapi.name', 'RAPID') }}</h1>
+                <p class="text-sm sm:text-base md:text-lg font-extrabold opacity-95 max-w-sm mb-2 leading-snug">
+                    Rapat dan Presensi Integrasi Dashboard
                 </p>
-                <p class="text-[11px] sm:text-xs opacity-80 max-w-xs">
+                <p class="text-xs sm:text-sm md:text-base font-semibold opacity-90 max-w-sm">
                     {{ $regionName }}
                 </p>
             </div>

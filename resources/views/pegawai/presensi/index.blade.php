@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Presensi Pegawai - SIRAPI</title>
+    <title>Presensi Pegawai - RAPID</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -122,9 +122,8 @@
     <header class="sticky top-0 z-40 h-[72px] bg-sirapi-green dark:bg-[#0f1c19] dark:border-b dark:border-[#233a34] text-white shadow-sm">
         <div class="mx-auto flex h-full w-full max-w-[700px] items-center justify-between px-4 sm:px-6">
             <a href="{{ route('publik.beranda') }}" class="flex min-w-0 items-center gap-3">
-                <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-11 w-11 shrink-0 object-contain">
+                <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kab. Bogor" class="h-9 w-9 object-contain shrink-0">
                 <span class="min-w-0 flex flex-col justify-center">
-                    <span class="block text-[9px] font-bold tracking-wider uppercase text-emerald-200/90 dark:text-emerald-400 leading-tight">{{ config('sirapi.region', 'Pemerintah Kabupaten Bogor') }}</span>
                     <span class="block text-base font-black leading-tight tracking-wide">{{ config('sirapi.name', 'SIRAPI') }}</span>
                     <span class="block text-[11px] font-medium leading-tight text-white/80 dark:text-gray-300">{{ config('sirapi.organization', 'Dinas Komunikasi & Informatika') }}</span>
                 </span>
@@ -209,9 +208,26 @@
         @endif
 
         <section class="rounded-[22px] border border-sirapi-line dark:border-[#233a34] bg-white dark:bg-[#152420] px-8 py-5 shadow-xs transition-colors">
-            <h1 class="text-base font-extrabold text-gray-900 dark:text-white">Informasi Kegiatan</h1>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-sirapi-line dark:border-[#233a34] pb-4">
+                <div>
+                    <h1 class="text-base font-extrabold text-gray-900 dark:text-white">Informasi Kegiatan</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Jadwal agenda rapat yang sedang dipilih</p>
+                </div>
+                @if (isset($daftarAgenda) && $daftarAgenda->isNotEmpty())
+                    <div class="relative min-w-0 sm:w-72">
+                        <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-wider mb-1">Ganti Agenda Rapat</label>
+                        <select onchange="if(this.value) window.location.href='{{ route('pegawai.presensi.index') }}?agenda_id=' + this.value" class="w-full rounded-xl border border-emerald-300 dark:border-[#284c43] bg-emerald-50/50 dark:bg-[#0f1c19] px-3 py-2 text-xs font-extrabold text-[#35635b] dark:text-emerald-400 outline-none transition focus:border-sirapi-green cursor-pointer">
+                            @foreach ($daftarAgenda as $itemAgenda)
+                                <option value="{{ $itemAgenda->id_agenda }}" @selected($agendaAktif && $agendaAktif->id_agenda == $itemAgenda->id_agenda)>
+                                    📅 {{ Str::limit($itemAgenda->nama_agenda, 35) }} ({{ $itemAgenda->tanggal?->format('d/m/Y') }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
+            </div>
 
-            <div class="mt-5 divide-y divide-sirapi-line dark:divide-[#233a34]">
+            <div class="mt-4 divide-y divide-sirapi-line dark:divide-[#233a34]">
                 <div class="pb-3">
                     <p class="text-[11px] font-medium uppercase text-[#AAB2AE] dark:text-gray-400">Waktu</p>
                     <p class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">{{ $agendaAktif ? $waktuAgenda : '-' }}</p>

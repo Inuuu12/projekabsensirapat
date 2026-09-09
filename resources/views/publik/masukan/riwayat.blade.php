@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riwayat Aduan - SIRAPI</title>
+    <title>Riwayat Aduan - RAPID</title>
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -79,7 +79,7 @@
             </div>
         </div>
 
-        <section class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4 transition-colors">
+        <section class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xl space-y-4 transition-all duration-300">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ulang Tahun Pegawai - SIRAPI</title>
+    <title>Ulang Tahun Pegawai - RAPID</title>
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -66,7 +66,7 @@
         </div>
 
         @if ($utama)
-            <section class="bg-ijo-tua dark:bg-[#152420] border border-transparent dark:border-[#233a34] rounded-3xl p-6 md:p-8 text-white relative overflow-hidden shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <section class="bg-ijo-tua dark:bg-[#152420] border border-transparent dark:border-[#233a34] rounded-3xl p-6 md:p-8 text-white relative overflow-hidden shadow-xl hover:shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 transition-all duration-300">
                 <div class="absolute top-0 left-0 bg-oren-utama dark:bg-[#d97706] text-white text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 rounded-br-2xl shadow-xs">
                     {{ $ulangTahunHariIni ? 'Ulang Tahun Hari Ini' : 'Ulang Tahun Terdekat' }}
                 </div>
@@ -96,7 +96,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 @forelse ($ulangTahunItems as $pegawai)
-                    <article class="bg-white dark:bg-[#152420] rounded-2xl p-5 border border-gray-100 dark:border-[#233a34] shadow-xs flex flex-col items-center text-center space-y-3 hover:shadow-md transition-all">
+                    <article class="bg-white dark:bg-[#152420] rounded-2xl p-5 border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl hover:-translate-y-1 flex flex-col items-center text-center space-y-3 transition-all duration-300">
                         @if ($imageUrl($pegawai->gambar))
                             <div class="w-14 h-14 rounded-full bg-cover bg-center shadow-xs border border-transparent dark:border-[#284c43]" style="background-image: url('{{ $imageUrl($pegawai->gambar) }}')"></div>
                         @else

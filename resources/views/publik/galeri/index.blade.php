@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galeri Foto Kegiatan - SIRAPI</title>
+    <title>Galeri Foto Kegiatan - RAPID</title>
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -75,7 +75,7 @@
                     $tanggal = optional($foto->agenda?->tanggal ?? $foto->tanggal ?? $foto->created_at)->translatedFormat('d F Y') ?? '-';
                 @endphp
                 <article onclick="openImagePreview('{{ $url }}', 'Dokumentasi - {{ addslashes($judul) }}', '{{ $tanggal }}')" 
-                         class="bg-white dark:bg-[#152420] rounded-2xl overflow-hidden border border-gray-100 dark:border-[#233a34] shadow-xs transition hover:border-[#35635b] dark:hover:border-emerald-500/40 cursor-pointer group"
+                         class="bg-white dark:bg-[#152420] rounded-2xl overflow-hidden border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 hover:border-[#35635b] dark:hover:border-emerald-500/40 cursor-pointer group"
                          title="Klik untuk memperbesar foto">
                     <div class="aspect-[4/3] bg-ijo-sangatmuda dark:bg-[#0f1c19] bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style="background-image: url('{{ $url }}')"></div>
                     <div class="p-4 flex items-center justify-between">

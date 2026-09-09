@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Agenda - SIRAPI</title>
+    <title>Detail Agenda - RAPID</title>
     @include('publik.layout.theme_script')
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -170,7 +170,7 @@
                 </section>
 
                 <aside class="lg:col-span-5 space-y-5">
-                    <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4">
+                    <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-4">
                         <h4 class="font-bold text-sm text-gray-900 dark:text-white">Informasi Kegiatan</h4>
                         <div class="space-y-3 text-xs divide-y divide-gray-100 dark:divide-[#233a34]">
                             <div class="pt-1">
@@ -210,7 +210,7 @@
                         </div>
                     </div>
 
-                    <div id="presensi-section" class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-5">
+                    <div id="presensi-section" class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-5">
                         <div class="flex items-center justify-between gap-3">
                             <div>
                                 <h4 class="font-bold text-sm text-gray-900 dark:text-white">Presensi Agenda</h4>

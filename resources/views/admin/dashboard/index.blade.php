@@ -4,10 +4,6 @@
 
 @section('content')
 <div class="max-w-[1400px] mx-auto space-y-6">
-    <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] dark:text-white tracking-tight">Dashboard</h1>
-        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300 mt-1">Ringkasan aktivitas agenda dan kunjungan.</p>
-    </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4 transition-colors">

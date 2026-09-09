@@ -119,10 +119,19 @@ class AdminPegawaiController extends Controller
         Pegawai::create($validated);
 
         try {
+            $htmlBody = view('emails.akun-pegawai', [
+                'nama' => $validated['nama_pegawai'],
+                'nip' => $validated['nip'] ?? '',
+                'jabatan' => $validated['jabatan'] ?? '',
+                'email' => $validated['email'],
+                'password' => $defaultPassword,
+            ])->render();
+
             SirapiMailer::send(
                 $validated['email'],
-                'Akun Pegawai SIRAPI',
-                "Akun pegawai SIRAPI Anda sudah dibuat.\n\nEmail: {$validated['email']}\nPassword sementara: {$defaultPassword}\n\nSilakan login dan ubah password dari menu profil."
+                'Kredensial Akun Pegawai SIRAPI',
+                $htmlBody,
+                true
             );
         } catch (\Throwable) {
             return back()->with('warning', 'Data pegawai berhasil ditambahkan, tetapi email password gagal dikirim. Periksa konfigurasi email aplikasi.');

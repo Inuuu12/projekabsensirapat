@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sampaikan Masukan Anda - SIRAPI</title>
+    <title>Sampaikan Masukan Anda - RAPID</title>
     @include('publik.layout.theme_script')
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -51,7 +51,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
             <!-- LEFT FORM COLUMN (8 Cols) -->
-            <div class="lg:col-span-8 bg-white dark:bg-[#152420] rounded-3xl p-6 md:p-8 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-6 transition-colors">
+            <div class="lg:col-span-8 bg-white dark:bg-[#152420] rounded-3xl p-6 md:p-8 border border-gray-100 dark:border-[#233a34] shadow-xl space-y-6 transition-colors">
                 
                 <div class="border-b border-gray-100 dark:border-[#233a34] pb-4">
                     <h2 class="text-base font-bold text-gray-900 dark:text-white">Ajukan Aduan Baru</h2>
@@ -168,7 +168,7 @@
             <div class="lg:col-span-4 space-y-6">
 
                 <!-- CARD 1: Tips Mengisi Feedback -->
-                <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-4">
+                <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-4">
                     <h3 class="font-bold text-sm text-gray-900 dark:text-white">Tips Mengisi Feedback yang Baik</h3>
                     
                     <ul class="space-y-3 text-xs text-gray-600 dark:text-gray-300">
@@ -188,7 +188,7 @@
                 </div>
 
                 <!-- CARD 2: Butuh Bantuan Cepat? -->
-                <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-xs space-y-5">
+                <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-5">
                     <h3 class="font-bold text-sm text-gray-900 dark:text-white">Butuh Bantuan Cepat?</h3>
 
                     <div class="space-y-4 text-xs">

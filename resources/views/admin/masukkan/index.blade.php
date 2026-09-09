@@ -45,13 +45,6 @@
 @endphp
 
 <div class="mx-auto max-w-[1500px] space-y-7 text-[#08251f] dark:text-slate-100">
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] dark:text-white tracking-tight">Pengaduan</h1>
-            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300 mt-1">Kelola dan tindak lanjuti keluhan pengguna.</p>
-        </div>
-    </div>
-
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div class="flex min-h-24 items-center gap-4 rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] px-5 py-4 shadow-xs transition-colors">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-200/80 dark:bg-emerald-900/50 p-2.5">
@@ -178,10 +171,10 @@
                                         data-date="{{ optional($item->created_at)->translatedFormat('d M Y') ?? '-' }}"
                                         data-message="{{ $item->isi_aduan }}"
                                         data-reply="{{ $item->balasan_admin }}"
-                                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-1.5 transition hover:bg-gray-100 dark:hover:bg-[#23423b] cursor-pointer"
-                                        title="Lihat Detail">
-                                        <img src="{{ asset('assets/foto/Detaillogo.png') }}" alt="Detail" class="h-full w-full object-contain">
-                                        <span class="sr-only">Lihat Detail</span>
+                                        class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs"
+                                        title="Lihat Detail Aduan">
+                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        <span>Detail</span>
                                     </button>
 
                                     <button
@@ -192,19 +185,20 @@
                                         data-email="{{ $item->email }}"
                                         data-message="{{ $item->isi_aduan }}"
                                         data-reply="{{ $item->balasan_admin }}"
-                                        class="text-[#0f6b52] dark:text-emerald-400 transition hover:text-[#083c30] cursor-pointer"
-                                        title="Reply">
-                                        <img src="{{ asset('assets/foto/Reply.png') }}" alt="Reply" class="h-6 w-6 object-contain">
+                                        class="inline-flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-blue-100 dark:hover:bg-blue-900/60 cursor-pointer shadow-2xs"
+                                        title="Balas Aduan">
+                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                        <span>Balas</span>
                                     </button>
 
                                     <button
                                         type="button"
                                         onclick="openDeleteModal('{{ route('admin.masukkan.destroy', $item->id_dataaduan) }}', 'Hapus Aduan?', 'Apakah Anda yakin ingin menghapus aduan ini?')"
-                                        class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/40 border border-transparent dark:border-red-900/40 p-1.5 transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer"
-                                        title="Hapus">
-                                        <img src="{{ asset('assets/foto/Deletelogo.png') }}" alt="Hapus" class="h-full w-full object-contain">
-                                        <span class="sr-only">Hapus</span>
-                                     </button>
+                                        class="inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer shadow-2xs"
+                                        title="Hapus Aduan">
+                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <span>Hapus</span>
+                                    </button>
                                  </div>
                             </td>
                         </tr>
@@ -234,12 +228,23 @@
     </section>
 </div>
 
-<div id="modal-detail-masukkan" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4">
+<div id="modal-detail-masukkan" class="fixed inset-0 z-[70] hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-3 sm:p-4">
     <div class="relative w-full max-w-2xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden">
-        <div class="flex items-center justify-between rounded-t-2xl border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 shrink-0 bg-white dark:bg-[#163830]">
-            <h3 class="text-base sm:text-lg font-black text-[#0f513f] dark:text-white">Detail Aduan</h3>
-            <button type="button" onclick="closeMasukkanDetail()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-white/80 dark:hover:bg-white/10 cursor-pointer" title="Tutup">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        <div class="flex items-start justify-between border-b border-gray-100 dark:border-[#233a34] px-5 py-4 sm:px-6 sm:py-5 bg-white dark:bg-[#152420] shrink-0">
+            <div class="flex items-center gap-3.5">
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f513f] dark:text-emerald-400 shrink-0">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Detail Masukan / Aduan</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Rincian informasi laporan aduan yang dikirimkan publik</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeMasukkanDetail()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer" aria-label="Tutup modal">
+                <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
         <div class="flex-1 min-h-0 space-y-4 sm:space-y-5 p-4 sm:p-6 overflow-y-auto">
@@ -292,18 +297,28 @@
                 <p id="detail-reply" class="mt-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/40 p-4 leading-relaxed text-[#08251f] dark:text-emerald-300"></p>
             </div>
         </div>
-        <div class="flex justify-end gap-3 border-t border-gray-100 dark:border-[#233a34] p-3 sm:px-6 sm:py-3.5 bg-gray-50 dark:bg-[#0f1c19] rounded-b-2xl shrink-0">
-            <button type="button" onclick="closeMasukkanDetail()" class="w-full sm:w-auto h-11 sm:h-9 rounded-xl px-5 text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-white/5 cursor-pointer transition">Tutup</button>
+        <div class="flex justify-end gap-3 border-t border-gray-100 dark:border-[#233a34] p-3 sm:px-6 sm:py-3.5 bg-gray-50/50 dark:bg-[#0f1c19] rounded-b-2xl shrink-0">
+            <button type="button" onclick="closeMasukkanDetail()" class="h-10 rounded-xl px-5 text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-300 bg-white dark:bg-[#152420] border border-gray-200 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer flex items-center justify-center">Tutup</button>
         </div>
     </div>
 </div>
 
-<div id="modal-reply-masukkan" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4">
+<div id="modal-reply-masukkan" class="fixed inset-0 z-[80] hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-3 sm:p-4">
     <div class="relative w-full max-w-2xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] flex flex-col rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden">
-        <div class="flex items-center justify-between rounded-t-2xl border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 shrink-0 bg-white dark:bg-[#163830]">
-            <h3 class="text-base sm:text-lg font-black text-[#0f513f] dark:text-white">Balas Aduan</h3>
-            <button type="button" onclick="closeMasukkanReply()" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-white/80 dark:hover:bg-white/10 cursor-pointer" title="Tutup">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        <div class="flex items-start justify-between border-b border-gray-100 dark:border-[#233a34] px-5 py-4 sm:px-6 sm:py-5 bg-white dark:bg-[#152420] shrink-0">
+            <div class="flex items-center gap-3.5">
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0f513f] dark:text-emerald-400 shrink-0">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Balas Laporan Aduan</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Tulis tanggapan atau solusi untuk laporan pengadu</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeMasukkanReply()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer" aria-label="Tutup modal">
+                <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
         <form id="reply-form" method="POST" class="flex min-h-0 flex-1 flex-col">
@@ -329,9 +344,9 @@
                     <textarea id="reply-text" name="balasan_admin" rows="4" required class="mt-2 w-full rounded-lg border border-slate-300 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] p-4 text-sm leading-relaxed text-[#08251f] dark:text-white outline-none focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500" placeholder="Tulis balasan untuk pengadu..."></textarea>
                 </div>
             </div>
-            <div class="grid grid-cols-2 sm:flex sm:justify-end gap-2.5 sm:gap-3 border-t border-gray-100 dark:border-[#233a34] p-3 sm:px-6 sm:py-4 bg-gray-50 dark:bg-[#0f1c19] rounded-b-2xl shrink-0">
-                <button type="button" onclick="closeMasukkanReply()" class="w-full sm:w-auto h-10 rounded-xl px-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-[#152420] border border-gray-300 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer flex items-center justify-center">Batal</button>
-                <button type="submit" class="w-full sm:w-auto inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#35635b] dark:bg-[#107050] hover:bg-[#2b4f49] dark:hover:bg-[#0c5940] px-5 text-xs sm:text-sm font-bold text-white cursor-pointer transition shadow-sm">Kirim Balasan</button>
+            <div class="flex justify-end items-center gap-3 border-t border-gray-100 dark:border-[#233a34] px-5 py-4 sm:px-6 bg-gray-50/50 dark:bg-[#0f1c19] rounded-b-2xl shrink-0">
+                <button type="button" onclick="closeMasukkanReply()" class="h-10 rounded-xl px-5 text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-300 bg-white dark:bg-[#152420] border border-gray-200 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer flex items-center justify-center">Batal</button>
+                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#0f513f] hover:bg-[#0b3f31] dark:bg-[#107050] dark:hover:bg-[#0c5940] px-6 text-xs sm:text-sm font-bold text-white transition cursor-pointer shadow-sm">Kirim Balasan</button>
             </div>
         </form>
     </div>
