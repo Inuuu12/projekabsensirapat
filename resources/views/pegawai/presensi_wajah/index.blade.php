@@ -28,6 +28,33 @@
         canvas {
             transform: scaleX(-1);
         }
+        @keyframes biometricScan {
+            0% {
+                top: 5%;
+                opacity: 0.2;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                top: 90%;
+                opacity: 0.2;
+            }
+        }
+        .biometric-laser-line {
+            position: absolute;
+            left: 4%;
+            right: 4%;
+            height: 2.5px;
+            background: linear-gradient(90deg, transparent 0%, rgba(52, 211, 153, 0.7) 15%, #10b981 50%, rgba(52, 211, 153, 0.7) 85%, transparent 100%);
+            box-shadow: 0 0 12px 2.5px rgba(16, 185, 129, 0.85), 0 0 4px rgba(255, 255, 255, 0.95);
+            animation: biometricScan 2s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 25;
+        }
     </style>
 </head>
 <body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
@@ -81,6 +108,25 @@
                     <video id="video" class="absolute top-0 left-0 w-full h-full object-cover hidden" autoplay muted playsinline></video>
                     <canvas id="overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"></canvas>
                     
+                    <!-- Target Face Guide Frame -->
+                    <div id="face-guide-frame" class="absolute inset-0 z-20 pointer-events-none flex items-center justify-center hidden">
+                        <div id="face-guide-box" class="relative w-[56%] h-[74%] rounded-[36px] border-2 border-dashed border-white/70 shadow-[0_0_0_9999px_rgba(0,0,0,0.38)] transition-all duration-300 flex flex-col justify-between items-center p-2.5 overflow-hidden">
+                            <!-- Laser scan bar -->
+                            <div id="biometric-laser" class="biometric-laser-line hidden"></div>
+
+                            <!-- Corner guides -->
+                            <div class="w-full flex justify-between z-10">
+                                <span class="guide-corner w-4 h-4 border-t-3 border-l-3 border-white rounded-tl-xl transition-colors"></span>
+                                <span class="guide-corner w-4 h-4 border-t-3 border-r-3 border-white rounded-tr-xl transition-colors"></span>
+                            </div>
+                            <span id="face-guide-hint" class="bg-black/65 backdrop-blur-xs text-white text-[10.5px] font-bold px-3 py-1 rounded-full text-center tracking-wide transition-colors z-10">Arahkan Wajah ke Bingkai</span>
+                            <div class="w-full flex justify-between z-10">
+                                <span class="guide-corner w-4 h-4 border-b-3 border-l-3 border-white rounded-bl-xl transition-colors"></span>
+                                <span class="guide-corner w-4 h-4 border-b-3 border-r-3 border-white rounded-br-xl transition-colors"></span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div id="success-overlay" class="absolute inset-0 bg-ijo-tua/90 dark:bg-[#107050]/90 z-30 flex flex-col items-center justify-center text-white hidden">
                         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-ijo-tua mb-4 shadow-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -99,7 +145,7 @@
                     </div>
                 </div>
 
-                <p class="text-xs text-gray-500 dark:text-gray-400">Posisikan wajah Anda di tengah kamera hingga sistem mengenali Anda.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Posisikan wajah Anda di dalam bingkai hingga sistem mengenali Anda.</p>
             @endif
         </div>
     </main>
@@ -125,9 +171,189 @@
             let detectionInterval = null;
             let isScanning = true;
 
+            const faceGuideFrame = document.getElementById('face-guide-frame');
+            const faceGuideBox = document.getElementById('face-guide-box');
+            const faceGuideHint = document.getElementById('face-guide-hint');
+            const biometricLaser = document.getElementById('biometric-laser');
+            const cornerAccents = document.querySelectorAll('.guide-corner');
+
+            function getGuideBoxRoi(guideBoxEl, videoEl, displaySize) {
+                if (!guideBoxEl || !videoEl) {
+                    return {
+                        x: displaySize.width * 0.22,
+                        y: displaySize.height * 0.13,
+                        width: displaySize.width * 0.56,
+                        height: displaySize.height * 0.74
+                    };
+                }
+                const boxRect = guideBoxEl.getBoundingClientRect();
+                const videoRect = videoEl.getBoundingClientRect();
+
+                if (videoRect.width <= 0 || videoRect.height <= 0) {
+                    return {
+                        x: displaySize.width * 0.22,
+                        y: displaySize.height * 0.13,
+                        width: displaySize.width * 0.56,
+                        height: displaySize.height * 0.74
+                    };
+                }
+
+                const leftPercent = Math.max(0, (boxRect.left - videoRect.left) / videoRect.width);
+                const topPercent = Math.max(0, (boxRect.top - videoRect.top) / videoRect.height);
+                const widthPercent = Math.min(1, boxRect.width / videoRect.width);
+                const heightPercent = Math.min(1, boxRect.height / videoRect.height);
+
+                return {
+                    x: leftPercent * displaySize.width,
+                    y: topPercent * displaySize.height,
+                    width: widthPercent * displaySize.width,
+                    height: heightPercent * displaySize.height
+                };
+            }
+
+            function checkFaceInRoi(detection, roi) {
+                const b = detection.detection.box;
+                const landmarks = detection.landmarks ? detection.landmarks.positions : null;
+
+                // Abaikan jika wajah terlalu kecil (orang di belakang)
+                if (b.width < roi.width * 0.28 || b.height < roi.height * 0.28) {
+                    return { isFull: false, isCutting: false, reason: 'too_small' };
+                }
+
+                // Toleransi batas tepi border agar wajah harus benar-benar di dalam
+                const pad = 4;
+                const roiLeft = roi.x + pad;
+                const roiRight = roi.x + roi.width - pad;
+                const roiTop = roi.y + pad;
+                const roiBottom = roi.y + roi.height - pad;
+
+                // 1. Seluruh kotak wajah harus berada di dalam batas bingkai
+                const isBoxInside = (
+                    b.x >= roiLeft &&
+                    (b.x + b.width) <= roiRight &&
+                    b.y >= roiTop &&
+                    (b.y + b.height) <= roiBottom
+                );
+
+                // 2. Seluruh 68 titik biometrik (dagu, rahang, alis, mata) harus berada di dalam bingkai
+                let areLandmarksInside = true;
+                if (landmarks && landmarks.length > 0) {
+                    for (let i = 0; i < landmarks.length; i++) {
+                        const p = landmarks[i];
+                        if (p.x < roiLeft || p.x > roiRight || p.y < roiTop || p.y > roiBottom) {
+                            areLandmarksInside = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (isBoxInside && areLandmarksInside) {
+                    return { isFull: true, isCutting: false };
+                }
+
+                // Cek apakah sebagian wajah memotong/mengenai batas bingkai
+                const isOverlapping = (
+                    (b.x + b.width) > roi.x &&
+                    b.x < (roi.x + roi.width) &&
+                    (b.y + b.height) > roi.y &&
+                    b.y < (roi.y + roi.height)
+                );
+
+                if (isOverlapping) {
+                    return { isFull: false, isCutting: true };
+                }
+
+                return { isFull: false, isCutting: false };
+            }
+
+            function setGuideFrameActive(state) {
+                if (!faceGuideBox || !faceGuideHint) return;
+
+                // Reset styling classes
+                faceGuideBox.classList.remove(
+                    'border-white/70', 'border-dashed',
+                    'border-emerald-400', 'border-amber-400', 'border-solid',
+                    'shadow-[0_0_0_9999px_rgba(0,0,0,0.38)]',
+                    'shadow-[0_0_0_9999px_rgba(0,0,0,0.38),0_0_25px_rgba(16,185,129,0.5)]',
+                    'shadow-[0_0_0_9999px_rgba(0,0,0,0.38),0_0_20px_rgba(245,158,11,0.4)]'
+                );
+                faceGuideHint.classList.remove('bg-black/65', 'bg-emerald-600', 'bg-amber-600', 'text-white');
+                cornerAccents.forEach(el => el.classList.remove('border-white', 'border-emerald-400', 'border-amber-400'));
+
+                if (state === 'valid' || state === true) {
+                    faceGuideBox.classList.add('border-emerald-400', 'border-solid', 'shadow-[0_0_0_9999px_rgba(0,0,0,0.38),0_0_25px_rgba(16,185,129,0.5)]');
+                    faceGuideHint.classList.add('bg-emerald-600', 'text-white');
+                    faceGuideHint.textContent = "Wajah Pas, Memindai...";
+                    if (biometricLaser) biometricLaser.classList.remove('hidden');
+                    cornerAccents.forEach(el => el.classList.add('border-emerald-400'));
+                } else if (state === 'cutting') {
+                    faceGuideBox.classList.add('border-amber-400', 'border-solid', 'shadow-[0_0_0_9999px_rgba(0,0,0,0.38),0_0_20px_rgba(245,158,11,0.4)]');
+                    faceGuideHint.classList.add('bg-amber-600', 'text-white');
+                    faceGuideHint.textContent = "Posisikan Seluruh Wajah di Dalam Bingkai";
+                    if (biometricLaser) biometricLaser.classList.add('hidden');
+                    cornerAccents.forEach(el => el.classList.add('border-amber-400'));
+                } else {
+                    // 'idle' / 'outside'
+                    faceGuideBox.classList.add('border-white/70', 'border-dashed', 'shadow-[0_0_0_9999px_rgba(0,0,0,0.38)]');
+                    faceGuideHint.classList.add('bg-black/65', 'text-white');
+                    faceGuideHint.textContent = "Arahkan Wajah ke Bingkai";
+                    if (biometricLaser) biometricLaser.classList.add('hidden');
+                    cornerAccents.forEach(el => el.classList.add('border-white'));
+                }
+            }
+
+            function drawBiometricLandmarks(ctx, targetFace) {
+                if (!targetFace || !targetFace.landmarks) return;
+                const points = targetFace.landmarks.positions;
+                ctx.save();
+                
+                // Gambar 68 cyber dots biometrik
+                ctx.fillStyle = '#34d399';
+                ctx.shadowColor = '#10b981';
+                ctx.shadowBlur = 6;
+                for (let i = 0; i < points.length; i++) {
+                    ctx.beginPath();
+                    ctx.arc(points[i].x, points[i].y, 2, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+
+                // Gambar garis kontur biometrik halus
+                ctx.strokeStyle = 'rgba(52, 211, 153, 0.45)';
+                ctx.lineWidth = 1.2;
+
+                const segments = [
+                    targetFace.landmarks.getJawOutline(),
+                    targetFace.landmarks.getLeftEyeBrow(),
+                    targetFace.landmarks.getRightEyeBrow(),
+                    targetFace.landmarks.getNose(),
+                    targetFace.landmarks.getLeftEye(),
+                    targetFace.landmarks.getRightEye(),
+                    targetFace.landmarks.getMouth()
+                ];
+
+                for (const segment of segments) {
+                    if (segment && segment.length > 0) {
+                        ctx.beginPath();
+                        ctx.moveTo(segment[0].x, segment[0].y);
+                        for (let i = 1; i < segment.length; i++) {
+                            ctx.lineTo(segment[i].x, segment[i].y);
+                        }
+                        if (segment === targetFace.landmarks.getLeftEye() || 
+                            segment === targetFace.landmarks.getRightEye() || 
+                            segment === targetFace.landmarks.getMouth()) {
+                            ctx.closePath();
+                        }
+                        ctx.stroke();
+                    }
+                }
+                ctx.restore();
+            }
+
             function resumeScanning() {
                 if (errorOverlay) errorOverlay.classList.add('hidden');
                 if (successOverlay) successOverlay.classList.add('hidden');
+                if (faceGuideFrame) faceGuideFrame.classList.remove('hidden');
+                setGuideFrameActive(false);
                 isScanning = true;
             }
 
@@ -191,6 +417,7 @@
                 });
                 video.srcObject = stream;
                 video.classList.remove('hidden');
+                if (faceGuideFrame) faceGuideFrame.classList.remove('hidden');
                 statusText.classList.add('hidden');
             } catch (err) {
                 console.error("Gagal akses kamera:", err);
@@ -213,30 +440,57 @@
                     const ctx = overlay.getContext('2d');
                     ctx.clearRect(0, 0, overlay.width, overlay.height);
 
-                    // faceapi.draw.drawDetections(overlay, resizedDetections);
+                    const roi = getGuideBoxRoi(faceGuideBox, video, displaySize);
 
-                    for (const detection of resizedDetections) {
-                        const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
-                        
-                        // Draw box with name
-                        let labelText = "Tidak Dikenali";
-                        let boxColor = "red";
+                    // Evaluasi setiap wajah terhadap ROI bingkai panduan
+                    let validFace = null;
+                    let hasCuttingFace = false;
 
-                        if (bestMatch.label !== 'unknown') {
-                            const matchData = JSON.parse(bestMatch.label);
-                            labelText = matchData.name + ` (${Math.round((1 - bestMatch.distance) * 100)}%)`;
-                            boxColor = "#1F7A6F"; // ijo-semitua
-                            
-                            // Hit API and Stop
-                            if (isScanning && bestMatch.distance < 0.45) { // Strict check
-                                handleSuccess(matchData.id, matchData.name);
+                    for (const d of resizedDetections) {
+                        const status = checkFaceInRoi(d, roi);
+                        if (status.isFull) {
+                            if (!validFace || (d.detection.box.width * d.detection.box.height) > (validFace.detection.box.width * validFace.detection.box.height)) {
+                                validFace = d;
                             }
+                        } else if (status.isCutting) {
+                            hasCuttingFace = true;
                         }
-
-                        const box = detection.detection.box;
-                        const drawBox = new faceapi.draw.DrawBox(box, { label: labelText, boxColor: boxColor });
-                        drawBox.draw(overlay);
                     }
+
+                    if (!validFace) {
+                        if (hasCuttingFace) {
+                            setGuideFrameActive('cutting');
+                        } else {
+                            setGuideFrameActive('idle');
+                        }
+                        return;
+                    }
+
+                    // Wajah 100% full di dalam bingkai!
+                    setGuideFrameActive('valid');
+
+                    const bestMatch = faceMatcher.findBestMatch(validFace.descriptor);
+                    
+                    let labelText = "Tidak Dikenali";
+                    let boxColor = "#ef4444";
+
+                    if (bestMatch.label !== 'unknown') {
+                        const matchData = JSON.parse(bestMatch.label);
+                        labelText = matchData.name + ` (${Math.round((1 - bestMatch.distance) * 100)}%)`;
+                        boxColor = "#10b981"; // emerald green
+                        
+                        if (isScanning && bestMatch.distance < 0.45) { // Strict check
+                            if (faceGuideFrame) faceGuideFrame.classList.add('hidden');
+                            handleSuccess(matchData.id, matchData.name);
+                        }
+                    }
+
+                    // Gambar titik & jaring kontur biometrik wajah
+                    drawBiometricLandmarks(ctx, validFace);
+
+                    const box = validFace.detection.box;
+                    const drawBox = new faceapi.draw.DrawBox(box, { label: labelText, boxColor: boxColor });
+                    drawBox.draw(overlay);
                 }, 200); // 5 FPS
             });
 

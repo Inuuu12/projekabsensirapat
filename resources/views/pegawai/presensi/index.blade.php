@@ -54,6 +54,33 @@
             70% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
+        @keyframes biometricScan {
+            0% {
+                top: 5%;
+                opacity: 0.2;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                top: 90%;
+                opacity: 0.2;
+            }
+        }
+        .biometric-laser-line {
+            position: absolute;
+            left: 4%;
+            right: 4%;
+            height: 2.5px;
+            background: linear-gradient(90deg, transparent 0%, rgba(52, 211, 153, 0.7) 15%, #10b981 50%, rgba(52, 211, 153, 0.7) 85%, transparent 100%);
+            box-shadow: 0 0 12px 2.5px rgba(16, 185, 129, 0.85), 0 0 4px rgba(255, 255, 255, 0.95);
+            animation: biometricScan 2s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 25;
+        }
     </style>
     <style>
         /* Custom Modern Scrollbars */
@@ -208,23 +235,9 @@
         @endif
 
         <section class="rounded-[22px] border border-sirapi-line dark:border-[#233a34] bg-white dark:bg-[#152420] px-8 py-5 shadow-xs transition-colors">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-sirapi-line dark:border-[#233a34] pb-4">
-                <div>
-                    <h1 class="text-base font-extrabold text-gray-900 dark:text-white">Informasi Kegiatan</h1>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Jadwal agenda rapat yang sedang dipilih</p>
-                </div>
-                @if (isset($daftarAgenda) && $daftarAgenda->isNotEmpty())
-                    <div class="relative min-w-0 sm:w-72">
-                        <label class="block text-[10px] font-extrabold text-gray-400 uppercase tracking-wider mb-1">Ganti Agenda Rapat</label>
-                        <select onchange="if(this.value) window.location.href='{{ route('pegawai.presensi.index') }}?agenda_id=' + this.value" class="w-full rounded-xl border border-emerald-300 dark:border-[#284c43] bg-emerald-50/50 dark:bg-[#0f1c19] px-3 py-2 text-xs font-extrabold text-[#35635b] dark:text-emerald-400 outline-none transition focus:border-sirapi-green cursor-pointer">
-                            @foreach ($daftarAgenda as $itemAgenda)
-                                <option value="{{ $itemAgenda->id_agenda }}" @selected($agendaAktif && $agendaAktif->id_agenda == $itemAgenda->id_agenda)>
-                                    📅 {{ Str::limit($itemAgenda->nama_agenda, 35) }} ({{ $itemAgenda->tanggal?->format('d/m/Y') }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                @endif
+            <div class="border-b border-sirapi-line dark:border-[#233a34] pb-4">
+                <h1 class="text-base font-extrabold text-gray-900 dark:text-white">Informasi Kegiatan</h1>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Jadwal agenda rapat yang sedang dipilih</p>
             </div>
 
             <div class="mt-4 divide-y divide-sirapi-line dark:divide-[#233a34]">
@@ -578,6 +591,24 @@
                     <p id="face-status" class="absolute inset-0 flex items-center justify-center text-white text-xs font-medium z-10 animate-pulse px-4">Memuat kamera dan model...</p>
                     <video id="face-video" class="absolute top-0 left-0 w-full h-full object-cover hidden" style="transform: scaleX(-1);" autoplay muted playsinline></video>
                     <canvas id="face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
+                    
+                    <!-- Target Face Guide Frame -->
+                    <div id="record-face-guide-frame" class="absolute inset-0 z-20 pointer-events-none flex items-center justify-center hidden">
+                        <div id="record-face-guide-box" class="relative w-[56%] h-[74%] rounded-[36px] border-2 border-dashed border-white/70 shadow-[0_0_0_9999px_rgba(0,0,0,0.38)] transition-all duration-300 flex flex-col justify-between items-center p-2.5 overflow-hidden">
+                            <!-- Laser scan bar -->
+                            <div id="record-biometric-laser" class="biometric-laser-line hidden"></div>
+
+                            <div class="w-full flex justify-between z-10">
+                                <span class="record-guide-corner w-4 h-4 border-t-3 border-l-3 border-white rounded-tl-xl transition-colors"></span>
+                                <span class="record-guide-corner w-4 h-4 border-t-3 border-r-3 border-white rounded-tr-xl transition-colors"></span>
+                            </div>
+                            <span id="record-face-guide-hint" class="bg-black/65 backdrop-blur-xs text-white text-[10.5px] font-bold px-3 py-1 rounded-full text-center tracking-wide transition-colors z-10">Arahkan Wajah ke Bingkai</span>
+                            <div class="w-full flex justify-between z-10">
+                                <span class="record-guide-corner w-4 h-4 border-b-3 border-l-3 border-white rounded-bl-xl transition-colors"></span>
+                                <span class="record-guide-corner w-4 h-4 border-b-3 border-r-3 border-white rounded-br-xl transition-colors"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2.5 pt-1">
@@ -598,12 +629,30 @@
                 <i data-lucide="x" class="h-6 w-6"></i>
             </button>
             <h2 class="text-lg font-extrabold text-gray-900 dark:text-white">Scan Wajah Presensi</h2>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 mb-4">Posisikan wajah Anda hingga sistem mengenali Anda.</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 mb-4">Posisikan wajah Anda di dalam bingkai hingga sistem mengenali Anda.</p>
             
             <div class="relative w-full aspect-[4/3] bg-gray-900 rounded-xl overflow-hidden mb-4 shadow-inner border border-gray-200 dark:border-[#284c43]">
                 <p id="presensi-face-status" class="absolute inset-0 flex items-center justify-center text-white text-sm font-medium z-10 animate-pulse">Memuat kamera dan model...</p>
                 <video id="presensi-face-video" class="absolute top-0 left-0 w-full h-full object-cover hidden" style="transform: scaleX(-1);" autoplay muted playsinline></video>
                 <canvas id="presensi-face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
+
+                <!-- Target Face Guide Frame -->
+                <div id="presensi-guide-frame" class="absolute inset-0 z-20 pointer-events-none flex items-center justify-center hidden">
+                    <div id="presensi-guide-box" class="relative w-[56%] h-[74%] rounded-[36px] border-2 border-dashed border-white/70 shadow-[0_0_0_9999px_rgba(0,0,0,0.38)] transition-all duration-300 flex flex-col justify-between items-center p-2.5 overflow-hidden">
+                        <!-- Laser scan bar -->
+                        <div id="presensi-biometric-laser" class="biometric-laser-line hidden"></div>
+
+                        <div class="w-full flex justify-between z-10">
+                            <span class="presensi-guide-corner w-4 h-4 border-t-3 border-l-3 border-white rounded-tl-xl transition-colors"></span>
+                            <span class="presensi-guide-corner w-4 h-4 border-t-3 border-r-3 border-white rounded-tr-xl transition-colors"></span>
+                        </div>
+                        <span id="presensi-guide-hint" class="bg-black/65 backdrop-blur-xs text-white text-[10.5px] font-bold px-3 py-1 rounded-full text-center tracking-wide transition-colors z-10">Arahkan Wajah ke Bingkai</span>
+                        <div class="w-full flex justify-between z-10">
+                            <span class="presensi-guide-corner w-4 h-4 border-b-3 border-l-3 border-white rounded-bl-xl transition-colors"></span>
+                            <span class="presensi-guide-corner w-4 h-4 border-b-3 border-r-3 border-white rounded-br-xl transition-colors"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
@@ -655,6 +704,144 @@
         const faceStatus = document.getElementById('face-status');
         const btnCaptureFace = document.getElementById('btn-capture-face');
         let faceStream = null;
+        const recordFaceGuideFrame = document.getElementById('record-face-guide-frame');
+        const recordFaceGuideBox = document.getElementById('record-face-guide-box');
+        const recordFaceGuideHint = document.getElementById('record-face-guide-hint');
+        function drawBiometricLandmarks(ctx, targetFace) {
+            if (!targetFace || !targetFace.landmarks) return;
+            const points = targetFace.landmarks.positions;
+            ctx.save();
+            
+            // Gambar 68 cyber dots biometrik
+            ctx.fillStyle = '#34d399';
+            ctx.shadowColor = '#10b981';
+            ctx.shadowBlur = 6;
+            for (let i = 0; i < points.length; i++) {
+                ctx.beginPath();
+                ctx.arc(points[i].x, points[i].y, 2, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+
+            // Gambar garis kontur biometrik halus
+            ctx.strokeStyle = 'rgba(52, 211, 153, 0.45)';
+            ctx.lineWidth = 1.2;
+
+            const segments = [
+                targetFace.landmarks.getJawOutline(),
+                targetFace.landmarks.getLeftEyeBrow(),
+                targetFace.landmarks.getRightEyeBrow(),
+                targetFace.landmarks.getNose(),
+                targetFace.landmarks.getLeftEye(),
+                targetFace.landmarks.getRightEye(),
+                targetFace.landmarks.getMouth()
+            ];
+
+            for (const segment of segments) {
+                if (segment && segment.length > 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(segment[0].x, segment[0].y);
+                    for (let i = 1; i < segment.length; i++) {
+                        ctx.lineTo(segment[i].x, segment[i].y);
+                    }
+                    if (segment === targetFace.landmarks.getLeftEye() || 
+                        segment === targetFace.landmarks.getRightEye() || 
+                        segment === targetFace.landmarks.getMouth()) {
+                        ctx.closePath();
+                    }
+                    ctx.stroke();
+                }
+            }
+            ctx.restore();
+        }
+
+        function getGuideBoxRoi(guideBoxEl, videoEl, displaySize) {
+            if (!guideBoxEl || !videoEl) {
+                return {
+                    x: displaySize.width * 0.22,
+                    y: displaySize.height * 0.13,
+                    width: displaySize.width * 0.56,
+                    height: displaySize.height * 0.74
+                };
+            }
+            const boxRect = guideBoxEl.getBoundingClientRect();
+            const videoRect = videoEl.getBoundingClientRect();
+
+            if (videoRect.width <= 0 || videoRect.height <= 0) {
+                return {
+                    x: displaySize.width * 0.22,
+                    y: displaySize.height * 0.13,
+                    width: displaySize.width * 0.56,
+                    height: displaySize.height * 0.74
+                };
+            }
+
+            const leftPercent = Math.max(0, (boxRect.left - videoRect.left) / videoRect.width);
+            const topPercent = Math.max(0, (boxRect.top - videoRect.top) / videoRect.height);
+            const widthPercent = Math.min(1, boxRect.width / videoRect.width);
+            const heightPercent = Math.min(1, boxRect.height / videoRect.height);
+
+            return {
+                x: leftPercent * displaySize.width,
+                y: topPercent * displaySize.height,
+                width: widthPercent * displaySize.width,
+                height: heightPercent * displaySize.height
+            };
+        }
+
+        function checkFaceInRoi(detection, roi) {
+            const b = detection.detection.box;
+            const landmarks = detection.landmarks ? detection.landmarks.positions : null;
+
+            // Abaikan jika wajah terlalu kecil (orang di belakang)
+            if (b.width < roi.width * 0.28 || b.height < roi.height * 0.28) {
+                return { isFull: false, isCutting: false, reason: 'too_small' };
+            }
+
+            // Toleransi batas tepi border agar wajah harus benar-benar di dalam
+            const pad = 4;
+            const roiLeft = roi.x + pad;
+            const roiRight = roi.x + roi.width - pad;
+            const roiTop = roi.y + pad;
+            const roiBottom = roi.y + roi.height - pad;
+
+            // 1. Seluruh kotak wajah harus berada di dalam batas bingkai
+            const isBoxInside = (
+                b.x >= roiLeft &&
+                (b.x + b.width) <= roiRight &&
+                b.y >= roiTop &&
+                (b.y + b.height) <= roiBottom
+            );
+
+            // 2. Seluruh 68 titik biometrik (dagu, rahang, alis, mata) harus berada di dalam bingkai
+            let areLandmarksInside = true;
+            if (landmarks && landmarks.length > 0) {
+                for (let i = 0; i < landmarks.length; i++) {
+                    const p = landmarks[i];
+                    if (p.x < roiLeft || p.x > roiRight || p.y < roiTop || p.y > roiBottom) {
+                        areLandmarksInside = false;
+                        break;
+                    }
+                }
+            }
+
+            if (isBoxInside && areLandmarksInside) {
+                return { isFull: true, isCutting: false };
+            }
+
+            // Cek apakah sebagian wajah memotong/mengenai batas bingkai
+            const isOverlapping = (
+                (b.x + b.width) > roi.x &&
+                b.x < (roi.x + roi.width) &&
+                (b.y + b.height) > roi.y &&
+                b.y < (roi.y + roi.height)
+            );
+
+            if (isOverlapping) {
+                return { isFull: false, isCutting: true };
+            }
+
+            return { isFull: false, isCutting: false };
+        }
 
         async function openFaceModal() {
             closeProfileDropdown();
@@ -682,6 +869,9 @@
                 });
                 faceVideo.srcObject = faceStream;
                 faceVideo.classList.remove('hidden');
+                if (recordFaceGuideFrame) recordFaceGuideFrame.classList.remove('hidden');
+                const recordLaser = document.getElementById('record-biometric-laser');
+                if (recordLaser) recordLaser.classList.remove('hidden');
                 faceStatus.classList.add('hidden');
                 btnCaptureFace.classList.remove('hidden');
             } catch (err) {
@@ -693,6 +883,9 @@
         function closeFaceModal() {
             faceModal.classList.add('hidden');
             faceModal.classList.remove('flex');
+            if (recordFaceGuideFrame) recordFaceGuideFrame.classList.add('hidden');
+            const recordLaser = document.getElementById('record-biometric-laser');
+            if (recordLaser) recordLaser.classList.add('hidden');
             if (faceStream) {
                 faceStream.getTracks().forEach(track => track.stop());
                 faceStream = null;
@@ -709,27 +902,52 @@
             btnCaptureFace.disabled = true;
             btnCaptureFace.innerHTML = 'Memproses...';
 
-            const detection = await faceapi.detectSingleFace(faceVideo, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
-                                           .withFaceLandmarks()
-                                           .withFaceDescriptor();
+            const displaySize = { width: faceVideo.videoWidth || 640, height: faceVideo.videoHeight || 480 };
+            faceapi.matchDimensions(faceOverlay, displaySize);
 
-            if (!detection) {
-                alert("Wajah tidak terdeteksi. Pastikan wajah terlihat jelas di kamera.");
+            const detections = await faceapi.detectAllFaces(faceVideo, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
+                                           .withFaceLandmarks()
+                                           .withFaceDescriptors();
+
+            const resizedDetections = faceapi.resizeResults(detections, displaySize);
+
+            const roi = getGuideBoxRoi(recordFaceGuideBox, faceVideo, displaySize);
+
+            let validFace = null;
+            let hasCuttingFace = false;
+
+            for (const d of resizedDetections) {
+                const status = checkFaceInRoi(d, roi);
+                if (status.isFull) {
+                    if (!validFace || (d.detection.box.width * d.detection.box.height) > (validFace.detection.box.width * validFace.detection.box.height)) {
+                        validFace = d;
+                    }
+                } else if (status.isCutting) {
+                    hasCuttingFace = true;
+                }
+            }
+
+            if (!validFace) {
+                if (hasCuttingFace) {
+                    alert("Wajah Anda masih terpotong bingkai. Pastikan seluruh bagian wajah (termasuk dagu, dahi, dan pipi) berada penuh di dalam bingkai panduan.");
+                } else {
+                    alert("Wajah tidak terdeteksi di dalam bingkai panduan. Pastikan wajah berada tepat di tengah bingkai kamera.");
+                }
                 btnCaptureFace.disabled = false;
                 btnCaptureFace.innerHTML = '<i data-lucide="scan" class="inline-block h-4 w-4 mr-1"></i> Ambil Wajah';
                 lucide.createIcons();
                 return;
             }
 
-            // Draw box on overlay
-            const displaySize = { width: faceVideo.videoWidth, height: faceVideo.videoHeight };
-            faceapi.matchDimensions(faceOverlay, displaySize);
-            const resizedDetection = faceapi.resizeResults(detection, displaySize);
+            const targetDetection = validFace;
+
+            // Draw box on overlay with biometric points
             const ctx = faceOverlay.getContext('2d');
             ctx.clearRect(0, 0, faceOverlay.width, faceOverlay.height);
-            faceapi.draw.drawDetections(faceOverlay, resizedDetection);
+            drawBiometricLandmarks(ctx, targetDetection);
+            faceapi.draw.drawDetections(faceOverlay, targetDetection);
 
-            const descriptorArray = Array.from(detection.descriptor);
+            const descriptorArray = Array.from(targetDetection.descriptor);
             
             // Capture image
             const captureCanvas = document.createElement('canvas');
@@ -777,6 +995,10 @@
         const presensiVideo = document.getElementById('presensi-face-video');
         const presensiOverlay = document.getElementById('presensi-face-overlay');
         const presensiStatus = document.getElementById('presensi-face-status');
+        const presensiGuideFrame = document.getElementById('presensi-guide-frame');
+        const presensiGuideBox = document.getElementById('presensi-guide-box');
+        const presensiGuideHint = document.getElementById('presensi-guide-hint');
+        const presensiCornerAccents = document.querySelectorAll('.presensi-guide-corner');
         let presensiStream = null;
         let presensiDetectionInterval = null;
         let isPresensiScanning = true;
@@ -791,6 +1013,42 @@
             console.error("Error initializing face descriptor matcher:", e);
         }
         @endif
+
+        function setPresensiGuideActive(state) {
+            if (!presensiGuideBox || !presensiGuideHint) return;
+            const presensiBiometricLaser = document.getElementById('presensi-biometric-laser');
+
+            // Reset classes
+            presensiGuideBox.classList.remove(
+                'border-white/70', 'border-dashed',
+                'border-emerald-400', 'border-amber-400', 'border-solid',
+                'shadow-[0_0_0_9999px_rgba(0,0,0,0.38)]',
+                'shadow-[0_0_0_9999px_rgba(0,0,0,0.38),0_0_25px_rgba(16,185,129,0.5)]',
+                'shadow-[0_0_0_9999px_rgba(0,0,0,0.38),0_0_20px_rgba(245,158,11,0.4)]'
+            );
+            presensiGuideHint.classList.remove('bg-black/65', 'bg-emerald-600', 'bg-amber-600', 'text-white');
+            presensiCornerAccents.forEach(el => el.classList.remove('border-white', 'border-emerald-400', 'border-amber-400'));
+
+            if (state === 'valid' || state === true) {
+                presensiGuideBox.classList.add('border-emerald-400', 'border-solid', 'shadow-[0_0_0_9999px_rgba(0,0,0,0.38),0_0_25px_rgba(16,185,129,0.5)]');
+                presensiGuideHint.classList.add('bg-emerald-600', 'text-white');
+                presensiGuideHint.textContent = "Wajah Pas, Memindai...";
+                if (presensiBiometricLaser) presensiBiometricLaser.classList.remove('hidden');
+                presensiCornerAccents.forEach(el => el.classList.add('border-emerald-400'));
+            } else if (state === 'cutting') {
+                presensiGuideBox.classList.add('border-amber-400', 'border-solid', 'shadow-[0_0_0_9999px_rgba(0,0,0,0.38),0_0_20px_rgba(245,158,11,0.4)]');
+                presensiGuideHint.classList.add('bg-amber-600', 'text-white');
+                presensiGuideHint.textContent = "Posisikan Seluruh Wajah di Dalam Bingkai";
+                if (presensiBiometricLaser) presensiBiometricLaser.classList.add('hidden');
+                presensiCornerAccents.forEach(el => el.classList.add('border-amber-400'));
+            } else {
+                presensiGuideBox.classList.add('border-white/70', 'border-dashed', 'shadow-[0_0_0_9999px_rgba(0,0,0,0.38)]');
+                presensiGuideHint.classList.add('bg-black/65', 'text-white');
+                presensiGuideHint.textContent = "Arahkan Wajah ke Bingkai";
+                if (presensiBiometricLaser) presensiBiometricLaser.classList.add('hidden');
+                presensiCornerAccents.forEach(el => el.classList.add('border-white'));
+            }
+        }
 
         async function openPresensiModal() {
             presensiModal.classList.remove('hidden');
@@ -824,12 +1082,14 @@
                 presensiStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
                 presensiVideo.srcObject = presensiStream;
                 presensiVideo.classList.remove('hidden');
+                if (presensiGuideFrame) presensiGuideFrame.classList.remove('hidden');
+                setPresensiGuideActive('idle');
                 presensiStatus.classList.add('hidden');
                 
                 presensiVideo.addEventListener('play', startPresensiDetection);
             } catch (err) {
                 console.error(err);
-                presensiStatus.innerText = "Gagal memuat kamera atau model.";
+                presensiStatus.innerText = "Gagal memuat kamera. Pastikan izin kamera telah diberikan di browser HP Anda.";
             }
         }
 
@@ -837,6 +1097,9 @@
             presensiModal.classList.add('hidden');
             presensiModal.classList.remove('flex');
             isPresensiScanning = false;
+            if (presensiGuideFrame) presensiGuideFrame.classList.add('hidden');
+            const presensiBiometricLaser = document.getElementById('presensi-biometric-laser');
+            if (presensiBiometricLaser) presensiBiometricLaser.classList.add('hidden');
             if (presensiDetectionInterval) clearInterval(presensiDetectionInterval);
             if (presensiStream) {
                 presensiStream.getTracks().forEach(track => track.stop());
@@ -851,7 +1114,7 @@
         }
 
         function startPresensiDetection() {
-            const displaySize = { width: presensiVideo.videoWidth, height: presensiVideo.videoHeight };
+            const displaySize = { width: presensiVideo.videoWidth || 640, height: presensiVideo.videoHeight || 480 };
             faceapi.matchDimensions(presensiOverlay, displaySize);
 
             presensiDetectionInterval = setInterval(async () => {
@@ -859,37 +1122,65 @@
 
                 const detections = await faceapi.detectAllFaces(presensiVideo, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
                                                 .withFaceLandmarks()
-                                                .withFaceDescriptors();
+                                               .withFaceDescriptors();
                 
                 const resizedDetections = faceapi.resizeResults(detections, displaySize);
                 const ctx = presensiOverlay.getContext('2d');
                 ctx.clearRect(0, 0, presensiOverlay.width, presensiOverlay.height);
 
-                for (const detection of resizedDetections) {
-                    const bestMatch = presensiFaceMatcher.findBestMatch(detection.descriptor);
-                    let labelText = "Bukan Anda";
-                    let boxColor = "red";
+                const roi = getGuideBoxRoi(presensiGuideBox, presensiVideo, displaySize);
+                let validDetection = null;
+                let hasCuttingFace = false;
 
-                    if (bestMatch.label === 'me') {
-                        labelText = "Wajah Dikenali!";
-                        boxColor = "#1F7A6F"; // ijo-semitua
-                        
-                        if (isPresensiScanning && bestMatch.distance < 0.45) {
-                            isPresensiScanning = false;
-                            clearInterval(presensiDetectionInterval);
-                            presensiStatus.classList.remove('hidden');
-                            presensiStatus.innerText = "Berhasil diverifikasi! Mencatat presensi...";
-                            presensiStatus.classList.replace('bg-gray-900', 'bg-sirapi-green/80');
-                            setTimeout(() => {
-                                document.getElementById('form-presensi').submit();
-                            }, 1000);
+                for (const d of resizedDetections) {
+                    const status = checkFaceInRoi(d, roi);
+                    if (status.isFull) {
+                        if (!validDetection || (d.detection.box.width * d.detection.box.height) > (validDetection.detection.box.width * validDetection.detection.box.height)) {
+                            validDetection = d;
                         }
+                    } else if (status.isCutting) {
+                        hasCuttingFace = true;
                     }
-
-                    const box = detection.detection.box;
-                    const drawBox = new faceapi.draw.DrawBox(box, { label: labelText, boxColor: boxColor });
-                    drawBox.draw(presensiOverlay);
                 }
+
+                if (!validDetection) {
+                    if (hasCuttingFace) {
+                        setPresensiGuideActive('cutting');
+                    } else {
+                        setPresensiGuideActive('idle');
+                    }
+                    return;
+                }
+
+                setPresensiGuideActive('valid');
+
+                const bestMatch = presensiFaceMatcher.findBestMatch(validDetection.descriptor);
+                let labelText = "Bukan Anda";
+                let boxColor = "#ef4444";
+
+                if (bestMatch.label === 'me') {
+                    labelText = "Wajah Dikenali!";
+                    boxColor = "#10b981"; // emerald
+                    
+                    if (isPresensiScanning && bestMatch.distance < 0.45) {
+                        isPresensiScanning = false;
+                        clearInterval(presensiDetectionInterval);
+                        if (presensiGuideFrame) presensiGuideFrame.classList.add('hidden');
+                        presensiStatus.classList.remove('hidden');
+                        presensiStatus.innerText = "Berhasil diverifikasi! Mencatat presensi...";
+                        presensiStatus.classList.replace('bg-gray-900', 'bg-sirapi-green/80');
+                        setTimeout(() => {
+                            document.getElementById('form-presensi').submit();
+                        }, 1000);
+                    }
+                }
+
+                // Gambar titik & jaring kontur biometrik wajah
+                drawBiometricLandmarks(ctx, validDetection);
+
+                const box = validDetection.detection.box;
+                const drawBox = new faceapi.draw.DrawBox(box, { label: labelText, boxColor: boxColor });
+                drawBox.draw(presensiOverlay);
             }, 200);
         }
 

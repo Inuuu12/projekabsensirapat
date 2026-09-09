@@ -20,6 +20,8 @@ class Pegawai extends Authenticatable
 
     protected $fillable = [
         'foto',
+        'foto_wajah',
+        'face_descriptor',
         'nama_pegawai',    
         'nip',
         'tanggal_lahir',
