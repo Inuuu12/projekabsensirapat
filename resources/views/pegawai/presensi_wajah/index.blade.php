@@ -39,7 +39,7 @@
             $routeParams = $agendaAktif ? ['agenda_id' => $agendaAktif->id_agenda] : [];
         @endphp
 
-        <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-3xl p-6 md:p-8 max-w-2xl w-full shadow-lg relative space-y-6 text-center transition-colors">
+        <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-xl p-6 md:p-8 max-w-2xl w-full shadow-lg relative space-y-6 text-center transition-colors">
             <a href="{{ route('publik.presensi.pegawai', $routeParams) }}" class="absolute top-6 left-6 w-8 h-8 rounded-full bg-gray-100 dark:bg-[#0f1c19] hover:bg-gray-200 dark:hover:bg-white/10 flex items-center justify-center text-gray-500 dark:text-gray-300 font-bold transition-colors cursor-pointer" title="Kembali">
                 &larr;
             </a>

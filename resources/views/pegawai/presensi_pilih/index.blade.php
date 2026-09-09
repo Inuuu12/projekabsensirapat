@@ -49,7 +49,7 @@
             $routeParams = $agendaAktif ? ['agenda_id' => $agendaAktif->id_agenda] : [];
         @endphp
 
-        <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-lg relative space-y-6 transition-colors">
+        <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-xl p-6 md:p-8 max-w-lg w-full shadow-lg relative space-y-6 transition-colors">
             <a href="{{ $agendaAktif ? route('publik.agenda.detail', $agendaAktif->id_agenda) : route('publik.agenda') }}" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-gray-100 dark:bg-[#0f1c19] hover:bg-gray-200 dark:hover:bg-white/10 flex items-center justify-center text-gray-500 dark:text-gray-300 font-bold transition-colors cursor-pointer" title="Kembali">
                 &larr;
             </a>
@@ -69,7 +69,7 @@
             <hr class="border-gray-100 dark:border-[#233a34]">
 
             @if ($agendaAktif && $agendaAktif->status_label === 'Selesai')
-                <div class="rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 p-6 text-center space-y-3">
+                <div class="rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 p-6 text-center space-y-3">
                     <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 11 0 0118 0" /></svg>
                     </div>
@@ -77,7 +77,7 @@
                     <p class="text-xs font-medium text-amber-700 dark:text-amber-300 leading-relaxed">Presensi untuk agenda rapat ini telah ditutup karena waktu pelaksanaan rapat telah berakhir.</p>
                 </div>
             @elseif ($agendaAktif && $agendaAktif->isKuotaPenuh())
-                <div class="rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-6 text-center space-y-3">
+                <div class="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-6 text-center space-y-3">
                     <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/60 text-red-600 dark:text-red-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     </div>
@@ -86,7 +86,7 @@
                 </div>
             @elseif ($agendaAktif)
                 <!-- Card Verifikasi Lokasi Presensi (Live Real-Time Tracking) -->
-                <div id="location-card" class="rounded-3xl border border-gray-200/90 dark:border-[#284c43] bg-[#f8faf9] dark:bg-[#0f1c19] p-4 sm:p-5 space-y-4 transition-all duration-300 shadow-xs">
+                <div id="location-card" class="rounded-xl border border-gray-200/90 dark:border-[#284c43] bg-[#f8faf9] dark:bg-[#0f1c19] p-4 sm:p-5 space-y-4 transition-all duration-300 shadow-xs">
                     <div class="flex items-start justify-between gap-3">
                         <div class="flex items-center space-x-3">
                             <div id="location-icon-box" class="w-11 h-11 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 transition-colors shadow-2xs">
@@ -335,7 +335,7 @@
 
             if (isVerified && coords) {
                 // Card UI
-                card.className = "rounded-3xl border border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-emerald-950/20 p-4 sm:p-5 space-y-4 transition-all duration-300 shadow-xs";
+                card.className = "rounded-xl border border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-emerald-950/20 p-4 sm:p-5 space-y-4 transition-all duration-300 shadow-xs";
                 iconBox.className = "w-11 h-11 rounded-2xl bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 transition-colors shadow-2xs";
                 badge.className = "inline-flex items-center gap-1.5 text-[10px] font-extrabold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700 shrink-0";
                 badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span><span>Live Terlacak</span>';
@@ -378,7 +378,7 @@
                 });
             } else {
                 if (errorMsg) {
-                    card.className = "rounded-3xl border border-red-300 dark:border-red-800/80 bg-red-50/50 dark:bg-red-950/20 p-4 sm:p-5 space-y-4 transition-all duration-300";
+                    card.className = "rounded-xl border border-red-300 dark:border-red-800/80 bg-red-50/50 dark:bg-red-950/20 p-4 sm:p-5 space-y-4 transition-all duration-300";
                     iconBox.className = "w-11 h-11 rounded-2xl bg-red-100 dark:bg-red-900/60 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0 transition-colors";
                     badge.className = "inline-flex items-center gap-1.5 text-[10px] font-extrabold px-3 py-1 rounded-full bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 shrink-0";
                     badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span><span>Gagal</span>';

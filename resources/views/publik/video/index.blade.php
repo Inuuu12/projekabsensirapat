@@ -45,7 +45,7 @@
         </div>
 
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <div class="lg:col-span-8 bg-black rounded-3xl overflow-hidden shadow-md aspect-video border border-transparent dark:border-[#233a34]">
+            <div class="lg:col-span-8 bg-black rounded-xl overflow-hidden shadow-md aspect-video border border-transparent dark:border-[#233a34]">
                 <iframe
                     class="w-full h-full"
                     src="{{ $youtubeEmbedUrl }}"
@@ -55,7 +55,7 @@
                 </iframe>
             </div>
 
-            <aside class="lg:col-span-4 bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl space-y-4 transition-all duration-300">
+            <aside class="lg:col-span-4 bg-white dark:bg-[#152420] rounded-xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl space-y-4 transition-all duration-300">
                 <h2 class="font-bold text-sm text-gray-900 dark:text-white">Sumber Video</h2>
                 <p class="text-xs text-gray-500 dark:text-gray-300 leading-relaxed">Video otomatis diputar langsung dari playlist unggahan resmi kanal YouTube.</p>
                 <a href="{{ $youtubeChannelUrl }}" target="_blank" rel="noopener" class="inline-flex items-center justify-center bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white text-xs font-bold px-4 py-2 rounded-full shadow-xs">
@@ -65,7 +65,7 @@
         </section>
 
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl space-y-4 transition-all duration-300">
+            <div class="bg-white dark:bg-[#152420] rounded-xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl space-y-4 transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <h2 class="font-bold text-sm text-gray-900 dark:text-white">Agenda Terbaru</h2>
                     <a href="{{ route('publik.agenda') }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:underline">Lihat Semua</a>
@@ -73,17 +73,17 @@
 
                 <div class="space-y-3">
                     @forelse ($agendaItems as $agenda)
-                        <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="block rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4 hover:bg-ijo-sangatmuda dark:hover:bg-[#1b3832] transition-colors">
+                        <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="block rounded-xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4 hover:bg-ijo-sangatmuda dark:hover:bg-[#1b3832] transition-colors">
                             <h3 class="text-xs font-bold text-gray-900 dark:text-white">{{ $agenda->nama_agenda }}</h3>
                             <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">{{ $agenda->tanggal?->translatedFormat('d F Y') ?? '-' }} &bull; {{ substr((string) $agenda->waktu, 0, 5) ?: '-' }} WIB</p>
                         </a>
                     @empty
-                        <p class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4 text-xs text-gray-500 dark:text-gray-400">Belum ada agenda di database.</p>
+                        <p class="rounded-xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4 text-xs text-gray-500 dark:text-gray-400">Belum ada agenda di database.</p>
                     @endforelse
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-[#152420] rounded-3xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl space-y-4 transition-all duration-300">
+            <div class="bg-white dark:bg-[#152420] rounded-xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl space-y-4 transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <h2 class="font-bold text-sm text-gray-900 dark:text-white">Berita Terbaru</h2>
                     <a href="{{ route('publik.berita') }}" class="text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:underline">Lihat Semua</a>
@@ -91,12 +91,12 @@
 
                 <div class="space-y-3">
                     @forelse ($beritaItems as $berita)
-                        <a href="{{ route('publik.berita.detail', $berita->id_berita) }}" class="block rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4 hover:bg-ijo-sangatmuda dark:hover:bg-[#1b3832] transition-colors">
+                        <a href="{{ route('publik.berita.detail', $berita->id_berita) }}" class="block rounded-xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4 hover:bg-ijo-sangatmuda dark:hover:bg-[#1b3832] transition-colors">
                             <h3 class="text-xs font-bold text-gray-900 dark:text-white">{{ $berita->judul }}</h3>
                             <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">{{ $berita->tanggal?->translatedFormat('d F Y') ?? '-' }} &bull; {{ $berita->sumber ?? '-' }}</p>
                         </a>
                     @empty
-                        <p class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4 text-xs text-gray-500 dark:text-gray-400">Belum ada berita di database.</p>
+                        <p class="rounded-xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4 text-xs text-gray-500 dark:text-gray-400">Belum ada berita di database.</p>
                     @endforelse
                 </div>
             </div>

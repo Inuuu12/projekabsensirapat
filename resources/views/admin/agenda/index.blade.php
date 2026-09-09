@@ -11,20 +11,25 @@
 
 @section('content')
 @php
-    $kategoriOptions = [
-        'internal' => 'Surat Internal',
-        'masuk' => 'Surat Masuk',
-        'keluar' => 'Surat Keluar',
-    ];
-    $activeLabel = $kategoriOptions[$kategoriSurat] ?? 'Surat Internal';
+    $isRiwayatView = $isRiwayat ?? false;
+    $kategoriOptions = array_merge(
+        $isRiwayatView ? ['semua' => 'Semua Surat'] : [],
+        [
+            'internal' => 'Surat Internal',
+            'masuk' => 'Surat Masuk',
+            'keluar' => 'Surat Keluar',
+        ]
+    );
+    $activeRouteName = $isRiwayatView ? 'admin.agenda.riwayat' : 'admin.agenda.lihat';
+    $activeLabel = ($isRiwayatView ? 'Riwayat Agenda Rapat - ' : '') . ($kategoriOptions[$kategoriSurat] ?? 'Semua Surat');
 @endphp
 
 <div class="max-w-[1400px] mx-auto space-y-6">
 
     <!-- Stats Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        @foreach ($kategoriOptions as $key => $label)
-            <a href="{{ route('admin.agenda.lihat', ['kategori_surat' => $key]) }}" class="bg-white dark:bg-[#152420] border {{ $kategoriSurat === $key ? 'border-[#35635b] dark:border-emerald-500 ring-2 ring-[#35635b]/10' : 'border-gray-100 dark:border-[#233a34]' }} rounded-2xl p-5 shadow-xs transition hover:border-[#35635b] dark:hover:border-emerald-500 flex items-center justify-between">
+        @foreach (['internal' => 'Surat Internal', 'masuk' => 'Surat Masuk', 'keluar' => 'Surat Keluar'] as $key => $label)
+            <a href="{{ route($activeRouteName, ['kategori_surat' => $key]) }}" class="bg-white dark:bg-[#152420] border {{ $kategoriSurat === $key ? 'border-[#35635b] dark:border-emerald-500 ring-2 ring-[#35635b]/10' : 'border-gray-100 dark:border-[#233a34]' }} rounded-xl p-5 shadow-xs transition hover:border-[#35635b] dark:hover:border-emerald-500 flex items-center justify-between">
                 <div>
                     <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">{{ $label }}</p>
                     <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $agendaStats[$key] ?? 0 }}</p>
@@ -40,24 +45,24 @@
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div class="flex flex-wrap gap-2">
             @foreach ($kategoriOptions as $key => $label)
-                <a href="{{ route('admin.agenda.lihat', ['kategori_surat' => $key, 'keyword' => request('keyword')]) }}" class="rounded-xl px-4 py-2 text-sm font-bold transition {{ $kategoriSurat === $key ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] border border-gray-200 dark:border-[#233a34] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5' }}">
+                <a href="{{ route($activeRouteName, ['kategori_surat' => $key, 'keyword' => request('keyword')]) }}" class="rounded-xl px-4 py-2 text-sm font-bold transition {{ $kategoriSurat === $key ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] border border-gray-200 dark:border-[#233a34] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5' }}">
                     {{ $label }}
                 </a>
             @endforeach
         </div>
 
-        <form method="GET" action="{{ route('admin.agenda.lihat') }}" class="relative w-full lg:w-80">
+        <form method="GET" action="{{ route($activeRouteName) }}" class="relative w-full lg:w-80">
             <input type="hidden" name="kategori_surat" value="{{ $kategoriSurat }}">
             <input name="keyword" value="{{ request('keyword') }}" type="search" class="bg-white dark:bg-[#0f1c19] text-gray-700 dark:text-white text-sm rounded-xl block w-full px-4 py-3 outline-none border border-gray-200 dark:border-[#284c43] focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 transition shadow-xs placeholder-gray-400 dark:placeholder-gray-500" placeholder="Cari agenda, lokasi, asal surat...">
         </form>
     </div>
 
     <!-- Table Section -->
-    <div class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
+    <div class="bg-white dark:bg-[#152420] rounded-xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
         <div class="border-b border-gray-100 dark:border-[#233a34] px-6 py-4 flex justify-between items-center">
             <div>
                 <h2 class="text-base font-extrabold text-gray-800 dark:text-white">{{ $activeLabel }}</h2>
-                <p class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $agenda->count() }} agenda dari database.</p>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $agenda->count() }} {{ $isRiwayatView ? 'riwayat agenda selesai' : 'agenda' }} dari database.</p>
             </div>
         </div>
 

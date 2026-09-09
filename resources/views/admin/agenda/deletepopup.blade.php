@@ -1,6 +1,6 @@
 <!-- MODAL KONFIRMASI HAPUS CUSTOM -->
 <div id="modal-konfirmasi-hapus" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 transition-all duration-200">
-    <div class="bg-white dark:bg-[#152420] dark:border dark:border-[#284c43] rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-6 text-center transform scale-95 transition-all">
+    <div class="bg-white dark:bg-[#152420] dark:border dark:border-[#284c43] rounded-xl max-w-sm w-full p-6 shadow-2xl space-y-6 text-center transform scale-95 transition-all">
         
         <!-- Icon Peringatan Merah Muda -->
         <div class="mx-auto w-16 h-16 rounded-full bg-red-100 dark:bg-red-950/60 flex items-center justify-center">
