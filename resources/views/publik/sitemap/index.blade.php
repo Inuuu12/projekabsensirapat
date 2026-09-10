@@ -31,7 +31,7 @@
     <!-- Navbar Publik -->
     @include('publik.layout.navbarpublik')
 
-    <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-10 space-y-8">
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         
         <!-- Header Page -->
         <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-xl p-6 md:p-8 shadow-xs transition-colors">

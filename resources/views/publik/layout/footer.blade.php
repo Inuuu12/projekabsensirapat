@@ -5,7 +5,7 @@
 @endphp
 
 <footer class="bg-ijo-tua dark:bg-[#0f1c19] text-white mt-auto border-t border-white/10 dark:border-[#233a34] transition-colors duration-200">
-    <div class="w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 pt-12 pb-8 space-y-10">
+    <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-10">
         
         <!-- MAIN FOOTER CONTENT (GRID 4 KOLOM) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">

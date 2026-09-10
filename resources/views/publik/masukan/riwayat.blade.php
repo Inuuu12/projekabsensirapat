@@ -28,7 +28,7 @@
 <body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
     @include('publik.layout.navbarpublik')
 
-    <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-8 space-y-6">
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         @php
             $masukanItems = ($masukan ?? null) instanceof \Illuminate\Contracts\Pagination\Paginator
                 ? $masukan->getCollection()
@@ -73,9 +73,6 @@
                     <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">Daftar Aduan</h1>
                     <p class="text-xs text-gray-500 dark:text-gray-300 mt-1">Transparansi riwayat aspirasi, saran, dan tindak lanjut laporan pengaduan masyarakat seputar layanan Diskominfo Kabupaten Bogor.</p>
                 </div>
-                <a href="{{ route('publik.masukan') }}" class="bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white text-xs font-bold px-5 py-2.5 rounded-full self-start md:self-auto shadow-xs">
-                    Buat Aduan Baru
-                </a>
             </div>
         </div>
 
