@@ -29,6 +29,26 @@
     <!-- Leaflet CSS & JS for GIS Map Sebaran -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        .leaflet-popup-content-wrapper {
+            border-radius: 16px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+        }
+        .leaflet-popup-content {
+            margin: 14px 16px !important;
+            line-height: 1.4 !important;
+        }
+        .leaflet-container a.leaflet-popup-btn,
+        .leaflet-popup-content a {
+            color: #ffffff !important;
+            text-decoration: none !important;
+        }
+        .leaflet-container a.leaflet-popup-btn:hover,
+        .leaflet-popup-content a:hover {
+            color: #ffffff !important;
+            opacity: 0.92;
+        }
+    </style>
 </head>
 <body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
     @include('publik.layout.navbarpublik')
@@ -793,7 +813,7 @@
                                         <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">${badge}</span>
                                         <h4 class="font-bold text-xs text-gray-900 mt-1.5 leading-snug">${name}</h4>
                                         <p class="text-[11px] text-gray-600 mt-1 leading-normal">📍 ${addr}</p>
-                                        <a href="{{ route('publik.form-kunjungan') }}" class="inline-block mt-2 text-[10px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-2.5 py-1 rounded transition-colors">Isi Form Kunjungan &rarr;</a>
+                                        <a href="{{ route('publik.form-kunjungan') }}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block mt-2.5 text-[11px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-3.5 py-1.5 rounded-xl transition-all shadow-xs">Isi Form Kunjungan &rarr;</a>
                                     </div>
                                 `);
                             }
@@ -839,7 +859,7 @@
                         <h4 class="font-bold text-xs text-gray-900 mt-1 leading-snug">${item.nama}</h4>
                         <p class="text-[11px] text-gray-600 mt-1">📍 ${item.lokasi}</p>
                         <p class="text-[10px] text-gray-500 mt-0.5">🕒 ${item.waktu}</p>
-                        <a href="${item.detailUrl}" class="inline-block mt-2 text-[10px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-2.5 py-1 rounded transition-colors">Detail Agenda &rarr;</a>
+                        <a href="${item.detailUrl}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block mt-2.5 text-[11px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-3.5 py-1.5 rounded-xl transition-all shadow-xs">Detail Agenda &rarr;</a>
                     </div>
                 `);
             });
