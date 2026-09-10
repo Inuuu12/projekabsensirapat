@@ -78,5 +78,11 @@ class DatabaseSeeder extends Seeder
                 $jabatan + ['created_at' => $now, 'updated_at' => $now],
             );
         }
+
+        // 6. Master Dinas, Kecamatan & Akun Dinas
+        $this->call([
+            DinasKecamatanSeeder::class,
+            AdminDinasSeeder::class,
+        ]);
     }
 }
