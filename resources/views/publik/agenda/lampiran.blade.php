@@ -40,7 +40,7 @@
         </section>
 
         <div class="flex min-h-[84px] items-center justify-center border-t border-white/10 bg-black px-4 py-5">
-            <a href="{{ route('publik.agenda.detail', $agenda->id_agenda, false) }}" class="inline-flex h-11 items-center justify-center rounded-lg bg-ijo-tua px-5 text-sm font-bold text-white transition hover:bg-ijo-semitua">
+            <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="inline-flex h-11 items-center justify-center rounded-lg bg-ijo-tua px-5 text-sm font-bold text-white transition hover:bg-ijo-semitua">
                 Kembali
             </a>
         </div>

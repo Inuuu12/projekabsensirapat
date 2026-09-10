@@ -146,7 +146,14 @@
                     <form method="POST" action="{{ route('admin.agenda.dokumen.store', $agenda->id_agenda) }}" enctype="multipart/form-data" class="mt-4 space-y-2.5">
                         @csrf
                         <input type="hidden" name="jenis_dokumen" value="dokumentasi">
-                        <input name="dokumen[]" type="file" accept=".jpg,.jpeg,.png,.webp" multiple required class="w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 py-2 text-xs text-gray-700 dark:text-gray-300 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-200 dark:file:bg-gray-800 file:text-gray-700 dark:file:text-gray-300">
+                        <input name="dokumen[]" id="input-dokumentasi-foto" type="file" accept=".jpg,.jpeg,.png,.webp" multiple required class="w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 py-2 text-xs text-gray-700 dark:text-gray-300 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-200 dark:file:bg-gray-800 file:text-gray-700 dark:file:text-gray-300">
+                        <div id="preview-dokumentasi-container" class="hidden rounded-xl border border-emerald-200/60 dark:border-emerald-800/40 bg-emerald-50/40 dark:bg-emerald-950/30 p-2.5 space-y-2">
+                            <div class="flex items-center justify-between text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                                <span id="preview-dokumentasi-count">0 foto dipilih</span>
+                                <button type="button" onclick="clearDokumentasiInput()" class="text-red-500 hover:underline">Batal</button>
+                            </div>
+                            <div id="preview-dokumentasi-grid" class="grid grid-cols-4 gap-2"></div>
+                        </div>
                         <button type="submit" class="w-full rounded-xl bg-[#04733f] dark:bg-[#107050] hover:bg-[#035f35] dark:hover:bg-[#0c5940] py-2 text-xs font-bold text-white transition cursor-pointer">
                             Unggah Foto Dokumentasi
                         </button>
@@ -360,4 +367,51 @@
         </div>
     </section>
 </div>
+
+@push('scripts')
+<script>
+    const inputDokumentasiFoto = document.getElementById('input-dokumentasi-foto');
+    const previewDokContainer = document.getElementById('preview-dokumentasi-container');
+    const previewDokGrid = document.getElementById('preview-dokumentasi-grid');
+    const previewDokCount = document.getElementById('preview-dokumentasi-count');
+
+    if (inputDokumentasiFoto) {
+        inputDokumentasiFoto.addEventListener('change', function () {
+            const files = Array.from(this.files || []);
+            if (files.length === 0) {
+                clearDokumentasiInput();
+                return;
+            }
+
+            previewDokGrid.innerHTML = '';
+            previewDokCount.textContent = `${files.length} foto dipilih`;
+            previewDokContainer.classList.remove('hidden');
+
+            files.slice(0, 8).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'w-full h-16 object-cover rounded-lg border border-emerald-200 dark:border-emerald-800 shadow-2xs';
+                    previewDokGrid.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            if (files.length > 8) {
+                const more = document.createElement('div');
+                more.className = 'flex items-center justify-center h-16 rounded-lg bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs font-bold';
+                more.textContent = `+${files.length - 8} lagi`;
+                previewDokGrid.appendChild(more);
+            }
+        });
+    }
+
+    function clearDokumentasiInput() {
+        if (inputDokumentasiFoto) inputDokumentasiFoto.value = '';
+        if (previewDokGrid) previewDokGrid.innerHTML = '';
+        if (previewDokContainer) previewDokContainer.classList.add('hidden');
+    }
+</script>
+@endpush
 @endsection

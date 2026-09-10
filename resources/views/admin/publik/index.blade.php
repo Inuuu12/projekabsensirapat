@@ -431,7 +431,14 @@
                 <input type="hidden" name="jenis_dokumen" value="dokumentasi">
                 <div>
                     <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Unggah Dokumentasi</label>
-                    <input type="file" name="dokumen[]" accept=".jpg,.jpeg,.png,.webp" multiple required class="w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition file:mr-3 file:rounded-md file:border-0 file:bg-[#35635b] file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white file:cursor-pointer focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20">
+                    <input type="file" id="input-galeri-foto" name="dokumen[]" accept=".jpg,.jpeg,.png,.webp" multiple required class="w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition file:mr-3 file:rounded-md file:border-0 file:bg-[#35635b] file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white file:cursor-pointer focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20">
+                    <div id="preview-galeri-container" class="hidden rounded-xl border border-emerald-200/60 dark:border-emerald-800/40 bg-emerald-50/40 dark:bg-emerald-950/30 p-2.5 space-y-2 mt-2">
+                        <div class="flex items-center justify-between text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                            <span id="preview-galeri-count">0 foto dipilih</span>
+                            <button type="button" onclick="clearGaleriInput()" class="text-red-500 hover:underline">Batal</button>
+                        </div>
+                        <div id="preview-galeri-grid" class="grid grid-cols-4 gap-2"></div>
+                    </div>
                     <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">Bisa pilih lebih dari satu gambar. Hapus dokumentasi lama satu per satu dari galeri jika tidak diperlukan.</p>
                 </div>
             </div>
@@ -500,6 +507,49 @@
         document.getElementById('form-edit-galeri').action = button.dataset.action;
         closePublicModal('modal-semua-galeri');
         openPublicModal('modal-edit-galeri');
+    }
+
+    const inputGaleriFoto = document.getElementById('input-galeri-foto');
+    const previewGaleriContainer = document.getElementById('preview-galeri-container');
+    const previewGaleriGrid = document.getElementById('preview-galeri-grid');
+    const previewGaleriCount = document.getElementById('preview-galeri-count');
+
+    if (inputGaleriFoto) {
+        inputGaleriFoto.addEventListener('change', function () {
+            const files = Array.from(this.files || []);
+            if (files.length === 0) {
+                clearGaleriInput();
+                return;
+            }
+
+            previewGaleriGrid.innerHTML = '';
+            previewGaleriCount.textContent = `${files.length} foto dipilih`;
+            previewGaleriContainer.classList.remove('hidden');
+
+            files.slice(0, 8).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'w-full h-16 object-cover rounded-lg border border-emerald-200 dark:border-emerald-800 shadow-2xs';
+                    previewGaleriGrid.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            if (files.length > 8) {
+                const more = document.createElement('div');
+                more.className = 'flex items-center justify-center h-16 rounded-lg bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs font-bold';
+                more.textContent = `+${files.length - 8} lagi`;
+                previewGaleriGrid.appendChild(more);
+            }
+        });
+    }
+
+    function clearGaleriInput() {
+        if (inputGaleriFoto) inputGaleriFoto.value = '';
+        if (previewGaleriGrid) previewGaleriGrid.innerHTML = '';
+        if (previewGaleriContainer) previewGaleriContainer.classList.add('hidden');
     }
 </script>
 @endpush

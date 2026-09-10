@@ -144,6 +144,8 @@
                                         data-ruang="{{ $item->id_ruangrapat }}"
                                         data-statusqr="{{ $item->status_qr }}"
                                         data-statusfr="{{ (int) $item->status_fr }}"
+                                        data-lampiran="{{ $item->lampiran ? asset('storage/' . $item->lampiran) : '' }}"
+                                        data-lampiran-name="{{ basename($item->lampiran ?? '') }}"
                                         class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-2.5 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs"
                                         title="Edit Agenda">
                                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -278,7 +280,7 @@
         if (id === 'modal-tambah-agenda') {
             const form = document.getElementById('form-tambah-agenda');
             if (form) form.reset();
-            setAgendaFileLabel('', '');
+            resetAgendaLampiranPreview('');
             syncAgendaRoomLocation('');
             setDitugaskanFromValue('', '');
             validateRoomCapacity('');
@@ -317,7 +319,15 @@
         if(document.getElementById('edit-id_ruangrapat')) document.getElementById('edit-id_ruangrapat').value = button.dataset.ruang || '';
         if(document.getElementById('edit-status_qr')) document.getElementById('edit-status_qr').value = button.dataset.statusqr || 'nonaktif';
         if(document.getElementById('edit-status_fr')) document.getElementById('edit-status_fr').value = button.dataset.statusfr === '1' ? '1' : '0';
-        setAgendaFileLabel('edit-', '');
+        
+        const lampiranUrl = button.dataset.lampiran || '';
+        const lampiranName = button.dataset.lampiranName || '';
+        if (lampiranUrl && lampiranName) {
+            setExistingAgendaLampiran('edit-', lampiranUrl, lampiranName);
+        } else {
+            resetAgendaLampiranPreview('edit-');
+        }
+
         if (!button.dataset.lokasi) syncAgendaRoomLocation('edit-');
         validateRoomCapacity('edit-');
         
@@ -363,10 +373,119 @@
         }
     }
 
-    function setAgendaFileLabel(prefix, fileName) {
-        const label = document.getElementById(prefix + 'lampiran-label');
-        if (!label) return;
-        label.textContent = fileName || 'Klik atau seret file PDF ke sini';
+    function isImageFile(fileName) {
+        if (!fileName) return false;
+        const ext = fileName.split('.').pop().toLowerCase();
+        return ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext);
+    }
+
+    function getFileExt(fileName) {
+        if (!fileName) return 'FILE';
+        return fileName.split('.').pop().toUpperCase();
+    }
+
+    function setAgendaFilePreview(prefix, file) {
+        const placeholder = document.getElementById(prefix + 'lampiran-placeholder');
+        const imgContainer = document.getElementById(prefix + 'lampiran-img-container');
+        const imgPreview = document.getElementById(prefix + 'lampiran-img-preview');
+        const imgName = document.getElementById(prefix + 'lampiran-img-name');
+        const docContainer = document.getElementById(prefix + 'lampiran-doc-container');
+        const docName = document.getElementById(prefix + 'lampiran-doc-name');
+        const docExt = document.getElementById(prefix + 'lampiran-doc-ext');
+        const btnHapus = document.getElementById(prefix + 'btn-hapus-lampiran');
+        const hapusInput = document.getElementById(prefix + 'hapus_lampiran');
+
+        if (hapusInput) hapusInput.value = '0';
+
+        if (!file) {
+            resetAgendaLampiranPreview(prefix);
+            return;
+        }
+
+        const isImg = file.type ? file.type.startsWith('image/') : isImageFile(file.name);
+
+        if (isImg) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                if (imgPreview) imgPreview.src = e.target.result;
+                if (imgName) imgName.textContent = file.name;
+                if (imgContainer) imgContainer.classList.remove('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+                if (docContainer) docContainer.classList.add('hidden');
+                if (btnHapus) btnHapus.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            if (docName) docName.textContent = file.name;
+            if (docExt) docExt.textContent = getFileExt(file.name);
+            if (docContainer) docContainer.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+            if (imgContainer) imgContainer.classList.add('hidden');
+            if (btnHapus) btnHapus.classList.remove('hidden');
+        }
+    }
+
+    function setExistingAgendaLampiran(prefix, fileUrl, fileName) {
+        const placeholder = document.getElementById(prefix + 'lampiran-placeholder');
+        const imgContainer = document.getElementById(prefix + 'lampiran-img-container');
+        const imgPreview = document.getElementById(prefix + 'lampiran-img-preview');
+        const imgName = document.getElementById(prefix + 'lampiran-img-name');
+        const docContainer = document.getElementById(prefix + 'lampiran-doc-container');
+        const docName = document.getElementById(prefix + 'lampiran-doc-name');
+        const docExt = document.getElementById(prefix + 'lampiran-doc-ext');
+        const btnHapus = document.getElementById(prefix + 'btn-hapus-lampiran');
+        const hapusInput = document.getElementById(prefix + 'hapus_lampiran');
+
+        if (hapusInput) hapusInput.value = '0';
+
+        if (!fileUrl || !fileName) {
+            resetAgendaLampiranPreview(prefix);
+            return;
+        }
+
+        const isImg = isImageFile(fileName);
+
+        if (isImg) {
+            if (imgPreview) imgPreview.src = fileUrl;
+            if (imgName) imgName.textContent = fileName;
+            if (imgContainer) imgContainer.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+            if (docContainer) docContainer.classList.add('hidden');
+            if (btnHapus) btnHapus.classList.remove('hidden');
+        } else {
+            if (docName) docName.textContent = fileName;
+            if (docExt) docExt.textContent = getFileExt(fileName);
+            if (docContainer) docContainer.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+            if (imgContainer) imgContainer.classList.add('hidden');
+            if (btnHapus) btnHapus.classList.remove('hidden');
+        }
+    }
+
+    function resetAgendaLampiranPreview(prefix) {
+        const placeholder = document.getElementById(prefix + 'lampiran-placeholder');
+        const imgContainer = document.getElementById(prefix + 'lampiran-img-container');
+        const imgPreview = document.getElementById(prefix + 'lampiran-img-preview');
+        const imgName = document.getElementById(prefix + 'lampiran-img-name');
+        const docContainer = document.getElementById(prefix + 'lampiran-doc-container');
+        const docName = document.getElementById(prefix + 'lampiran-doc-name');
+        const btnHapus = document.getElementById(prefix + 'btn-hapus-lampiran');
+        const fileInput = document.getElementById(prefix + 'lampiran');
+
+        if (fileInput) fileInput.value = '';
+        if (imgPreview) imgPreview.src = '';
+        if (imgName) imgName.textContent = '';
+        if (docName) docName.textContent = '';
+        if (imgContainer) imgContainer.classList.add('hidden');
+        if (docContainer) docContainer.classList.add('hidden');
+        if (placeholder) placeholder.classList.remove('hidden');
+        if (btnHapus) btnHapus.classList.add('hidden');
+    }
+
+    function clearAgendaLampiran(prefix) {
+        resetAgendaLampiranPreview(prefix);
+        const hapusInput = document.getElementById(prefix + 'hapus_lampiran');
+        if (hapusInput) hapusInput.value = '1';
     }
 
     function togglePegawaiDropdown(prefix) {
@@ -478,7 +597,7 @@
         input.addEventListener('change', function () {
             const prefix = this.dataset.agendaFileInput || '';
             const file = this.files && this.files[0];
-            setAgendaFileLabel(prefix, file ? file.name : '');
+            setAgendaFilePreview(prefix, file);
         });
     });
 

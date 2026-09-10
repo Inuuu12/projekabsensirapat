@@ -141,16 +141,34 @@
 
                     <!-- Lampiran File Upload -->
                     <div class="space-y-1.5">
-                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">Lampiran</label>
-                        <label class="flex items-center space-x-3 bg-[#EAE8E1]/60 dark:bg-[#0f1c19] hover:bg-[#EAE8E1] dark:hover:bg-[#152420] border-2 border-dashed border-sky-400 dark:border-[#284c43] rounded-2xl px-4 py-3 cursor-pointer transition-colors">
-                            <div class="w-8 h-8 rounded-lg bg-white/80 dark:bg-white/10 flex items-center justify-center shrink-0 text-xs shadow-xs">
-                                🖼️
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">Lampiran</label>
+                            <button type="button" id="aduan-btn-hapus-foto" onclick="clearAduanFoto()" class="text-[11px] font-bold text-red-500 hover:text-red-700 dark:text-red-400 hidden cursor-pointer">
+                                ✕ Hapus Foto
+                            </button>
+                        </div>
+                        <input type="file" name="foto" id="aduan-foto-input" accept="image/*" class="hidden">
+                        
+                        <label for="aduan-foto-input" id="aduan-dropzone" class="flex flex-col items-center justify-center bg-[#EAE8E1]/60 dark:bg-[#0f1c19] hover:bg-[#EAE8E1] dark:hover:bg-[#152420] border-2 border-dashed border-sky-400 dark:border-[#284c43] rounded-2xl p-4 cursor-pointer transition-colors relative overflow-hidden group">
+                            
+                            <!-- Placeholder -->
+                            <div id="aduan-foto-placeholder" class="flex items-center space-x-3 w-full">
+                                <div class="w-9 h-9 rounded-xl bg-white/80 dark:bg-white/10 flex items-center justify-center shrink-0 text-base shadow-xs group-hover:scale-105 transition-transform">
+                                    🖼️
+                                </div>
+                                <div class="text-xs text-left">
+                                    <p class="font-bold text-gray-800 dark:text-white">Klik untuk unggah gambar</p>
+                                    <p class="text-[10px] text-gray-500 dark:text-gray-400">PNG, JPG, atau WEBP - maks 5MB per gambar</p>
+                                </div>
                             </div>
-                            <div class="text-xs">
-                                <p class="font-bold text-gray-800 dark:text-white">Klik untuk unggah gambar</p>
-                                <p class="text-[10px] text-gray-400 dark:text-gray-400">PNG, JPG, atau WEBP - maks 5MB per gambar</p>
+
+                            <!-- Preview Container -->
+                            <div id="aduan-foto-preview-container" class="hidden flex flex-col items-center justify-center w-full py-1">
+                                <img id="aduan-foto-preview-img" src="" alt="Preview Lampiran Aduan" class="max-h-36 w-auto rounded-xl object-contain shadow-xs border border-gray-200 dark:border-[#284c43]">
+                                <p id="aduan-foto-preview-name" class="mt-2 text-xs font-semibold text-gray-700 dark:text-gray-300 truncate max-w-xs"></p>
+                                <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">Klik untuk mengganti gambar</span>
                             </div>
-                            <input type="file" name="foto" accept="image/*" class="hidden">
+
                         </label>
                     </div>
 
@@ -302,7 +320,7 @@
                                 @php
                                     $hasPhoto = !empty($aduan->foto)
                                         && $aduan->foto !== 'aduan/default.jpg'
-                                        && file_exists(public_path('storage/' . $aduan->foto));
+                                        && (file_exists(public_path('storage/' . $aduan->foto)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($aduan->foto));
                                 @endphp
                                 @if($hasPhoto)
                                     <div class="mt-2.5">
@@ -631,6 +649,41 @@
                 otpButton.textContent = 'Kirim OTP';
             }
         });
+
+        const aduanFotoInput = document.getElementById('aduan-foto-input');
+        const aduanPlaceholder = document.getElementById('aduan-foto-placeholder');
+        const aduanPreviewContainer = document.getElementById('aduan-foto-preview-container');
+        const aduanPreviewImg = document.getElementById('aduan-foto-preview-img');
+        const aduanPreviewName = document.getElementById('aduan-foto-preview-name');
+        const aduanBtnHapus = document.getElementById('aduan-btn-hapus-foto');
+
+        if (aduanFotoInput) {
+            aduanFotoInput.addEventListener('change', function () {
+                const file = this.files && this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        if (aduanPreviewImg) aduanPreviewImg.src = e.target.result;
+                        if (aduanPreviewName) aduanPreviewName.textContent = file.name;
+                        if (aduanPreviewContainer) aduanPreviewContainer.classList.remove('hidden');
+                        if (aduanPlaceholder) aduanPlaceholder.classList.add('hidden');
+                        if (aduanBtnHapus) aduanBtnHapus.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    clearAduanFoto();
+                }
+            });
+        }
+
+        function clearAduanFoto() {
+            if (aduanFotoInput) aduanFotoInput.value = '';
+            if (aduanPreviewImg) aduanPreviewImg.src = '';
+            if (aduanPreviewName) aduanPreviewName.textContent = '';
+            if (aduanPreviewContainer) aduanPreviewContainer.classList.add('hidden');
+            if (aduanPlaceholder) aduanPlaceholder.classList.remove('hidden');
+            if (aduanBtnHapus) aduanBtnHapus.classList.add('hidden');
+        }
     </script>
 
 </body>

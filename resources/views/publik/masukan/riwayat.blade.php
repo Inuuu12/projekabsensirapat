@@ -56,7 +56,7 @@
                     'balasan_admin' => $aduan->balasan_admin ?: 'Belum ada balasan dari admin.',
                     'status' => $aduan->status ?? 'Pending',
                     'tanggal' => $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d F Y, H:i') : '-',
-                    'foto_url' => (!empty($aduan->foto) && $aduan->foto !== 'aduan/default.jpg' && file_exists(public_path('storage/' . $aduan->foto))) ? asset('storage/' . $aduan->foto) : null,
+                    'foto_url' => (!empty($aduan->foto) && $aduan->foto !== 'aduan/default.jpg' && (file_exists(public_path('storage/' . $aduan->foto)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($aduan->foto))) ? asset('storage/' . $aduan->foto) : null,
                 ],
             ])->all();
         @endphp
