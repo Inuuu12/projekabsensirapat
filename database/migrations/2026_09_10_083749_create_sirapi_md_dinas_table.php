@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('sirapi_md_dinas')) {
-            Schema::create('sirapi_md_dinas', function (Blueprint $table) {
-                $table->id('id_dinas');
-                $table->string('nama_dinas');
-                $table->timestamps();
-            });
-        }
+        Schema::create('sirapi_md_dinas', function (Blueprint $table) {
+            $table->id('id_dinas');
+            $table->string('nama_dinas');
+            $table->timestamps();
+        });
     }
 
     /**

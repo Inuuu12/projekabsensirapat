@@ -26,7 +26,7 @@
 <body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
     @include('publik.layout.navbarpublik')
 
-    <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-12 flex items-center justify-center">
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex items-center justify-center">
         <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-xl p-6 md:p-8 max-w-lg w-full shadow-lg text-center space-y-5 transition-colors">
             <div class="mx-auto w-16 h-16 rounded-full {{ $success ? 'bg-ijo-tua dark:bg-[#107050] text-white border border-transparent dark:border-[#10b981]/30' : 'bg-oren-muda dark:bg-amber-950/60 text-oren-tua dark:text-amber-300 border border-transparent dark:border-amber-700/40' }} flex items-center justify-center text-xl font-black">
                 {{ $success ? 'OK' : '!' }}
