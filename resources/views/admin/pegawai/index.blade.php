@@ -43,6 +43,27 @@
                 <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Daftar Pegawai</h2>
                 <p id="text-count-pegawai" class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $pegawai->count() }} dari {{ $totalPegawai ?? $pegawai->count() }} pegawai.</p>
             </div>
+
+            <!-- Status Filter Pills (Kunker Style) -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'semua', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? 'semua') === 'semua' ? 'bg-[#35635b] text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+                    Semua Pegawai ({{ $totalPegawai ?? $pegawai->count() }})
+                </a>
+                <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'aktif', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'aktif' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+                    ✅ Aktif ({{ $totalAktif ?? 0 }})
+                </a>
+                <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'pending', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'pending' ? 'bg-amber-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+                    ⏳ Menunggu Verifikasi ({{ $totalPending ?? 0 }})
+                </a>
+                <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'ditolak', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'ditolak' ? 'bg-rose-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+                    ❌ Ditolak ({{ $totalDitolak ?? 0 }})
+                </a>
+            </div>
+
             <form id="form-search-pegawai" method="GET" action="{{ route('admin.pegawai.lihat') }}" class="w-full">
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_180px_180px_180px] lg:items-end">
                     <div class="sm:col-span-2 lg:col-span-1">

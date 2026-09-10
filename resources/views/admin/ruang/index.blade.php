@@ -42,17 +42,27 @@
         </div>
     </div>
 
-    <section class="overflow-hidden rounded-xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] shadow-xs transition-colors">
-        <div class="flex flex-col gap-4 border-b border-gray-100 dark:border-[#233a34] px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="text-2xl font-extrabold text-[#0f513f] dark:text-white">Data Ruangan</h2>
-            <form method="GET" action="{{ route('admin.ruang.lihat') }}" class="flex items-center gap-3">
-                <label for="status-filter" class="text-sm font-medium text-slate-600 dark:text-gray-300">Filter by:</label>
-                <select id="status-filter" name="status" onchange="this.form.submit()" class="h-10 rounded-md border border-slate-300 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-slate-700 dark:text-white outline-none focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                    <option value="semua" @selected(($statusFilter ?? 'semua') === 'semua')>Status: Semua</option>
-                    <option value="tersedia" @selected(($statusFilter ?? 'semua') === 'tersedia')>Tersedia</option>
-                    <option value="terpakai" @selected(($statusFilter ?? 'semua') === 'terpakai')>Terpakai</option>
-                </select>
-            </form>
+    <section class="overflow-hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] shadow-xs transition-colors">
+        <div class="flex flex-col gap-4 border-b border-gray-100 dark:border-[#233a34] px-6 py-5">
+            <div class="flex items-center justify-between">
+                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Data Ruangan Rapat</h2>
+            </div>
+            
+            <!-- Status Filter Pills (Kunker Style) -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                <a href="{{ route('admin.ruang.lihat', ['status' => 'semua']) }}"
+                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? 'semua') === 'semua' ? 'bg-[#35635b] text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+                    Semua Ruangan ({{ $totalRuangan ?? $ruang->count() }})
+                </a>
+                <a href="{{ route('admin.ruang.lihat', ['status' => 'tersedia']) }}"
+                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'tersedia' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+                    ✅ Tersedia ({{ $totalTersedia ?? $ruang->where('status', 'tersedia')->count() }})
+                </a>
+                <a href="{{ route('admin.ruang.lihat', ['status' => 'terpakai']) }}"
+                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'terpakai' ? 'bg-amber-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+                    🚪 Terpakai ({{ $totalTerpakai ?? $ruang->where('status', 'terpakai')->count() }})
+                </a>
+            </div>
         </div>
 
         <div class="overflow-x-auto">

@@ -17,7 +17,19 @@
         <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalKunjungan ?? $kunjungan->count() }}</p>
     </div>
 
-    <form id="form-search-kunjungan" method="GET" action="{{ route('admin.kunjungan.lihat') }}" class="bg-white dark:bg-[#152420] rounded-xl shadow-xs border border-gray-100 dark:border-[#233a34] p-4 sm:p-5 transition-colors">
+    <!-- Status Filter Pills (Kunker Style) -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <a href="{{ route('admin.kunjungan.lihat') }}"
+           class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ empty(request('tanggal')) ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+            Semua Kunjungan ({{ $totalKunjungan ?? $kunjungan->count() }})
+        </a>
+        <a href="{{ route('admin.kunjungan.lihat', ['tanggal' => now()->format('Y-m-d')]) }}"
+           class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ request('tanggal') === now()->format('Y-m-d') ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+            📅 Kunjungan Hari Ini
+        </a>
+    </div>
+
+    <form id="form-search-kunjungan" method="GET" action="{{ route('admin.kunjungan.lihat') }}" class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] p-4 sm:p-5 transition-colors">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-[1fr_200px_200px_180px_auto] xl:items-end gap-3 sm:gap-4">
             <div>
                 <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Search</label>
