@@ -136,16 +136,60 @@ class Agenda extends Model
 
     public function getLokasiDisplayAttribute(): string
     {
-        if (strtolower((string) ($this->kategori_surat ?? '')) !== 'masuk' && $this->ruangRapat) {
-            return $this->ruangRapat->nama_ruang;
+        $lokasi = trim((string) ($this->lokasi ?? ''));
+        if (! empty($lokasi)) {
+            return $lokasi;
         }
 
-        $lokasi = (string) ($this->lokasi ?? '');
-        if (str_contains($lokasi, '(')) {
-            $lokasi = trim(explode('(', $lokasi)[0]);
+        return $this->ruangRapat?->nama_ruang ?? 'Kantor Bupati Bogor';
+    }
+
+    public function getGpsLatAttribute(): float
+    {
+        return $this->resolveCoordinates()['lat'];
+    }
+
+    public function getGpsLongAttribute(): float
+    {
+        return $this->resolveCoordinates()['lng'];
+    }
+
+    public function resolveCoordinates(): array
+    {
+        // Default: Komplek Pemkab Bogor / Diskominfo (Cibinong)
+        $default = ['lat' => -6.478846, 'lng' => 106.824738];
+
+        $lokasi = strtolower(trim((string) ($this->lokasi ?? '')));
+        if (empty($lokasi)) {
+            return $default;
         }
 
-        return $lokasi ?: ($this->ruangRapat?->nama_ruang ?? '-');
+        static $kecamatanCoords = null;
+        if ($kecamatanCoords === null) {
+            $kecamatanCoords = [];
+            if (Schema::hasTable('sirapi_md_kecamatan')) {
+                $rows = DB::table('sirapi_md_kecamatan')->select('nama_kecamatan', 'gps_lat', 'gps_long')->get();
+                foreach ($rows as $row) {
+                    if (! empty($row->gps_lat) && ! empty($row->gps_long)) {
+                        $cleanName = trim(strtolower(str_ireplace('kecamatan', '', (string) $row->nama_kecamatan)));
+                        if ($cleanName !== '') {
+                            $kecamatanCoords[$cleanName] = [
+                                'lat' => (float) $row->gps_lat,
+                                'lng' => (float) $row->gps_long,
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($kecamatanCoords as $name => $coords) {
+            if ($name !== '' && str_contains($lokasi, $name)) {
+                return $coords;
+            }
+        }
+
+        return $default;
     }
 
     public function getStatusLabelAttribute(): string

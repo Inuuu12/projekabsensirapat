@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class AdminAgendaController extends Controller
@@ -30,10 +31,10 @@ class AdminAgendaController extends Controller
             'waktu' => 'required',
             'waktu_selesai' => 'nullable',
             'kuota' => 'nullable|integer|min:0',
-            'lokasi' => $isMasuk ? 'required|string|max:255' : 'nullable|string|max:255',
+            'lokasi' => 'required|string|max:255',
             'status_fr' => 'nullable|boolean',
             'status_qr' => 'nullable|string|max:50',
-            'id_ruangrapat' => $isMasuk ? 'nullable|exists:sirapi_md_ruangrapat,id_ruangrapat' : 'required|exists:sirapi_md_ruangrapat,id_ruangrapat',
+            'id_ruangrapat' => 'nullable|exists:sirapi_md_ruangrapat,id_ruangrapat',
             'id_statusagenda' => 'nullable|exists:sirapi_md_statusagenda,id_statusagenda',
         ]);
 
@@ -42,39 +43,46 @@ class AdminAgendaController extends Controller
             $validated['id_ruangrapat'] = $defaultRuang?->id_ruangrapat ?? 1;
         }
 
-        // Validasi Kapasitas Ruangan & Bentrok Jadwal
-        if (! $isMasuk && ! empty($validated['id_ruangrapat'])) {
-            $ruang = RuangRapat::find($validated['id_ruangrapat']);
-            $validated['lokasi'] = $ruang?->nama_ruang ?? ($validated['lokasi'] ?? 'Ruang Rapat');
-            if ($ruang) {
+        $kategoriSurat = $validated['kategori_surat'] ?? 'internal';
+        $isInternal = $kategoriSurat === 'internal';
+        $isKeluar = $kategoriSurat === 'keluar';
+        $ruang = ! empty($request->input('id_ruangrapat')) ? RuangRapat::find($request->input('id_ruangrapat')) : null;
 
-                // Cek Kapasitas Ruangan
-                if (! empty($validated['kuota']) && $ruang->kapasitas && $validated['kuota'] > $ruang->kapasitas) {
-                    $msg = "Jumlah kuota ({$validated['kuota']} orang) melebihi kapasitas {$ruang->nama_ruang} (maksimal {$ruang->kapasitas} orang).";
-                    if ($request->wantsJson()) {
-                        return response()->json(['success' => false, 'message' => $msg], 422);
-                    }
-                    return back()->withInput()->with('error', $msg);
+        if ($isInternal || $isKeluar) {
+            $validated['lokasi'] = $ruang?->nama_ruang ? $ruang->nama_ruang . ' (Diskominfo)' : 'Dinas Komunikasi dan Informatika';
+        } else {
+            $chosenLokasi = trim((string) ($request->input('lokasi') ?? ''));
+            $validated['lokasi'] = ! empty($chosenLokasi) ? $chosenLokasi : 'Kantor Bupati Bogor';
+        }
+
+        // Validasi Kapasitas Ruangan & Bentrok Jadwal (untuk rapat yang menggunakan ruangan Diskominfo: internal & keluar)
+        if (($isInternal || $isKeluar) && $ruang) {
+            // Cek Kapasitas Ruangan
+            if (! empty($validated['kuota']) && $ruang->kapasitas && $validated['kuota'] > $ruang->kapasitas) {
+                $msg = "Jumlah kuota ({$validated['kuota']} orang) melebihi kapasitas {$ruang->nama_ruang} (maksimal {$ruang->kapasitas} orang).";
+                if ($request->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => $msg], 422);
+                }
+                return back()->withInput()->with('error', $msg);
+            }
+
+            $conflict = $ruang->checkConflict(
+                $validated['tanggal'],
+                $validated['waktu'],
+                $validated['waktu_selesai'] ?? null
+            );
+
+            if ($conflict) {
+                $waktuMulaiConf = substr((string) $conflict->waktu, 0, 5);
+                $waktuSelesaiConf = $conflict->waktu_selesai ? substr((string) $conflict->waktu_selesai, 0, 5) : 'selesai';
+                $tanggalConf = Carbon::parse($conflict->tanggal)->translatedFormat('d F Y');
+                $msg = "Ruangan {$ruang->nama_ruang} tidak dapat dipilih karena sudah terpakai pada {$tanggalConf} pukul {$waktuMulaiConf} - {$waktuSelesaiConf} WIB untuk agenda '{$conflict->nama_agenda}'.";
+
+                if ($request->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => $msg], 422);
                 }
 
-                $conflict = $ruang->checkConflict(
-                    $validated['tanggal'],
-                    $validated['waktu'],
-                    $validated['waktu_selesai'] ?? null
-                );
-
-                if ($conflict) {
-                    $waktuMulaiConf = substr((string) $conflict->waktu, 0, 5);
-                    $waktuSelesaiConf = $conflict->waktu_selesai ? substr((string) $conflict->waktu_selesai, 0, 5) : 'selesai';
-                    $tanggalConf = Carbon::parse($conflict->tanggal)->translatedFormat('d F Y');
-                    $msg = "Ruangan {$ruang->nama_ruang} tidak dapat dipilih karena sudah terpakai pada {$tanggalConf} pukul {$waktuMulaiConf} - {$waktuSelesaiConf} WIB untuk agenda '{$conflict->nama_agenda}'.";
-
-                    if ($request->wantsJson()) {
-                        return response()->json(['success' => false, 'message' => $msg], 422);
-                    }
-
-                    return back()->withInput()->with('error', $msg);
-                }
+                return back()->withInput()->with('error', $msg);
             }
         }
 
@@ -134,7 +142,54 @@ class AdminAgendaController extends Controller
             ->groupBy('kategori_surat')
             ->pluck('total', 'kategori_surat');
 
-        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats'));
+        $listInstansi = $this->getListInstansi();
+
+        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats', 'listInstansi'));
+    }
+
+    protected function getListInstansi()
+    {
+        $list = collect();
+
+        // 1. Kantor Bupati & Pemkab
+        $list->push([
+            'nama' => 'Kantor Bupati Bogor',
+            'alamat' => 'Jl. Tegar Beriman, Cibinong, Kab. Bogor',
+            'tipe' => 'Pemerintah Kabupaten',
+        ]);
+
+        $list->push([
+            'nama' => 'Dinas Komunikasi dan Informatika',
+            'alamat' => 'Jl. Tegar Beriman No. 1, Cibinong, Kab. Bogor',
+            'tipe' => 'Dinas / OPD',
+        ]);
+
+        // 2. 40 Kecamatan se-Kabupaten Bogor
+        if (Schema::hasTable('sirapi_md_kecamatan')) {
+            $kecamatans = DB::table('sirapi_md_kecamatan')->orderBy('nama_kecamatan')->get();
+            foreach ($kecamatans as $kec) {
+                $clean = trim(str_replace('Kecamatan', '', (string)$kec->nama_kecamatan));
+                $list->push([
+                    'nama' => 'Kantor Camat ' . $clean,
+                    'alamat' => $kec->alamat_kantor ?? 'Kecamatan ' . $clean . ', Kab. Bogor',
+                    'tipe' => 'Kecamatan',
+                ]);
+            }
+        }
+
+        // 3. Dinas-Dinas / OPD Pemkab Bogor
+        if (Schema::hasTable('sirapi_md_dinas')) {
+            $dinases = DB::table('sirapi_md_dinas')->orderBy('nama_dinas')->get();
+            foreach ($dinases as $dinas) {
+                $list->push([
+                    'nama' => $dinas->nama_dinas,
+                    'alamat' => $dinas->alamat ?? 'Cibinong, Kab. Bogor',
+                    'tipe' => 'Dinas / OPD',
+                ]);
+            }
+        }
+
+        return $list;
     }
 
     public function riwayat_Agenda(Request $request)
@@ -394,10 +449,10 @@ class AdminAgendaController extends Controller
             'waktu' => 'required',
             'waktu_selesai' => 'nullable',
             'kuota' => 'nullable|integer|min:0',
-            'lokasi' => $isMasuk ? 'required|string|max:255' : 'nullable|string|max:255',
+            'lokasi' => 'required|string|max:255',
             'status_fr' => 'nullable|boolean',
             'status_qr' => 'nullable|string|max:50',
-            'id_ruangrapat' => $isMasuk ? 'nullable|exists:sirapi_md_ruangrapat,id_ruangrapat' : 'required|exists:sirapi_md_ruangrapat,id_ruangrapat',
+            'id_ruangrapat' => 'nullable|exists:sirapi_md_ruangrapat,id_ruangrapat',
             'id_statusagenda' => 'nullable|exists:sirapi_md_statusagenda,id_statusagenda',
         ]);
 
@@ -406,33 +461,40 @@ class AdminAgendaController extends Controller
             $validated['id_ruangrapat'] = $defaultRuang?->id_ruangrapat ?? 1;
         }
 
-        // Validasi Kapasitas Ruangan & Bentrok Jadwal
-        if (! $isMasuk && ! empty($validated['id_ruangrapat'])) {
-            $ruang = RuangRapat::find($validated['id_ruangrapat']);
-            $validated['lokasi'] = $ruang?->nama_ruang ?? ($validated['lokasi'] ?? 'Ruang Rapat');
-            if ($ruang) {
+        $kategoriSurat = $validated['kategori_surat'] ?? 'internal';
+        $isInternal = $kategoriSurat === 'internal';
+        $isKeluar = $kategoriSurat === 'keluar';
+        $ruang = ! empty($request->input('id_ruangrapat')) ? RuangRapat::find($request->input('id_ruangrapat')) : null;
 
-                // Cek Kapasitas Ruangan
-                if (! empty($validated['kuota']) && $ruang->kapasitas && $validated['kuota'] > $ruang->kapasitas) {
-                    $msg = "Jumlah kuota ({$validated['kuota']} orang) melebihi kapasitas {$ruang->nama_ruang} (maksimal {$ruang->kapasitas} orang).";
-                    return back()->withInput()->with('error', $msg);
-                }
+        if ($isInternal || $isKeluar) {
+            $validated['lokasi'] = $ruang?->nama_ruang ? $ruang->nama_ruang . ' (Diskominfo)' : 'Dinas Komunikasi dan Informatika';
+        } else {
+            $chosenLokasi = trim((string) ($request->input('lokasi') ?? ''));
+            $validated['lokasi'] = ! empty($chosenLokasi) ? $chosenLokasi : 'Kantor Bupati Bogor';
+        }
 
-                $conflict = $ruang->checkConflict(
-                    $validated['tanggal'],
-                    $validated['waktu'],
-                    $validated['waktu_selesai'] ?? null,
-                    (int) $id
-                );
+        // Validasi Kapasitas Ruangan & Bentrok Jadwal (khusus agenda internal & keluar di Diskominfo)
+        if (($isInternal || $isKeluar) && $ruang) {
+            // Cek Kapasitas Ruangan
+            if (! empty($validated['kuota']) && $ruang->kapasitas && $validated['kuota'] > $ruang->kapasitas) {
+                $msg = "Jumlah kuota ({$validated['kuota']} orang) melebihi kapasitas {$ruang->nama_ruang} (maksimal {$ruang->kapasitas} orang).";
+                return back()->withInput()->with('error', $msg);
+            }
 
-                if ($conflict) {
-                    $waktuMulaiConf = substr((string) $conflict->waktu, 0, 5);
-                    $waktuSelesaiConf = $conflict->waktu_selesai ? substr((string) $conflict->waktu_selesai, 0, 5) : 'selesai';
-                    $tanggalConf = Carbon::parse($conflict->tanggal)->translatedFormat('d F Y');
-                    $msg = "Ruangan {$ruang->nama_ruang} tidak dapat dipilih karena sudah terpakai pada {$tanggalConf} pukul {$waktuMulaiConf} - {$waktuSelesaiConf} WIB untuk agenda '{$conflict->nama_agenda}'.";
+            $conflict = $ruang->checkConflict(
+                $validated['tanggal'],
+                $validated['waktu'],
+                $validated['waktu_selesai'] ?? null,
+                (int) $id
+            );
 
-                    return back()->withInput()->with('error', $msg);
-                }
+            if ($conflict) {
+                $waktuMulaiConf = substr((string) $conflict->waktu, 0, 5);
+                $waktuSelesaiConf = $conflict->waktu_selesai ? substr((string) $conflict->waktu_selesai, 0, 5) : 'selesai';
+                $tanggalConf = Carbon::parse($conflict->tanggal)->translatedFormat('d F Y');
+                $msg = "Ruangan {$ruang->nama_ruang} tidak dapat dipilih karena sudah terpakai pada {$tanggalConf} pukul {$waktuMulaiConf} - {$waktuSelesaiConf} WIB untuk agenda '{$conflict->nama_agenda}'.";
+
+                return back()->withInput()->with('error', $msg);
             }
         }
 

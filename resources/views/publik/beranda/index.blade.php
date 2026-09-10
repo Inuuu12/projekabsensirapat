@@ -236,9 +236,8 @@
         <section class="space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                    <h3 class="text-base md:text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h3 class="text-base md:text-lg font-bold text-gray-900 dark:text-white">
                         <span>Peta Sebaran Agenda & Kunjungan Kerja</span>
-                        <span class="bg-ijo-sangatmuda dark:bg-[#1b3832] text-ijo-tua dark:text-emerald-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-ijo-tua/20 dark:border-emerald-500/30">GIS Kabupaten Bogor</span>
                     </h3>
                     <p class="text-xs text-gray-500 dark:text-gray-300 mt-0.5">Pemetaan wilayah 40 Kecamatan di Kabupaten Bogor beserta sebaran titik kegiatan & kunjungan kerja.</p>
                 </div>
@@ -867,6 +866,23 @@
 
             map.on('zoomend', updateAllMarkerSizes);
 
+            // Dynamic Agenda Markers from Database (Pre-resolved Coordinates)
+            const agendaLocations = [
+                @foreach ($agendaItems as $agenda)
+                    {
+                        nama: @json($agenda->nama_agenda),
+                        lokasi: @json($agenda->lokasi_display ?? 'Cibinong, Kab. Bogor'),
+                        waktu: @json(substr((string) $agenda->waktu, 0, 5) . ' WIB'),
+                        kategori: @json(strtolower((string)($agenda->kategori_surat ?? 'internal'))),
+                        detailUrl: @json(route('publik.agenda.detail', $agenda->id_agenda)),
+                        lat: {{ (float)($agenda->gps_lat ?? -6.478846) }},
+                        lng: {{ (float)($agenda->gps_long ?? 106.824738) }}
+                    },
+                @endforeach
+            ];
+
+            const attachedAgendas = [];
+
             // Load 41 Government Points (Kantor Bupati & 40 Kantor Camat) from app_md_mapgovpoint.csv
             fetch("{{ asset('app_md_mapgovpoint.csv') }}")
                 .then(res => {
@@ -889,10 +905,26 @@
                                 validPointsCount++;
                                 const nameLower = name.toLowerCase();
                                 const isCamat = nameLower.includes('camat');
+                                const cleanKeyword = nameLower.replace('kantor', '').replace('camat', '').replace('bupati', '').trim();
 
-                                let bgClass = isCamat
-                                    ? 'bg-gradient-to-br from-amber-500 via-orange-500 to-orange-700'
-                                    : 'bg-gradient-to-br from-red-500 via-red-600 to-red-800';
+                                // Check if any agenda matches this official point
+                                const matchedAgendas = agendaLocations.filter(ag => {
+                                    const agLoc = ag.lokasi.toLowerCase();
+                                    const byName = cleanKeyword.length >= 3 && agLoc.includes(cleanKeyword);
+                                    const byCoord = Math.abs(ag.lat - lat) < 0.008 && Math.abs(ag.lng - lng) < 0.008;
+                                    return byName || byCoord;
+                                });
+
+                                const hasAgenda = matchedAgendas.length > 0;
+                                if (hasAgenda) {
+                                    matchedAgendas.forEach(ag => attachedAgendas.push(ag));
+                                }
+
+                                let bgClass = hasAgenda
+                                    ? 'bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-800'
+                                    : (isCamat
+                                        ? 'bg-gradient-to-br from-amber-500 via-orange-500 to-orange-700'
+                                        : 'bg-gradient-to-br from-red-500 via-red-600 to-red-800');
 
                                 let badge = isCamat ? 'Kantor Kecamatan' : 'Kantor Dinas & Pemkab';
                                 let badgeClass = isCamat ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800';
@@ -904,16 +936,60 @@
 
                                 allMarkers.push({ marker: marker, bgClass: bgClass });
 
-                                marker.bindPopup(`
-                                    <div class="p-2 font-sans max-w-[230px]">
+                                let popupHtml = `
+                                    <div class="p-2 font-sans max-w-[240px]">
                                         <span class="${badgeClass} text-[10px] font-extrabold px-2 py-0.5 rounded-full">${badge}</span>
                                         <h4 class="font-bold text-xs text-gray-900 mt-1.5 leading-snug">${name}</h4>
                                         <p class="text-[11px] text-gray-600 mt-1 leading-normal">📍 ${addr}</p>
+                                `;
+
+                                if (hasAgenda) {
+                                    const topAg = matchedAgendas[0];
+                                    popupHtml += `
+                                        <div class="mt-2.5 pt-2 border-t border-gray-100 dark:border-gray-700">
+                                            <span class="bg-emerald-100 text-emerald-800 text-[9.5px] font-black px-2 py-0.5 rounded-full">🟢 Ada Agenda Hari Ini</span>
+                                            <h5 class="font-bold text-xs text-gray-900 mt-1 leading-tight">${topAg.nama}</h5>
+                                            <p class="text-[10px] text-gray-500 mt-0.5">🕒 ${topAg.waktu}</p>
+                                            <div class="flex items-center gap-1.5 mt-2">
+                                                <a href="${topAg.detailUrl}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block text-[10px] font-bold text-white bg-emerald-700 hover:bg-emerald-800 px-2.5 py-1 rounded-lg transition-all shadow-xs">Lihat Agenda &rarr;</a>
+                                                <a href="{{ route('publik.form-kunjungan') }}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block text-[10px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-2.5 py-1 rounded-lg transition-all shadow-xs">Kunjungan &rarr;</a>
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    popupHtml += `
                                         <a href="{{ route('publik.form-kunjungan') }}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block mt-2.5 text-[11px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-3.5 py-1.5 rounded-xl transition-all shadow-xs">Isi Form Kunjungan &rarr;</a>
-                                    </div>
-                                `);
+                                    `;
+                                }
+
+                                popupHtml += `</div>`;
+                                marker.bindPopup(popupHtml);
                             }
                         }
+                    });
+
+                    // Render remaining standalone agendas that are not at 41 government points
+                    agendaLocations.forEach(item => {
+                        if (attachedAgendas.includes(item)) return;
+
+                        const bgClass = 'bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700';
+                        const currentZoom = map.getZoom();
+
+                        const marker = L.marker([item.lat, item.lng], {
+                            icon: createCustomIcon(bgClass, currentZoom)
+                        }).addTo(map);
+
+                        allMarkers.push({ marker: marker, bgClass: bgClass });
+
+                        marker.bindPopup(`
+                            <div class="p-2 font-sans max-w-[220px]">
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Agenda Kegiatan</span>
+                                <h4 class="font-bold text-xs text-gray-900 mt-1 leading-snug">${item.nama}</h4>
+                                <p class="text-[11px] text-gray-600 mt-1">📍 ${item.lokasi}</p>
+                                <p class="text-[10px] text-gray-500 mt-0.5">🕒 ${item.waktu}</p>
+                                <a href="${item.detailUrl}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block mt-2.5 text-[11px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-3.5 py-1.5 rounded-xl transition-all shadow-xs">Detail Agenda &rarr;</a>
+                            </div>
+                        `);
                     });
 
                     const govCountEl = document.getElementById('stat-gov-points-count');
@@ -922,42 +998,6 @@
                     }
                 })
                 .catch(err => console.log('CSV Gov Points Notice:', err));
-
-            // Dynamic Agenda Markers from Database
-            const agendaLocations = [
-                @foreach ($agendaItems as $agenda)
-                    {
-                        nama: @json($agenda->nama_agenda),
-                        lokasi: @json($agenda->lokasi_display ?? 'Cibinong, Kab. Bogor'),
-                        waktu: @json(substr((string) $agenda->waktu, 0, 5) . ' WIB'),
-                        kategori: @json(strtolower((string)($agenda->kategori_surat ?? 'internal'))),
-                        detailUrl: @json(route('publik.agenda.detail', $agenda->id_agenda)),
-                        lat: -6.4795 + ((Math.sin({{ $loop->index + 1 }}) * 0.018)),
-                        lng: 106.8252 + ((Math.cos({{ $loop->index + 1 }}) * 0.018))
-                    },
-                @endforeach
-            ];
-
-            agendaLocations.forEach(item => {
-                const bgClass = 'bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700';
-                const currentZoom = map.getZoom();
-
-                const marker = L.marker([item.lat, item.lng], {
-                    icon: createCustomIcon(bgClass, currentZoom)
-                }).addTo(map);
-
-                allMarkers.push({ marker: marker, bgClass: bgClass });
-
-                marker.bindPopup(`
-                    <div class="p-2 font-sans max-w-[220px]">
-                        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Agenda Kegiatan</span>
-                        <h4 class="font-bold text-xs text-gray-900 mt-1 leading-snug">${item.nama}</h4>
-                        <p class="text-[11px] text-gray-600 mt-1">📍 ${item.lokasi}</p>
-                        <p class="text-[10px] text-gray-500 mt-0.5">🕒 ${item.waktu}</p>
-                        <a href="${item.detailUrl}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block mt-2.5 text-[11px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-3.5 py-1.5 rounded-xl transition-all shadow-xs">Detail Agenda &rarr;</a>
-                    </div>
-                `);
-            });
 
             // Reset Zoom Button
             const btnReset = document.getElementById('btn-reset-map-view');

@@ -1,21 +1,24 @@
 @php($prefix = $prefix ?? '')
 @php($kategori = old('kategori_surat', $kategoriSurat ?? 'internal'))
 @php($isMasuk = $kategori === 'masuk')
+@php($isKeluar = $kategori === 'keluar')
+@php($isInternal = $kategori === 'internal')
 
 <input id="{{ $prefix }}kategori_surat" name="kategori_surat" type="hidden" value="{{ $kategori }}">
 <input id="{{ $prefix }}status_qr" name="status_qr" type="hidden" value="nonaktif">
 <input id="{{ $prefix }}status_fr" name="status_fr" type="hidden" value="0">
 
 @if(! $isMasuk)
-    <input id="{{ $prefix }}lokasi" name="lokasi" type="hidden" value="">
     <input id="{{ $prefix }}ditugaskan" name="ditugaskan" type="hidden" value="">
 @endif
 
+{{-- 1. Nama Agenda --}}
 <div>
     <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Nama Agenda</label>
     <input id="{{ $prefix }}nama_agenda" name="nama_agenda" type="text" required placeholder="Masukkan nama agenda" class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
 </div>
 
+{{-- 2. Waktu & Tanggal --}}
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
     <div>
         <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Tanggal</label>
@@ -48,6 +51,7 @@
     </div>
 </div>
 
+{{-- 3. Ditugaskan Kepada (KHUSUS SURAT MASUK - TUGAS LUAR) --}}
 @if ($isMasuk)
 <div class="relative" data-multi-select-container="{{ $prefix }}">
     <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Ditugaskan Kepada (Pilih Pegawai)</label>
@@ -92,10 +96,38 @@
         </div>
     </div>
 </div>
-@else
+@endif
+
+{{-- 4. Asal Surat / Tujuan Surat --}}
 <div>
-    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Kuota</label>
-    <input id="{{ $prefix }}kuota" name="kuota" type="number" min="0" placeholder="Kuota agenda" class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
+    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">
+        @if ($isKeluar)
+            Tujuan Surat / Instansi yang Diundang
+        @elseif ($isInternal)
+            Bidang / Asal Surat Internal
+        @else
+            Asal Surat
+        @endif
+    </label>
+    <input id="{{ $prefix }}asal_surat" name="asal_surat" type="text" 
+        placeholder="{{ $isKeluar ? 'Instansi / pihak luar yang diundang (misal: Seluruh Kecamatan se-Kab. Bogor, Dinas Pendidikan)' : ($isInternal ? 'Bidang / Seksi pengaju rapat (misal: Bidang Informasi dan Komunikasi Publik)' : 'Instansi asal surat (misal: Kantor Camat Cariu)') }}" 
+        class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
+</div>
+
+{{-- 5. Kuota Rapat / Kuota Tamu (Untuk Surat Internal & Surat Keluar) --}}
+@if ($isInternal || $isKeluar)
+<div>
+    <div class="flex items-center justify-between mb-1.5">
+        <label class="block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">
+            {{ $isKeluar ? 'Kuota Peserta / Tamu Undangan' : 'Kuota Rapat' }}
+        </label>
+        <span class="text-[10px] font-semibold text-[#35635b] dark:text-emerald-400">
+            {{ $isKeluar ? 'Batas maksimal peserta rapat' : 'Sesuai kapasitas ruangan' }}
+        </span>
+    </div>
+    <input id="{{ $prefix }}kuota" name="kuota" type="number" min="0" 
+        placeholder="{{ $isKeluar ? 'Jumlah maksimal peserta/tamu (contoh: 50)' : 'Masukkan kuota agenda' }}" 
+        class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
     <p id="{{ $prefix }}kuota-warning" class="mt-1.5 hidden text-xs font-semibold text-red-600 dark:text-red-400 items-center gap-1.5">
         <svg class="h-4 w-4 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
@@ -105,23 +137,41 @@
 </div>
 @endif
 
+{{-- 6. Tempat / Ruangan / Lokasi --}}
+@if ($isInternal || $isKeluar)
 <div>
-    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Asal Surat</label>
-    <input id="{{ $prefix }}asal_surat" name="asal_surat" type="text" placeholder="Instansi/Bagian asal surat" class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
+    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">
+        Lokasi Instansi Penyelenggara
+    </label>
+    <div class="rounded-xl border border-emerald-200/70 dark:border-[#284c43] bg-emerald-50/50 dark:bg-[#132420] p-3 flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0f513f] dark:bg-[#107050] text-white shrink-0 text-lg shadow-xs">
+            🏢
+        </div>
+        <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+                <span class="text-xs sm:text-sm font-extrabold text-[#0e2f27] dark:text-emerald-300">Dinas Komunikasi & Informatika (Diskominfo)</span>
+                @if ($isInternal)
+                    <span class="text-[9.5px] font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full">Internal Instansi</span>
+                @else
+                    <span class="text-[9.5px] font-bold bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded-full">Tuan Rumah Acara</span>
+                @endif
+            </div>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 truncate">Jl. Tegar Beriman, Cibinong, Kabupaten Bogor (Pusat Pemkab Bogor)</p>
+        </div>
+    </div>
+    <input id="{{ $prefix }}lokasi" name="lokasi" type="hidden" value="Dinas Komunikasi dan Informatika">
 </div>
 
-@if ($isMasuk)
 <div>
-    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Tempat / Lokasi Kegiatan</label>
-    <input id="{{ $prefix }}lokasi" name="lokasi" type="text" required placeholder="Contoh: Gedung Tegar Beriman / Ruang Rapat Instansi Luar" class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
-    <input id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" type="hidden" value="{{ $ruang->first()->id_ruangrapat ?? 1 }}">
-</div>
-@else
-<div>
-    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Tempat</label>
+    <div class="flex items-center justify-between mb-1.5">
+        <label class="block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">
+            {{ $isKeluar ? 'Ruangan Pertemuan / Acara di Diskominfo' : 'Ruangan Rapat Diskominfo' }}
+        </label>
+        <span class="text-[10px] font-semibold text-[#35635b] dark:text-emerald-400">Pilih ruang gedung Diskominfo</span>
+    </div>
     <div class="relative">
-        <select id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" required data-agenda-room-select="{{ $prefix }}" class="h-10 sm:h-11 w-full appearance-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 pr-10 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
-            <option value="" data-kapasitas="0">Pilih ruang</option>
+        <select id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" required data-agenda-room-select="{{ $prefix }}" class="h-10 sm:h-11 w-full appearance-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 pr-10 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 cursor-pointer">
+            <option value="" data-kapasitas="0">Pilih ruang pertemuan Diskominfo...</option>
             @foreach ($ruang as $item)
                 <option value="{{ $item->id_ruangrapat }}" data-nama-ruang="{{ $item->nama_ruang }}" data-kapasitas="{{ $item->kapasitas }}">
                     {{ $item->nama_ruang }} (Kapasitas: {{ $item->kapasitas }} org{{ $item->dynamic_status === 'terpakai' ? ' • Ruangan Terpakai' : ' • Tersedia' }})
@@ -133,8 +183,54 @@
         </svg>
     </div>
 </div>
+@else
+{{-- KHUSUS SURAT MASUK (TUGAS LUAR KE INSTANSI LAIN) --}}
+<div>
+    <div class="flex items-center justify-between mb-1.5">
+        <label class="block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">
+            Titik Lokasi Instansi Kegiatan (Peta GIS)
+        </label>
+        <span class="text-[10.5px] font-semibold text-[#35635b] dark:text-emerald-400">Tersambung dengan Map Pemkab</span>
+    </div>
+    <div class="relative">
+        <select id="{{ $prefix }}lokasi" name="lokasi" required onchange="handleInstansiSelectChange('{{ $prefix }}', this)" class="h-10 sm:h-11 w-full appearance-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 pr-10 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 cursor-pointer">
+            <option value="">Pilih kantor instansi kegiatan (40 Kecamatan & Dinas)...</option>
+            <optgroup label="🏛️ Pusat Pemkab Bogor">
+                <option value="Kantor Bupati Bogor">Kantor Bupati Bogor (Cibinong)</option>
+            </optgroup>
+            @if(isset($listInstansi) && count($listInstansi) > 0)
+                <optgroup label="🏢 40 Kantor Kecamatan se-Kabupaten Bogor (Peta GIS)">
+                    @foreach($listInstansi->where('tipe', 'Kecamatan') as $kec)
+                        <option value="{{ $kec['nama'] }}">{{ $kec['nama'] }}</option>
+                    @endforeach
+                </optgroup>
+                <optgroup label="🏬 Dinas & OPD Pemkab Bogor">
+                    @foreach($listInstansi->where('tipe', 'Dinas / OPD') as $dinas)
+                        @if($dinas['nama'] !== 'Dinas Komunikasi dan Informatika')
+                            <option value="{{ $dinas['nama'] }}">{{ $dinas['nama'] }}</option>
+                        @endif
+                    @endforeach
+                </optgroup>
+            @endif
+            <optgroup label="📍 Lokasi Lainnya">
+                <option id="{{ $prefix }}lokasi_custom_opt" value="__custom__">-- Ketik Lokasi Lainnya (Manual) --</option>
+            </optgroup>
+        </select>
+        <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </div>
+
+    <!-- Input manual hanya muncul jika admin memilih '-- Ketik Lokasi Lainnya (Manual) --' -->
+    <div id="{{ $prefix }}lokasi_custom_container" class="mt-2 hidden">
+        <input type="text" id="{{ $prefix }}lokasi_custom" placeholder="Ketik nama lokasi kegiatan (misal: Hotel Lorin Sentul, Gedung Tegar Beriman)..." oninput="handleCustomLocationInput('{{ $prefix }}', this.value)" class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
+    </div>
+    <p class="mt-1 text-[10.5px] text-gray-500 dark:text-gray-400">Pilih dari 40 Kecamatan / Dinas agar titik agenda tugas luar muncul tepat pada peta GIS.</p>
+</div>
+<input id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" type="hidden" value="{{ $ruang->first()->id_ruangrapat ?? 1 }}">
 @endif
 
+{{-- 7. Lampiran Surat Undangan --}}
 <div>
     <div class="flex items-center justify-between mb-1.5">
         <label class="block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Lampiran Surat Undangan</label>

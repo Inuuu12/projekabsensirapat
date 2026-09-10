@@ -78,7 +78,7 @@
                         @else
                             <th class="px-6 py-4">Kuota</th>
                         @endif
-                        <th class="px-6 py-4">Asal Surat</th>
+                        <th class="px-6 py-4">{{ $kategoriSurat === 'keluar' ? 'Tujuan Surat' : 'Asal Surat' }}</th>
                         <th class="px-6 py-4">Lampiran</th>
                         <th class="px-6 py-4">Tempat</th>
                         <th class="px-6 py-4">Status</th>
@@ -100,7 +100,7 @@
                             @if ($kategoriSurat === 'masuk')
                                 <td class="px-6 py-4 text-gray-700 dark:text-slate-200 font-medium">{{ $item->ditugaskan ?: '-' }}</td>
                             @else
-                                <td class="px-6 py-4 text-gray-700 dark:text-slate-200 font-semibold">{{ $item->kuota ?? '-' }}</td>
+                                <td class="px-6 py-4 text-gray-700 dark:text-slate-200 font-semibold">{{ $item->kuota ? $item->kuota . ' org' : '-' }}</td>
                             @endif
 
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->asal_surat ?: '-' }}</td>
@@ -284,6 +284,12 @@
             syncAgendaRoomLocation('');
             setDitugaskanFromValue('', '');
             validateRoomCapacity('');
+            const customCont = document.getElementById('lokasi_custom_container');
+            const customInp = document.getElementById('lokasi_custom');
+            const customOpt = document.getElementById('lokasi_custom_opt');
+            if (customCont) customCont.classList.add('hidden');
+            if (customInp) customInp.value = '';
+            if (customOpt) customOpt.value = '__custom__';
         }
         if (modal) {
             if (modal.parentElement !== document.body) {
@@ -302,6 +308,32 @@
         }
     }
 
+    function handleInstansiSelectChange(prefix, selectEl) {
+        const customContainer = document.getElementById(prefix + 'lokasi_custom_container');
+        const customInput = document.getElementById(prefix + 'lokasi_custom');
+        const customOpt = document.getElementById(prefix + 'lokasi_custom_opt');
+
+        if (selectEl.value === '__custom__' || (customOpt && selectEl.value === customOpt.value && customOpt.value !== '')) {
+            if (customContainer) customContainer.classList.remove('hidden');
+            if (customInput) {
+                customInput.focus();
+                if (customOpt) customOpt.value = customInput.value || '__custom__';
+            }
+        } else {
+            if (customContainer) customContainer.classList.add('hidden');
+            if (customOpt) customOpt.value = '__custom__';
+        }
+    }
+
+    function handleCustomLocationInput(prefix, value) {
+        const customOpt = document.getElementById(prefix + 'lokasi_custom_opt');
+        const selectEl = document.getElementById(prefix + 'lokasi');
+        if (customOpt && selectEl) {
+            customOpt.value = value;
+            selectEl.value = value;
+        }
+    }
+
     function openEditAgenda(button) {
         document.getElementById('form-edit-agenda').action = button.dataset.action;
         if(document.getElementById('edit-nama_agenda')) document.getElementById('edit-nama_agenda').value = button.dataset.nama || '';
@@ -315,7 +347,36 @@
         if(document.getElementById('edit-waktu')) document.getElementById('edit-waktu').value = button.dataset.waktu || '';
         if(document.getElementById('edit-waktu_selesai')) document.getElementById('edit-waktu_selesai').value = button.dataset.waktuselesai || '';
         if(document.getElementById('edit-kuota')) document.getElementById('edit-kuota').value = button.dataset.kuota || '';
-        if(document.getElementById('edit-lokasi')) document.getElementById('edit-lokasi').value = button.dataset.lokasi || '';
+        
+        if(document.getElementById('edit-lokasi')) {
+            const locEl = document.getElementById('edit-lokasi');
+            const locVal = button.dataset.lokasi || '';
+            if (locEl.tagName === 'SELECT') {
+                let matched = false;
+                for (let opt of locEl.options) {
+                    if (opt.value === locVal) {
+                        locEl.value = locVal;
+                        matched = true;
+                        break;
+                    }
+                }
+                const customCont = document.getElementById('edit-lokasi_custom_container');
+                const customInp = document.getElementById('edit-lokasi_custom');
+                const customOpt = document.getElementById('edit-lokasi_custom_opt');
+                if (!matched && locVal && locVal !== 'Dinas Komunikasi dan Informatika') {
+                    if (customOpt) customOpt.value = locVal;
+                    locEl.value = locVal;
+                    if (customCont) customCont.classList.remove('hidden');
+                    if (customInp) customInp.value = locVal;
+                } else {
+                    if (customCont) customCont.classList.add('hidden');
+                    if (customInp) customInp.value = '';
+                }
+            } else {
+                locEl.value = locVal;
+            }
+        }
+
         if(document.getElementById('edit-id_ruangrapat')) document.getElementById('edit-id_ruangrapat').value = button.dataset.ruang || '';
         if(document.getElementById('edit-status_qr')) document.getElementById('edit-status_qr').value = button.dataset.statusqr || 'nonaktif';
         if(document.getElementById('edit-status_fr')) document.getElementById('edit-status_fr').value = button.dataset.statusfr === '1' ? '1' : '0';
@@ -352,7 +413,7 @@
         const warningEl = document.getElementById(prefix + 'kuota-warning');
         const warningText = document.getElementById(prefix + 'kuota-warning-text');
         
-        if (!roomSelect || !kuotaInput || !warningEl || !warningText) return true;
+        if (!roomSelect || roomSelect.tagName !== 'SELECT' || !roomSelect.options || roomSelect.selectedIndex < 0 || !kuotaInput || !warningEl || !warningText) return true;
         
         const selectedOption = roomSelect.options[roomSelect.selectedIndex];
         const kapasitas = selectedOption ? parseInt(selectedOption.dataset.kapasitas || '0', 10) : 0;
@@ -607,7 +668,7 @@
         if (kuotaInput) {
             kuotaInput.addEventListener('input', () => validateRoomCapacity(prefix));
         }
-        if (roomSelect) {
+        if (roomSelect && roomSelect.tagName === 'SELECT') {
             roomSelect.addEventListener('change', () => validateRoomCapacity(prefix));
         }
     });
