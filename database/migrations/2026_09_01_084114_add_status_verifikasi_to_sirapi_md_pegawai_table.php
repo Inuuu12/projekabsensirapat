@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sirapi_md_pegawai', function (Blueprint $table) {
-            $table->string('status_verifikasi', 20)->default('aktif');
+            if (!Schema::hasColumn('sirapi_md_pegawai', 'status_verifikasi')) {
+                $table->string('status_verifikasi', 20)->default('aktif');
+            }
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('sirapi_md_pegawai', function (Blueprint $table) {
-            $table->dropColumn('status_verifikasi');
+            if (Schema::hasColumn('sirapi_md_pegawai', 'status_verifikasi')) {
+                $table->dropColumn('status_verifikasi');
+            }
         });
     }
 };

@@ -37,12 +37,12 @@ class Admin extends Authenticatable
 
     public function isSuperAdmin()
     {
-        return $this->role === 'super_admin';
+        return empty($this->role) || in_array($this->role, ['super_admin', 'superadmin']);
     }
 
     public function isAdminDinas()
     {
-        return $this->role === 'admin_dinas';
+        return in_array($this->role, ['admin_dinas', 'dinas']);
     }
 
     //sembunyikan password
