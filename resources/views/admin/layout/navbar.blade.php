@@ -84,7 +84,7 @@
             </div>
             <div class="hidden sm:flex flex-col text-left">
                 <span class="text-xs font-bold leading-tight text-white truncate max-w-[90px] sm:max-w-[140px]">{{ Auth::guard('admin')->user()->nama ?? 'Admin' }}</span>
-                <span class="text-[9.5px] sm:text-[10px] text-white/80 dark:text-emerald-400 font-semibold leading-tight">Super Admin</span>
+                <span class="text-[9.5px] sm:text-[10px] text-white/80 dark:text-emerald-400 font-semibold leading-tight">{{ (Auth::guard('admin')->check() && Auth::guard('admin')->user()->role === 'admin_dinas') ? 'Admin Dinas' : 'Super Admin' }}</span>
             </div>
         </div>
     </div>

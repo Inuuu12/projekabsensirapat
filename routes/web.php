@@ -68,12 +68,14 @@ Route::prefix('admin')->group(function () {
         Route::get('/tamu', [AdminTamuController::class, 'dataTamu'])->name('admin.tamu.lihat');
         Route::get('/umpanbalik', [AdminMasukkanController::class, 'umpanBalik'])->name('admin.umpanbalik');
         Route::get('/masukkan', [AdminMasukkanController::class, 'umpanBalik'])->name('admin.masukkan.lihat');
-        Route::get('/konten-publik', [AdminPublikController::class, 'index'])->name('admin.publik.index');
-        Route::post('/konten-publik/berita/refresh', [AdminPublikController::class, 'refreshBerita'])->name('admin.publik.berita.refresh');
-        Route::post('/konten-publik/galeri', [AdminPublikController::class, 'storeGaleri'])->name('admin.publik.galeri.store');
-        Route::put('/konten-publik/galeri/{id}', [AdminPublikController::class, 'updateGaleri'])->name('admin.publik.galeri.update');
-        Route::delete('/konten-publik/galeri/{id}', [AdminPublikController::class, 'destroyGaleri'])->name('admin.publik.galeri.destroy');
-        Route::post('/konten-publik/youtube', [AdminPublikController::class, 'updateYoutube'])->name('admin.publik.youtube.update');
+        Route::middleware('superadmin')->group(function () {
+            Route::get('/konten-publik', [AdminPublikController::class, 'index'])->name('admin.publik.index');
+            Route::post('/konten-publik/berita/refresh', [AdminPublikController::class, 'refreshBerita'])->name('admin.publik.berita.refresh');
+            Route::post('/konten-publik/galeri', [AdminPublikController::class, 'storeGaleri'])->name('admin.publik.galeri.store');
+            Route::put('/konten-publik/galeri/{id}', [AdminPublikController::class, 'updateGaleri'])->name('admin.publik.galeri.update');
+            Route::delete('/konten-publik/galeri/{id}', [AdminPublikController::class, 'destroyGaleri'])->name('admin.publik.galeri.destroy');
+            Route::post('/konten-publik/youtube', [AdminPublikController::class, 'updateYoutube'])->name('admin.publik.youtube.update');
+        });
 
         // Filter agenda by kategori surat
         Route::get('/agenda/kategori/internal-to-internal', [AdminAgendaController::class, 'lihat_AgendaInternalToInternal']);

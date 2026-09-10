@@ -30,6 +30,21 @@ class Admin extends Authenticatable
         'status',
     ];
 
+    public function dinas()
+    {
+        return $this->belongsTo(Dinas::class, 'id_dinas', 'id_dinas');
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->role === 'super_admin';
+    }
+
+    public function isAdminDinas()
+    {
+        return $this->role === 'admin_dinas';
+    }
+
     //sembunyikan password
     protected $hidden=[
         'password',
@@ -40,10 +55,7 @@ class Admin extends Authenticatable
         'password'=>'hashed',
     ];
 
-    public function dinas()
-    {
-        return $this->belongsTo(Dinas::class, 'id_dinas', 'id_dinas');
-    }
+
 
     public function kecamatan()
     {

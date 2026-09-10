@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class RuangRapat extends Model
 {
@@ -12,7 +13,27 @@ class RuangRapat extends Model
 
     protected $table = 'sirapi_md_ruangrapat';
     protected $primaryKey = 'id_ruangrapat';
-    protected $fillable = ['nama_ruang', 'kapasitas', 'status', 'keterangan'];
+    protected $fillable = ['nama_ruang', 'kapasitas', 'status', 'keterangan', 'id_dinas'];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('dinas', function (Builder $builder) {
+            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
+                $builder->where($builder->getQuery()->from . '.id_dinas', auth('admin')->user()->id_dinas);
+            }
+        });
+
+        static::creating(function ($model) {
+            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
+                $model->id_dinas = auth('admin')->user()->id_dinas;
+            }
+        });
+    }
+
+    public function dinas()
+    {
+        return $this->belongsTo(Dinas::class, 'id_dinas', 'id_dinas');
+    }
 
     public function agendas()
     {

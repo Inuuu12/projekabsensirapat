@@ -13,6 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
+        
+        $middleware->alias([
+            'superadmin' => \App\Http\Middleware\CheckSuperAdmin::class,
+        ]);
 
         $middleware->redirectGuestsTo(function (Request $request) {
             return $request->is('pegawai/*')

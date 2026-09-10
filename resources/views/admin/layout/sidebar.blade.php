@@ -1,6 +1,10 @@
 @php
     $appName = config('sirapi.name', 'RAPID');
-    $organizationName = config('sirapi.organization', 'Dinas Komunikasi & Informatika');
+    if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->role === 'admin_dinas' && Auth::guard('admin')->user()->dinas) {
+        $organizationName = Auth::guard('admin')->user()->dinas->nama_dinas;
+    } else {
+        $organizationName = config('sirapi.organization', 'Dinas Komunikasi & Informatika');
+    }
     $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
 @endphp
 
@@ -129,6 +133,7 @@
             </a>
 
             <!-- Konten Publik -->
+            @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->role !== 'admin_dinas')
             <a href="{{ route('admin.publik.index') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.publik.*') ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }}">
                 <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.publik.*') ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <rect x="5" y="5" width="16" height="15" rx="2.5" stroke-width="2"/>
@@ -136,6 +141,7 @@
                 </svg>
                 <span>Konten Publik</span>
             </a>
+            @endif
 
         </nav>
     </div>

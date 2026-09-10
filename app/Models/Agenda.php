@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
 
 class Agenda extends Model
 {
@@ -35,6 +36,7 @@ class Agenda extends Model
         'status_qr',
         'id_ruangrapat',
         'id_statusagenda',
+        'id_dinas',
     ];
 
     protected function casts(): array
@@ -47,6 +49,18 @@ class Agenda extends Model
 
     protected static function booted(): void
     {
+        static::addGlobalScope('dinas', function (Builder $builder) {
+            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
+                $builder->where($builder->getQuery()->from . '.id_dinas', auth('admin')->user()->id_dinas);
+            }
+        });
+
+        static::creating(function ($model) {
+            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
+                $model->id_dinas = auth('admin')->user()->id_dinas;
+            }
+        });
+
         static::deleting(function (Agenda $agenda) {
             // 1. Hapus semua foto presensi pegawai (scan wajah) agenda ini dari storage & database
             if (Schema::hasTable('sirapi_md_kehadiran')) {
@@ -108,6 +122,11 @@ class Agenda extends Model
     public function statusAgenda()
     {
         return $this->belongsTo(StatusAgenda::class, 'id_statusagenda', 'id_statusagenda');
+    }
+
+    public function dinas()
+    {
+        return $this->belongsTo(Dinas::class, 'id_dinas', 'id_dinas');
     }
 
     public function ruangRapat()
