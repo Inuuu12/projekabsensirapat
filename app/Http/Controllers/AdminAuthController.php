@@ -15,13 +15,31 @@ class AdminAuthController extends Controller
         ]);
 
         if (Auth::guard('admin')->attempt($credentials)) {
+            $user = Auth::guard('admin')->user();
+
+            // Batasi akun Dinas dan Kecamatan agar tidak bisa login ke portal Admin biasa (akan dikembangkan terpisah)
+            if (in_array($user->role, ['dinas', 'kecamatan'])) {
+                Auth::guard('admin')->logout();
+
+                if ($request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Akun Dinas / Kecamatan tidak diizinkan login ke portal Admin Utama.',
+                    ], 403);
+                }
+
+                return back()->withErrors([
+                    'username' => 'Akun Dinas / Kecamatan tidak diizinkan masuk ke portal Admin Utama. Akses login khusus akan dikembangkan secara terpisah.',
+                ])->onlyInput('username');
+            }
+
             $request->session()->regenerate();
 
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Login berhasil!',
-                    'admin' => Auth::guard('admin')->user(),
+                    'admin' => $user,
                 ]);
             }
 

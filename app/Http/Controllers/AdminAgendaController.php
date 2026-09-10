@@ -438,6 +438,8 @@ class AdminAgendaController extends Controller
 
         if ($request->hasFile('lampiran')) {
             $validated['lampiran'] = $request->file('lampiran')->store('agenda-lampiran', 'public');
+        } elseif ($request->boolean('hapus_lampiran')) {
+            $validated['lampiran'] = null;
         }
 
         $validated['status_fr'] = $request->boolean('status_fr');

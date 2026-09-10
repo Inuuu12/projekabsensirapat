@@ -31,11 +31,14 @@
     <main class="flex-grow w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-10 py-8 space-y-8">
         @php
             $agendaAktif = $agenda ?? null;
-            $lampiranUrl = $agendaAktif?->lampiran
-                ? route('publik.agenda.lampiran', $agendaAktif->id_agenda, false)
+            $lampiranFileUrl = $agendaAktif?->lampiran
+                ? route('publik.agenda.lampiran.file', $agendaAktif->id_agenda)
                 : null;
+            $lampiranUrl = $lampiranFileUrl;
             $lampiranExtension = strtolower(pathinfo((string) $agendaAktif?->lampiran, PATHINFO_EXTENSION));
-            $lampiranPreviewable = in_array($lampiranExtension, ['pdf', 'jpg', 'jpeg', 'png'], true);
+            $isImageLampiran = in_array($lampiranExtension, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true);
+            $isPdfLampiran = $lampiranExtension === 'pdf';
+            $lampiranPreviewable = $isImageLampiran || $isPdfLampiran;
             $qrPayloadPegawai = $qrCode?->qr_codepath ?: ($agendaAktif ? route('publik.presensi.pegawai', ['agenda_id' => $agendaAktif->id_agenda]) : null);
             $qrImageUrlPegawai = $qrPayloadPegawai ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayloadPegawai) : null;
             $qrImageUrl = $qrImageUrlPegawai;
@@ -381,19 +384,35 @@
                         <p class="text-[10px] font-bold uppercase tracking-wider text-white/70 dark:text-emerald-400">Lampiran Agenda</p>
                         <h3 class="truncate text-sm font-extrabold text-white">{{ basename($agendaAktif->lampiran) }}</h3>
                     </div>
-                    <button type="button" id="close-lampiran-modal" class="inline-flex h-9 shrink-0 items-center justify-center rounded-lg bg-white/10 dark:bg-white/5 px-4 text-xs font-bold text-white transition hover:bg-white/20 dark:hover:bg-white/10 cursor-pointer">
-                        Kembali
-                    </button>
+                    <div class="flex items-center gap-2">
+                        @if ($lampiranFileUrl)
+                            <a href="{{ $lampiranFileUrl }}" target="_blank" rel="noopener" class="inline-flex h-9 shrink-0 items-center justify-center rounded-lg bg-white/10 dark:bg-white/5 px-3 text-xs font-bold text-white transition hover:bg-white/20 dark:hover:bg-white/10" title="Buka di tab baru">
+                                <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                Tab Baru
+                            </a>
+                            <a href="{{ $lampiranFileUrl }}" download class="inline-flex h-9 shrink-0 items-center justify-center rounded-lg bg-white/10 dark:bg-white/5 px-3 text-xs font-bold text-white transition hover:bg-white/20 dark:hover:bg-white/10" title="Unduh lampiran">
+                                <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Unduh
+                            </a>
+                        @endif
+                        <button type="button" id="close-lampiran-modal" class="inline-flex h-9 shrink-0 items-center justify-center rounded-lg bg-white/20 dark:bg-white/10 px-4 text-xs font-bold text-white transition hover:bg-white/30 dark:hover:bg-white/20 cursor-pointer">
+                            Kembali
+                        </button>
+                    </div>
                 </div>
 
                 <div class="min-h-0 flex-1 bg-gray-100 dark:bg-[#0f1c19] p-3 sm:p-4">
-                    @if ($lampiranPreviewable)
-                        <iframe src="{{ $lampiranUrl }}" title="Lampiran {{ $agendaAktif->nama_agenda }}" class="h-[70vh] w-full rounded-xl border border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420]"></iframe>
+                    @if ($isPdfLampiran)
+                        <iframe src="{{ $lampiranFileUrl }}" title="Lampiran {{ $agendaAktif->nama_agenda }}" class="h-[70vh] w-full rounded-xl border border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420]"></iframe>
+                    @elseif ($isImageLampiran)
+                        <div class="flex h-[70vh] items-center justify-center overflow-auto rounded-xl bg-black/5 dark:bg-black/30 p-2">
+                            <img src="{{ $lampiranFileUrl }}" alt="Lampiran {{ $agendaAktif->nama_agenda }}" class="max-h-full max-w-full rounded-lg object-contain shadow-sm">
+                        </div>
                     @else
                         <div class="flex h-[45vh] flex-col items-center justify-center rounded-xl bg-white dark:bg-[#152420] p-6 text-center border border-gray-100 dark:border-[#233a34]">
                             <h4 class="text-sm font-extrabold text-gray-900 dark:text-white">Preview tidak tersedia</h4>
                             <p class="mt-2 max-w-md text-xs text-gray-500 dark:text-gray-400">Format file ini tidak bisa ditampilkan langsung di halaman. Gunakan tombol unduh untuk melihat lampiran.</p>
-                            <a href="{{ $lampiranUrl }}" download class="mt-4 rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] px-5 py-2.5 text-xs font-bold text-white transition shadow-xs">Unduh Lampiran</a>
+                            <a href="{{ $lampiranFileUrl }}" download class="mt-4 rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] px-5 py-2.5 text-xs font-bold text-white transition shadow-xs">Unduh Lampiran</a>
                         </div>
                     @endif
                 </div>

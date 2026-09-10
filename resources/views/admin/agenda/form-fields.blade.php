@@ -136,13 +136,44 @@
 @endif
 
 <div>
-    <label class="mb-1.5 block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Lampiran Surat Undangan</label>
-    <input id="{{ $prefix }}lampiran" name="lampiran" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="hidden" data-agenda-file-input="{{ $prefix }}">
-    <label for="{{ $prefix }}lampiran" class="flex min-h-[76px] sm:min-h-[88px] cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3 py-3 text-center transition hover:border-[#35635b] hover:bg-white dark:hover:bg-[#152420]">
-        <svg class="mb-1 h-5 w-5 text-[#35635b] dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 3h7l5 5v13H7zM14 3v5h5M9 15h6M9 18h4"></path>
-        </svg>
-        <span id="{{ $prefix }}lampiran-label" class="text-xs sm:text-sm font-medium text-[#0e2f27] dark:text-gray-200">Klik atau seret file PDF ke sini</span>
-        <span class="mt-0.5 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">PDF, DOC, JPG (Maks. 5MB)</span>
+    <div class="flex items-center justify-between mb-1.5">
+        <label class="block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">Lampiran Surat Undangan</label>
+        <button type="button" id="{{ $prefix }}btn-hapus-lampiran" onclick="clearAgendaLampiran('{{ $prefix }}')" class="text-[11px] font-bold text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hidden cursor-pointer">
+            ✕ Hapus File
+        </button>
+    </div>
+    <input id="{{ $prefix }}lampiran" name="lampiran" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp" class="hidden" data-agenda-file-input="{{ $prefix }}">
+    <input type="hidden" id="{{ $prefix }}hapus_lampiran" name="hapus_lampiran" value="0">
+    <input type="hidden" id="{{ $prefix }}lampiran_existing_url" value="">
+    
+    <label for="{{ $prefix }}lampiran" id="{{ $prefix }}lampiran-dropzone" class="relative flex min-h-[85px] sm:min-h-[100px] cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] p-3 text-center transition hover:border-[#35635b] hover:bg-white dark:hover:bg-[#152420] overflow-hidden group">
+        
+        <!-- Placeholder awal saat belum ada file -->
+        <div id="{{ $prefix }}lampiran-placeholder" class="flex flex-col items-center justify-center">
+            <svg class="mb-1.5 h-6 w-6 text-[#35635b] dark:text-emerald-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 3h7l5 5v13H7zM14 3v5h5M9 15h6M9 18h4"></path>
+            </svg>
+            <span id="{{ $prefix }}lampiran-label" class="text-xs sm:text-sm font-medium text-[#0e2f27] dark:text-gray-200">Klik atau seret file PDF / Foto ke sini</span>
+            <span class="mt-0.5 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">PDF, DOC, JPG, PNG (Maks. 5MB)</span>
+        </div>
+
+        <!-- Preview Image Container (jika file gambar) -->
+        <div id="{{ $prefix }}lampiran-img-container" class="hidden flex flex-col items-center justify-center w-full">
+            <img id="{{ $prefix }}lampiran-img-preview" src="" alt="Preview Lampiran" class="max-h-28 sm:max-h-36 w-auto rounded-lg object-contain shadow-xs border border-gray-200 dark:border-[#284c43]">
+            <p id="{{ $prefix }}lampiran-img-name" class="mt-1.5 text-xs font-semibold text-gray-700 dark:text-gray-300 truncate max-w-xs"></p>
+            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">Klik untuk mengganti berkas</span>
+        </div>
+
+        <!-- Preview Document Container (jika file PDF / DOC) -->
+        <div id="{{ $prefix }}lampiran-doc-container" class="hidden flex items-center gap-3 bg-emerald-50/80 dark:bg-emerald-950/50 p-2.5 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60 max-w-full">
+            <div class="h-9 w-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs uppercase">
+                <span id="{{ $prefix }}lampiran-doc-ext">PDF</span>
+            </div>
+            <div class="text-left min-w-0 flex-1 pr-2">
+                <p id="{{ $prefix }}lampiran-doc-name" class="text-xs font-bold text-gray-800 dark:text-white truncate"></p>
+                <p class="text-[10px] text-emerald-700 dark:text-emerald-400">File dokumen terpilih • Klik untuk mengganti</p>
+            </div>
+        </div>
+
     </label>
 </div>

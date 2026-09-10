@@ -38,7 +38,7 @@
             <!-- Agenda Submenu -->
             @php $isAgendaActive = request()->routeIs('admin.agenda.*') || request()->routeIs('admin.ruang.*'); @endphp
             <div class="space-y-1">
-                <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-180')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isAgendaActive ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
+                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isAgendaActive ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-3 {{ $isAgendaActive ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <rect x="3" y="4" width="18" height="17" rx="3.5" stroke-width="2"/>
@@ -60,7 +60,7 @@
             <!-- Data Pengguna Submenu -->
             @php $isUserActive = request()->routeIs('admin.pegawai.*') || request()->routeIs('admin.tamu.*'); @endphp
             <div class="space-y-1">
-                <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-180')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isUserActive ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
+                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isUserActive ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-3 {{ $isUserActive ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                         <span>Data Pengguna</span>
@@ -82,11 +82,43 @@
                 </div>
             </div>
 
-            <!-- Kunjungan -->
-            <a href="{{ route('admin.kunjungan.lihat') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.kunjungan.lihat') ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }}">
-                <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.kunjungan.lihat') ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                <span>Kunjungan</span>
-            </a>
+            <!-- Master Data Submenu (Dinas & Kunjungan) -->
+            @php $isMasterActive = request()->routeIs('admin.dinas.*') || request()->routeIs('admin.kunjungan.*'); @endphp
+            <div class="space-y-1">
+                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isMasterActive ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3 {{ $isMasterActive ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H7m4 0v10"/>
+                        </svg>
+                        <span>Master Data</span>
+                    </div>
+                    <svg class="w-4 h-4 opacity-80 arrow-icon transition-transform {{ $isMasterActive ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+
+                <div class="{{ $isMasterActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
+                    <a href="{{ route('admin.dinas.index') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.dinas.*') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Data Dinas</a>
+                    <a href="{{ route('admin.kunjungan.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.kunjungan.*') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Kunjungan (Kunker)</a>
+                </div>
+            </div>
+
+            <!-- Manajemen Akun Submenu -->
+            @php $isAkunActive = request()->routeIs('admin.akun.*'); @endphp
+            <div class="space-y-1">
+                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isAkunActive ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3 {{ $isAkunActive ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                        </svg>
+                        <span>Manajemen Akun</span>
+                    </div>
+                    <svg class="w-4 h-4 opacity-80 arrow-icon transition-transform {{ $isAkunActive ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+
+                <div class="{{ $isAkunActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
+                    <a href="{{ route('admin.akun.dinas.index') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.akun.dinas.*') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Akun Dinas</a>
+                    <a href="{{ route('admin.akun.kecamatan.index') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.akun.kecamatan.*') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Akun Kecamatan</a>
+                </div>
+            </div>
 
             <!-- Masukkan / Aduan -->
             <a href="{{ route('admin.masukkan.lihat') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.masukkan.lihat') ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }}">
@@ -120,7 +152,7 @@
 
 </aside>
 
-<!-- Modal Konfirmasi Logout (Styling Tajam & Bayangan Kunker) -->
+<!-- Modal Konfirmasi Logout -->
 <div id="logoutModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs items-center justify-center p-4 transition-all duration-200" onclick="if(event.target === this) closeAdminLogoutModal()">
     <div class="relative w-full max-w-sm rounded-xl bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] text-center shadow-2xl p-6 sm:p-8 transform scale-95 transition-all">
         <!-- Ikon Peringatan -->
@@ -136,13 +168,13 @@
             <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-300 font-medium">Apakah Anda yakin ingin keluar dari sistem?</p>
         </div>
         
-        <!-- Bagian Tombol Aksi (Batal / Keluar) -->
+        <!-- Tombol Aksi -->
         <div class="grid grid-cols-2 gap-3 pt-4 border-t border-gray-100 dark:border-[#233a34]">
             <button type="button" onclick="closeAdminLogoutModal()" class="inline-flex w-full h-10 items-center justify-center rounded-xl bg-white dark:bg-[#0f1c19] px-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300 shadow-sm border border-gray-300 dark:border-[#284c43] hover:bg-gray-50 dark:hover:bg-white/5 transition cursor-pointer">
                 Batal
             </button>
 
-            <!-- Form Laravel untuk eksekusi POST /logout -->
+            <!-- Form Logout -->
             <form action="{{ route('admin.logout') }}" method="POST" class="m-0 w-full">
                 @csrf 
                 <button type="submit" class="inline-flex w-full h-10 items-center justify-center rounded-xl bg-red-600 hover:bg-red-700 px-4 text-xs sm:text-sm font-bold text-white shadow-md transition cursor-pointer">
@@ -154,6 +186,24 @@
 </div>
 
 <script>
+    function toggleSidebarSubmenu(btn) {
+        const submenu = btn.nextElementSibling;
+        if (!submenu) return;
+        const arrow = btn.querySelector('.arrow-icon');
+        
+        if (submenu.classList.contains('hidden')) {
+            submenu.classList.remove('hidden');
+            submenu.classList.add('flex');
+        } else {
+            submenu.classList.add('hidden');
+            submenu.classList.remove('flex');
+        }
+        
+        if (arrow) {
+            arrow.classList.toggle('rotate-180');
+        }
+    }
+
     function openAdminLogoutModal() {
         const modal = document.getElementById('logoutModal');
         if (modal) {

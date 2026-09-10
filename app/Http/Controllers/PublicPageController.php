@@ -142,7 +142,7 @@ class PublicPageController extends Controller
 
         abort_if(str_contains($path, '..') || ! Storage::disk('public')->exists($path), 404);
 
-        $fileUrl = route('publik.agenda.lampiran.file', $agenda->id_agenda, false);
+        $fileUrl = route('publik.agenda.lampiran.file', $agenda->id_agenda);
         $fileName = basename($path);
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
         $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true);

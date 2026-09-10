@@ -29,6 +29,26 @@
     <!-- Leaflet CSS & JS for GIS Map Sebaran -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        .leaflet-popup-content-wrapper {
+            border-radius: 16px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+        }
+        .leaflet-popup-content {
+            margin: 14px 16px !important;
+            line-height: 1.4 !important;
+        }
+        .leaflet-container a.leaflet-popup-btn,
+        .leaflet-popup-content a {
+            color: #ffffff !important;
+            text-decoration: none !important;
+        }
+        .leaflet-container a.leaflet-popup-btn:hover,
+        .leaflet-popup-content a:hover {
+            color: #ffffff !important;
+            opacity: 0.92;
+        }
+    </style>
 </head>
 <body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
     @include('publik.layout.navbarpublik')
@@ -136,15 +156,51 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @forelse ($agendaItems as $agenda)
-                    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] text-gray-800 dark:text-white rounded-xl p-5 flex flex-col justify-between space-y-4 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-300">
-                                <span>{{ substr((string) $agenda->waktu, 0, 5) ?: '-' }} WIB</span>
-                                <span class="bg-gray-100 dark:bg-[#1b3832] text-gray-700 dark:text-emerald-300 text-[10px] font-medium px-2.5 py-0.5 rounded-full border border-transparent dark:border-emerald-500/20">{{ $agenda->status_label }}</span>
+                    @php
+                        $isBerlangsung = $agenda->isBerlangsung();
+                        $isSelesai = $agenda->isSelesai();
+                    @endphp
+                    <div class="rounded-xl p-5 flex flex-col justify-between space-y-4 shadow-md transition-all duration-300 relative overflow-hidden
+                        {{ $isBerlangsung 
+                            ? 'bg-gradient-to-br from-emerald-50/95 via-teal-50/90 to-white dark:from-[#132c25] dark:via-[#16382d] dark:to-[#12241f] border-2 border-emerald-500/90 dark:border-emerald-400/90 shadow-emerald-500/10 dark:shadow-emerald-950/40 ring-2 ring-emerald-500/20 dark:ring-emerald-400/30 scale-[1.01]' 
+                            : ($isSelesai 
+                                ? 'bg-gray-100/70 dark:bg-[#0d1715]/70 border border-gray-200/80 dark:border-[#1a2b27] opacity-80 hover:opacity-100' 
+                                : 'bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] hover:shadow-xl hover:-translate-y-0.5') }}">
+                        
+                        @if ($isBerlangsung)
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
+                        @endif
+
+                        <div class="space-y-2 relative z-10">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-bold {{ $isBerlangsung ? 'text-emerald-900 dark:text-emerald-300' : ($isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-300') }}">
+                                    🕒 {{ substr((string) $agenda->waktu, 0, 5) ?: '-' }} WIB
+                                </span>
+
+                                @if ($isBerlangsung)
+                                    <span class="bg-emerald-600 text-white font-extrabold text-[10px] px-3 py-0.5 rounded-full inline-flex items-center space-x-1.5 shadow-xs">
+                                        <span class="relative flex h-2 w-2">
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                        </span>
+                                        <span>Berlangsung</span>
+                                    </span>
+                                @elseif ($isSelesai)
+                                    <span class="bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-300/60 dark:border-gray-700 font-medium text-[10px] px-2.5 py-0.5 rounded-full">
+                                        Selesai
+                                    </span>
+                                @else
+                                    <span class="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-blue-200 dark:border-blue-800/40">
+                                        {{ $agenda->status_label }}
+                                    </span>
+                                @endif
                             </div>
+
                             <div class="space-y-1">
                                 <div class="flex items-center gap-1.5 flex-wrap">
-                                    <h4 class="font-bold text-sm leading-snug text-gray-900 dark:text-white">{{ $agenda->nama_agenda }}</h4>
+                                    <h4 class="font-bold text-sm leading-snug {{ $isBerlangsung ? 'text-emerald-950 dark:text-white' : ($isSelesai ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-white') }}">
+                                        {{ $agenda->nama_agenda }}
+                                    </h4>
                                     @if (strtolower((string) ($agenda->kategori_surat ?? 'internal')) === 'internal')
                                         <span class="inline-flex items-center text-[9px] font-bold text-blue-700 dark:text-sky-300 bg-blue-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-md border border-blue-100 dark:border-sky-800/40">Khusus Pegawai</span>
                                     @elseif (strtolower((string) ($agenda->kategori_surat ?? '')) === 'masuk')
@@ -153,16 +209,19 @@
                                         <span class="inline-flex items-center text-[9px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800/40">Pegawai & Tamu</span>
                                     @endif
                                 </div>
-                                <p class="text-xs text-gray-500 dark:text-gray-300">{{ $agenda->lokasi_display ?? '-' }}</p>
+                                <p class="text-xs {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-300' }}">📍 {{ $agenda->lokasi_display ?? '-' }}</p>
                             </div>
                         </div>
-                        <div class="flex items-center justify-between border-t border-gray-100 dark:border-[#233a34] pt-3 text-xs">
+
+                        <div class="flex items-center justify-between border-t {{ $isBerlangsung ? 'border-emerald-200 dark:border-emerald-800/50' : 'border-gray-100 dark:border-[#233a34]' }} pt-3 text-xs relative z-10">
                             @if (strtolower((string) ($agenda->kategori_surat ?? '')) !== 'masuk')
                                 <span class="bg-oren-muda dark:bg-amber-950/60 text-oren-tua dark:text-amber-300 dark:border dark:border-amber-700/40 font-bold px-3 py-1 rounded-full text-[10px]">{{ $agenda->kuota ?? 0 }} Peserta</span>
                             @else
                                 <span></span>
                             @endif
-                            <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#1b3832] dark:border dark:border-[#284c43] text-white dark:text-emerald-300 px-3 py-1 rounded-lg text-[10px] font-semibold transition-colors hover:bg-[#2b4f49] dark:hover:bg-[#23423b]">Detail</a>
+                            <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="{{ $isBerlangsung ? 'bg-emerald-600 hover:bg-emerald-700 text-white font-bold' : ($isSelesai ? 'bg-gray-200 dark:bg-[#1a2925] text-gray-600 dark:text-gray-300 hover:bg-gray-300' : 'bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#1b3832] text-white dark:text-emerald-300') }} px-3.5 py-1 rounded-lg text-[10px] transition-colors">
+                                {{ $isBerlangsung ? 'Ikuti / Detail &rarr;' : 'Detail' }}
+                            </a>
                         </div>
                     </div>
                 @empty
@@ -231,18 +290,37 @@
                         <div id="beranda-map" class="w-full h-full z-0 bg-[#e5e3df] dark:bg-[#121f1c]"></div>
 
                         <!-- Overlay Legend -->
-                        <div class="absolute bottom-3 left-3 z-[400] bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/80 dark:border-[#233a34] rounded-xl p-3 shadow-lg text-[11px] space-y-1.5 pointer-events-auto max-w-[240px]">
+                        <div class="absolute bottom-3 left-3 z-[400] bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/80 dark:border-[#233a34] rounded-xl p-3 shadow-lg text-[11px] space-y-1.5 pointer-events-auto max-w-[245px]">
                             <p class="font-bold text-gray-900 dark:text-white text-xs border-b border-gray-100 dark:border-[#284c43] pb-1">Keterangan Peta</p>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 rounded-full bg-[#10b981] border border-emerald-700 shrink-0"></span>
                                 <span class="text-gray-700 dark:text-gray-300">Batas Kecamatan Kab. Bogor</span>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <span class="w-3.5 h-3.5 rounded-full bg-emerald-600 text-white text-[9px] flex items-center justify-center font-bold shrink-0">🏛️</span>
-                                <span class="text-gray-700 dark:text-gray-300">Kantor Camat & Bupati</span>
+                                <div class="flex flex-col items-center shrink-0">
+                                    <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 relative overflow-hidden shadow-xs border border-white">
+                                        <span class="absolute top-0.5 left-0.5 w-2 h-1 bg-white/70 rounded-full rotate-[-30deg] z-20"></span>
+                                    </span>
+                                    <span class="w-[2px] h-1.5 bg-gray-900"></span>
+                                </div>
+                                <span class="text-gray-700 dark:text-gray-300">Kantor Kecamatan (40 Titik)</span>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <span class="w-3.5 h-3.5 rounded-full bg-[#D89B3C] text-white text-[9px] flex items-center justify-center font-bold shrink-0">📋</span>
+                                <div class="flex flex-col items-center shrink-0">
+                                    <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-red-500 to-red-700 relative overflow-hidden shadow-xs border border-white">
+                                        <span class="absolute top-0.5 left-0.5 w-2 h-1 bg-white/70 rounded-full rotate-[-30deg] z-20"></span>
+                                    </span>
+                                    <span class="w-[2px] h-1.5 bg-gray-900"></span>
+                                </div>
+                                <span class="text-gray-700 dark:text-gray-300">Kantor Dinas & Pemkab</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="flex flex-col items-center shrink-0">
+                                    <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 relative overflow-hidden shadow-xs border border-white">
+                                        <span class="absolute top-0.5 left-0.5 w-2 h-1 bg-white/70 rounded-full rotate-[-30deg] z-20"></span>
+                                    </span>
+                                    <span class="w-[2px] h-1.5 bg-gray-900"></span>
+                                </div>
                                 <span class="text-gray-700 dark:text-gray-300">Titik Agenda Rapat Active</span>
                             </div>
                         </div>
@@ -263,31 +341,56 @@
                         <!-- 3 List Rapat Terbaru -->
                         <div class="space-y-3">
                             @forelse ($agendaItems->take(3) as $agenda)
-                                <div class="bg-[#F8F7F4] dark:bg-[#0f1c19] border border-gray-200/70 dark:border-[#233a34] rounded-xl p-3.5 space-y-2 hover:border-ijo-tua dark:hover:border-emerald-500/50 transition-all duration-200 group">
+                                @php
+                                    $isBerlangsung = $agenda->isBerlangsung();
+                                    $isSelesai = $agenda->isSelesai();
+                                @endphp
+                                <div class="rounded-xl p-3.5 space-y-2 transition-all duration-200 group relative overflow-hidden
+                                    {{ $isBerlangsung 
+                                        ? 'bg-gradient-to-br from-emerald-50/95 via-teal-50/90 to-white dark:from-[#132c25] dark:via-[#16382d] dark:to-[#12241f] border-2 border-emerald-500/90 dark:border-emerald-400/90 shadow-sm' 
+                                        : ($isSelesai 
+                                            ? 'bg-gray-100/70 dark:bg-[#0d1715]/70 border border-gray-200/70 dark:border-[#1a2b27] opacity-85 hover:opacity-100' 
+                                            : 'bg-[#F8F7F4] dark:bg-[#0f1c19] border border-gray-200/70 dark:border-[#233a34] hover:border-ijo-tua dark:hover:border-emerald-500/50') }}">
+                                    
                                     <div class="flex items-center justify-between gap-2 text-[10px]">
-                                        <span class="bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50 font-bold px-2 py-0.5 rounded-full">
-                                            {{ $agenda->status_label }}
-                                        </span>
-                                        <span class="text-gray-500 dark:text-gray-400 font-medium">
+                                        @if ($isBerlangsung)
+                                            <span class="bg-emerald-600 text-white font-extrabold px-2.5 py-0.5 rounded-full inline-flex items-center space-x-1 shadow-xs">
+                                                <span class="relative flex h-1.5 w-1.5">
+                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+                                                </span>
+                                                <span>Berlangsung</span>
+                                            </span>
+                                        @elseif ($isSelesai)
+                                            <span class="bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-300/60 dark:border-gray-700 font-medium px-2 py-0.5 rounded-full">
+                                                Selesai
+                                            </span>
+                                        @else
+                                            <span class="bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50 font-bold px-2 py-0.5 rounded-full">
+                                                {{ $agenda->status_label }}
+                                            </span>
+                                        @endif
+
+                                        <span class="{{ $isBerlangsung ? 'text-emerald-900 dark:text-emerald-300 font-bold' : ($isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400 font-medium') }}">
                                             🕒 {{ substr((string) $agenda->waktu, 0, 5) }} WIB
                                         </span>
                                     </div>
 
                                     <div>
-                                        <h5 class="font-bold text-gray-900 dark:text-white text-xs leading-snug line-clamp-2 group-hover:text-ijo-tua dark:group-hover:text-emerald-400 transition-colors">
+                                        <h5 class="font-bold text-xs leading-snug line-clamp-2 transition-colors {{ $isBerlangsung ? 'text-emerald-950 dark:text-white group-hover:text-emerald-700' : ($isSelesai ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-white group-hover:text-ijo-tua dark:group-hover:text-emerald-400') }}">
                                             {{ $agenda->nama_agenda }}
                                         </h5>
-                                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
+                                        <p class="text-[11px] {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400' }} mt-1 flex items-center gap-1">
                                             <span>📍</span>
                                             <span class="truncate">{{ $agenda->lokasi_display ?? 'Diskominfo Kab. Bogor' }}</span>
                                         </p>
                                     </div>
 
-                                    <div class="pt-2 border-t border-gray-200/50 dark:border-[#233a34] flex items-center justify-between text-[11px]">
-                                        <span class="text-gray-400 dark:text-gray-400">
+                                    <div class="pt-2 border-t {{ $isBerlangsung ? 'border-emerald-200 dark:border-emerald-800/50' : 'border-gray-200/50 dark:border-[#233a34]' }} flex items-center justify-between text-[11px]">
+                                        <span class="{{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400' }}">
                                             📅 {{ $agenda->tanggal ? \Carbon\Carbon::parse($agenda->tanggal)->translatedFormat('d M Y') : '-' }}
                                         </span>
-                                        <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="font-bold text-ijo-tua dark:text-emerald-400 hover:underline">
+                                        <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="font-bold {{ $isBerlangsung ? 'text-emerald-700 dark:text-emerald-300 hover:underline' : ($isSelesai ? 'text-gray-500 dark:text-gray-400 hover:underline' : 'text-ijo-tua dark:text-emerald-400 hover:underline') }}">
                                             Detail &rarr;
                                         </a>
                                     </div>
@@ -628,7 +731,7 @@
             let isDark = document.documentElement.classList.contains('dark');
             const getTileUrl = (dark) => dark
                 ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+                : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
             const map = L.map('beranda-map', {
                 center: [centerLat, centerLng],
@@ -638,8 +741,8 @@
             });
 
             let currentTileLayer = L.tileLayer(getTileUrl(isDark), {
-                attribution: '&copy; OpenStreetMap &copy; CARTO',
-                subdomains: 'abcd',
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
+                subdomains: 'abc',
                 maxZoom: 19
             }).addTo(map);
 
@@ -648,8 +751,8 @@
             const updateMapTheme = (dark) => {
                 map.removeLayer(currentTileLayer);
                 currentTileLayer = L.tileLayer(getTileUrl(dark), {
-                    attribution: '&copy; OpenStreetMap &copy; CARTO',
-                    subdomains: 'abcd',
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
+                    subdomains: 'abc',
                     maxZoom: 19
                 }).addTo(map);
 
@@ -667,8 +770,11 @@
             });
 
             // Fetch Administrative GeoJSON of Kabupaten Bogor (40 Kecamatan)
-            fetch('/admin_kec.json')
-                .then(res => res.json())
+            fetch("{{ asset('admin_kec.json') }}")
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
                 .then(data => {
                     geojsonLayer = L.geoJSON(data, {
                         style: function(feature) {
@@ -719,47 +825,54 @@
 
             let allMarkers = [];
 
-            // Dynamic Icon Sizer based on Zoom Level
+            // Dynamic Pushpin Icon Sizer based on Zoom Level
             const getIconConfigForZoom = (zoom) => {
-                if (zoom <= 8) return { size: 18, font: 'text-[9px]', innerSize: 'w-4.5 h-4.5' };
-                if (zoom === 9) return { size: 22, font: 'text-[10px]', innerSize: 'w-5.5 h-5.5' };
-                if (zoom === 10) return { size: 28, font: 'text-xs', innerSize: 'w-7 h-7' };
-                if (zoom === 11) return { size: 34, font: 'text-xs', innerSize: 'w-8.5 h-8.5' };
-                if (zoom === 12) return { size: 40, font: 'text-sm', innerSize: 'w-10 h-10' };
-                if (zoom === 13) return { size: 46, font: 'text-base', innerSize: 'w-11 h-11' };
-                return { size: 52, font: 'text-lg', innerSize: 'w-13 h-13' };
+                if (zoom <= 8) return { headSize: 'w-[18px] h-[18px]', stickHeight: 'h-[10px]', width: 18, totalHeight: 28 };
+                if (zoom === 9) return { headSize: 'w-[22px] h-[22px]', stickHeight: 'h-[12px]', width: 22, totalHeight: 34 };
+                if (zoom === 10) return { headSize: 'w-[28px] h-[28px]', stickHeight: 'h-[15px]', width: 28, totalHeight: 43 };
+                if (zoom === 11) return { headSize: 'w-[34px] h-[34px]', stickHeight: 'h-[18px]', width: 34, totalHeight: 52 };
+                if (zoom === 12) return { headSize: 'w-[40px] h-[40px]', stickHeight: 'h-[21px]', width: 40, totalHeight: 61 };
+                if (zoom === 13) return { headSize: 'w-[46px] h-[46px]', stickHeight: 'h-[24px]', width: 46, totalHeight: 70 };
+                return { headSize: 'w-[52px] h-[52px]', stickHeight: 'h-[27px]', width: 52, totalHeight: 79 };
             };
 
-            // Custom Leaflet Marker Icon Builder with Zoom-scaling support
-            const createCustomIcon = (iconEmoji = '📍', bgClass = 'bg-[#35635b]', zoom = defaultZoom) => {
+            // Custom Leaflet Pushpin Marker Builder (Clean Glossy Sphere Ball + Needle Stick)
+            const createCustomIcon = (bgClass = 'bg-gradient-to-br from-red-500 via-red-600 to-red-800', zoom = defaultZoom) => {
                 const cfg = getIconConfigForZoom(zoom);
                 return L.divIcon({
-                    className: 'custom-map-pin',
+                    className: 'custom-pushpin-marker',
                     html: `
-                        <div class="relative flex items-center justify-center">
-                            <div class="${cfg.innerSize} rounded-full ${bgClass} text-white flex items-center justify-center ${cfg.font} shadow-md border-2 border-white dark:border-[#152420] transition-all duration-200 hover:scale-125">
-                                ${iconEmoji}
+                        <div class="relative flex flex-col items-center justify-start transition-all duration-200 hover:scale-125 cursor-pointer drop-shadow-md group">
+                            <!-- Round Clean Glossy Pushpin Ball -->
+                            <div class="${cfg.headSize} rounded-full ${bgClass} shadow-lg border-2 border-white dark:border-[#152420] relative overflow-hidden shrink-0">
+                                <!-- Glossy White Crescent Glare Arc -->
+                                <span class="absolute top-[8%] left-[10%] w-[50%] h-[32%] bg-gradient-to-br from-white/90 via-white/40 to-transparent rounded-full rotate-[-35deg] pointer-events-none z-20"></span>
                             </div>
+                            <!-- Pushpin Needle Stick Pointing Down to Coordinate -->
+                            <div class="w-[3px] ${cfg.stickHeight} bg-gradient-to-b from-gray-900 via-gray-800 to-black rounded-b-full shadow-xs -mt-[1px]"></div>
                         </div>
                     `,
-                    iconSize: [cfg.size, cfg.size],
-                    iconAnchor: [cfg.size / 2, cfg.size / 2],
-                    popupAnchor: [0, -cfg.size / 2]
+                    iconSize: [cfg.width, cfg.totalHeight],
+                    iconAnchor: [cfg.width / 2, cfg.totalHeight],
+                    popupAnchor: [0, -cfg.totalHeight]
                 });
             };
 
             const updateAllMarkerSizes = () => {
                 const currentZoom = map.getZoom();
                 allMarkers.forEach(m => {
-                    m.marker.setIcon(createCustomIcon(m.iconEmoji, m.bgClass, currentZoom));
+                    m.marker.setIcon(createCustomIcon(m.bgClass, currentZoom));
                 });
             };
 
             map.on('zoomend', updateAllMarkerSizes);
 
-            // Load 41 Government Points (Kantor Bupati & 40 Kantor Camat) from /app_md_mapgovpoint.csv
-            fetch('/app_md_mapgovpoint.csv')
-                .then(res => res.text())
+            // Load 41 Government Points (Kantor Bupati & 40 Kantor Camat) from app_md_mapgovpoint.csv
+            fetch("{{ asset('app_md_mapgovpoint.csv') }}")
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.text();
+                })
                 .then(csvText => {
                     const lines = csvText.split('\n');
                     let validPointsCount = 0;
@@ -774,26 +887,29 @@
 
                             if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
                                 validPointsCount++;
-                                const isCamatOrBupati = name.toLowerCase().includes('camat') || name.toLowerCase().includes('bupati');
-                                const isDinas = name.toLowerCase().includes('dinas') || name.toLowerCase().includes('badan') || name.toLowerCase().includes('sekretariat');
+                                const nameLower = name.toLowerCase();
+                                const isCamat = nameLower.includes('camat');
 
-                                let icon = isCamatOrBupati ? '🏛️' : '🏢';
-                                let bgClass = 'bg-emerald-600';
-                                let badge = 'Kantor Pemerintahan / Camat';
+                                let bgClass = isCamat
+                                    ? 'bg-gradient-to-br from-amber-500 via-orange-500 to-orange-700'
+                                    : 'bg-gradient-to-br from-red-500 via-red-600 to-red-800';
+
+                                let badge = isCamat ? 'Kantor Kecamatan' : 'Kantor Dinas & Pemkab';
+                                let badgeClass = isCamat ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800';
 
                                 const currentZoom = map.getZoom();
                                 const marker = L.marker([lat, lng], {
-                                    icon: createCustomIcon(icon, bgClass, currentZoom)
+                                    icon: createCustomIcon(bgClass, currentZoom)
                                 }).addTo(map);
 
-                                allMarkers.push({ marker: marker, iconEmoji: icon, bgClass: bgClass });
+                                allMarkers.push({ marker: marker, bgClass: bgClass });
 
                                 marker.bindPopup(`
                                     <div class="p-2 font-sans max-w-[230px]">
-                                        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">${badge}</span>
+                                        <span class="${badgeClass} text-[10px] font-extrabold px-2 py-0.5 rounded-full">${badge}</span>
                                         <h4 class="font-bold text-xs text-gray-900 mt-1.5 leading-snug">${name}</h4>
                                         <p class="text-[11px] text-gray-600 mt-1 leading-normal">📍 ${addr}</p>
-                                        <a href="{{ route('publik.form-kunjungan') }}" class="inline-block mt-2 text-[10px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-2.5 py-1 rounded transition-colors">Isi Form Kunjungan &rarr;</a>
+                                        <a href="{{ route('publik.form-kunjungan') }}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block mt-2.5 text-[11px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-3.5 py-1.5 rounded-xl transition-all shadow-xs">Isi Form Kunjungan &rarr;</a>
                                     </div>
                                 `);
                             }
@@ -816,30 +932,29 @@
                         waktu: @json(substr((string) $agenda->waktu, 0, 5) . ' WIB'),
                         kategori: @json(strtolower((string)($agenda->kategori_surat ?? 'internal'))),
                         detailUrl: @json(route('publik.agenda.detail', $agenda->id_agenda)),
-                        lat: -6.4795 + ((Math.sin({{ $loop->index + 1 }}) * 0.08)),
-                        lng: 106.8252 + ((Math.cos({{ $loop->index + 1 }}) * 0.08))
+                        lat: -6.4795 + ((Math.sin({{ $loop->index + 1 }}) * 0.018)),
+                        lng: 106.8252 + ((Math.cos({{ $loop->index + 1 }}) * 0.018))
                     },
                 @endforeach
             ];
 
             agendaLocations.forEach(item => {
-                const iconEmoji = item.kategori === 'internal' ? '📋' : '🤝';
-                const bgClass = item.kategori === 'internal' ? 'bg-[#35635b]' : 'bg-[#D89B3C]';
+                const bgClass = 'bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700';
                 const currentZoom = map.getZoom();
 
                 const marker = L.marker([item.lat, item.lng], {
-                    icon: createCustomIcon(iconEmoji, bgClass, currentZoom)
+                    icon: createCustomIcon(bgClass, currentZoom)
                 }).addTo(map);
 
-                allMarkers.push({ marker: marker, iconEmoji: iconEmoji, bgClass: bgClass });
+                allMarkers.push({ marker: marker, bgClass: bgClass });
 
                 marker.bindPopup(`
                     <div class="p-2 font-sans max-w-[220px]">
-                        <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Agenda Kegiatan</span>
+                        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Agenda Kegiatan</span>
                         <h4 class="font-bold text-xs text-gray-900 mt-1 leading-snug">${item.nama}</h4>
                         <p class="text-[11px] text-gray-600 mt-1">📍 ${item.lokasi}</p>
                         <p class="text-[10px] text-gray-500 mt-0.5">🕒 ${item.waktu}</p>
-                        <a href="${item.detailUrl}" class="inline-block mt-2 text-[10px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-2.5 py-1 rounded transition-colors">Detail Agenda &rarr;</a>
+                        <a href="${item.detailUrl}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block mt-2.5 text-[11px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-3.5 py-1.5 rounded-xl transition-all shadow-xs">Detail Agenda &rarr;</a>
                     </div>
                 `);
             });

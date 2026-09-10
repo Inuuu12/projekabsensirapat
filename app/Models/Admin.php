@@ -22,6 +22,12 @@ class Admin extends Authenticatable
         'username',
         'nama',
         'password',
+        'role',
+        'id_dinas',
+        'id_kecamatan',
+        'email',
+        'nomor_hp',
+        'status',
     ];
 
     //sembunyikan password
@@ -33,4 +39,15 @@ class Admin extends Authenticatable
     protected $casts=[
         'password'=>'hashed',
     ];
+
+    public function dinas()
+    {
+        return $this->belongsTo(Dinas::class, 'id_dinas', 'id_dinas');
+    }
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class, 'id_kecamatan', 'id_kecamatan');
+    }
 }
+

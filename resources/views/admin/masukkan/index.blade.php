@@ -155,7 +155,7 @@
                                     @php
                                         $hasItemPhoto = !empty($item->foto)
                                             && $item->foto !== 'aduan/default.jpg'
-                                            && file_exists(public_path('storage/' . $item->foto));
+                                            && (file_exists(public_path('storage/' . $item->foto)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto));
                                         $itemPhotoUrl = $hasItemPhoto ? asset('storage/' . $item->foto) : '';
                                     @endphp
                                     <button
