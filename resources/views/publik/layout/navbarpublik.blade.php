@@ -4,8 +4,13 @@
     $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
 @endphp
 
+<<<<<<< HEAD
 <header class="bg-[#35635b] dark:bg-[#0f1c19] text-white sticky top-0 z-50 shadow-md border-b border-transparent dark:border-[#233a34] transition-colors duration-200">
     <div class="w-full max-w-[1680px] mx-auto px-3.5 sm:px-6 lg:px-8 2xl:px-10 flex items-center justify-between min-h-[4rem] sm:min-h-[5rem] py-2.5 sm:py-0">
+=======
+<header class="bg-[#35635b] dark:bg-[#0f1c19] text-white sticky top-0 z-[1001] shadow-md border-b border-transparent dark:border-[#233a34] transition-colors duration-200">
+    <div class="w-full max-w-[1680px] mx-auto px-3.5 sm:px-6 lg:px-8 2xl:px-10 flex items-center justify-between h-16 sm:h-20">
+>>>>>>> ec826fdb3dc91046a1878440e94a2ced1461970a
         
         <!-- Logo & Branding -->
         <a href="{{ route('publik.beranda') }}" class="flex items-center gap-2 sm:gap-3 group min-w-0 pr-2">

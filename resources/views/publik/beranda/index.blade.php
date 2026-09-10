@@ -286,11 +286,11 @@
                     </div>
 
                     <!-- Leaflet Container -->
-                    <div class="relative w-full h-[460px] md:h-[500px] rounded-xl overflow-hidden border border-gray-200/80 dark:border-[#284c43] shadow-inner flex-grow">
+                    <div class="relative z-10 isolate w-full h-[460px] md:h-[500px] rounded-xl overflow-hidden border border-gray-200/80 dark:border-[#284c43] shadow-inner flex-grow">
                         <div id="beranda-map" class="w-full h-full z-0 bg-[#e5e3df] dark:bg-[#121f1c]"></div>
 
                         <!-- Overlay Legend -->
-                        <div class="absolute bottom-3 left-3 z-[400] bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/80 dark:border-[#233a34] rounded-xl p-3 shadow-lg text-[11px] space-y-1.5 pointer-events-auto max-w-[245px]">
+                        <div class="absolute bottom-3 left-3 z-20 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/80 dark:border-[#233a34] rounded-xl p-3 shadow-lg text-[11px] space-y-1.5 pointer-events-auto max-w-[245px]">
                             <p class="font-bold text-gray-900 dark:text-white text-xs border-b border-gray-100 dark:border-[#284c43] pb-1">Keterangan Peta</p>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 rounded-full bg-[#10b981] border border-emerald-700 shrink-0"></span>
