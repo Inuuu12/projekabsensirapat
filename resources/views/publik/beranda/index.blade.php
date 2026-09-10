@@ -220,7 +220,7 @@
                                 <span></span>
                             @endif
                             <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="{{ $isBerlangsung ? 'bg-emerald-600 hover:bg-emerald-700 text-white font-bold' : ($isSelesai ? 'bg-gray-200 dark:bg-[#1a2925] text-gray-600 dark:text-gray-300 hover:bg-gray-300' : 'bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#1b3832] text-white dark:text-emerald-300') }} px-3.5 py-1 rounded-lg text-[10px] transition-colors">
-                                {{ $isBerlangsung ? 'Ikuti / Detail &rarr;' : 'Detail' }}
+                                {!! $isBerlangsung ? 'Ikuti / Detail &rarr;' : 'Detail' !!}
                             </a>
                         </div>
                     </div>
