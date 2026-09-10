@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminAgendaController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminAkunDinasController;
+use App\Http\Controllers\AdminAkunKecamatanController;
+use App\Http\Controllers\AdminDinasController;
 use App\Http\Controllers\AdminKehadiranController;
 use App\Http\Controllers\AdminKunjunganController;
 use App\Http\Controllers\AdminLaporanController;
@@ -119,6 +122,27 @@ Route::prefix('admin')->group(function () {
         Route::put('/masukkan/{id}/reply', [AdminMasukkanController::class, 'reply_Masukan'])->name('admin.masukkan.reply');
         Route::put('/masukkan/{id}', [AdminMasukkanController::class, 'update_Masukan'])->name('admin.masukkan.update');
         Route::delete('/masukkan/{id}', [AdminMasukkanController::class, 'hapus_Masukan'])->name('admin.masukkan.destroy');
+
+        // Master Data Dinas
+        Route::get('/dinas', [AdminDinasController::class, 'index'])->name('admin.dinas.index');
+        Route::get('/dinas/lihat', [AdminDinasController::class, 'index'])->name('admin.dinas.lihat');
+        Route::post('/dinas', [AdminDinasController::class, 'store'])->name('admin.dinas.store');
+        Route::put('/dinas/{id}', [AdminDinasController::class, 'update'])->name('admin.dinas.update');
+        Route::delete('/dinas/{id}', [AdminDinasController::class, 'destroy'])->name('admin.dinas.destroy');
+
+        // Manajemen Akun Dinas
+        Route::get('/akun/dinas', [AdminAkunDinasController::class, 'index'])->name('admin.akun.dinas.index');
+        Route::post('/akun/dinas', [AdminAkunDinasController::class, 'store'])->name('admin.akun.dinas.store');
+        Route::put('/akun/dinas/{id}', [AdminAkunDinasController::class, 'update'])->name('admin.akun.dinas.update');
+        Route::post('/akun/dinas/{id}/reset-password', [AdminAkunDinasController::class, 'resetPassword'])->name('admin.akun.dinas.reset-password');
+        Route::delete('/akun/dinas/{id}', [AdminAkunDinasController::class, 'destroy'])->name('admin.akun.dinas.destroy');
+
+        // Manajemen Akun Kecamatan
+        Route::get('/akun/kecamatan', [AdminAkunKecamatanController::class, 'index'])->name('admin.akun.kecamatan.index');
+        Route::post('/akun/kecamatan', [AdminAkunKecamatanController::class, 'store'])->name('admin.akun.kecamatan.store');
+        Route::put('/akun/kecamatan/{id}', [AdminAkunKecamatanController::class, 'update'])->name('admin.akun.kecamatan.update');
+        Route::post('/akun/kecamatan/{id}/reset-password', [AdminAkunKecamatanController::class, 'resetPassword'])->name('admin.akun.kecamatan.reset-password');
+        Route::delete('/akun/kecamatan/{id}', [AdminAkunKecamatanController::class, 'destroy'])->name('admin.akun.kecamatan.destroy');
     });
 });
 

@@ -18,7 +18,7 @@ body {
     margin: 0;
     color: #102f2b;
     background: var(--page);
-    font-family: "Instrument Sans", "Segoe UI", Arial, sans-serif;
+    font-family: "Poppins", "Instrument Sans", "Segoe UI", Arial, sans-serif;
 }
 
 button,

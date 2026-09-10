@@ -56,13 +56,13 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
     <style>
         html {
             scroll-behavior: smooth;
         }
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+        * {
+            font-family: 'Poppins', sans-serif !important;
         }
         /* Custom Scrollbars */
         ::-webkit-scrollbar { height: 6px; width: 6px; }
@@ -493,6 +493,25 @@
     @include('admin.layout.document-preview-modal')
 
     <script>
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                if (modal.parentElement && modal.parentElement !== document.body) {
+                    document.body.appendChild(modal);
+                }
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        }
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar-menu');
             const overlay = document.getElementById('sidebar-overlay');

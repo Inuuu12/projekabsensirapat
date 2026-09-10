@@ -74,15 +74,25 @@
                     <h3 class="text-xs font-bold text-gray-800 dark:text-gray-300 uppercase tracking-wide">{{ $tanggal }}</h3>
 
                     @foreach ($items as $item)
-                        <div class="bg-white dark:bg-[#152420] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl hover:-translate-y-0.5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-gray-200 dark:hover:border-[#284c43] transition-all duration-300">
+                        @php
+                            $isBerlangsung = $item->isBerlangsung();
+                            $isSelesai = $item->isSelesai();
+                        @endphp
+                        <div class="rounded-2xl p-4 border flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 relative overflow-hidden
+                            {{ $isBerlangsung 
+                                ? 'bg-gradient-to-br from-emerald-50/95 via-teal-50/90 to-white dark:from-[#132c25] dark:via-[#16382d] dark:to-[#12241f] border-2 border-emerald-500/90 dark:border-emerald-400/90 shadow-md ring-2 ring-emerald-500/20 dark:ring-emerald-400/30' 
+                                : ($isSelesai 
+                                    ? 'bg-gray-100/70 dark:bg-[#0d1715]/70 border-gray-200/80 dark:border-[#1a2b27] opacity-80 hover:opacity-100 shadow-xs' 
+                                    : 'bg-white dark:bg-[#152420] border-gray-100 dark:border-[#233a34] shadow-md hover:shadow-xl hover:-translate-y-0.5 hover:border-gray-200 dark:hover:border-[#284c43]') }}">
+                            
                             <div class="flex items-center space-x-4">
-                                <div class="bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43] rounded-xl px-4 py-3 text-center shrink-0 w-24">
+                                <div class="{{ $isBerlangsung ? 'bg-emerald-600 text-white font-bold' : ($isSelesai ? 'bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400' : 'bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43]') }} rounded-xl px-4 py-3 text-center shrink-0 w-24">
                                     <p class="text-xs font-bold">{{ substr((string) $item->waktu, 0, 5) ?: '-' }}</p>
                                     <p class="text-[10px] opacity-75">WIB</p>
                                 </div>
                                 <div class="space-y-1">
                                     <div class="flex items-center gap-2 flex-wrap">
-                                        <h4 class="font-bold text-sm text-gray-900 dark:text-white">{{ $item->nama_agenda }}</h4>
+                                        <h4 class="font-bold text-sm {{ $isBerlangsung ? 'text-emerald-950 dark:text-white' : ($isSelesai ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-white') }}">{{ $item->nama_agenda }}</h4>
                                         @if (strtolower((string) ($item->kategori_surat ?? 'internal')) === 'internal')
                                             <span class="inline-flex items-center text-[10px] font-bold text-blue-700 dark:text-sky-300 bg-blue-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-md border border-blue-100 dark:border-sky-800/40">Khusus Pegawai</span>
                                         @elseif (strtolower((string) ($item->kategori_surat ?? '')) === 'masuk')
@@ -91,18 +101,31 @@
                                             <span class="inline-flex items-center text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800/40">Pegawai & Tamu</span>
                                         @endif
                                     </div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-300">{{ $item->lokasi_display ?? '-' }}</p>
+                                    <p class="text-xs {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-300' }}">{{ $item->lokasi_display ?? '-' }}</p>
                                 </div>
                             </div>
                             <div class="flex items-center justify-between md:justify-end space-x-4 shrink-0">
                                 <div class="text-right">
-                                    <span class="bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43] text-[10px] font-bold px-3 py-1 rounded-full inline-block">{{ $item->status_label }}</span>
+                                    @if ($isBerlangsung)
+                                        <span class="bg-emerald-600 text-white font-extrabold text-[10px] px-3 py-1 rounded-full inline-flex items-center space-x-1.5 shadow-xs">
+                                            <span class="relative flex h-2 w-2">
+                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                                <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                            </span>
+                                            <span>Berlangsung</span>
+                                        </span>
+                                    @elseif ($isSelesai)
+                                        <span class="bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-300/60 dark:border-gray-700 font-medium text-[10px] px-3 py-1 rounded-full inline-block">Selesai</span>
+                                    @else
+                                        <span class="bg-ijo-sangatmuda dark:bg-[#0f1c19] text-ijo-tua dark:text-emerald-400 border border-transparent dark:border-[#284c43] text-[10px] font-bold px-3 py-1 rounded-full inline-block">{{ $item->status_label }}</span>
+                                    @endif
+
                                     @if (strtolower((string) ($item->kategori_surat ?? '')) !== 'masuk')
-                                        <p class="text-[10px] text-gray-400 dark:text-gray-400 mt-1">{{ $item->kuota ?? 0 }} Peserta</p>
+                                        <p class="text-[10px] {{ $isSelesai ? 'text-gray-400 dark:text-gray-500' : 'text-gray-400 dark:text-gray-400' }} mt-1">{{ $item->kuota ?? 0 }} Peserta</p>
                                     @endif
                                 </div>
-                                <a href="{{ route('publik.agenda.detail', $item->id_agenda) }}" class="bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors">
-                                    Detail &rsaquo;
+                                <a href="{{ route('publik.agenda.detail', $item->id_agenda) }}" class="{{ $isBerlangsung ? 'bg-emerald-600 hover:bg-emerald-700 text-white font-bold' : ($isSelesai ? 'bg-gray-200 dark:bg-[#1a2925] text-gray-600 dark:text-gray-300 hover:bg-gray-300' : 'bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white') }} text-xs font-bold px-4 py-2 rounded-xl transition-colors">
+                                    {{ $isBerlangsung ? 'Ikuti &rsaquo;' : 'Detail &rsaquo;' }}
                                 </a>
                             </div>
                         </div>
