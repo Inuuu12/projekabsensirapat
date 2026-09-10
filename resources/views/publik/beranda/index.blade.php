@@ -667,7 +667,7 @@
             });
 
             // Fetch Administrative GeoJSON of Kabupaten Bogor (40 Kecamatan)
-            fetch('/admin_kec.json')
+            fetch('{{ asset("admin_kec.json") }}')
                 .then(res => res.json())
                 .then(data => {
                     geojsonLayer = L.geoJSON(data, {
@@ -758,7 +758,7 @@
             map.on('zoomend', updateAllMarkerSizes);
 
             // Load 41 Government Points (Kantor Bupati & 40 Kantor Camat) from /app_md_mapgovpoint.csv
-            fetch('/app_md_mapgovpoint.csv')
+            fetch('{{ asset("app_md_mapgovpoint.csv") }}')
                 .then(res => res.text())
                 .then(csvText => {
                     const lines = csvText.split('\n');
