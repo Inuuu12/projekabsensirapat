@@ -10,7 +10,7 @@
         <!-- MAIN FOOTER CONTENT (GRID 4 KOLOM) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
             
-            <!-- Kolom 1: Logo, Deskripsi & Sosmed (4 Cols) -->
+            <!-- Kolom 1: Logo, Deskripsi & Sosmed 4 Cols -->
             <div class="lg:col-span-4 space-y-4">
                 <div class="flex items-center gap-3">
                     <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="w-10 h-10 md:w-11 md:h-11 object-contain shrink-0 drop-shadow-sm">
