@@ -92,72 +92,9 @@
 
                 <!-- Pihak yang Dituju -->
                 <div>
-                    <label class="block text-xs md:text-sm font-bold text-gray-900 dark:text-white mb-3">Pihak yang Dituju *</label>
-                    <input type="hidden" name="nama_pegawai" id="input_nama_pegawai" value="{{ old('nama_pegawai', old('nama_pejabat', $featuredPejabat->first()['nama'] ?? '')) }}" required>
-                    <input type="hidden" name="nama_pejabat" id="input_nama_pejabat" value="{{ old('nama_pegawai', old('nama_pejabat', $featuredPejabat->first()['nama'] ?? '')) }}">
-
-                    <div class="space-y-3" id="pejabat-featured-list">
-                        @forelse ($featuredPejabat as $index => $pejabat)
-                            @php
-                                $isSelected = old('nama_pegawai', old('nama_pejabat', $featuredPejabat->first()['nama'] ?? '')) === $pejabat['nama'];
-                            @endphp
-                            <div type="button" 
-                                 class="pejabat-card cursor-pointer rounded-2xl border p-4 flex items-center justify-between transition-all {{ $isSelected ? 'border-2 border-ijo-tua bg-[#E8F4F0] dark:bg-[#1a332d] dark:border-emerald-500 shadow-xs' : 'border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] hover:bg-gray-50 dark:hover:bg-white/5' }}"
-                                 data-nama="{{ $pejabat['nama'] }}">
-                                <div class="flex items-center space-x-3.5">
-                                    <div class="w-11 h-11 rounded-full {{ $pejabat['color'] }} font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
-                                        {{ $initial($pejabat['nama']) }}
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900 dark:text-white text-xs md:text-sm leading-snug">{{ $pejabat['nama'] }}</h4>
-                                        <p class="text-[11px] md:text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $pejabat['jabatan'] }}</p>
-                                    </div>
-                                </div>
-                                <div class="check-icon shrink-0 ml-2 {{ $isSelected ? '' : 'hidden' }}">
-                                    <div class="w-6 h-6 rounded-full bg-ijo-tua dark:bg-[#107050] text-white flex items-center justify-center text-xs font-bold shadow-xs">
-                                        ✓
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="rounded-2xl border border-gray-200 dark:border-[#284c43] p-4 text-xs font-medium text-gray-500 dark:text-gray-400 text-center bg-white dark:bg-[#0f1c19]">
-                                Belum ada data pegawai di database.
-                            </div>
-                        @endforelse
-                    </div>
-
-                    <!-- Extra Pejabat (Hidden by default, expandable) -->
-                    @if ($extraPejabat->isNotEmpty())
-                        <div class="space-y-3 mt-3 hidden" id="pejabat-extra-list">
-                            @foreach ($extraPejabat as $pejabat)
-                                @php
-                                    $isSelected = old('nama_pejabat') === $pejabat['nama'];
-                                @endphp
-                                <div type="button" 
-                                     class="pejabat-card cursor-pointer rounded-2xl border p-4 flex items-center justify-between transition-all {{ $isSelected ? 'border-2 border-ijo-tua bg-[#E8F4F0] dark:bg-[#1a332d] dark:border-emerald-500 shadow-xs' : 'border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] hover:bg-gray-50 dark:hover:bg-white/5' }}"
-                                     data-nama="{{ $pejabat['nama'] }}">
-                                    <div class="flex items-center space-x-3.5">
-                                        <div class="w-11 h-11 rounded-full {{ $pejabat['color'] }} font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs">
-                                            {{ $initial($pejabat['nama']) }}
-                                        </div>
-                                        <div>
-                                            <h4 class="font-bold text-gray-900 dark:text-white text-xs md:text-sm leading-snug">{{ $pejabat['nama'] }}</h4>
-                                            <p class="text-[11px] md:text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $pejabat['jabatan'] }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="check-icon shrink-0 ml-2 {{ $isSelected ? '' : 'hidden' }}">
-                                        <div class="w-6 h-6 rounded-full bg-ijo-tua dark:bg-[#107050] text-white flex items-center justify-center text-xs font-bold shadow-xs">
-                                            ✓
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <button type="button" id="btn-toggle-pegawai" class="w-full text-center text-xs md:text-sm font-bold text-ijo-semitua dark:text-emerald-400 hover:underline mt-3 flex items-center justify-center space-x-1 py-1 cursor-pointer">
-                            <span id="toggle-text">Lihat semua pegawai</span>
-                        </button>
-                    @endif
+                    <label class="block text-xs md:text-sm font-bold text-gray-900 dark:text-gray-200 mb-1.5">Pihak / Pejabat yang Dituju *</label>
+                    <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai', old('nama_pejabat')) }}" placeholder="Contoh: Kepala Bidang / Ibu Anita / Diskominfo" required
+                           class="w-full bg-[#F3F2ED] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] rounded-2xl p-4 text-xs md:text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-ijo-tua focus:bg-white dark:focus:bg-[#152420] transition-all">
                 </div>
 
                 <!-- Nama Lengkap Tamu -->
@@ -206,48 +143,5 @@
 
     @include('publik.layout.footer')
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const inputPegawai = document.getElementById('input_nama_pegawai');
-            const inputPejabat = document.getElementById('input_nama_pejabat');
-            const allCards = document.querySelectorAll('.pejabat-card');
-            const btnToggle = document.getElementById('btn-toggle-pegawai');
-            const extraList = document.getElementById('pejabat-extra-list');
-            const toggleText = document.getElementById('toggle-text');
-
-            allCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const nama = card.dataset.nama;
-                    if (inputPegawai) inputPegawai.value = nama;
-                    if (inputPejabat) inputPejabat.value = nama;
-
-                    allCards.forEach(c => {
-                        c.classList.remove('border-2', 'border-ijo-tua', 'bg-[#E8F4F0]', 'dark:bg-[#1a332d]', 'dark:border-emerald-500', 'shadow-xs');
-                        c.classList.add('border-gray-200', 'dark:border-[#284c43]', 'bg-white', 'dark:bg-[#0f1c19]');
-                        const check = c.querySelector('.check-icon');
-                        if (check) check.classList.add('hidden');
-                    });
-
-                    card.classList.remove('border-gray-200', 'dark:border-[#284c43]', 'bg-white', 'dark:bg-[#0f1c19]');
-                    card.classList.add('border-2', 'border-ijo-tua', 'bg-[#E8F4F0]', 'dark:bg-[#1a332d]', 'dark:border-emerald-500', 'shadow-xs');
-                    const check = card.querySelector('.check-icon');
-                    if (check) check.classList.remove('hidden');
-                });
-            });
-
-            if (btnToggle && extraList) {
-                btnToggle.addEventListener('click', () => {
-                    const isHidden = extraList.classList.contains('hidden');
-                    if (isHidden) {
-                        extraList.classList.remove('hidden');
-                        if (toggleText) toggleText.textContent = 'Sembunyikan pegawai lain';
-                    } else {
-                        extraList.classList.add('hidden');
-                        if (toggleText) toggleText.textContent = 'Lihat semua pegawai';
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>

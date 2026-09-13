@@ -155,7 +155,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'foto' => $validated['foto'] ?? null,
             'isi_aduan'    => $validated['isi_aduan'],
-            'status'       => 'Pending',
+            'status'       => 'Menunggu',
             'created_at'   => now(),
             'updated_at'   => now(),
         ]);

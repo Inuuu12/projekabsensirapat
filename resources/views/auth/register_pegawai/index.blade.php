@@ -520,6 +520,7 @@
         const faceStatus = document.getElementById('face-status');
         const btnCaptureFace = document.getElementById('btn-capture-face');
         const registerFaceGuideFrame = document.getElementById('register-face-guide-frame');
+        const registerFaceGuideBox = document.getElementById('register-face-guide-box');
 
         const faceDescriptorInput = document.getElementById('face_descriptor');
         const fotoWajahInput = document.getElementById('foto_wajah');
