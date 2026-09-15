@@ -158,7 +158,7 @@ class AdminDashboardController extends Controller
                 'waktu' => $item->created_at,
             ]))
             ->sortByDesc('waktu')
-            ->take(5)
+            ->take(4)
             ->values();
 
         return view('admin.dashboard.index', compact(

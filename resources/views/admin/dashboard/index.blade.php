@@ -247,178 +247,69 @@
                 </div>
             </div>
 
-            <!-- Card C: Aktivitas Terbaru -->
-            <section class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-6 shadow-xs transition-colors">
-                <h2 class="text-base sm:text-lg font-bold text-gray-800 dark:text-white mb-1">Aktivitas Terbaru</h2>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-5">Log pencatatan data pada sistem</p>
-                <div class="space-y-4">
-                    @forelse ($aktivitasTerbaru as $aktivitas)
-                        <div class="border-b border-gray-50 dark:border-[#233a34] pb-3 last:border-0 last:pb-0">
-                            <p class="text-xs sm:text-sm font-bold text-gray-800 dark:text-white">{{ $aktivitas['judul'] }}</p>
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{{ $aktivitas['deskripsi'] }}</p>
-                            <span class="inline-block mt-0.5 text-[10px] text-gray-400 dark:text-gray-500 font-medium">{{ optional($aktivitas['waktu'])->diffForHumans() }}</span>
-                        </div>
-                    @empty
-                        <p class="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 py-4 text-center">Belum ada aktivitas terbaru.</p>
-                    @endforelse
-                </div>
-            </section>
-
         </div>
 
     </div>
+
+    <!-- 3. Aktivitas Terbaru (Dilebarkan Full-Width Grid) -->
+    <section class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 sm:p-6 shadow-xs transition-colors">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-4 border-b border-gray-100 dark:border-[#233a34]">
+            <div>
+                <h2 class="text-base sm:text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                    <span>Aktivitas Terbaru</span>
+                </h2>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Log pencatatan dan histori aktivitas data pada sistem</p>
+            </div>
+            <span class="text-[11px] font-semibold text-[#35635b] dark:text-emerald-400 bg-[#35635b]/10 dark:bg-emerald-400/10 px-2.5 py-1 rounded-full w-fit">
+                Realtime Log
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            @forelse ($aktivitasTerbaru as $aktivitas)
+                @php
+                    $judul = strtolower($aktivitas['judul'] ?? '');
+                    $isAgenda = str_contains($judul, 'agenda');
+                    $isKunjungan = str_contains($judul, 'kunjungan');
+                    $isAduan = str_contains($judul, 'aduan') || str_contains($judul, 'masukan');
+                    
+                    $iconBg = $isAgenda 
+                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-800/40' 
+                        : ($isKunjungan 
+                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/80 dark:text-indigo-300 border-indigo-200/60 dark:border-indigo-800/40' 
+                            : 'bg-amber-50 text-amber-600 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200/60 dark:border-amber-800/40');
+                @endphp
+                <div class="flex items-start gap-3 rounded-xl bg-[#f8faf9] dark:bg-[#0f1c19] border border-gray-100 dark:border-[#284c43]/50 p-3.5 transition-all hover:border-[#35635b]/40 hover:shadow-xs group">
+                    <div class="h-9 w-9 shrink-0 rounded-xl flex items-center justify-center border {{ $iconBg }}">
+                        @if ($isAgenda)
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        @elseif ($isKunjungan)
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        @else
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                        @endif
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-xs font-bold text-gray-800 dark:text-white leading-snug truncate">{{ $aktivitas['judul'] }}</p>
+                        <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-tight">{{ $aktivitas['deskripsi'] }}</p>
+                        <span class="inline-block mt-1.5 text-[10px] text-gray-400 dark:text-gray-500 font-medium">🕒 {{ optional($aktivitas['waktu'])->diffForHumans() }}</span>
+                    </div>
+                </div>
+            @empty
+                <div class="col-span-full py-6 text-center text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400">
+                    Belum ada aktivitas terbaru.
+                </div>
+            @endforelse
+        </div>
+    </section>
 
 </div>
 
 @push('scripts')
 <style>
-    /* ========================================================
-       PREMIUM APEXCHARTS TOOLBAR STYLING (SIRAPI THEME)
-       ======================================================== */
-    #monthly-agenda-chart .apexcharts-toolbar {
-        z-index: 10 !important;
-        top: 2px !important;
-        right: 12px !important;
-        padding: 3px 6px !important;
-        border-radius: 10px !important;
-        background: #ffffff !important;
-        border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 3px !important;
-    }
-    .dark #monthly-agenda-chart .apexcharts-toolbar {
-        background: #152420 !important;
-        border-color: #233a34 !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
-    }
-
-    /* Individual tool buttons */
-    #monthly-agenda-chart .apexcharts-toolbar > div {
-        width: 26px !important;
-        height: 26px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        border-radius: 7px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: transparent !important;
-        border: 1px solid transparent !important;
-        transition: all 0.18s ease !important;
-        cursor: pointer !important;
-    }
-
-    /* SVG icon default styles (all toolbar icons are stroke-based: +, -, zoom, pan, reset) */
-    #monthly-agenda-chart .apexcharts-toolbar > div svg {
-        fill: none !important;
-        stroke: #64748b !important;
-        color: #64748b !important;
-        width: 14px !important;
-        height: 14px !important;
-        transition: all 0.18s ease !important;
-    }
-    .dark #monthly-agenda-chart .apexcharts-toolbar > div svg {
-        fill: none !important;
-        stroke: #9ca3af !important;
-        color: #9ca3af !important;
-    }
-
-    /* Hover state */
-    #monthly-agenda-chart .apexcharts-toolbar > div:hover {
-        background: #ecfdf5 !important;
-        border-color: #a7f3d0 !important;
-    }
-    .dark #monthly-agenda-chart .apexcharts-toolbar > div:hover {
-        background: #1b3832 !important;
-        border-color: #284c43 !important;
-    }
-    #monthly-agenda-chart .apexcharts-toolbar > div:hover svg {
-        fill: none !important;
-        stroke: #059669 !important;
-        color: #059669 !important;
-        transform: scale(1.1) !important;
-    }
-    .dark #monthly-agenda-chart .apexcharts-toolbar > div:hover svg {
-        fill: none !important;
-        stroke: #34d399 !important;
-        color: #34d399 !important;
-    }
-
-    /* Active / Selected tool state (Overrides the harsh ApexCharts blue #008FFB) */
-    #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected,
-    #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected:hover,
-    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-pan-icon.apexcharts-selected,
-    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-zoom-icon.apexcharts-selected {
-        background: #d1fae5 !important;
-        border-color: #6ee7b7 !important;
-        color: #047857 !important;
-    }
-    .dark #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected,
-    .dark #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected:hover,
-    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-pan-icon.apexcharts-selected,
-    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-zoom-icon.apexcharts-selected {
-        background: #1b3832 !important;
-        border-color: #059669 !important;
-        color: #34d399 !important;
-    }
-    #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg,
-    #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg path,
-    #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg circle,
-    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-pan-icon.apexcharts-selected svg,
-    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-zoom-icon.apexcharts-selected svg,
-    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-pan-icon.apexcharts-selected svg path,
-    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-zoom-icon.apexcharts-selected svg path,
-    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-zoom-icon.apexcharts-selected svg circle {
-        fill: none !important;
-        stroke: #047857 !important;
-        color: #047857 !important;
-    }
-    .dark #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg,
-    .dark #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg path,
-    .dark #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg circle,
-    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-pan-icon.apexcharts-selected svg,
-    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-zoom-icon.apexcharts-selected svg,
-    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-pan-icon.apexcharts-selected svg path,
-    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-zoom-icon.apexcharts-selected svg path,
-    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-zoom-icon.apexcharts-selected svg circle {
-        fill: none !important;
-        stroke: #34d399 !important;
-        color: #34d399 !important;
-    }
-
-    /* Pastikan tombol reset zoom selalu tampil di toolbar (jangan disembunyikan oleh .apexcharts-hide bawaan ApexCharts) */
-    #monthly-agenda-chart .apexcharts-reset-icon,
-    #monthly-agenda-chart .apexcharts-reset-icon.apexcharts-hide {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-
-    /* Reset button specific SVG styling - keeps circular restart arrow crisp and clean */
-    #monthly-agenda-chart .apexcharts-reset-icon svg {
-        fill: none !important;
-        stroke: #64748b !important;
-        color: #64748b !important;
-        stroke-width: 2.3 !important;
-        stroke-linecap: round !important;
-        stroke-linejoin: round !important;
-    }
-    .dark #monthly-agenda-chart .apexcharts-reset-icon svg {
-        fill: none !important;
-        stroke: #9ca3af !important;
-        color: #9ca3af !important;
-    }
-    #monthly-agenda-chart .apexcharts-reset-icon:hover svg {
-        fill: none !important;
-        stroke: #059669 !important;
-        color: #059669 !important;
-    }
-    .dark #monthly-agenda-chart .apexcharts-reset-icon:hover svg {
-        fill: none !important;
-        stroke: #34d399 !important;
-        color: #34d399 !important;
+    /* Clean custom styling for monthly agenda chart */
+    #monthly-agenda-chart .apexcharts-canvas {
+        margin: 0 auto;
     }
 </style>
 <!-- Load ApexCharts CDN -->
@@ -433,24 +324,61 @@
         return document.documentElement.classList.contains('dark');
     }
 
-    function resetChartZoom() {
-        const icon = document.querySelector('#monthly-agenda-chart .apexcharts-reset-icon');
-        if (icon) {
-            icon.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    function getCategoryConfig(cat) {
+        switch(cat) {
+            case 'internal':
+                return {
+                    label: 'Surat Internal',
+                    color: '#10b981' // Hijau Emerald
+                };
+            case 'masuk':
+                return {
+                    label: 'Surat Masuk',
+                    color: '#0ea5e9' // Biru Sky / Cyan
+                };
+            case 'keluar':
+                return {
+                    label: 'Surat Keluar',
+                    color: '#8b5cf6' // Ungu / Violet
+                };
+            default:
+                return {
+                    label: 'Semua Agenda',
+                    color: '#059669' // Hijau Deep Emerald Diskominfo
+                };
         }
-        if (splineChart) {
-            splineChart.updateOptions({
-                xaxis: {
-                    min: undefined,
-                    max: undefined
-                }
-            });
-        }
+    }
+
+    function getCategoryColor(cat) {
+        return getCategoryConfig(cat).color;
+    }
+
+    function getChartFillOptions(color) {
+        const isDark = isDarkMode();
+        return {
+            type: 'gradient',
+            gradient: {
+                shade: isDark ? 'dark' : 'light',
+                type: 'vertical',
+                shadeIntensity: 0.5,
+                inverseColors: false,
+                opacityFrom: 0.55,
+                opacityTo: 0.02,
+                stops: [0, 85, 100],
+                colorStops: [
+                    { offset: 0, color: color, opacity: 0.55 },
+                    { offset: 75, color: color, opacity: 0.18 },
+                    { offset: 100, color: color, opacity: 0.01 }
+                ]
+            }
+        };
     }
 
     function initSplineChart() {
         const isDark = isDarkMode();
         const activeSeriesData = chartPayload.series[currentCategory] || chartPayload.series.semua;
+        const conf = getCategoryConfig(currentCategory);
+        const color = conf.color;
 
         const options = {
             chart: {
@@ -458,56 +386,43 @@
                 type: 'area',
                 height: 320,
                 toolbar: {
-                    show: true,
-                    offsetX: 0,
-                    offsetY: 2,
-                    tools: {
-                        download: false,
-                        selection: false,
-                        zoom: true,
-                        zoomin: true,
-                        zoomout: true,
-                        pan: true,
-                        reset: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.8 11.2L9.2 7.6L13.4 4.6A8.2 8.2 0 1 1 5.4 9.2"/></svg>'
-                    },
-                    autoSelected: 'zoom'
+                    show: false
                 },
                 zoom: {
-                    enabled: true,
-                    type: 'x',
-                    autoScaleYaxis: true
+                    enabled: false
+                },
+                selection: {
+                    enabled: false
                 },
                 fontFamily: 'Poppins, sans-serif',
                 background: 'transparent',
                 animations: {
                     enabled: true,
                     easing: 'easeinout',
-                    speed: 600,
+                    speed: 500,
                 }
             },
             series: [{
-                name: getCategoryLabel(currentCategory),
+                name: conf.label,
                 data: activeSeriesData
             }],
             stroke: {
                 curve: 'smooth',
-                width: 3,
-                colors: [getCategoryColor(currentCategory)]
+                width: 3.5,
+                colors: [color]
             },
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    shadeIntensity: 1,
-                    opacityFrom: 0.45,
-                    opacityTo: 0.05,
-                    stops: [0, 90, 100],
-                    colorStops: [
-                        { offset: 0, color: getCategoryColor(currentCategory), opacity: 0.45 },
-                        { offset: 100, color: getCategoryColor(currentCategory), opacity: 0.0 }
-                    ]
-                }
+            fill: getChartFillOptions(color),
+            colors: [color],
+            markers: {
+                size: 0,
+                hover: {
+                    size: 6,
+                    sizeOffset: 3
+                },
+                colors: [color],
+                strokeColors: isDark ? '#152420' : '#ffffff',
+                strokeWidth: 2
             },
-            colors: [getCategoryColor(currentCategory)],
             xaxis: {
                 categories: chartPayload.bulanLabels,
                 axisBorder: { show: false },
@@ -543,6 +458,9 @@
                 enabled: false
             },
             tooltip: {
+                enabled: true,
+                shared: false,
+                intersect: false,
                 theme: isDark ? 'dark' : 'light',
                 x: {
                     formatter: function(val, opts) {
@@ -554,6 +472,9 @@
                     formatter: function(val) {
                         return val + ' Agenda';
                     }
+                },
+                marker: {
+                    show: true
                 }
             }
         };
@@ -563,24 +484,6 @@
             container.innerHTML = '';
             splineChart = new ApexCharts(container, options);
             splineChart.render();
-
-            container.addEventListener('dblclick', function(e) {
-                if (e.target.closest('.apexcharts-toolbar')) return;
-                resetChartZoom();
-            });
-
-            // Pastikan klik tombol reset zoom selalu mereset tampilan grafik
-            container.addEventListener('click', function(e) {
-                const resetBtn = e.target.closest('.apexcharts-reset-icon');
-                if (resetBtn && splineChart) {
-                    splineChart.updateOptions({
-                        xaxis: {
-                            min: undefined,
-                            max: undefined
-                        }
-                    });
-                }
-            });
         }
     }
 
@@ -662,55 +565,43 @@
     }
 
     function getCategoryLabel(cat) {
-        switch(cat) {
-            case 'internal': return 'Surat Internal';
-            case 'masuk': return 'Surat Masuk';
-            case 'keluar': return 'Surat Keluar';
-            default: return 'Semua Agenda';
-        }
-    }
-
-    function getCategoryColor(cat) {
-        switch(cat) {
-            case 'internal': return '#10b981';
-            case 'masuk': return '#0ea5e9';
-            case 'keluar': return '#8b5cf6';
-            default: return '#10b981';
-        }
+        return getCategoryConfig(cat).label;
     }
 
     function switchChartCategory(cat) {
         currentCategory = cat;
-        resetChartZoom();
-        
+        const conf = getCategoryConfig(cat);
+        const color = conf.color;
+
         // Update styling of pills
         document.querySelectorAll('.cat-pill').forEach(btn => {
-            btn.classList.remove('bg-white', 'dark:bg-[#1b3832]', 'text-[#35635b]', 'dark:text-emerald-300', 'shadow-xs', 'font-bold');
-            btn.classList.add('font-medium', 'text-gray-600', 'dark:text-gray-400');
+            btn.className = 'cat-pill rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all cursor-pointer';
         });
 
         const activeBtn = document.getElementById('btn-cat-' + cat);
         if (activeBtn) {
-            activeBtn.classList.remove('font-medium', 'text-gray-600', 'dark:text-gray-400');
-            activeBtn.classList.add('bg-white', 'dark:bg-[#1b3832]', 'text-[#35635b]', 'dark:text-emerald-300', 'shadow-xs', 'font-bold');
+            if (cat === 'internal') {
+                activeBtn.className = 'cat-pill rounded-lg px-2.5 py-1 text-xs font-bold transition-all bg-emerald-500 text-white shadow-xs cursor-pointer';
+            } else if (cat === 'masuk') {
+                activeBtn.className = 'cat-pill rounded-lg px-2.5 py-1 text-xs font-bold transition-all bg-sky-500 text-white shadow-xs cursor-pointer';
+            } else if (cat === 'keluar') {
+                activeBtn.className = 'cat-pill rounded-lg px-2.5 py-1 text-xs font-bold transition-all bg-purple-500 text-white shadow-xs cursor-pointer';
+            } else {
+                activeBtn.className = 'cat-pill rounded-lg px-2.5 py-1 text-xs font-bold transition-all bg-emerald-600 text-white shadow-xs cursor-pointer';
+            }
         }
 
         const data = chartPayload.series[cat] || chartPayload.series.semua;
-        const color = getCategoryColor(cat);
 
         if (splineChart) {
             splineChart.updateOptions({
                 stroke: { colors: [color] },
                 colors: [color],
-                fill: {
-                    colorStops: [
-                        { offset: 0, color: color, opacity: 0.45 },
-                        { offset: 100, color: color, opacity: 0.0 }
-                    ]
-                }
+                markers: { colors: [color] },
+                fill: getChartFillOptions(color)
             });
             splineChart.updateSeries([{
-                name: getCategoryLabel(cat),
+                name: conf.label,
                 data: data
             }]);
         }
