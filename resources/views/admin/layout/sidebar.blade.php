@@ -11,69 +11,68 @@
 <!-- Mobile Overlay Backdrop -->
 <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity"></div>
 
-<!-- Sidebar Container -->
-<aside id="sidebar-menu" class="fixed md:static inset-y-0 left-0 z-50 w-72 md:w-[270px] h-screen bg-[#35635b] dark:bg-[#0f1c19] dark:border-r dark:border-[#233a34] text-white flex flex-col justify-between font-sans shadow-2xl md:shadow-[6px_0_30px_rgba(0,0,0,0.22)] select-none transform -translate-x-full md:translate-x-0 transition-all duration-300 ease-in-out">
+<!-- Sidebar Container (White Theme with Green Text & Icons) -->
+<aside id="sidebar-menu" class="fixed md:static inset-y-0 left-0 z-50 w-72 md:w-[270px] h-screen bg-white dark:bg-[#0f1c19] border-r border-gray-200/80 dark:border-[#233a34] text-gray-800 dark:text-white flex flex-col justify-between font-sans shadow-xl md:shadow-[6px_0_30px_rgba(0,0,0,0.06)] select-none transform -translate-x-full md:translate-x-0 transition-all duration-300 ease-in-out">
     
     <div>
-        <!-- Logo & Header (Matching Reference Photo) -->
-        <div class="px-4 py-4 flex items-center gap-3">
+        <!-- Logo & Header -->
+        <div class="px-5 py-4 flex items-center gap-3 border-b border-gray-100 dark:border-[#233a34]">
             <div class="w-8 h-9 flex items-center justify-center shrink-0">
-                <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kab. Bogor" class="w-full h-full object-contain drop-shadow">
+                <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kab. Bogor" class="w-full h-full object-contain drop-shadow-xs">
             </div>
             <div class="min-w-0 flex-1">
-                <h1 class="font-black text-xl leading-none tracking-wide text-white">RAPID</h1>
-                <p class="text-[8px] font-bold text-gray-300/90 dark:text-gray-400 tracking-wider uppercase mt-1 leading-none whitespace-nowrap">RAPAT DAN PRESENSI INTEGRASI DASHBOARD</p>
+                <h1 class="font-black text-xl leading-none tracking-wide text-[#35635b] dark:text-white">RAPID</h1>
+                <p class="text-[8px] font-bold text-gray-400 dark:text-gray-400 tracking-wider uppercase mt-1 leading-none whitespace-nowrap">RAPAT DAN PRESENSI INTEGRASI DASHBOARD</p>
             </div>
             <!-- Mobile Close Button -->
-            <button onclick="toggleSidebar()" class="md:hidden ml-auto w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white focus:outline-none shrink-0 transition-colors cursor-pointer" title="Tutup Menu">
+            <button onclick="toggleSidebar()" class="md:hidden ml-auto w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 flex items-center justify-center text-[#35635b] dark:text-white focus:outline-none shrink-0 transition-colors cursor-pointer" title="Tutup Menu">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
 
         <!-- Navigation Links -->
-        <nav class="mt-6 px-3 space-y-1 text-sm font-medium">
+        <nav class="mt-4 px-3 space-y-1.5 text-sm font-medium">
             
             <!-- Dashboard -->
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }}">
-                <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.dashboard') ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }}">
+                <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.dashboard') ? 'text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-emerald-400/80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 <span>Dashboard</span>
             </a>
 
             <!-- Agenda Submenu -->
             @php $isAgendaActive = request()->routeIs('admin.agenda.*') || request()->routeIs('admin.ruang.*'); @endphp
             <div class="space-y-1">
-                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isAgendaActive ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
+                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isAgendaActive ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
                     <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-3 {{ $isAgendaActive ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <svg class="w-5 h-5 mr-3 {{ $isAgendaActive ? 'text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-emerald-400/80' }}" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <rect x="3" y="4" width="18" height="17" rx="3.5" stroke-width="2"/>
                             <path stroke-linecap="round" stroke-width="2.5" d="M8 2v4M16 2v4M3 9h18"/>
                             <path stroke-linecap="round" stroke-width="2.5" d="M7 13h2M11 13h2M15 13h2M7 17h2M11 17h2M15 17h2"/>
                         </svg>
                         <span>Agenda</span>
                     </div>
-                    <svg class="w-4 h-4 opacity-80 arrow-icon transition-transform {{ $isAgendaActive ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <svg class="w-4 h-4 arrow-icon transition-transform {{ $isAgendaActive ? 'rotate-180 text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
                 
-                <div class="{{ $isAgendaActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
-                    <a href="{{ route('admin.agenda.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.agenda.lihat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Daftar Agenda</a>
-                    <a href="{{ route('admin.agenda.riwayat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.agenda.riwayat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Riwayat Agenda</a>
-                    <a href="{{ route('admin.ruang.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.ruang.lihat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Daftar Ruangan</a>
+                <div class="{{ $isAgendaActive ? 'flex' : 'hidden' }} flex-col pl-11 pr-4 py-1 space-y-1">
+                    <a href="{{ route('admin.agenda.lihat') }}" class="block text-xs font-semibold py-2 px-3 rounded-lg transition {{ request()->routeIs('admin.agenda.lihat') ? 'bg-[#35635b]/15 dark:bg-[#23423b] font-bold text-[#35635b] dark:text-emerald-300' : 'text-[#35635b]/80 dark:text-gray-400 hover:bg-[#35635b]/10 dark:hover:bg-[#152420] dark:hover:text-white' }}">Daftar Agenda</a>
+                    <a href="{{ route('admin.ruang.lihat') }}" class="block text-xs font-semibold py-2 px-3 rounded-lg transition {{ request()->routeIs('admin.ruang.lihat') ? 'bg-[#35635b]/15 dark:bg-[#23423b] font-bold text-[#35635b] dark:text-emerald-300' : 'text-[#35635b]/80 dark:text-gray-400 hover:bg-[#35635b]/10 dark:hover:bg-[#152420] dark:hover:text-white' }}">Daftar Ruangan</a>
                 </div>
             </div>
 
             <!-- Data Pengguna Submenu -->
             @php $isUserActive = request()->routeIs('admin.pegawai.*') || request()->routeIs('admin.tamu.*'); @endphp
             <div class="space-y-1">
-                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isUserActive ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
+                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isUserActive ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
                     <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-3 {{ $isUserActive ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <svg class="w-5 h-5 mr-3 {{ $isUserActive ? 'text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-emerald-400/80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                         <span>Data Pengguna</span>
                     </div>
-                    <svg class="w-4 h-4 opacity-80 arrow-icon transition-transform {{ $isUserActive ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <svg class="w-4 h-4 arrow-icon transition-transform {{ $isUserActive ? 'rotate-180 text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
 
-                <div class="{{ $isUserActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
-                    <a href="{{ route('admin.pegawai.lihat') }}" class="flex items-center justify-between text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.pegawai.lihat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">
+                <div class="{{ $isUserActive ? 'flex' : 'hidden' }} flex-col pl-11 pr-4 py-1 space-y-1">
+                    <a href="{{ route('admin.pegawai.lihat') }}" class="flex items-center justify-between text-xs font-semibold py-2 px-3 rounded-lg transition {{ request()->routeIs('admin.pegawai.lihat') ? 'bg-[#35635b]/15 dark:bg-[#23423b] font-bold text-[#35635b] dark:text-emerald-300' : 'text-[#35635b]/80 dark:text-gray-400 hover:bg-[#35635b]/10 dark:hover:bg-[#152420] dark:hover:text-white' }}">
                         <span>Data Pegawai</span>
                         @php
                             $pendingPegawaiCount = \App\Models\Pegawai::where('status_verifikasi', 'pending')->count();
@@ -82,73 +81,62 @@
                             <span class="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-white bg-amber-500 rounded-full shadow-xs">{{ $pendingPegawaiCount }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('admin.tamu.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.tamu.lihat') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Data Tamu</a>
+                    <a href="{{ route('admin.tamu.lihat') }}" class="block text-xs font-semibold py-2 px-3 rounded-lg transition {{ request()->routeIs('admin.tamu.lihat') ? 'bg-[#35635b]/15 dark:bg-[#23423b] font-bold text-[#35635b] dark:text-emerald-300' : 'text-[#35635b]/80 dark:text-gray-400 hover:bg-[#35635b]/10 dark:hover:bg-[#152420] dark:hover:text-white' }}">Data Tamu</a>
                 </div>
             </div>
 
-            <!-- Master Data Submenu (Dinas & Kunjungan) -->
-            @php $isMasterActive = request()->routeIs('admin.dinas.*') || request()->routeIs('admin.kunjungan.*'); @endphp
-            <div class="space-y-1">
-                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isMasterActive ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-3 {{ $isMasterActive ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H7m4 0v10"/>
-                        </svg>
-                        <span>Master Data</span>
-                    </div>
-                    <svg class="w-4 h-4 opacity-80 arrow-icon transition-transform {{ $isMasterActive ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
+            <!-- Instansi (Single Page) -->
+            @php $isInstansiActive = request()->routeIs('admin.instansi.*') || request()->routeIs('admin.dinas.*') || request()->routeIs('admin.kecamatan.*'); @endphp
+            <a href="{{ route('admin.instansi.index') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ $isInstansiActive ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }}">
+                <svg class="w-5 h-5 mr-3 {{ $isInstansiActive ? 'text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-emerald-400/80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H7m4 0v10"/>
+                </svg>
+                <span>Instansi</span>
+            </a>
 
-                <div class="{{ $isMasterActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
-                    <a href="{{ route('admin.dinas.index') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.dinas.*') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Data Dinas</a>
-                    <a href="{{ route('admin.kunjungan.lihat') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.kunjungan.*') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Kunjungan (Kunker)</a>
-                </div>
-            </div>
+            <!-- Kunjungan (Kunker) -->
+            <a href="{{ route('admin.kunjungan.lihat') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.kunjungan.*') ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }}">
+                <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.kunjungan.*') ? 'text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-emerald-400/80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span>Kunjungan</span>
+            </a>
 
             <!-- Manajemen Akun Submenu -->
             @php $isAkunActive = request()->routeIs('admin.akun.*'); @endphp
             <div class="space-y-1">
-                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isAkunActive ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
+                <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isAkunActive ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
                     <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-3 {{ $isAkunActive ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 mr-3 {{ $isAkunActive ? 'text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-emerald-400/80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                         </svg>
                         <span>Manajemen Akun</span>
                     </div>
-                    <svg class="w-4 h-4 opacity-80 arrow-icon transition-transform {{ $isAkunActive ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <svg class="w-4 h-4 arrow-icon transition-transform {{ $isAkunActive ? 'rotate-180 text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
 
-                <div class="{{ $isAkunActive ? 'flex' : 'hidden' }} flex-col pl-12 pr-4 py-1 space-y-2">
-                    <a href="{{ route('admin.akun.dinas.index') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.akun.dinas.*') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Akun Dinas</a>
-                    <a href="{{ route('admin.akun.kecamatan.index') }}" class="block text-xs font-semibold py-1.5 px-3 rounded-lg transition {{ request()->routeIs('admin.akun.kecamatan.*') ? 'bg-[#2b4f49] dark:bg-[#23423b] font-bold text-white dark:text-emerald-300' : 'text-white/80 dark:text-gray-400 hover:bg-[#2b4f49]/50 dark:hover:bg-[#152420] dark:hover:text-white' }}">Akun Kecamatan</a>
+                <div class="{{ $isAkunActive ? 'flex' : 'hidden' }} flex-col pl-11 pr-4 py-1 space-y-1">
+                    <a href="{{ route('admin.akun.dinas.index') }}" class="block text-xs font-semibold py-2 px-3 rounded-lg transition {{ request()->routeIs('admin.akun.dinas.*') ? 'bg-[#35635b]/15 dark:bg-[#23423b] font-bold text-[#35635b] dark:text-emerald-300' : 'text-[#35635b]/80 dark:text-gray-400 hover:bg-[#35635b]/10 dark:hover:bg-[#152420] dark:hover:text-white' }}">Akun Dinas</a>
+                    <a href="{{ route('admin.akun.kecamatan.index') }}" class="block text-xs font-semibold py-2 px-3 rounded-lg transition {{ request()->routeIs('admin.akun.kecamatan.*') ? 'bg-[#35635b]/15 dark:bg-[#23423b] font-bold text-[#35635b] dark:text-emerald-300' : 'text-[#35635b]/80 dark:text-gray-400 hover:bg-[#35635b]/10 dark:hover:bg-[#152420] dark:hover:text-white' }}">Akun Kecamatan</a>
                 </div>
             </div>
 
             <!-- Masukkan / Aduan -->
-            <a href="{{ route('admin.masukkan.lihat') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.masukkan.lihat') ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }}">
-                <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.masukkan.lihat') ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="{{ route('admin.masukkan.lihat') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.masukkan.lihat') ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }}">
+                <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.masukkan.lihat') ? 'text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-emerald-400/80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/>
                 </svg>
-                <span>Pengaduan</span>
+                <span>Aduan</span>
             </a>
 
-            <!-- Konten Publik -->
-            @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->role !== 'admin_dinas')
-            <a href="{{ route('admin.publik.index') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.publik.*') ? 'bg-[#2b4f49] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#2b4f49]/60 dark:hover:bg-[#152420] text-white/90 dark:text-gray-300 dark:hover:text-white' }}">
-                <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.publik.*') ? 'text-white dark:text-emerald-400' : 'opacity-80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <rect x="5" y="5" width="16" height="15" rx="2.5" stroke-width="2"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8v10a2 2 0 002 2h12M15 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm-7 9l3.5-3.5a1.5 1.5 0 012.12 0L18 19"/>
-                </svg>
-                <span>Konten Publik</span>
-            </a>
-            @endif
+
 
         </nav>
     </div>
 
     <!-- Bottom Logout Button -->
-    <div class="p-4 border-t border-[#2a504a] dark:border-[#233a34]">
-        <button type="button" onclick="openAdminLogoutModal()" class="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-red-600/90 text-white border border-white/15 hover:border-red-500/50 text-xs font-bold transition-all shadow-md cursor-pointer group" title="Logout">
+    <div class="p-4 border-t border-gray-100 dark:border-[#233a34]">
+        <button type="button" onclick="openAdminLogoutModal()" class="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-600 dark:bg-white/10 dark:hover:bg-red-600/90 text-red-600 hover:text-white dark:text-white border border-red-200 dark:border-white/15 text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer group" title="Logout">
             <svg class="w-4 h-4 transform rotate-180 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
             </svg>

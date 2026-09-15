@@ -35,18 +35,12 @@
                 <p class="text-[11px] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Total Pengaduan</p>
                 <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ number_format($totalAduan) }}</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/40 flex items-center justify-center text-[#35635b] dark:text-emerald-400 font-bold text-lg">
-                📋
-            </div>
         </div>
 
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs transition-colors flex items-center justify-between">
             <div>
                 <p class="text-[11px] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Menunggu</p>
                 <p class="mt-2 text-3xl font-black text-rose-600 dark:text-rose-400">{{ number_format($totalMenunggu) }}</p>
-            </div>
-            <div class="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200/60 dark:border-rose-800/40 flex items-center justify-center text-rose-600 dark:text-rose-400 font-bold text-lg">
-                ⏳
             </div>
         </div>
 
@@ -55,18 +49,12 @@
                 <p class="text-[11px] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Diproses</p>
                 <p class="mt-2 text-3xl font-black text-amber-600 dark:text-amber-400">{{ number_format($totalDiproses) }}</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold text-lg">
-                🔄
-            </div>
         </div>
 
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs transition-colors flex items-center justify-between">
             <div>
                 <p class="text-[11px] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Selesai</p>
                 <p class="mt-2 text-3xl font-black text-emerald-600 dark:text-emerald-400">{{ number_format($totalSelesai) }}</p>
-            </div>
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold text-lg">
-                ✅
             </div>
         </div>
     </div>
@@ -77,19 +65,19 @@
         <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
             <a href="{{ route('admin.masukkan.lihat', ['status' => 'semua']) }}"
                class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ $statusFilter === 'semua' ? 'bg-[#35635b] text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                Semua Aduan ({{ $totalAduan }})
+                Semua Aduan 
             </a>
             <a href="{{ route('admin.masukkan.lihat', ['status' => 'menunggu']) }}"
                class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ $statusFilter === 'menunggu' ? 'bg-rose-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                ⏳ Menunggu ({{ $totalMenunggu }})
+                Menunggu 
             </a>
             <a href="{{ route('admin.masukkan.lihat', ['status' => 'diproses']) }}"
                class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ $statusFilter === 'diproses' ? 'bg-amber-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                🔄 Diproses ({{ $totalDiproses }})
+                Diproses 
             </a>
             <a href="{{ route('admin.masukkan.lihat', ['status' => 'selesai']) }}"
                class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ $statusFilter === 'selesai' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                ✅ Selesai ({{ $totalSelesai }})
+                Selesai 
             </a>
         </div>
     </div>
@@ -123,9 +111,9 @@
                                 {{ $item->nama_pengadu }}
                             </td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200 text-xs">
-                                <p class="font-medium">✉️ {{ $item->email }}</p>
+                                <p class="font-medium">{{ $item->email }}</p>
                                 @if ($item->nomor_hp)
-                                    <p class="text-gray-500 dark:text-gray-400">📞 {{ $item->nomor_hp }}</p>
+                                    <p class="text-gray-500 dark:text-gray-400">{{ $item->nomor_hp }}</p>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200 max-w-xs leading-relaxed text-xs">
@@ -133,7 +121,7 @@
                             </td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200 max-w-xs leading-relaxed text-xs">
                                 @if ($item->balasan_admin)
-                                    <span class="text-emerald-700 dark:text-emerald-300 font-medium">💬 {{ \Illuminate\Support\Str::limit($item->balasan_admin, 80) }}</span>
+                                    <span class="text-emerald-700 dark:text-emerald-300 font-medium">{{ \Illuminate\Support\Str::limit($item->balasan_admin, 80) }}</span>
                                 @else
                                     <span class="text-gray-400 dark:text-gray-500 italic">Belum dibalas</span>
                                 @endif
@@ -151,9 +139,9 @@
                                         name="status"
                                         onchange="this.form.submit()"
                                         class="rounded-full px-3 py-1 text-xs font-bold outline-none cursor-pointer border transition {{ $cat === 'selesai' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200' : ($cat === 'diproses' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200' : 'bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border-rose-200') }}">
-                                        <option value="Menunggu" @selected($cat === 'menunggu')>⏳ Menunggu</option>
-                                        <option value="Diproses" @selected($cat === 'diproses')>🔄 Diproses</option>
-                                        <option value="Selesai" @selected($cat === 'selesai')>✅ Selesai</option>
+                                        <option value="Menunggu" @selected($cat === 'menunggu')>Menunggu</option>
+                                        <option value="Diproses" @selected($cat === 'diproses')>Diproses</option>
+                                        <option value="Selesai" @selected($cat === 'selesai')>Selesai</option>
                                     </select>
                                 </form>
                             </td>
@@ -168,13 +156,13 @@
                                         data-aduan="{{ $item->isi_aduan }}"
                                         data-balasan="{{ $item->balasan_admin }}"
                                         class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs">
-                                        💬 Balas
+                                        Balas
                                     </button>
                                     <button
                                         type="button"
                                         onclick="openDeleteModal('{{ route('admin.masukkan.destroy', $item->id_dataaduan) }}', 'Hapus Pengaduan?', 'Apakah Anda yakin ingin menghapus pengaduan ini?')"
                                         class="inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer shadow-2xs">
-                                        🗑️ Hapus
+                                        Hapus
                                     </button>
                                 </div>
                             </td>

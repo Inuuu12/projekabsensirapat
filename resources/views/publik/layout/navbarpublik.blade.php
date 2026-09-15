@@ -4,7 +4,7 @@
     $regionName = config('sirapi.region', 'Pemerintah Kabupaten Bogor');
 @endphp
 
-<header class="bg-[#35635b] dark:bg-[#0f1c19] text-white sticky top-0 z-[1001] shadow-md border-b border-transparent dark:border-[#233a34] transition-colors duration-200" style="width: 100vw; max-width: 100vw; left: 0; right: 0;">
+<header class="bg-[#35635b] dark:bg-[#0f1c19] text-white sticky top-0 z-[1001] shadow-md border-b border-transparent dark:border-[#233a34] transition-colors duration-200 w-full">
     <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-[4rem] sm:min-h-[5rem] py-2.5 sm:py-0">
         
         <!-- Logo & Branding -->
@@ -31,7 +31,6 @@
 
                 <a href="{{ route('pegawai.login') }}" 
                    class="px-3.5 py-2 bg-white/15 hover:bg-white/25 dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold rounded-xl shadow-xs text-xs transition-colors flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     <span>Portal Pegawai</span>
                 </a>
             </nav>
@@ -76,7 +75,6 @@
 
         <a href="{{ route('pegawai.login') }}" 
            class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-white/15 dark:bg-[#107050] text-white hover:bg-white/25 transition-all">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             <span>Portal Pegawai</span>
         </a>
     </div>

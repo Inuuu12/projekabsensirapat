@@ -36,8 +36,17 @@ class AdminAgendaController extends Controller
             'status_qr' => 'nullable|string|max:50',
             'id_ruangrapat' => 'nullable|exists:sirapi_md_ruangrapat,id_ruangrapat',
             'id_statusagenda' => 'nullable|exists:sirapi_md_statusagenda,id_statusagenda',
+            'id_dinas' => 'nullable|exists:sirapi_md_dinas,id_dinas',
         ]);
 
+        if (Auth::guard('admin')->check()) {
+            $user = Auth::guard('admin')->user();
+            if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas) {
+                $validated['id_dinas'] = $user->id_dinas;
+            } elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan']) && $user->id_kecamatan) {
+                $validated['id_kecamatan'] = $user->id_kecamatan;
+            }
+        }
         $kategoriSurat = $validated['kategori_surat'] ?? 'internal';
         $isInternal = $kategoriSurat === 'internal';
         $isKeluar = $kategoriSurat === 'keluar';
@@ -122,7 +131,7 @@ class AdminAgendaController extends Controller
         }
 
         $keyword = $request->query('keyword');
-        $agenda = Agenda::query()
+        $agenda = Agenda::with('dinas')
             ->where('kategori_surat', $kategoriSurat)
             ->when($keyword, function ($query, $keyword) {
                 $query->where(function ($search) use ($keyword) {
@@ -150,6 +159,7 @@ class AdminAgendaController extends Controller
         $ruang = RuangRapat::latest('id_ruangrapat')->get();
 
         $pegawaiList = Pegawai::orderBy('bidang')->orderBy('nama_pegawai')->get();
+        $dinasList = \App\Models\Dinas::orderBy('nama_dinas')->get();
         $agendaStats = Agenda::query()
             ->selectRaw('kategori_surat, COUNT(*) as total')
             ->groupBy('kategori_surat')
@@ -157,7 +167,7 @@ class AdminAgendaController extends Controller
 
         $listInstansi = $this->getListInstansi($instansiInfo['nama']);
 
-        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats', 'listInstansi', 'instansiInfo'));
+        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'dinasList', 'kategoriSurat', 'agendaStats', 'listInstansi', 'instansiInfo'));
     }
 
     protected function getListInstansi(?string $excludeNama = null)
@@ -221,7 +231,7 @@ class AdminAgendaController extends Controller
         }
 
         $keyword = $request->query('keyword');
-        $query = Agenda::query();
+        $query = Agenda::with('dinas');
 
         if ($kategoriSurat !== 'semua') {
             $query->where('kategori_surat', $kategoriSurat);
@@ -255,6 +265,7 @@ class AdminAgendaController extends Controller
         $ruang = RuangRapat::latest('id_ruangrapat')->get();
 
         $pegawaiList = Pegawai::orderBy('bidang')->orderBy('nama_pegawai')->get();
+        $dinasList = \App\Models\Dinas::orderBy('nama_dinas')->get();
         $isRiwayat = true;
 
         $agendaStats = Agenda::query()
@@ -264,7 +275,7 @@ class AdminAgendaController extends Controller
 
         $listInstansi = $this->getListInstansi($instansiInfo['nama']);
 
-        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats', 'isRiwayat', 'listInstansi', 'instansiInfo'));
+        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'dinasList', 'kategoriSurat', 'agendaStats', 'isRiwayat', 'listInstansi', 'instansiInfo'));
     }
 
     public function detail_Agenda(Request $request, ?int $id = null)
@@ -274,7 +285,7 @@ class AdminAgendaController extends Controller
             return redirect()->route('admin.agenda.lihat');
         }
 
-        $agenda = Agenda::find($agendaId);
+        $agenda = Agenda::with('dinas')->find($agendaId);
         if (! $agenda) {
             return redirect()->route('admin.agenda.lihat')->with('error', 'Agenda tidak ditemukan atau telah dihapus.');
         }
@@ -483,8 +494,17 @@ class AdminAgendaController extends Controller
             'status_qr' => 'nullable|string|max:50',
             'id_ruangrapat' => 'nullable|exists:sirapi_md_ruangrapat,id_ruangrapat',
             'id_statusagenda' => 'nullable|exists:sirapi_md_statusagenda,id_statusagenda',
+            'id_dinas' => 'nullable|exists:sirapi_md_dinas,id_dinas',
         ]);
 
+        if (Auth::guard('admin')->check()) {
+            $user = Auth::guard('admin')->user();
+            if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas) {
+                $validated['id_dinas'] = $user->id_dinas;
+            } elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan']) && $user->id_kecamatan) {
+                $validated['id_kecamatan'] = $user->id_kecamatan;
+            }
+        }
         $kategoriSurat = $validated['kategori_surat'] ?? 'internal';
         $isInternal = $kategoriSurat === 'internal';
         $isKeluar = $kategoriSurat === 'keluar';

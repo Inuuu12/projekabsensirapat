@@ -54,14 +54,8 @@
 
         /* ===== HERO BANNER FULL-WIDTH BREAKOUT ===== */
         .hero-fullwidth-breakout {
-            width: 100vw;
+            width: 100%;
             position: relative;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-            margin-top: -2rem !important;
-            /* Pastikan tidak ada gap kanan akibat scrollbar */
             box-sizing: border-box;
         }
 
@@ -260,11 +254,6 @@
             <!-- Sisi Kiri: Banner Kunjungan -->
             <div class="lg:col-span-8 relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
                 <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-ijo-sangatmuda dark:bg-[#1b3832] text-ijo-tua dark:text-emerald-400 flex items-center justify-center shrink-0 border border-ijo-tua/15 dark:border-emerald-500/20">
-                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
-                        </svg>
-                    </div>
                     <div>
                         <p class="text-ijo-tua dark:text-emerald-400 text-[10px] font-bold uppercase tracking-widest">Layanan Kunjungan Resmi</p>
                         <h3 class="font-bold text-gray-900 dark:text-white text-lg md:text-xl leading-snug mt-0.5">Ingin Bertemu Kami?</h3>
@@ -274,7 +263,6 @@
                     </div>
                 </div>
                 <a href="{{ route('publik.form-kunjungan') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-xs md:text-sm font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] px-5 py-3 rounded-full transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 shrink-0 whitespace-nowrap">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     <span>Isi Form Kunjungan</span>
                 </a>
             </div>
@@ -283,32 +271,25 @@
             <button type="button" id="open-weather-modal" class="lg:col-span-4 flex items-center justify-between p-4 md:p-5 rounded-2xl hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-all text-left cursor-pointer group">
                 <div class="flex-1 min-w-0 space-y-1">
                     <div class="flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-ijo-tua dark:bg-emerald-400 animate-pulse shrink-0"></span>
-                        <p id="home-weather-location" class="text-[11px] font-extrabold text-ijo-tua dark:text-emerald-400 tracking-wider uppercase truncate">Cibinong, Kab. Bogor</p>
+                        <p id="home-weather-location" class="text-[11px] font-bold text-ijo-tua dark:text-emerald-400 tracking-wider uppercase truncate">Cibinong, Kab. Bogor</p>
                     </div>
                     <div class="flex items-baseline gap-2.5">
-                        <h2 id="home-weather-temp" class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-none">-</h2>
-                        <p id="home-weather-condition" class="text-xs sm:text-sm font-extrabold text-gray-700 dark:text-gray-200 truncate">Memuat cuaca...</p>
+                        <h2 id="home-weather-temp" class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">-</h2>
+                        <p id="home-weather-condition" class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">Memuat cuaca...</p>
                     </div>
                     <p id="home-weather-humidity" class="text-[10px] sm:text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-0.5">
                         Kelembapan - &bull; Klik untuk detail
                     </p>
                 </div>
-                <div class="text-4xl md:text-5xl shrink-0 group-hover:scale-110 transition-transform duration-300 ml-3">⛅</div>
+                <div id="home-weather-icon" class="text-4xl md:text-5xl shrink-0 group-hover:scale-110 transition-transform duration-300 ml-3"></div>
             </button>
         </div>
 
         <!-- 3. Section Agenda Hari Ini -->
         <section class="scroll-reveal space-y-5">
             <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-9 h-9 rounded-xl bg-ijo-sangatmuda dark:bg-[#1b3832] text-ijo-tua dark:text-emerald-400 flex items-center justify-center shrink-0 border border-ijo-tua/15 dark:border-emerald-500/20">
-                        <svg class="w-4.5 h-4.5" style="width:1.1rem;height:1.1rem" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    </div>
-                    <div class="min-w-0">
-                        <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight truncate">{{ $agendaBerandaLabel ?? 'Agenda Hari Ini' }}</h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 truncate">{{ $agendaBerandaDescription ?? (now()->translatedFormat('l, d F Y') . ' &bull; ' . ($totalAgendaHariIni ?? $agendaItems->count()) . ' kegiatan') }}</p>
-                    </div>
+                <div class="min-w-0">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight truncate">{{ $agendaBerandaLabel ?? 'Agenda Hari Ini' }}</h3>
                 </div>
                 <a href="{{ route('publik.agenda') }}" class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-ijo-tua dark:text-emerald-400 bg-ijo-sangatmuda dark:bg-emerald-950/50 border border-ijo-tua/20 dark:border-emerald-800/40 hover:bg-ijo-tua hover:text-white dark:hover:bg-emerald-800/50 px-3.5 py-1.5 rounded-full transition-all whitespace-nowrap">
                     <span class="hidden sm:inline">Selengkapnya</span>
@@ -336,7 +317,7 @@
                         <div class="space-y-2 relative z-10">
                             <div class="flex items-center justify-between text-xs">
                                 <span class="font-bold {{ $isBerlangsung ? 'text-emerald-900 dark:text-emerald-300' : ($isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-300') }}">
-                                    🕒 {{ substr((string) $agenda->waktu, 0, 5) ?: '-' }} WIB
+                                    {{ substr((string) $agenda->waktu, 0, 5) ?: '-' }} WIB
                                 </span>
 
                                 @if ($isBerlangsung)
@@ -371,7 +352,8 @@
                                         <span class="inline-flex items-center text-[9px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800/40">Pegawai & Tamu</span>
                                     @endif
                                 </div>
-                                <p class="text-xs {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-300' }}">📍 {{ $agenda->lokasi_display ?? '-' }}</p>
+                                <p class="text-xs font-bold text-[#35635b] dark:text-emerald-400">{{ $agenda->dinas?->nama_dinas ?? 'Diskominfo Kab. Bogor' }}</p>
+                                <p class="text-xs {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-300' }}">{{ $agenda->lokasi_display ?? '-' }}</p>
                             </div>
                         </div>
 
@@ -397,15 +379,8 @@
         <!-- 4. Section Peta Sebaran -->
         <section class="scroll-reveal space-y-5">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-9 h-9 rounded-xl bg-ijo-sangatmuda dark:bg-[#1b3832] text-ijo-tua dark:text-emerald-400 flex items-center justify-center shrink-0 border border-ijo-tua/15 dark:border-emerald-500/20">
-                        <svg style="width:1.1rem;height:1.1rem" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-                    </div>
-                    <div class="min-w-0">
-                        <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Peta Sebaran Agenda & Kunjungan Kerja</h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Pemetaan 40 Kecamatan Kabupaten Bogor beserta sebaran titik kegiatan.</p>
-                    </div>
-                </div>
+                <div class="min-w-0">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Peta Sebaran Agenda & Kunjungan Kerja</h3>                </div>
             </div>
 
             <!-- Grid 2 Kolom: Peta (Kiri 8 Kolom) + Daftar Rapat Dinas (Kanan 4 Kolom) -->
@@ -450,7 +425,7 @@
                                     </span>
                                     <span class="w-[2px] h-1.5 bg-gray-900"></span>
                                 </div>
-                                <span class="text-gray-700 dark:text-gray-300">Titik Agenda Rapat Active</span>
+                                <span class="text-gray-700 dark:text-gray-300">Titik Agenda Rapat</span>
                             </div>
                         </div>
                     </div>
@@ -464,7 +439,6 @@
                                 <h4 class="font-bold text-gray-900 dark:text-white text-base leading-snug">Rapat Dinas & Instansi</h4>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Daftar agenda kegiatan di Pemkab Bogor</p>
                             </div>
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         </div>
 
                         <!-- 3 List Rapat Terbaru -->
@@ -501,7 +475,7 @@
                                         @endif
 
                                         <span class="{{ $isBerlangsung ? 'text-emerald-900 dark:text-emerald-300 font-bold' : ($isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400 font-medium') }}">
-                                            🕒 {{ substr((string) $agenda->waktu, 0, 5) }} WIB
+                                            {{ substr((string) $agenda->waktu, 0, 5) }} WIB
                                         </span>
                                     </div>
 
@@ -509,15 +483,17 @@
                                         <h5 class="font-bold text-xs leading-snug line-clamp-2 transition-colors {{ $isBerlangsung ? 'text-emerald-950 dark:text-white group-hover:text-emerald-700' : ($isSelesai ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-white group-hover:text-ijo-tua dark:group-hover:text-emerald-400') }}">
                                             {{ $agenda->nama_agenda }}
                                         </h5>
-                                        <p class="text-[11px] {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400' }} mt-1 flex items-center gap-1">
-                                            <span>📍</span>
-                                            <span class="truncate">{{ $agenda->lokasi_display ?? 'Diskominfo Kab. Bogor' }}</span>
+                                        <p class="text-[10px] font-semibold text-ijo-tua dark:text-emerald-400 mt-0.5 truncate">
+                                            {{ $agenda->dinas?->nama_dinas ?? 'Diskominfo Kab. Bogor' }}
+                                        </p>
+                                        <p class="text-[11px] {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400' }} mt-0.5 truncate">
+                                            {{ $agenda->lokasi_display ?? 'Diskominfo Kab. Bogor' }}
                                         </p>
                                     </div>
 
                                     <div class="pt-2 border-t {{ $isBerlangsung ? 'border-emerald-200 dark:border-emerald-800/50' : 'border-gray-200/50 dark:border-[#233a34]' }} flex items-center justify-between text-[11px]">
                                         <span class="{{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400' }}">
-                                            📅 {{ $agenda->tanggal ? \Carbon\Carbon::parse($agenda->tanggal)->translatedFormat('d M Y') : '-' }}
+                                            {{ $agenda->tanggal ? \Carbon\Carbon::parse($agenda->tanggal)->translatedFormat('d M Y') : '-' }}
                                         </span>
                                         <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="font-bold {{ $isBerlangsung ? 'text-emerald-700 dark:text-emerald-300 hover:underline' : ($isSelesai ? 'text-gray-500 dark:text-gray-400 hover:underline' : 'text-ijo-tua dark:text-emerald-400 hover:underline') }}">
                                             Detail
@@ -545,14 +521,8 @@
         <!-- 5. Section Berita Terkini -->
         <section class="scroll-reveal space-y-5">
             <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-9 h-9 rounded-xl bg-ijo-sangatmuda dark:bg-[#1b3832] text-ijo-tua dark:text-emerald-400 flex items-center justify-center shrink-0 border border-ijo-tua/15 dark:border-emerald-500/20">
-                        <svg style="width:1.1rem;height:1.1rem" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-                    </div>
-                    <div class="min-w-0">
-                        <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Berita Terkini</h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Kabar terbaru seputar Diskominfo Kabupaten Bogor</p>
-                    </div>
+                <div class="min-w-0">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Berita Terkini</h3>
                 </div>
                 <a href="{{ route('publik.berita') }}" class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-ijo-tua dark:text-emerald-400 bg-ijo-sangatmuda dark:bg-emerald-950/50 border border-ijo-tua/20 dark:border-emerald-800/40 hover:bg-ijo-tua hover:text-white dark:hover:bg-emerald-800/50 px-3.5 py-1.5 rounded-full transition-all whitespace-nowrap">
                     <span class="hidden sm:inline">Selengkapnya</span>
@@ -569,7 +539,6 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                             <div class="absolute top-3 left-3">
                                 <span class="inline-flex items-center gap-1 bg-white/90 backdrop-blur-sm text-blue-700 font-bold text-[10px] px-2.5 py-1 rounded-full shadow">
-                                    <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/></svg>
                                     Berita
                                 </span>
                             </div>
@@ -598,20 +567,10 @@
         <section class="scroll-reveal space-y-5">
             <!-- Header -->
             <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-9 h-9 rounded-xl bg-oren-muda dark:bg-amber-950/50 text-oren-tua dark:text-amber-400 flex items-center justify-center shrink-0 border border-oren-tua/20 dark:border-amber-700/30">
-                        <svg style="width:1.1rem;height:1.1rem" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
-                    </div>
-                    <div class="min-w-0">
-                        <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Daftar Aduan</h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Aspirasi & tindak lanjut pengaduan masyarakat Diskominfo Kab. Bogor</p>
-                    </div>
+                <div class="min-w-0">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Daftar Aduan</h3>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <a href="{{ route('publik.masukan') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-oren-utama hover:bg-oren-tua dark:bg-[#d97706] dark:hover:bg-[#b45309] px-3.5 py-1.5 rounded-full transition-all shadow-xs hover:shadow-md hover:-translate-y-0.5 whitespace-nowrap">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                        <span>Tambah Aduan</span>
-                    </a>
                     <a href="{{ route('publik.riwayat-aduan') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-ijo-tua dark:text-emerald-400 bg-ijo-sangatmuda dark:bg-emerald-950/50 border border-ijo-tua/20 dark:border-emerald-800/40 hover:bg-ijo-tua hover:text-white dark:hover:bg-emerald-800/50 px-3.5 py-1.5 rounded-full transition-all whitespace-nowrap">
                         <span class="hidden sm:inline">Selengkapnya</span>
                         <span class="sm:hidden">Lihat</span>
@@ -661,7 +620,6 @@
                                 <tr>
                                     <td colspan="5" class="px-5 py-10 text-center">
                                         <div class="flex flex-col items-center gap-2">
-                                            <svg class="w-10 h-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
                                             <p class="text-sm text-gray-400 dark:text-gray-500 font-medium">Belum ada aduan di database.</p>
                                         </div>
                                     </td>
@@ -674,7 +632,6 @@
                 <div class="px-5 py-3.5 bg-gray-50/60 dark:bg-[#0f1c19]/60 border-t border-gray-100 dark:border-[#233a34] flex items-center justify-between gap-3 flex-wrap">
                     <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">Klik baris untuk melihat detail aduan</p>
                     <a href="{{ route('publik.masukan') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-oren-utama hover:bg-oren-tua dark:bg-[#d97706] dark:hover:bg-[#b45309] px-3.5 py-1.5 rounded-full transition-all shadow-xs hover:shadow-md hover:-translate-y-0.5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                         <span>Tambah Aduan</span>
                     </a>
                 </div>
@@ -749,7 +706,7 @@
             <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34] shrink-0">
                 <div>
                     <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Cuaca API</p>
-                    <h2 id="weather-location" class="text-lg sm:text-xl font-extrabold mt-1 text-white">Cibinong, Kabupaten Bogor</h2>
+                    <h2 id="weather-location" class="text-lg sm:text-xl font-bold mt-1 text-white">Cibinong, Kabupaten Bogor</h2>
                     <p id="weather-updated" class="text-xs text-white/70 dark:text-gray-300 mt-1">Memuat data...</p>
                 </div>
                 <button type="button" id="close-weather-modal" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10 flex items-center justify-center text-lg font-bold cursor-pointer">x</button>
@@ -761,17 +718,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="rounded-2xl bg-ijo-sangatmuda dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-5">
                         <p class="text-[10px] uppercase font-bold text-ijo-tua dark:text-emerald-400">Suhu</p>
-                        <p id="weather-temp" class="text-3xl font-extrabold text-ijo-tua dark:text-emerald-400 mt-1">-</p>
+                        <p id="weather-temp" class="text-3xl font-bold text-ijo-tua dark:text-emerald-400 mt-1">-</p>
                         <p id="weather-condition" class="text-xs text-gray-600 dark:text-gray-300 mt-1">-</p>
                     </div>
                     <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-5">
                         <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Kelembapan</p>
-                        <p id="weather-humidity" class="text-2xl font-extrabold text-gray-900 dark:text-white mt-1">-</p>
+                        <p id="weather-humidity" class="text-2xl font-bold text-gray-900 dark:text-white mt-1">-</p>
                         <p id="weather-cloud" class="text-xs text-gray-500 dark:text-gray-300 mt-1">Awan -</p>
                     </div>
                     <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-5">
                         <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Angin</p>
-                        <p id="weather-wind" class="text-2xl font-extrabold text-gray-900 dark:text-white mt-1">-</p>
+                        <p id="weather-wind" class="text-2xl font-bold text-gray-900 dark:text-white mt-1">-</p>
                         <p id="weather-rain" class="text-xs text-gray-500 dark:text-gray-300 mt-1">Hujan -</p>
                     </div>
                 </div>
@@ -895,6 +852,23 @@
             }
         }
 
+        function getWeatherIcon(code, conditionStr) {
+            const codeNum = Number(code);
+            if (codeNum === 0) return '☀️';
+            if (codeNum === 1 || codeNum === 2) return '⛅';
+            if (codeNum === 3) return '☁️';
+            if ([45, 48].includes(codeNum)) return '🌫️';
+            if ([51, 53, 55, 61, 63, 65, 66, 67, 80, 81, 82].includes(codeNum)) return '🌧️';
+            if ([95, 96, 99].includes(codeNum)) return '⛈️';
+
+            const cond = (conditionStr || '').toLowerCase();
+            if (cond.includes('hujan') || cond.includes('gerimis')) return '🌧️';
+            if (cond.includes('badai') || cond.includes('petir')) return '⛈️';
+            if (cond.includes('mendung') || cond.includes('berawan')) return '☁️';
+            if (cond.includes('terik') || cond.includes('cerah')) return '☀️';
+            return '⛅';
+        }
+
         async function loadWeather() {
             if (weatherLoaded) {
                 return;
@@ -914,6 +888,8 @@
                     weatherError.classList.remove('hidden');
                 }
 
+                const icon = getWeatherIcon(current.weather_code, current.condition);
+
                 setText('weather-location', payload.location || 'Cibinong, Kabupaten Bogor');
                 setText('weather-updated', `Diperbarui: ${payload.updated_at || '-'}`);
                 setText('weather-temp', formatWeatherValue(current.temperature, '°C'));
@@ -923,6 +899,7 @@
                 setText('home-weather-temp', formatWeatherValue(current.temperature, '°C'));
                 setText('home-weather-condition', current.condition || 'Data API belum tersedia');
                 setText('home-weather-humidity', `Kelembapan ${formatWeatherValue(current.humidity, '%')} • Klik untuk detail `);
+                setText('home-weather-icon', icon);
                 setText('weather-cloud', `Awan ${formatWeatherValue(current.cloud_cover, '%')}`);
                 setText('weather-wind', formatWeatherValue(current.wind_speed, ' km/jam'));
                 setText('weather-rain', `Hujan ${formatWeatherValue(current.precipitation, ' mm')}`);
@@ -933,7 +910,7 @@
                     ? daily.map((item) => `
                         <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4">
                             <p class="text-[10px] font-bold uppercase text-gray-400 dark:text-gray-400">${item.date || '-'}</p>
-                            <h4 class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">${item.condition || '-'}</h4>
+                            <h4 class="mt-1 text-sm font-extrabold text-gray-900 dark:text-white">${getWeatherIcon(item.weather_code, item.condition)} ${item.condition || '-'}</h4>
                             <p class="mt-2 text-xs text-gray-500 dark:text-gray-300">${formatWeatherValue(item.temperature_min, '°C')} - ${formatWeatherValue(item.temperature_max, '°C')}</p>
                             <p class="mt-1 text-[11px] text-gray-400 dark:text-gray-400">Hujan ${formatWeatherValue(item.precipitation_sum, ' mm')}</p>
                         </div>
@@ -1187,16 +1164,16 @@
                                     <div class="p-2 font-sans max-w-[240px]">
                                         <span class="${badgeClass} text-[10px] font-extrabold px-2 py-0.5 rounded-full">${badge}</span>
                                         <h4 class="font-bold text-xs text-gray-900 mt-1.5 leading-snug">${name}</h4>
-                                        <p class="text-[11px] text-gray-600 mt-1 leading-normal">📍 ${addr}</p>
+                                        <p class="text-[11px] text-gray-600 mt-1 leading-normal">${addr}</p>
                                 `;
 
                                 if (hasAgenda) {
                                     const topAg = matchedAgendas[0];
                                     popupHtml += `
                                         <div class="mt-2.5 pt-2 border-t border-gray-100 dark:border-gray-700">
-                                            <span class="bg-emerald-100 text-emerald-800 text-[9.5px] font-black px-2 py-0.5 rounded-full">🟢 Ada Agenda Hari Ini</span>
+                                            <span class="bg-emerald-100 text-emerald-800 text-[9.5px] font-black px-2 py-0.5 rounded-full">Ada Agenda Hari Ini</span>
                                             <h5 class="font-bold text-xs text-gray-900 mt-1 leading-tight">${topAg.nama}</h5>
-                                            <p class="text-[10px] text-gray-500 mt-0.5">🕒 ${topAg.waktu}</p>
+                                            <p class="text-[10px] text-gray-500 mt-0.5">${topAg.waktu}</p>
                                             <div class="flex items-center gap-1.5 mt-2">
                                                 <a href="${topAg.detailUrl}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block text-[10px] font-bold text-white bg-emerald-700 hover:bg-emerald-800 px-2.5 py-1 rounded-lg transition-all shadow-xs">Lihat Agenda &rarr;</a>
                                                 <a href="{{ route('publik.form-kunjungan') }}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block text-[10px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-2.5 py-1 rounded-lg transition-all shadow-xs">Kunjungan &rarr;</a>
@@ -1232,8 +1209,8 @@
                             <div class="p-2 font-sans max-w-[220px]">
                                 <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Agenda Kegiatan</span>
                                 <h4 class="font-bold text-xs text-gray-900 mt-1 leading-snug">${item.nama}</h4>
-                                <p class="text-[11px] text-gray-600 mt-1">📍 ${item.lokasi}</p>
-                                <p class="text-[10px] text-gray-500 mt-0.5">🕒 ${item.waktu}</p>
+                                <p class="text-[11px] text-gray-600 mt-1">${item.lokasi}</p>
+                                <p class="text-[10px] text-gray-500 mt-0.5">${item.waktu}</p>
                                 <a href="${item.detailUrl}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn inline-block mt-2.5 text-[11px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-3.5 py-1.5 rounded-xl transition-all shadow-xs">Detail Agenda &rarr;</a>
                             </div>
                         `);

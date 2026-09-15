@@ -11,28 +11,17 @@
         <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">Selamat datang kembali di SIRAPI. Pantau analitik agenda dan laporan kegiatan {{ Auth::guard('admin')->user()?->getInstansiInfo()['singkatan'] ?? 'Diskominfo' }}.</p>
     </div>
 
-    <!-- 1. Top Stats Cards Grid (Matching Modern Dashboard Reference) -->
+    <!-- 1. Top Stats Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         
         <!-- Card 1: Agenda Hari Ini -->
         <div class="relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex flex-col justify-between transition-all hover:border-emerald-500/50 hover:shadow-md group">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Agenda Hari Ini</span>
-                <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 p-2 flex items-center justify-center shrink-0 border border-emerald-100/70 dark:border-emerald-800/40">
-                    <img src="{{ asset('assets/foto/Agendahariini.png') }}" alt="Agenda Hari Ini" class="w-full h-full object-contain">
-                </div>
             </div>
             <div class="mt-3">
                 <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($totalAgendaHariIni ?? 0) }}</p>
-                <div class="mt-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                    Agenda aktif hari ini
-                </div>
-            </div>
-            <!-- Mini Sparkline Wave (Decorative SVG) -->
-            <div class="mt-2 h-7 w-full overflow-hidden opacity-65 group-hover:opacity-100 transition-opacity">
-                <svg class="h-full w-full stroke-emerald-500 dark:stroke-emerald-400 fill-none" viewBox="0 0 200 30" preserveAspectRatio="none">
-                    <path d="M0,22 Q30,5 60,18 T120,12 T180,8 L200,10" stroke-width="2.2" stroke-linecap="round"/>
-                </svg>
+                
             </div>
         </div>
 
@@ -40,20 +29,9 @@
         <div class="relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex flex-col justify-between transition-all hover:border-cyan-500/50 hover:shadow-md group">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ruang Rapat</span>
-                <div class="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 p-2 flex items-center justify-center shrink-0 border border-cyan-100/70 dark:border-cyan-800/40">
-                    <img src="{{ asset('assets/foto/Ruanganlogo.png') }}" alt="Ruang Rapat" class="w-full h-full object-contain">
-                </div>
             </div>
             <div class="mt-3">
                 <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($totalRuangRapat ?? 0) }}</p>
-                <div class="mt-1 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
-                    Ruangan siap digunakan
-                </div>
-            </div>
-            <div class="mt-2 h-7 w-full overflow-hidden opacity-65 group-hover:opacity-100 transition-opacity">
-                <svg class="h-full w-full stroke-cyan-500 dark:stroke-cyan-400 fill-none" viewBox="0 0 200 30" preserveAspectRatio="none">
-                    <path d="M0,15 Q35,28 70,12 T140,16 T200,6" stroke-width="2.2" stroke-linecap="round"/>
-                </svg>
             </div>
         </div>
 
@@ -61,20 +39,9 @@
         <div class="relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex flex-col justify-between transition-all hover:border-indigo-500/50 hover:shadow-md group">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kunjungan</span>
-                <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 p-2 flex items-center justify-center shrink-0 border border-indigo-100/70 dark:border-indigo-800/40">
-                    <img src="{{ asset('assets/foto/Pengunjunglogo.png') }}" alt="Kunjungan" class="w-full h-full object-contain">
-                </div>
             </div>
             <div class="mt-3">
                 <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($totalKunjungan ?? 0) }}</p>
-                <div class="mt-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-                    Tamu hadir hari ini
-                </div>
-            </div>
-            <div class="mt-2 h-7 w-full overflow-hidden opacity-65 group-hover:opacity-100 transition-opacity">
-                <svg class="h-full w-full stroke-indigo-500 dark:stroke-indigo-400 fill-none" viewBox="0 0 200 30" preserveAspectRatio="none">
-                    <path d="M0,20 Q40,4 80,18 T150,8 T200,16" stroke-width="2.2" stroke-linecap="round"/>
-                </svg>
             </div>
         </div>
 
@@ -82,101 +49,124 @@
         <div class="relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs flex flex-col justify-between transition-all hover:border-amber-500/50 hover:shadow-md group">
             <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Aduan Baru</span>
-                <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 p-2 flex items-center justify-center shrink-0 border border-amber-100/70 dark:border-amber-800/40">
-                    <img src="{{ asset('assets/foto/Suratlogo.png') }}" alt="Aduan Baru" class="w-full h-full object-contain">
-                </div>
             </div>
             <div class="mt-3">
                 <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($totalAduanBaru ?? $totalMasukkanBaru ?? 0) }}</p>
-                <div class="mt-1 text-xs font-semibold text-amber-600 dark:text-amber-400">
-                    Menunggu verifikasi
-                </div>
-            </div>
-            <div class="mt-2 h-7 w-full overflow-hidden opacity-65 group-hover:opacity-100 transition-opacity">
-                <svg class="h-full w-full stroke-amber-500 dark:stroke-amber-400 fill-none" viewBox="0 0 200 30" preserveAspectRatio="none">
-                    <path d="M0,8 Q50,26 100,10 T170,14 T200,4" stroke-width="2.2" stroke-linecap="round"/>
-                </svg>
             </div>
         </div>
 
     </div>
 
-    <!-- 2. Main Analytics Chart Section (Overview Line Chart + Donut Category Chart) -->
+    <!-- 2. Main Analytics & Agenda Section -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-        <!-- Left Area: Overview Monthly Area Spline Chart (Jan - Des) -->
-        <div class="lg:col-span-8 bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 sm:p-6 shadow-xs transition-colors">
+        <!-- Left Area: Overview Monthly Area Spline Chart + Agenda Terdekat -->
+        <div class="lg:col-span-8 space-y-6">
             
-            <!-- Card Header with Filters -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100 dark:border-[#233a34]">
-                <div>
-                    <h2 class="text-base sm:text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
-                        <span>Overview Laporan Agenda</span>
-                    </h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                        Frekuensi dan tren agenda bulanan tahun <span id="label-selected-year" class="font-extrabold text-[#35635b] dark:text-emerald-400 label-selected-year-display">{{ $selectedYear }}</span>
-                    </p>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2">
-                    <!-- Dropdown Filter Tahun -->
-                    <div class="relative">
-                        <select id="filter-year-select" onchange="handleYearChange(this.value)" class="h-8 sm:h-9 appearance-none rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] pl-3 pr-8 text-xs font-bold text-gray-800 dark:text-white outline-none focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] cursor-pointer shadow-2xs">
-                            @foreach ($availableYears as $yr)
-                                <option value="{{ $yr }}" {{ $yr == $selectedYear ? 'selected' : '' }}>Tahun {{ $yr }}</option>
-                            @endforeach
-                        </select>
-                        <svg class="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
+            <!-- Card 1: Overview Monthly Area Spline Chart (Jan - Des) -->
+            <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 sm:p-6 shadow-xs transition-colors">
+                
+                <!-- Card Header with Filters -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100 dark:border-[#233a34]">
+                    <div>
+                        <h2 class="text-base sm:text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
+                            <span>Laporan Agenda</span>
+                        </h2>
                     </div>
 
-                    <!-- Category Pills Switcher -->
-                    <div class="inline-flex rounded-xl bg-gray-100 dark:bg-[#0f1c19] p-1 border border-transparent dark:border-[#284c43] text-xs">
-                        <button type="button" onclick="switchChartCategory('semua')" id="btn-cat-semua" class="cat-pill rounded-lg px-2.5 py-1 text-xs font-bold transition-all bg-white dark:bg-[#1b3832] text-[#35635b] dark:text-emerald-300 shadow-xs cursor-pointer">Semua</button>
-                        <button type="button" onclick="switchChartCategory('internal')" id="btn-cat-internal" class="cat-pill rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all cursor-pointer">Internal</button>
-                        <button type="button" onclick="switchChartCategory('masuk')" id="btn-cat-masuk" class="cat-pill rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all cursor-pointer">Masuk</button>
-                        <button type="button" onclick="switchChartCategory('keluar')" id="btn-cat-keluar" class="cat-pill rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all cursor-pointer">Keluar</button>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <!-- Dropdown Filter Tahun -->
+                        <div class="relative">
+                            <select id="filter-year-select" onchange="handleYearChange(this.value)" class="h-8 sm:h-9 appearance-none rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] pl-3 pr-8 text-xs font-bold text-gray-800 dark:text-white outline-none focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] cursor-pointer shadow-2xs">
+                                @foreach ($availableYears as $yr)
+                                    <option value="{{ $yr }}" {{ $yr == $selectedYear ? 'selected' : '' }}>Tahun {{ $yr }}</option>
+                                @endforeach
+                            </select>
+                            <svg class="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+
+                        <!-- Category Pills Switcher -->
+                        <div class="inline-flex rounded-xl bg-gray-100 dark:bg-[#0f1c19] p-1 border border-transparent dark:border-[#284c43] text-xs">
+                            <button type="button" onclick="switchChartCategory('semua')" id="btn-cat-semua" class="cat-pill rounded-lg px-2.5 py-1 text-xs font-bold transition-all bg-white dark:bg-[#1b3832] text-[#35635b] dark:text-emerald-300 shadow-xs cursor-pointer">Semua</button>
+                            <button type="button" onclick="switchChartCategory('internal')" id="btn-cat-internal" class="cat-pill rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all cursor-pointer">Internal</button>
+                            <button type="button" onclick="switchChartCategory('masuk')" id="btn-cat-masuk" class="cat-pill rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all cursor-pointer">Masuk</button>
+                            <button type="button" onclick="switchChartCategory('keluar')" id="btn-cat-keluar" class="cat-pill rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all cursor-pointer">Keluar</button>
+                        </div>
                     </div>
                 </div>
+
+                <!-- ApexCharts Area Spline Chart Element -->
+                <div class="mt-4">
+                    <div id="monthly-agenda-chart" class="w-full min-h-[300px] sm:min-h-[340px]"></div>
+                </div>
+
             </div>
 
-            <!-- ApexCharts Area Spline Chart Element -->
-            <div class="mt-4">
-                <div id="monthly-agenda-chart" class="w-full min-h-[300px] sm:min-h-[340px]"></div>
-            </div>
+            <!-- Card 2: Agenda Terdekat -->
+            <section class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-6 shadow-xs transition-colors">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="text-base sm:text-lg font-bold text-gray-800 dark:text-white">Agenda Terdekat</h2>
+                    </div>
+                    <a href="{{ route('admin.agenda.lihat') }}" class="text-xs sm:text-sm font-bold text-[#35635b] dark:text-emerald-400 hover:underline">Lihat semua</a>
+                </div>
 
-            <!-- Footer Stats Under Chart -->
-            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-[#233a34] grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                <div class="p-2 rounded-xl bg-gray-50/80 dark:bg-[#0f1c19]/80 border border-gray-100 dark:border-[#233a34]">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase">Total Agenda</span>
-                    <p id="stat-total-agenda" class="text-base sm:text-lg font-black text-[#35635b] dark:text-emerald-400 mt-0.5">{{ $chartPayload['metrics']['totalAgendaTahun'] }}</p>
+                <div class="space-y-3">
+                    @forelse ($agendaTerdekat as $item)
+                        @php
+                            $tanggalAgenda = \Carbon\Carbon::parse($item->tanggal);
+                            $labelTanggal = $tanggalAgenda->isToday()
+                                ? 'Hari ini'
+                                : ($tanggalAgenda->isTomorrow() ? 'Besok' : $tanggalAgenda->translatedFormat('d M Y'));
+                            $katSurat = strtolower((string)($item->kategori_surat ?? 'internal'));
+                            $katBadgeClass = $katSurat === 'internal' 
+                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300' 
+                                : ($katSurat === 'masuk' ? 'bg-sky-100 text-sky-800 dark:bg-sky-950/80 dark:text-sky-300' : 'bg-purple-100 text-purple-800 dark:bg-purple-950/80 dark:text-purple-300');
+                        @endphp
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl bg-[#f3f7f6] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] p-3.5 sm:px-4 sm:py-3 transition hover:border-[#35635b]/30">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 text-[9.5px] font-extrabold rounded-md {{ $katBadgeClass }} uppercase tracking-wider">
+                                        {{ $katSurat }}
+                                    </span>
+                                    <p class="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate">{{ $item->nama_agenda }}</p>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 truncate">
+                                    📍 {{ $item->lokasi_display ?? $item->lokasi ?: 'Lokasi belum diisi' }} • 🕒 {{ \Carbon\Carbon::parse($item->waktu)->format('H:i') }} WIB
+                                </p>
+                            </div>
+                            @if ($item->isBerlangsung())
+                                <span class="self-start sm:self-center rounded-full bg-emerald-600 text-white px-2.5 py-0.5 text-[11px] font-black whitespace-nowrap inline-flex items-center gap-1.5 shadow-xs">
+                                    <span class="relative flex h-2 w-2">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                    </span>
+                                    <span>Live</span>
+                                </span>
+                            @else
+                                <span class="self-start sm:self-center rounded-full bg-[#35635b]/10 dark:bg-emerald-400/10 px-3 py-1 text-xs font-bold text-[#35635b] dark:text-emerald-400 whitespace-nowrap">{{ $labelTanggal }}</span>
+                            @endif
+                        </div>
+                    @empty
+                        <div class="rounded-xl bg-[#f3f7f6] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] px-4 py-8 text-center text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400">
+                            Belum ada agenda terdekat.
+                        </div>
+                    @endforelse
                 </div>
-                <div class="p-2 rounded-xl bg-gray-50/80 dark:bg-[#0f1c19]/80 border border-gray-100 dark:border-[#233a34]">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase">Bulan Tersibuk</span>
-                    <p id="stat-peak-month" class="text-base sm:text-lg font-black text-gray-800 dark:text-white mt-0.5 truncate">{{ $chartPayload['metrics']['peakMonthName'] }}</p>
-                </div>
-                <div class="p-2 rounded-xl bg-gray-50/80 dark:bg-[#0f1c19]/80 border border-gray-100 dark:border-[#233a34]">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase">Rata-Rata / Bulan</span>
-                    <p id="stat-avg-month" class="text-base sm:text-lg font-black text-gray-800 dark:text-white mt-0.5">{{ $chartPayload['metrics']['rataRataBulanan'] }}</p>
-                </div>
-                <div class="p-2 rounded-xl bg-gray-50/80 dark:bg-[#0f1c19]/80 border border-gray-100 dark:border-[#233a34]">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase">Agenda Selesai</span>
-                    <p id="stat-completed" class="text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400 mt-0.5">{{ $chartPayload['metrics']['totalSelesai'] }}</p>
-                </div>
-            </div>
+            </section>
 
         </div>
 
-        <!-- Right Area: Donut Chart & Ringkasan Performa -->
+        <!-- Right Area: Donut Chart, Ringkasan Performa & Aktivitas Terbaru -->
         <div class="lg:col-span-4 space-y-6">
 
             <!-- Card A: Donut Chart (Traffic Sources equivalent) -->
             <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 sm:p-6 shadow-xs transition-colors">
                 <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-[#233a34]">
                     <div>
-                        <h3 class="text-sm sm:text-base font-extrabold text-gray-900 dark:text-white">Distribusi Kategori Surat</h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Proporsi jenis surat tahun <span class="label-selected-year-display font-bold">{{ $selectedYear }}</span></p>
+                        <h3 class="text-sm sm:text-base font-extrabold text-gray-900 dark:text-white">Kategori Surat</h3>
                     </div>
                 </div>
 
@@ -257,83 +247,24 @@
                 </div>
             </div>
 
-        </div>
-
-    </div>
-
-    <!-- 3. Existing Bottom Section (Agenda Terdekat & Aktivitas Terbaru) -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Agenda Terdekat -->
-        <section class="lg:col-span-2 bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-6 shadow-xs transition-colors">
-            <div class="flex items-center justify-between mb-5">
-                <div>
-                    <h2 class="text-base sm:text-lg font-bold text-gray-800 dark:text-white">Agenda Terdekat</h2>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Jadwal kegiatan yang akan berlangsung dalam waktu dekat</p>
-                </div>
-                <a href="{{ route('admin.agenda.lihat') }}" class="text-xs sm:text-sm font-bold text-[#35635b] dark:text-emerald-400 hover:underline">Lihat semua &rarr;</a>
-            </div>
-
-            <div class="space-y-3">
-                @forelse ($agendaTerdekat as $item)
-                    @php
-                        $tanggalAgenda = \Carbon\Carbon::parse($item->tanggal);
-                        $labelTanggal = $tanggalAgenda->isToday()
-                            ? 'Hari ini'
-                            : ($tanggalAgenda->isTomorrow() ? 'Besok' : $tanggalAgenda->translatedFormat('d M Y'));
-                        $katSurat = strtolower((string)($item->kategori_surat ?? 'internal'));
-                        $katBadgeClass = $katSurat === 'internal' 
-                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300' 
-                            : ($katSurat === 'masuk' ? 'bg-sky-100 text-sky-800 dark:bg-sky-950/80 dark:text-sky-300' : 'bg-purple-100 text-purple-800 dark:bg-purple-950/80 dark:text-purple-300');
-                    @endphp
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl bg-[#f3f7f6] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] p-3.5 sm:px-4 sm:py-3 transition hover:border-[#35635b]/30">
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-2">
-                                <span class="px-2 py-0.5 text-[9.5px] font-extrabold rounded-md {{ $katBadgeClass }} uppercase tracking-wider">
-                                    {{ $katSurat }}
-                                </span>
-                                <p class="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate">{{ $item->nama_agenda }}</p>
-                            </div>
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 truncate">
-                                📍 {{ $item->lokasi_display ?? $item->lokasi ?: 'Lokasi belum diisi' }} • 🕒 {{ \Carbon\Carbon::parse($item->waktu)->format('H:i') }} WIB
-                            </p>
+            <!-- Card C: Aktivitas Terbaru -->
+            <section class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-6 shadow-xs transition-colors">
+                <h2 class="text-base sm:text-lg font-bold text-gray-800 dark:text-white mb-1">Aktivitas Terbaru</h2>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-5">Log pencatatan data pada sistem</p>
+                <div class="space-y-4">
+                    @forelse ($aktivitasTerbaru as $aktivitas)
+                        <div class="border-b border-gray-50 dark:border-[#233a34] pb-3 last:border-0 last:pb-0">
+                            <p class="text-xs sm:text-sm font-bold text-gray-800 dark:text-white">{{ $aktivitas['judul'] }}</p>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{{ $aktivitas['deskripsi'] }}</p>
+                            <span class="inline-block mt-0.5 text-[10px] text-gray-400 dark:text-gray-500 font-medium">{{ optional($aktivitas['waktu'])->diffForHumans() }}</span>
                         </div>
-                        @if ($item->isBerlangsung())
-                            <span class="self-start sm:self-center rounded-full bg-emerald-600 text-white px-2.5 py-0.5 text-[11px] font-black whitespace-nowrap inline-flex items-center gap-1.5 shadow-xs">
-                                <span class="relative flex h-2 w-2">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-                                </span>
-                                <span>Live</span>
-                            </span>
-                        @else
-                            <span class="self-start sm:self-center rounded-full bg-[#35635b]/10 dark:bg-emerald-400/10 px-3 py-1 text-xs font-bold text-[#35635b] dark:text-emerald-400 whitespace-nowrap">{{ $labelTanggal }}</span>
-                        @endif
-                    </div>
-                @empty
-                    <div class="rounded-xl bg-[#f3f7f6] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] px-4 py-8 text-center text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400">
-                        Belum ada agenda terdekat.
-                    </div>
-                @endforelse
-            </div>
-        </section>
+                    @empty
+                        <p class="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 py-4 text-center">Belum ada aktivitas terbaru.</p>
+                    @endforelse
+                </div>
+            </section>
 
-        <!-- Aktivitas Terbaru -->
-        <section class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-6 shadow-xs transition-colors">
-            <h2 class="text-base sm:text-lg font-bold text-gray-800 dark:text-white mb-1">Aktivitas Terbaru</h2>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-5">Log pencatatan data pada sistem</p>
-            <div class="space-y-4">
-                @forelse ($aktivitasTerbaru as $aktivitas)
-                    <div class="border-b border-gray-50 dark:border-[#233a34] pb-3 last:border-0 last:pb-0">
-                        <p class="text-xs sm:text-sm font-bold text-gray-800 dark:text-white">{{ $aktivitas['judul'] }}</p>
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{{ $aktivitas['deskripsi'] }}</p>
-                        <span class="inline-block mt-0.5 text-[10px] text-gray-400 dark:text-gray-500 font-medium">{{ optional($aktivitas['waktu'])->diffForHumans() }}</span>
-                    </div>
-                @empty
-                    <p class="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 py-4 text-center">Belum ada aktivitas terbaru.</p>
-                @endforelse
-            </div>
-        </section>
+        </div>
 
     </div>
 
@@ -879,3 +810,4 @@
 </script>
 @endpush
 @endsection
+

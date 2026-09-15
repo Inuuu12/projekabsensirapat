@@ -53,11 +53,6 @@
         @endphp
 
         <div class="space-y-4">
-            <nav class="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2">
-                <a href="{{ route('publik.beranda') }}" class="hover:underline">Beranda</a>
-                <span>/</span>
-                <span class="text-gray-800 dark:text-gray-200 font-semibold">Ulang Tahun</span>
-            </nav>
 
             <div>
                 <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">Ulang Tahun Pegawai</h1>

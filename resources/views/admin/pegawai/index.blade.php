@@ -37,86 +37,79 @@
         </div>
     </div>
 
+    <!-- Status Filter Pills (Outside Card, Left) -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'semua', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+           class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? 'semua') === 'semua' ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+            Semua Pegawai 
+        </a>
+        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'aktif', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+           class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'aktif' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+            Aktif 
+        </a>
+        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'pending', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+           class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'pending' ? 'bg-amber-600 text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+            Menunggu Verifikasi 
+        </a>
+        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'ditolak', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+           class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'ditolak' ? 'bg-rose-600 text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+            Ditolak 
+        </a>
+    </div>
+
     <div class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
-        <div class="border-b border-gray-100 dark:border-[#233a34] px-6 py-5 flex flex-col gap-4">
-            <div>
+        <!-- Card Header: Title (Left), Search & Filters (Middle), Button (Right) -->
+        <div class="border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+            <!-- Left: Title & Subtitle -->
+            <div class="shrink-0">
                 <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Daftar Pegawai</h2>
-                <p id="text-count-pegawai" class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $pegawai->count() }} dari {{ $totalPegawai ?? $pegawai->count() }} pegawai.</p>
+                <p id="text-count-pegawai" class="mt-0.5 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $pegawai->count() }} dari {{ $totalPegawai ?? $pegawai->count() }} pegawai.</p>
             </div>
 
-            <!-- Status Filter Pills (Kunker Style) -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-                <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'semua', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
-                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? 'semua') === 'semua' ? 'bg-[#35635b] text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                    Semua Pegawai ({{ $totalPegawai ?? $pegawai->count() }})
-                </a>
-                <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'aktif', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
-                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'aktif' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                    ✅ Aktif ({{ $totalAktif ?? 0 }})
-                </a>
-                <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'pending', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
-                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'pending' ? 'bg-amber-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                    ⏳ Menunggu Verifikasi ({{ $totalPending ?? 0 }})
-                </a>
-                <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'ditolak', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
-                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'ditolak' ? 'bg-rose-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                    ❌ Ditolak ({{ $totalDitolak ?? 0 }})
-                </a>
-            </div>
-
-            <form id="form-search-pegawai" method="GET" action="{{ route('admin.pegawai.lihat') }}" class="w-full">
-                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_180px_180px_180px] lg:items-end">
-                    <div class="sm:col-span-2 lg:col-span-1">
-                        <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Search</label>
+            <!-- Middle: Search Bar & Filters -->
+            <form id="form-search-pegawai" method="GET" action="{{ route('admin.pegawai.lihat') }}" class="flex-1 max-w-2xl w-full">
+                <input type="hidden" name="status" value="{{ request('status', 'semua') }}">
+                <div class="flex flex-col sm:flex-row items-center gap-2">
+                    <div class="relative flex-1 w-full">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
                         <input
                             id="keyword"
                             name="keyword"
                             value="{{ $keyword ?? request('keyword') }}"
                             type="search"
-                            class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
-                            placeholder="Cari nama, NIP, tanggal lahir, jabatan, bidang, no HP, email...">
+                            class="h-10 w-full pl-10 pr-4 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] text-xs text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
+                            placeholder="Cari nama, NIP, jabatan, bidang, HP...">
                     </div>
-                    <div>
-                        <label for="status-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Status Akun</label>
-                        <select
-                            id="status-filter"
-                            name="status"
-                            onchange="document.getElementById('form-search-pegawai').submit()"
-                            class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                            <option value="semua" @selected(($statusFilter ?? 'semua') === 'semua')>Semua Status</option>
-                            <option value="aktif" @selected(($statusFilter ?? 'semua') === 'aktif')>Aktif ({{ $totalAktif ?? 0 }})</option>
-                            <option value="pending" @selected(($statusFilter ?? 'semua') === 'pending')>Menunggu Verifikasi ({{ $totalPending ?? 0 }})</option>
-                            <option value="ditolak" @selected(($statusFilter ?? 'semua') === 'ditolak')>Ditolak ({{ $totalDitolak ?? 0 }})</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="bidang-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Bidang</label>
-                        <select
-                            id="bidang-filter"
-                            name="bidang"
-                            onchange="document.getElementById('form-search-pegawai').submit()"
-                            class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                            <option value="semua" @selected(($bidangFilter ?? 'semua') === 'semua')>Semua Bidang</option>
-                            @foreach (($bidangOptions ?? collect()) as $bidang)
-                                <option value="{{ $bidang }}" @selected(($bidangFilter ?? 'semua') === $bidang)>{{ $bidang }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label for="jabatan-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Jabatan</label>
-                        <select
-                            id="jabatan-filter"
-                            name="jabatan"
-                            onchange="document.getElementById('form-search-pegawai').submit()"
-                            class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                            <option value="semua" @selected(($jabatanFilter ?? 'semua') === 'semua')>Semua Jabatan</option>
-                            @foreach (($jabatanOptions ?? collect()) as $jabatan)
-                                <option value="{{ $jabatan }}" @selected(($jabatanFilter ?? 'semua') === $jabatan)>{{ $jabatan }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <select
+                        id="bidang-filter"
+                        name="bidang"
+                        onchange="document.getElementById('form-search-pegawai').submit()"
+                        class="h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 text-xs font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <option value="semua" @selected(($bidangFilter ?? 'semua') === 'semua')>Semua Bidang</option>
+                        @foreach (($bidangOptions ?? collect()) as $bidang)
+                            <option value="{{ $bidang }}" @selected(($bidangFilter ?? 'semua') === $bidang)>{{ $bidang }}</option>
+                        @endforeach
+                    </select>
+                    <select
+                        id="jabatan-filter"
+                        name="jabatan"
+                        onchange="document.getElementById('form-search-pegawai').submit()"
+                        class="h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 text-xs font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <option value="semua" @selected(($jabatanFilter ?? 'semua') === 'semua')>Semua Jabatan</option>
+                        @foreach (($jabatanOptions ?? collect()) as $jabatan)
+                            <option value="{{ $jabatan }}" @selected(($jabatanFilter ?? 'semua') === $jabatan)>{{ $jabatan }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </form>
+
+            <!-- Right: Action Button -->
+            <button onclick="openModal('modal-tambah-pegawai')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer shrink-0">
+                <span class="text-base leading-none">+</span>
+                <span>Tambah Pegawai</span>
+            </button>
         </div>
         <div class="overflow-x-auto overflow-y-auto max-h-[450px] custom-scrollbar">
             <table class="w-full text-left min-w-[1280px]">
@@ -189,7 +182,6 @@
                                                 onclick="return confirm('Setujui dan aktifkan akun pegawai ini?')"
                                                 class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-2.5 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs"
                                                 title="Setujui / Aktifkan Akun">
-                                                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                                 <span>Setujui</span>
                                             </button>
                                         </form>
@@ -205,7 +197,6 @@
                                                 onclick="return confirm('Tolak/nonaktifkan akun pegawai ini? Pegawai tidak akan bisa login atau presensi.')"
                                                 class="inline-flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 px-2.5 py-1.5 text-xs font-bold transition hover:bg-amber-100 dark:hover:bg-amber-900/60 cursor-pointer shadow-2xs"
                                                 title="{{ $item->isAktif() ? 'Nonaktifkan Akun' : 'Tolak Pendaftaran' }}">
-                                                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
                                                 <span>{{ $item->isAktif() ? 'Nonaktifkan' : 'Tolak' }}</span>
                                             </button>
                                         </form>
@@ -226,7 +217,6 @@
                                         data-email="{{ $item->email }}"
                                         class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-2.5 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs"
                                         title="Edit Pegawai">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         <span>Edit</span>
                                     </button>
 
@@ -237,7 +227,6 @@
                                             type="submit"
                                             class="inline-flex items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/60 px-2.5 py-1.5 text-xs font-bold transition hover:bg-purple-100 dark:hover:bg-purple-900/60 cursor-pointer shadow-2xs"
                                             title="Reset Data Wajah">
-                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                             <span>Reset Wajah</span>
                                         </button>
                                     </form>
@@ -248,7 +237,6 @@
                                         onclick="openDeleteModal('{{ route('admin.pegawai.destroy', $item->id_pegawai) }}', 'Hapus Pegawai?', 'Apakah Anda yakin ingin menghapus pegawai ini?')"
                                         class="inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 px-2.5 py-1.5 text-xs font-bold transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer shadow-2xs"
                                         title="Hapus Pegawai">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         <span>Hapus</span>
                                     </button>
                                 </div>
@@ -264,128 +252,7 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <section class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] p-5 transition-colors">
-            <div class="flex flex-col gap-1">
-                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Master Bidang</h2>
-                <p class="text-xs text-gray-500 dark:text-gray-300">Opsi bidang untuk form tambah dan edit pegawai.</p>
-            </div>
 
-            <form method="POST" action="{{ route('admin.pegawai.bidang.store') }}" class="mt-4 flex flex-col gap-3 sm:flex-row">
-                @csrf
-                <input name="nama_bidang" required class="h-10 min-w-0 flex-1 rounded-lg border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama bidang baru">
-                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">Tambah</button>
-            </form>
-
-            <div class="mt-5">
-                <div class="relative mb-3">
-                    <input type="text" id="search-bidang" placeholder="Cari bidang..." class="w-full h-9 rounded-lg border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] pl-8 pr-3 text-xs text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500">
-                    <svg class="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </div>
-                
-                <div class="border border-gray-200 dark:border-[#284c43] rounded-lg overflow-hidden">
-                    <table class="w-full text-left text-xs text-gray-500 dark:text-gray-300">
-                        <thead class="bg-gray-50 dark:bg-[#1b3832] text-gray-700 dark:text-white uppercase font-bold">
-                            <tr>
-                                <th class="px-4 py-3 font-bold w-12">No</th>
-                                <th class="px-4 py-3 font-bold">Nama Bidang</th>
-                                <th class="px-4 py-3 font-bold text-center w-20">Aksi</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    <div id="container-bidang" class="max-h-56 overflow-y-auto custom-scrollbar bg-white dark:bg-[#152420]">
-                        <table class="w-full text-left text-xs text-gray-500 dark:text-gray-300">
-                            <tbody class="divide-y divide-gray-200 dark:divide-[#233a34]">
-                                @forelse (($bidangMaster ?? collect()) as $index => $bidang)
-                                    <tr class="item-bidang hover:bg-gray-50 dark:hover:bg-[#1b332d] transition" data-name="{{ strtolower($bidang->nama_bidang) }}">
-                                        <td class="px-4 py-3 w-12 text-center">{{ $index + 1 }}</td>
-                                        <td class="px-4 py-3 font-medium text-gray-800 dark:text-white">{{ $bidang->nama_bidang }}</td>
-                                        <td class="px-4 py-3 w-20 text-center">
-                                            <form method="POST" action="{{ route('admin.pegawai.bidang.destroy', $bidang->id_bidang) }}" class="inline-block">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700 p-1 bg-red-50 dark:bg-red-950/40 rounded hover:bg-red-100 dark:hover:bg-red-900/60 transition cursor-pointer" title="Hapus bidang">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="px-4 py-4 text-center text-xs text-gray-500 dark:text-gray-400">Belum ada master bidang.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] p-5 transition-colors">
-            <div class="flex flex-col gap-1">
-                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Master Jabatan</h2>
-                <p class="text-xs text-gray-500 dark:text-gray-300">Opsi jabatan untuk form tambah dan edit pegawai.</p>
-            </div>
-
-            <form method="POST" action="{{ route('admin.pegawai.jabatan.store') }}" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_180px_auto]">
-                @csrf
-                <input name="nama_jabatan" required class="h-10 rounded-lg border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20" placeholder="Nama jabatan baru">
-                <select name="kategori" class="h-10 rounded-lg border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                    <option value="Struktural">Struktural</option>
-                    <option value="Jabatan Fungsional">Jabatan Fungsional</option>
-                    <option value="Lainnya">Lainnya</option>
-                </select>
-                <button type="submit" class="h-10 rounded-lg bg-[#04733f] px-4 text-sm font-bold text-white transition hover:bg-[#035f35] cursor-pointer">Tambah</button>
-            </form>
-
-            <div class="mt-5">
-                <div class="relative mb-3">
-                    <input type="text" id="search-jabatan" placeholder="Cari jabatan..." class="w-full h-9 rounded-lg border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] pl-8 pr-3 text-xs text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500">
-                    <svg class="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </div>
-                
-                <div class="border border-gray-200 dark:border-[#284c43] rounded-lg overflow-hidden">
-                    <table class="w-full text-left text-xs text-gray-500 dark:text-gray-300">
-                        <thead class="bg-gray-50 dark:bg-[#1b3832] text-gray-700 dark:text-white uppercase font-bold">
-                            <tr>
-                                <th class="px-4 py-3 font-bold w-12">No</th>
-                                <th class="px-4 py-3 font-bold">Nama Jabatan</th>
-                                <th class="px-4 py-3 font-bold w-32">Kategori</th>
-                                <th class="px-4 py-3 font-bold text-center w-20">Aksi</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    <div id="container-jabatan" class="max-h-56 overflow-y-auto custom-scrollbar bg-white dark:bg-[#152420]">
-                        <table class="w-full text-left text-xs text-gray-500 dark:text-gray-300">
-                            <tbody class="divide-y divide-gray-200 dark:divide-[#233a34]">
-                                @forelse (($jabatanMaster ?? collect()) as $index => $jabatan)
-                                    <tr class="item-jabatan hover:bg-gray-50 dark:hover:bg-[#1b332d] transition" data-name="{{ strtolower($jabatan->nama_jabatan . ' ' . $jabatan->kategori) }}">
-                                        <td class="px-4 py-3 w-12 text-center">{{ $index + 1 }}</td>
-                                        <td class="px-4 py-3 font-medium text-gray-800 dark:text-white">{{ $jabatan->nama_jabatan }}</td>
-                                        <td class="px-4 py-3 w-32"><span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 dark:bg-[#1a2d29] text-gray-600 dark:text-gray-300">{{ $jabatan->kategori ?: 'Lainnya' }}</span></td>
-                                        <td class="px-4 py-3 w-20 text-center">
-                                            <form method="POST" action="{{ route('admin.pegawai.jabatan.destroy', $jabatan->id_jabatan) }}" class="inline-block">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700 p-1 bg-red-50 dark:bg-red-950/40 rounded hover:bg-red-100 dark:hover:bg-red-900/60 transition cursor-pointer" title="Hapus jabatan">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="px-4 py-4 text-center text-xs text-gray-500 dark:text-gray-400">Belum ada master jabatan.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
 </div>
 
 <div id="modal-tambah-pegawai" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-3 sm:p-4">

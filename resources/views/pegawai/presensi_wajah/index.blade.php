@@ -104,7 +104,7 @@
                 </div>
             @else
                 <div class="relative w-full max-w-md mx-auto aspect-[4/3] bg-gray-900 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center" id="video-container">
-                    <p id="status-text" class="text-white text-sm font-medium absolute z-10 animate-pulse">Memuat model kecerdasan buatan...</p>
+                    <p id="status-text" class="text-white text-sm font-medium absolute z-10 animate-pulse">Memuat sistem pendeteksi wajah...</p>
                     <video id="video" class="absolute top-0 left-0 w-full h-full object-cover hidden" autoplay muted playsinline></video>
                     <canvas id="overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"></canvas>
                     

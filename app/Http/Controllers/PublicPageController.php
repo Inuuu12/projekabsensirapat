@@ -31,9 +31,8 @@ class PublicPageController extends Controller
     public function index(NewsApiService $newsService)
     {
         $today = Carbon::today(self::PUBLIC_TIMEZONE);
-
         // 1. Ambil kandidat agenda aktif (hari ini dan masa depan)
-        $rawAgendas = $this->queryOrDefault(fn () => Agenda::query()
+        $rawAgendas = $this->queryOrDefault(fn () => Agenda::with('dinas')
             ->whereDate('tanggal', '>=', $today)
             ->orderBy('tanggal', 'asc')
             ->orderBy('waktu', 'asc')
@@ -42,7 +41,7 @@ class PublicPageController extends Controller
 
         // Fallback jika belum ada agenda hari ini atau mendatang sama sekali, ambil riwayat terbaru
         if ($rawAgendas->isEmpty()) {
-            $rawAgendas = $this->queryOrDefault(fn () => Agenda::query()
+            $rawAgendas = $this->queryOrDefault(fn () => Agenda::with('dinas')
                 ->orderBy('tanggal', 'desc')
                 ->orderBy('waktu', 'desc')
                 ->take(6)
@@ -102,7 +101,7 @@ class PublicPageController extends Controller
         $tab = $request->query('tab', 'semua');
 
         $agenda = $this->queryOrDefault(function () use ($today, $keyword, $tab) {
-            return Agenda::query()
+            return Agenda::with('dinas')
                 ->when($keyword, function ($query, $keyword) {
                     $query->where(function ($search) use ($keyword) {
                         $search->where('nama_agenda', 'like', "%{$keyword}%")
@@ -126,8 +125,8 @@ class PublicPageController extends Controller
     {
         $today = Carbon::today(self::PUBLIC_TIMEZONE);
         $agenda = $this->queryOrDefault(fn () => $id
-            ? Agenda::findOrFail($id)
-            : Agenda::whereDate('tanggal', '>=', $today)->orderBy('tanggal')->orderBy('waktu')->first());
+            ? Agenda::with('dinas')->findOrFail($id)
+            : Agenda::with('dinas')->whereDate('tanggal', '>=', $today)->orderBy('tanggal')->orderBy('waktu')->first());
         $qrCode = $agenda
             ? $this->queryOrDefault(fn () => QRCode::where('id_agenda', $agenda->id_agenda)->first())
             : null;

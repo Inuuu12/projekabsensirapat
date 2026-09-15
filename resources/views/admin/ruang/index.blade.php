@@ -2,13 +2,6 @@
 
 @section('title', 'Daftar Ruangan')
 
-@section('header_actions')
-<button onclick="openModal('modal-tambah-ruang')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer">
-    <span class="text-base leading-none">+</span>
-    <span>Tambah Ruang</span>
-</button>
-@endsection
-
 @section('content')
 <div class="max-w-[1400px] mx-auto space-y-6">
 
@@ -18,17 +11,11 @@
                 <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Ruangan Tersedia</p>
                 <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalTersedia ?? $ruang->where('status', 'tersedia')->count() }}</p>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-transparent dark:border-[#233a34] flex items-center justify-center p-2">
-                <img src="{{ asset('assets/foto/ruangantersedia.png') }}" alt="Ruangan Tersedia" class="w-full h-full object-contain">
-            </div>
         </div>
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 shadow-xs flex items-center justify-between transition-colors">
             <div>
                 <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Ruangan Terpakai</p>
                 <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalTerpakai ?? $ruang->where('status', 'terpakai')->count() }}</p>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-transparent dark:border-[#233a34] flex items-center justify-center p-2">
-                <img src="{{ asset('assets/foto/ruanganterpakai.png') }}" alt="Ruangan Terpakai" class="w-full h-full object-contain">
             </div>
         </div>
         <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 shadow-xs flex items-center justify-between transition-colors">
@@ -36,33 +23,56 @@
                 <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">Total Ruangan</p>
                 <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalRuangan ?? $ruang->count() }}</p>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-transparent dark:border-[#233a34] flex items-center justify-center p-2">
-                <img src="{{ asset('assets/foto/totalruangan.png') }}" alt="Total Ruangan" class="w-full h-full object-contain">
-            </div>
         </div>
     </div>
 
+    <!-- Status Filter Pills (Outside Card, Left) -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <a href="{{ route('admin.ruang.lihat', array_filter(['status' => 'semua', 'keyword' => request('keyword')])) }}"
+           class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? 'semua') === 'semua' ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+            Semua Ruangan 
+        </a>
+        <a href="{{ route('admin.ruang.lihat', array_filter(['status' => 'tersedia', 'keyword' => request('keyword')])) }}"
+           class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'tersedia' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+            Tersedia 
+        </a>
+        <a href="{{ route('admin.ruang.lihat', array_filter(['status' => 'terpakai', 'keyword' => request('keyword')])) }}"
+           class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'terpakai' ? 'bg-amber-600 text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+            Terpakai 
+        </a>
+    </div>
+
     <section class="overflow-hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#152420] shadow-xs transition-colors">
-        <div class="flex flex-col gap-4 border-b border-gray-100 dark:border-[#233a34] px-6 py-5">
-            <div class="flex items-center justify-between">
+        <!-- Card Header: Title (Left), Search (Middle), Button (Right) -->
+        <div class="border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+            <!-- Left: Title & Subtitle -->
+            <div class="shrink-0">
                 <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Data Ruangan Rapat</h2>
+                <p id="text-count-ruang" class="mt-0.5 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $ruang->count() }} dari {{ $totalRuangan ?? $ruang->count() }} ruangan.</p>
             </div>
-            
-            <!-- Status Filter Pills (Kunker Style) -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-                <a href="{{ route('admin.ruang.lihat', ['status' => 'semua']) }}"
-                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? 'semua') === 'semua' ? 'bg-[#35635b] text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                    Semua Ruangan ({{ $totalRuangan ?? $ruang->count() }})
-                </a>
-                <a href="{{ route('admin.ruang.lihat', ['status' => 'tersedia']) }}"
-                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'tersedia' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                    ✅ Tersedia ({{ $totalTersedia ?? $ruang->where('status', 'tersedia')->count() }})
-                </a>
-                <a href="{{ route('admin.ruang.lihat', ['status' => 'terpakai']) }}"
-                   class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'terpakai' ? 'bg-amber-600 text-white shadow-sm' : 'bg-gray-100 dark:bg-[#0f1c19] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-                    🚪 Terpakai ({{ $totalTerpakai ?? $ruang->where('status', 'terpakai')->count() }})
-                </a>
-            </div>
+
+            <!-- Middle: Search Bar -->
+            <form id="form-search-ruang" method="GET" action="{{ route('admin.ruang.lihat') }}" class="flex-1 max-w-xl w-full">
+                <input type="hidden" name="status" value="{{ request('status', 'semua') }}">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input
+                        id="keyword"
+                        name="keyword"
+                        value="{{ $keyword ?? request('keyword') }}"
+                        type="search"
+                        class="h-10 w-full pl-10 pr-4 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] text-xs text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
+                        placeholder="Cari nama ruangan, lokasi, kapasitas, fasilitas...">
+                </div>
+            </form>
+
+            <!-- Right: Action Button -->
+            <button onclick="openModal('modal-tambah-ruang')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer shrink-0">
+                <span class="text-base leading-none">+</span>
+                <span>Tambah Ruang</span>
+            </button>
         </div>
 
         <div class="overflow-x-auto">
@@ -108,7 +118,6 @@
                                         data-keterangan="{{ $item->keterangan }}"
                                         class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs"
                                         title="Edit Ruangan">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         <span>Edit</span>
                                     </button>
                                     <button
@@ -116,7 +125,6 @@
                                         onclick="openDeleteModal('{{ route('admin.ruang.destroy', $item->id_ruangrapat) }}', 'Hapus Ruangan?', 'Apakah Anda yakin ingin menghapus ruangan ini?')"
                                         class="inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer shadow-2xs"
                                         title="Hapus Ruangan">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         <span>Hapus</span>
                                     </button>
                                 </div>

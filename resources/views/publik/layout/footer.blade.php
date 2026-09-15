@@ -26,7 +26,7 @@
 
                 <!-- Social Media Buttons -->
                 <div class="flex items-center space-x-2 pt-2">
-                    <a href="https://www.instagram.com/diskominfokabbogor?igsh=MXNkbDF1dDIyN3FrZg==" 
+                    <a href="{{ \App\Services\AppSetting::get('sirapi_instagram_url', 'https://www.instagram.com/diskominfokabbogor?igsh=MXNkbDF1dDIyN3FrZg==') }}" 
                        target="_blank" rel="noopener noreferrer" title="Instagram Diskominfo Kab. Bogor"
                        class="w-7 h-7 rounded-lg bg-white/10 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 text-white flex items-center justify-center transition-all duration-300 shadow-xs hover:scale-105"
                        aria-label="Instagram">
@@ -35,7 +35,7 @@
                         </svg>
                     </a>
                     
-                    <a href="https://www.facebook.com/share/1RYDNtxEpS/" 
+                    <a href="{{ \App\Services\AppSetting::get('sirapi_facebook_url', 'https://www.facebook.com/share/1RYDNtxEpS/') }}" 
                        target="_blank" rel="noopener noreferrer" title="Facebook Diskominfo Kab. Bogor"
                        class="w-7 h-7 rounded-lg bg-white/10 hover:bg-[#1877F2] text-white flex items-center justify-center transition-all duration-300 shadow-xs hover:scale-105"
                        aria-label="Facebook">
@@ -97,7 +97,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                         </div>
-                        <p class="leading-normal">Jl. Tegar Beriman No.1, Pakansari, Kec. Cibinong, Kabupaten Bogor, Jawa Barat 16914</p>
+                        <p class="leading-normal">{{ \App\Services\AppSetting::get('sirapi_alamat', 'Jl. Tegar Beriman No.1, Pakansari, Kec. Cibinong, Kabupaten Bogor, Jawa Barat 16914') }}</p>
                     </div>
 
                     <div class="flex items-center space-x-3">
@@ -106,7 +106,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                             </svg>
                         </div>
-                        <p class="leading-normal">(021) 8758605</p>
+                        <p class="leading-normal">{{ \App\Services\AppSetting::get('sirapi_telepon', '(021) 8758605') }}</p>
                     </div>
 
                     <div class="flex items-center space-x-3">
@@ -115,7 +115,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                         </div>
-                        <p class="leading-normal">diskominfo@bogorkab.go.id</p>
+                        <p class="leading-normal">{{ \App\Services\AppSetting::get('sirapi_email', 'diskominfo@bogorkab.go.id') }}</p>
                     </div>
                 </div>
             </div>
@@ -138,9 +138,6 @@
                 @else
                     <a href="{{ route('admin.login') }}" 
                        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-oren-utama text-gray-300 hover:text-white border border-white/15 text-xs font-bold transition-all shadow-xs hover:shadow-md group">
-                        <svg class="w-3.5 h-3.5 text-oren-utama group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
                         <span>Login Admin</span>
                     </a>
                 @endif

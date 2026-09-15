@@ -70,13 +70,8 @@
             <!-- Header Bar -->
             <div class="flex items-center justify-between">
                 <a href="{{ route('publik.beranda') }}" class="inline-flex items-center space-x-1.5 text-xs md:text-sm font-bold text-ijo-semitua dark:text-emerald-400 hover:underline">
-                    <span>&larr;</span>
                     <span>Kembali</span>
                 </a>
-
-                <span class="bg-oren-muda dark:bg-amber-950/60 text-oren-tua dark:text-amber-300 font-bold text-xs px-3.5 py-1 rounded-full border border-oren-utama/30 dark:border-amber-700/40">
-                    Kunjungan
-                </span>
             </div>
 
             <!-- Title & Subtitle -->
