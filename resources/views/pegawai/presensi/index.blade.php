@@ -195,8 +195,7 @@
                         <form action="{{ route('pegawai.logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm font-bold text-red-600 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer">
-                                <i data-lucide="power" class="h-4 w-4"></i>
-                                <span>Logout</span>
+                                <span>Keluar</span>
                             </button>
                         </form>
                     </div>

@@ -136,11 +136,8 @@
 
     <!-- Bottom Logout Button -->
     <div class="p-4 border-t border-gray-100 dark:border-[#233a34]">
-        <button type="button" onclick="openAdminLogoutModal()" class="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-600 dark:bg-white/10 dark:hover:bg-red-600/90 text-red-600 hover:text-white dark:text-white border border-red-200 dark:border-white/15 text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer group" title="Logout">
-            <svg class="w-4 h-4 transform rotate-180 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-            </svg>
-            <span>Keluar / Logout</span>
+        <button type="button" onclick="openAdminLogoutModal()" class="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-600 dark:bg-white/10 dark:hover:bg-red-600/90 text-red-600 hover:text-white dark:text-white border border-red-200 dark:border-white/15 text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer group" title="Keluar">
+            <span>Keluar</span>
         </button>
     </div>
 
