@@ -15,8 +15,8 @@
                 <div class="flex items-center gap-3">
                     <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="w-10 h-10 md:w-11 md:h-11 object-contain shrink-0 drop-shadow-sm">
                     <div class="flex flex-col justify-center min-w-0">
-                        <span class="font-black text-lg md:text-xl tracking-wide text-white leading-tight">{{ $appName }}</span>
-                        <p class="text-[10px] sm:text-[11px] font-medium text-white/80 leading-none mt-0.5">{{ $organizationName }}</p>
+                        <span class="font-black text-lg md:text-xl tracking-wide text-white leading-none">{{ $appName }}</span>
+                        <p class="text-[8px] sm:text-[9.5px] font-bold text-white/80 tracking-wider uppercase mt-1 leading-none">RAPAT DAN PRESENSI INTEGRASI DASHBOARD</p>
                     </div>
                 </div>
 
@@ -97,7 +97,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                         </div>
-                        <p class="leading-normal">Jl. Tegar Beriman, Cibinong, Kabupaten Bogor, Jawa Barat</p>
+                        <p class="leading-normal">Jl. Tegar Beriman No.1, Pakansari, Kec. Cibinong, Kabupaten Bogor, Jawa Barat 16914</p>
                     </div>
 
                     <div class="flex items-center space-x-3">
@@ -106,7 +106,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                             </svg>
                         </div>
-                        <p class="leading-normal">(021) xxxx-xxxx</p>
+                        <p class="leading-normal">(021) 8758605</p>
                     </div>
 
                     <div class="flex items-center space-x-3">

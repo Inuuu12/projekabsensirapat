@@ -31,31 +31,45 @@ class PublicPageController extends Controller
     public function index(NewsApiService $newsService)
     {
         $today = Carbon::today(self::PUBLIC_TIMEZONE);
-        $agendaHariIni = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', $today)
-            ->orderBy('waktu')
-            ->take(6)
-            ->get(), collect());
-        $totalAgendaHariIni = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', $today)->count(), 0);
-        $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::query()
+
+        // 1. Ambil kandidat agenda aktif (hari ini dan masa depan)
+        $rawAgendas = $this->queryOrDefault(fn () => Agenda::query()
             ->whereDate('tanggal', '>=', $today)
-            ->orderBy('tanggal')
-            ->orderBy('waktu')
-            ->take(6)
+            ->orderBy('tanggal', 'asc')
+            ->orderBy('waktu', 'asc')
+            ->take(20)
             ->get(), collect());
 
-        if ($agendaHariIni->isEmpty() && $agendaTerbaru->isEmpty()) {
-            $agendaTerbaru = $this->queryOrDefault(fn () => Agenda::query()
+        // Fallback jika belum ada agenda hari ini atau mendatang sama sekali, ambil riwayat terbaru
+        if ($rawAgendas->isEmpty()) {
+            $rawAgendas = $this->queryOrDefault(fn () => Agenda::query()
                 ->orderBy('tanggal', 'desc')
                 ->orderBy('waktu', 'desc')
-                ->take(3)
+                ->take(6)
                 ->get(), collect());
         }
 
-        $agendaBeranda = $agendaHariIni->isNotEmpty() ? $agendaHariIni : $agendaTerbaru;
-        $agendaBerandaLabel = $agendaHariIni->isNotEmpty() ? 'Agenda Hari Ini' : 'Agenda Terdekat';
-        $agendaBerandaDescription = $agendaHariIni->isNotEmpty()
-            ? $today->translatedFormat('l, d F Y') . ' • ' . $totalAgendaHariIni . ' kegiatan terjadwal'
-            : ($agendaBeranda->isNotEmpty() ? 'Menampilkan agenda terkini' : 'Belum ada agenda terjadwal');
+        // 2. Terapkan Smart Live Priority Sorting: Berlangsung > Mendatang Hari Ini > Mendatang Esok > Selesai
+        $agendaBeranda = Agenda::sortSmartLivePriority($rawAgendas)->take(6);
+        $totalAgendaHariIni = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', $today)->count(), 0);
+
+        $agendaHariIni = $agendaBeranda;
+        $agendaTerbaru = $agendaBeranda;
+
+        // 3. Label & Deskripsi Cerdas Beranda
+        $hasBerlangsung = $agendaBeranda->contains(fn ($a) => $a->isBerlangsung());
+        $hasMendatang = $agendaBeranda->contains(fn ($a) => $a->isMendatang());
+
+        $agendaBerandaLabel = $hasBerlangsung ? 'Agenda Berlangsung & Terdekat' : 'Agenda Terdekat';
+        if ($hasBerlangsung) {
+            $agendaBerandaDescription = 'Ada kegiatan rapat yang sedang berlangsung saat ini';
+        } elseif ($hasMendatang) {
+            $agendaBerandaDescription = 'Jadwal kegiatan terdekat yang akan segera berlangsung';
+        } elseif ($totalAgendaHariIni > 0) {
+            $agendaBerandaDescription = $today->translatedFormat('l, d F Y') . ' • Seluruh agenda hari ini telah selesai';
+        } else {
+            $agendaBerandaDescription = 'Menampilkan agenda terkini';
+        }
         $beritaTerbaru = $newsService->getLatest(3);
         $galeri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri()->take(4), collect());
         $totalGaleri = $this->queryOrDefault(fn () => $this->dokumentasiAgendaGaleri()->count(), 0);

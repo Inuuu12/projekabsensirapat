@@ -129,11 +129,17 @@ class AdminDashboardController extends Controller
             ]);
         }
 
-        $agendaTerdekat = Agenda::whereDate('tanggal', '>=', $today)
+        $rawAgendaTerdekat = Agenda::whereDate('tanggal', '>=', $today)
             ->orderBy('tanggal', 'asc')
             ->orderBy('waktu', 'asc')
-            ->take(4)
+            ->take(12)
             ->get();
+
+        if ($rawAgendaTerdekat->isEmpty()) {
+            $rawAgendaTerdekat = Agenda::latest('tanggal')->latest('waktu')->take(4)->get();
+        }
+
+        $agendaTerdekat = Agenda::sortSmartLivePriority($rawAgendaTerdekat)->take(4);
 
         $aktivitasTerbaru = collect()
             ->merge(Agenda::latest('created_at')->take(3)->get()->map(fn ($item) => [

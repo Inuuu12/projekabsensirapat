@@ -251,6 +251,67 @@ class Agenda extends Model
         return self::STATUS_SELESAI;
     }
 
+    /**
+     * Menghitung bobot skor prioritas Smart Live:
+     * 1 = Sedang Berlangsung saat ini (Live / Now)
+     * 2 = Akan Datang hari ini (Urut jam mulai terdekat)
+     * 3 = Akan Datang hari esok / masa depan
+     * 4 = Selesai hari ini (Urut jam selesai terbaru)
+     * 5 = Selesai masa lalu (Urut tanggal terbaru)
+     */
+    public function getSmartLivePriorityScore(): int
+    {
+        if ($this->isBerlangsung()) {
+            return 1;
+        }
+
+        $dateObj = $this->tanggal instanceof Carbon
+            ? $this->tanggal
+            : ($this->tanggal ? Carbon::parse($this->tanggal) : null);
+
+        $isToday = $dateObj ? $dateObj->isToday() : false;
+
+        if ($this->isMendatang()) {
+            return $isToday ? 2 : 3;
+        }
+
+        return $isToday ? 4 : 5;
+    }
+
+    /**
+     * Mengurutkan koleksi agenda dengan prioritas Smart Live.
+     */
+    public static function sortSmartLivePriority(mixed $agendas): \Illuminate\Support\Collection
+    {
+        $collection = $agendas instanceof \Illuminate\Support\Collection ? $agendas : collect($agendas);
+
+        return $collection->sort(function (Agenda $a, Agenda $b) {
+            $scoreA = $a->getSmartLivePriorityScore();
+            $scoreB = $b->getSmartLivePriorityScore();
+
+            if ($scoreA !== $scoreB) {
+                return $scoreA <=> $scoreB;
+            }
+
+            $dateA = $a->tanggal instanceof Carbon ? $a->tanggal->toDateString() : (string) $a->tanggal;
+            $dateB = $b->tanggal instanceof Carbon ? $b->tanggal->toDateString() : (string) $b->tanggal;
+
+            // Untuk agenda selesai (score 4 & 5), tampilkan yang paling baru selesai (desc)
+            if ($scoreA >= 4) {
+                if ($dateA !== $dateB) {
+                    return strcmp($dateB, $dateA);
+                }
+                return strcmp((string) $b->waktu, (string) $a->waktu);
+            }
+
+            // Untuk agenda berlangsung & mendatang (score 1, 2, 3), urutkan tanggal & jam lebih awal (asc)
+            if ($dateA !== $dateB) {
+                return strcmp($dateA, $dateB);
+            }
+            return strcmp((string) $a->waktu, (string) $b->waktu);
+        })->values();
+    }
+
     public function isSuratInternal(): bool
     {
         return strtolower((string) ($this->kategori_surat ?? 'internal')) === 'internal';

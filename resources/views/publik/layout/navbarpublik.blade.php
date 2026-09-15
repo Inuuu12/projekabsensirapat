@@ -11,8 +11,8 @@
         <a href="{{ route('publik.beranda') }}" class="flex items-center gap-2 sm:gap-3 group min-w-0 pr-2">
             <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 object-contain group-hover:scale-105 transition-transform drop-shadow-sm shrink-0">
             <div class="flex flex-col justify-center min-w-0">
-                <span class="font-black text-[13px] sm:text-lg md:text-xl tracking-wide text-white leading-tight line-clamp-2 sm:line-clamp-none">{{ $appName }}</span>
-                <p class="text-[9.5px] sm:text-[11px] font-medium text-white/80 dark:text-gray-300 leading-none truncate mt-0.5">{{ $organizationName }}</p>
+                <span class="font-black text-base sm:text-lg md:text-xl tracking-wide text-white leading-none">RAPID</span>
+                <p class="text-[7.5px] sm:text-[9.5px] md:text-[10px] font-bold text-white/85 dark:text-gray-300 tracking-wider uppercase leading-none mt-1 whitespace-nowrap">RAPAT DAN PRESENSI INTEGRASI DASHBOARD</p>
             </div>
         </a>
 

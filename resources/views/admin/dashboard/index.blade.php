@@ -6,17 +6,9 @@
 <div class="max-w-[1400px] mx-auto space-y-6">
 
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-            <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
-            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">Selamat datang kembali di SIRAPI. Pantau analitik agenda dan laporan kegiatan Diskominfo.</p>
-        </div>
-        <div class="flex items-center gap-2 self-start sm:self-auto">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold border border-emerald-100 dark:border-emerald-800/40 shadow-2xs">
-                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Sistem Real-Time</span>
-            </span>
-        </div>
+    <div>
+        <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">Selamat datang kembali di SIRAPI. Pantau analitik agenda dan laporan kegiatan Diskominfo.</p>
     </div>
 
     <!-- 1. Top Stats Cards Grid (Matching Modern Dashboard Reference) -->
@@ -32,9 +24,8 @@
             </div>
             <div class="mt-3">
                 <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($totalAgendaHariIni ?? 0) }}</p>
-                <div class="mt-1 flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                    <span>🟢</span>
-                    <span>Agenda aktif hari ini</span>
+                <div class="mt-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                    Agenda aktif hari ini
                 </div>
             </div>
             <!-- Mini Sparkline Wave (Decorative SVG) -->
@@ -55,9 +46,8 @@
             </div>
             <div class="mt-3">
                 <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($totalRuangRapat ?? 0) }}</p>
-                <div class="mt-1 flex items-center gap-1.5 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
-                    <span>🏢</span>
-                    <span>Ruangan siap digunakan</span>
+                <div class="mt-1 text-xs font-semibold text-cyan-600 dark:text-cyan-400">
+                    Ruangan siap digunakan
                 </div>
             </div>
             <div class="mt-2 h-7 w-full overflow-hidden opacity-65 group-hover:opacity-100 transition-opacity">
@@ -77,9 +67,8 @@
             </div>
             <div class="mt-3">
                 <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($totalKunjungan ?? 0) }}</p>
-                <div class="mt-1 flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-                    <span>👥</span>
-                    <span>Tamu hadir hari ini</span>
+                <div class="mt-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                    Tamu hadir hari ini
                 </div>
             </div>
             <div class="mt-2 h-7 w-full overflow-hidden opacity-65 group-hover:opacity-100 transition-opacity">
@@ -99,9 +88,8 @@
             </div>
             <div class="mt-3">
                 <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($totalAduanBaru ?? $totalMasukkanBaru ?? 0) }}</p>
-                <div class="mt-1 flex items-center gap-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
-                    <span>📩</span>
-                    <span>Menunggu verifikasi</span>
+                <div class="mt-1 text-xs font-semibold text-amber-600 dark:text-amber-400">
+                    Menunggu verifikasi
                 </div>
             </div>
             <div class="mt-2 h-7 w-full overflow-hidden opacity-65 group-hover:opacity-100 transition-opacity">
@@ -310,7 +298,17 @@
                                 📍 {{ $item->lokasi_display ?? $item->lokasi ?: 'Lokasi belum diisi' }} • 🕒 {{ \Carbon\Carbon::parse($item->waktu)->format('H:i') }} WIB
                             </p>
                         </div>
-                        <span class="self-start sm:self-center rounded-full bg-[#35635b]/10 dark:bg-emerald-400/10 px-3 py-1 text-xs font-bold text-[#35635b] dark:text-emerald-400 whitespace-nowrap">{{ $labelTanggal }}</span>
+                        @if ($item->isBerlangsung())
+                            <span class="self-start sm:self-center rounded-full bg-emerald-600 text-white px-2.5 py-0.5 text-[11px] font-black whitespace-nowrap inline-flex items-center gap-1.5 shadow-xs">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                </span>
+                                <span>Live</span>
+                            </span>
+                        @else
+                            <span class="self-start sm:self-center rounded-full bg-[#35635b]/10 dark:bg-emerald-400/10 px-3 py-1 text-xs font-bold text-[#35635b] dark:text-emerald-400 whitespace-nowrap">{{ $labelTanggal }}</span>
+                        @endif
                     </div>
                 @empty
                     <div class="rounded-xl bg-[#f3f7f6] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] px-4 py-8 text-center text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400">

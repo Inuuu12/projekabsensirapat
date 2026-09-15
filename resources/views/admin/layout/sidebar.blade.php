@@ -12,17 +12,17 @@
 <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity"></div>
 
 <!-- Sidebar Container -->
-<aside id="sidebar-menu" class="fixed md:static inset-y-0 left-0 z-50 w-72 md:w-64 h-screen bg-[#35635b] dark:bg-[#0f1c19] dark:border-r dark:border-[#233a34] text-white flex flex-col justify-between font-sans shadow-2xl md:shadow-[6px_0_30px_rgba(0,0,0,0.22)] select-none transform -translate-x-full md:translate-x-0 transition-all duration-300 ease-in-out">
+<aside id="sidebar-menu" class="fixed md:static inset-y-0 left-0 z-50 w-72 md:w-[270px] h-screen bg-[#35635b] dark:bg-[#0f1c19] dark:border-r dark:border-[#233a34] text-white flex flex-col justify-between font-sans shadow-2xl md:shadow-[6px_0_30px_rgba(0,0,0,0.22)] select-none transform -translate-x-full md:translate-x-0 transition-all duration-300 ease-in-out">
     
     <div>
-        <!-- Logo & Header -->
-        <div class="p-4 flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-white/10 dark:bg-white/5 border border-white/20 dark:border-white/10 p-1 flex items-center justify-center shrink-0 shadow-md backdrop-blur-xs group">
-                <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kab. Bogor" class="w-full h-full object-contain drop-shadow group-hover:scale-105 transition-transform duration-300">
+        <!-- Logo & Header (Matching Reference Photo) -->
+        <div class="px-4 py-4 flex items-center gap-3">
+            <div class="w-8 h-9 flex items-center justify-center shrink-0">
+                <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kab. Bogor" class="w-full h-full object-contain drop-shadow">
             </div>
             <div class="min-w-0 flex-1">
-                <h1 class="font-black text-lg leading-tight tracking-wide text-white">{{ $appName }}</h1>
-                <p class="text-[11px] font-medium text-white/80 dark:text-gray-300 leading-tight">{{ $organizationName }}</p>
+                <h1 class="font-black text-xl leading-none tracking-wide text-white">RAPID</h1>
+                <p class="text-[8px] font-bold text-gray-300/90 dark:text-gray-400 tracking-wider uppercase mt-1 leading-none whitespace-nowrap">RAPAT DAN PRESENSI INTEGRASI DASHBOARD</p>
             </div>
             <!-- Mobile Close Button -->
             <button onclick="toggleSidebar()" class="md:hidden ml-auto w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white focus:outline-none shrink-0 transition-colors cursor-pointer" title="Tutup Menu">
