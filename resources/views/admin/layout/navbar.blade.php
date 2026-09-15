@@ -13,7 +13,9 @@
         str_contains($routeName, 'pegawai') => 'Data Pegawai',
         str_contains($routeName, 'tamu') => 'Data Tamu Rapat',
         str_contains($routeName, 'kunjungan') => 'Daftar Kunjungan',
-        str_contains($routeName, 'dinas') && !str_contains($routeName, 'akun') => 'Master Data Dinas',
+        str_contains($routeName, 'instansi') => 'Master Data Instansi',
+        str_contains($routeName, 'dinas') && !str_contains($routeName, 'akun') => 'Master Data Instansi',
+        str_contains($routeName, 'kecamatan') && !str_contains($routeName, 'akun') => 'Master Data Instansi',
         str_contains($routeName, 'akun.dinas') => 'Manajemen Akun Dinas',
         str_contains($routeName, 'akun.kecamatan') => 'Manajemen Akun Kecamatan',
         str_contains($routeName, 'masukkan') => 'Pengaduan Masyarakat',
@@ -30,7 +32,9 @@
         str_contains($routeName, 'pegawai') => 'Kelola data dan verifikasi akun pegawai.',
         str_contains($routeName, 'tamu') => 'Kelola riwayat presensi tamu rapat.',
         str_contains($routeName, 'kunjungan') => 'Kelola dan pantau seluruh riwayat kunjungan di sini.',
-        str_contains($routeName, 'dinas') && !str_contains($routeName, 'akun') => 'Kelola master data dinas dan satuan kerja perangkat daerah.',
+        str_contains($routeName, 'instansi') => 'Kelola master data dinas dan kecamatan dalam satu tempat.',
+        str_contains($routeName, 'dinas') && !str_contains($routeName, 'akun') => 'Kelola master data dinas dan kecamatan dalam satu tempat.',
+        str_contains($routeName, 'kecamatan') && !str_contains($routeName, 'akun') => 'Kelola master data dinas dan kecamatan dalam satu tempat.',
         str_contains($routeName, 'akun.dinas') => 'Kelola data login dan kredensial akun perwakilan dinas.',
         str_contains($routeName, 'akun.kecamatan') => 'Kelola data login dan kredensial akun perwakilan kecamatan.',
         str_contains($routeName, 'masukkan') => 'Kelola dan balasan pengaduan masyarakat.',
@@ -57,8 +61,16 @@
     </div>
 
     <!-- Right Side: Actions, Mode Gelap/Terang, Tanggal, dan Akun Profile Pill -->
-    <div class="flex items-center space-x-1.5 sm:space-x-4 shrink-0">
+    <div class="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
         @yield('header_actions')
+
+        <!-- Setting / Pengaturan Button (Pojok Atas Dashboard - Modal Popup) -->
+        <button type="button" onclick="openModal('modal-setting-popup')" title="Pengaturan Aplikasi & Master Data" class="p-2 sm:p-2.5 rounded-xl bg-gray-100 dark:bg-[#0f1c19] border border-gray-200/80 dark:border-[#284c43] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#1b3832] hover:text-[#35635b] dark:hover:text-emerald-400 transition-all focus:outline-none shadow-2xs cursor-pointer flex items-center justify-center">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+        </button>
 
         <!-- Dark / Light Mode Switcher Button -->
         <button type="button" onclick="toggleSirapiTheme()" title="Ubah Mode Gelap / Terang" class="p-2 sm:p-2.5 rounded-xl bg-gray-100 dark:bg-[#0f1c19] border border-gray-200/80 dark:border-[#284c43] text-gray-600 dark:text-amber-400 hover:bg-gray-200 dark:hover:bg-[#1b3832] transition-all focus:outline-none shadow-2xs cursor-pointer">

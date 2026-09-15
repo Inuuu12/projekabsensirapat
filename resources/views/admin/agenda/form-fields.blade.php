@@ -26,7 +26,6 @@
     @if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas')
         <input type="hidden" id="{{ $prefix }}id_dinas" name="id_dinas" value="{{ auth('admin')->user()->id_dinas }}">
         <div class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#eef7f3] dark:bg-[#132722] px-3.5 sm:px-4 text-xs sm:text-sm font-bold text-[#35635b] dark:text-emerald-400 flex items-center gap-2">
-            <span>🏢</span>
             <span>{{ auth('admin')->user()->dinas?->nama_dinas ?? 'Dinas Terdaftar' }}</span>
         </div>
     @else
@@ -101,7 +100,7 @@
             @forelse ($groupedPegawai as $bidangName => $items)
                 <div class="bidang-group space-y-1">
                     <div class="sticky top-0 z-10 bg-[#e8f3ee] dark:bg-[#1b3832] px-2.5 py-1 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-[#1e4a42] dark:text-emerald-300 rounded-md flex items-center justify-between shadow-2xs">
-                        <span>🏢 {{ $bidangName }}</span>
+                        <span>{{ $bidangName }}</span>
                         <span class="text-[9px] sm:text-[10px] bg-white/70 dark:bg-black/30 px-1.5 py-0.5 rounded text-[#35635b] dark:text-emerald-400 font-bold">{{ count($items) }} Pegawai</span>
                     </div>
                     @foreach ($items as $peg)
@@ -170,9 +169,6 @@
         Lokasi Instansi Penyelenggara
     </label>
     <div class="rounded-xl border border-emerald-200/70 dark:border-[#284c43] bg-emerald-50/50 dark:bg-[#132420] p-3 flex items-center gap-3">
-        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0f513f] dark:bg-[#107050] text-white shrink-0 text-lg shadow-xs">
-            🏢
-        </div>
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
                 <span class="text-xs sm:text-sm font-extrabold text-[#0e2f27] dark:text-emerald-300">Dinas Komunikasi & Informatika (Diskominfo)</span>
@@ -221,16 +217,16 @@
     <div class="relative">
         <select id="{{ $prefix }}lokasi" name="lokasi" required onchange="handleInstansiSelectChange('{{ $prefix }}', this)" class="h-10 sm:h-11 w-full appearance-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 pr-10 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 cursor-pointer">
             <option value="">Pilih kantor instansi kegiatan (40 Kecamatan & Dinas)...</option>
-            <optgroup label="🏛️ Pusat Pemkab Bogor">
+            <optgroup label="Pusat Pemkab Bogor">
                 <option value="Kantor Bupati Bogor">Kantor Bupati Bogor (Cibinong)</option>
             </optgroup>
             @if(isset($listInstansi) && count($listInstansi) > 0)
-                <optgroup label="🏢 40 Kantor Kecamatan se-Kabupaten Bogor (Peta GIS)">
+                <optgroup label="40 Kantor Kecamatan se-Kabupaten Bogor (Peta GIS)">
                     @foreach($listInstansi->where('tipe', 'Kecamatan') as $kec)
                         <option value="{{ $kec['nama'] }}">{{ $kec['nama'] }}</option>
                     @endforeach
                 </optgroup>
-                <optgroup label="🏬 Dinas & OPD Pemkab Bogor">
+                <optgroup label="Dinas & OPD Pemkab Bogor">
                     @foreach($listInstansi->where('tipe', 'Dinas / OPD') as $dinas)
                         @if($dinas['nama'] !== 'Dinas Komunikasi dan Informatika')
                             <option value="{{ $dinas['nama'] }}">{{ $dinas['nama'] }}</option>

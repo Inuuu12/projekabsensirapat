@@ -57,8 +57,7 @@
                     </div>
                     <div class="space-y-1">
                         <dt class="font-semibold text-gray-400 dark:text-gray-400 uppercase text-[10px] tracking-wider">Dinas / OPD Penyelenggara</dt>
-                        <dd class="font-bold text-gray-800 dark:text-slate-100 text-xs flex items-center gap-1">
-                            <span class="text-emerald-600 dark:text-emerald-400">🏢</span>
+                        <dd class="font-bold text-gray-800 dark:text-slate-100 text-xs">
                             <span>{{ $agenda->dinas?->nama_dinas ?? 'Dinas Komunikasi dan Informatika' }}</span>
                         </dd>
                     </div>
@@ -100,7 +99,6 @@
                             <div class="mt-3 flex items-center gap-2">
                                 <button type="button" onclick="openDocumentPreview('{{ asset('storage/' . $notulen->file_path) }}', 'Notulen - {{ addslashes($agenda->nama_agenda) }}', '{{ addslashes($notulen->nama_file) }}')" class="rounded-xl bg-[#35635b] dark:bg-[#107050] hover:bg-[#2b4f49] dark:hover:bg-[#0c5940] px-3.5 py-1.5 text-xs font-bold text-white transition cursor-pointer">Lihat</button>
                                 <button type="button" onclick="openDeleteModal('{{ route('admin.agenda.dokumen.destroy', [$agenda->id_agenda, $notulen->id_dokumen]) }}', 'Hapus Notulen?', 'Apakah Anda yakin ingin menghapus notulen agenda ini?')" class="inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer shadow-2xs" title="Hapus Notulen">
-                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     <span>Hapus</span>
                                 </button>
                             </div>
@@ -135,7 +133,6 @@
                                         <div class="flex shrink-0 gap-1.5">
                                             <button type="button" onclick="openDocumentPreview('{{ asset('storage/' . $dokumentasi->file_path) }}', 'Dokumentasi - {{ addslashes($agenda->nama_agenda) }}', '{{ addslashes($dokumentasi->nama_file) }}')" class="rounded-lg bg-[#35635b] dark:bg-[#107050] hover:bg-[#2b4f49] dark:hover:bg-[#0c5940] px-2.5 py-1 text-[11px] font-bold text-white transition cursor-pointer">Lihat</button>
                                             <button type="button" onclick="openDeleteModal('{{ route('admin.agenda.dokumen.destroy', [$agenda->id_agenda, $dokumentasi->id_dokumen]) }}', 'Hapus Dokumentasi?', 'Apakah Anda yakin ingin menghapus foto dokumentasi ini?')" class="inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 px-2.5 py-1 text-xs font-bold transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer shadow-2xs" title="Hapus Dokumentasi">
-                                                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                                 <span>Hapus</span>
                                             </button>
                                         </div>

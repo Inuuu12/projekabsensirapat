@@ -2,13 +2,6 @@
 
 @section('title', 'Daftar Agenda')
 
-@section('header_actions')
-<button onclick="openModal('modal-tambah-agenda')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer">
-    <span class="text-base leading-none">+</span>
-    <span>Tambah Agenda</span>
-</button>
-@endsection
-
 @section('content')
 @php
     $isRiwayatView = $isRiwayat ?? false;
@@ -34,36 +27,45 @@
                     <p class="text-[11px] font-bold text-gray-400 dark:text-gray-300 uppercase tracking-wider">{{ $label }}</p>
                     <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $agendaStats[$key] ?? 0 }}</p>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-transparent dark:border-[#233a34] flex items-center justify-center p-2">
-                    <img src="{{ asset('assets/foto/Suratlogo.png') }}" alt="{{ $label }}" class="w-full h-full object-contain">
-                </div>
             </a>
         @endforeach
     </div>
 
-    <!-- Controls & Search -->
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div class="flex flex-wrap gap-2">
-            @foreach ($kategoriOptions as $key => $label)
-                <a href="{{ route($activeRouteName, ['kategori_surat' => $key, 'keyword' => request('keyword')]) }}" class="rounded-xl px-4 py-2 text-sm font-bold transition {{ $kategoriSurat === $key ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] border border-gray-200 dark:border-[#233a34] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5' }}">
-                    {{ $label }}
-                </a>
-            @endforeach
-        </div>
-
-        <form method="GET" action="{{ route($activeRouteName) }}" class="relative w-full lg:w-80">
-            <input type="hidden" name="kategori_surat" value="{{ $kategoriSurat }}">
-            <input name="keyword" value="{{ request('keyword') }}" type="search" class="bg-white dark:bg-[#0f1c19] text-gray-700 dark:text-white text-sm rounded-xl block w-full px-4 py-3 outline-none border border-gray-200 dark:border-[#284c43] focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 transition shadow-xs placeholder-gray-400 dark:placeholder-gray-500" placeholder="Cari agenda, lokasi, asal surat...">
-        </form>
+    <!-- Surat Category Pills (Outside Card) -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        @foreach ($kategoriOptions as $key => $label)
+            <a href="{{ route($activeRouteName, ['kategori_surat' => $key, 'keyword' => request('keyword')]) }}" class="rounded-xl px-4 py-2.5 text-xs font-extrabold transition {{ $kategoriSurat === $key ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+                {{ $label }}
+            </a>
+        @endforeach
     </div>
 
-    <!-- Table Section -->
-    <div class="bg-white dark:bg-[#152420] rounded-xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
-        <div class="border-b border-gray-100 dark:border-[#233a34] px-6 py-4 flex justify-between items-center">
-            <div>
+    <!-- Table Section Card -->
+    <div class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
+        <!-- Card Header: Title (Left), Search (Middle), Button (Right) -->
+        <div class="border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+            <!-- Left: Title & Subtitle -->
+            <div class="shrink-0">
                 <h2 class="text-base font-extrabold text-gray-800 dark:text-white">{{ $activeLabel }}</h2>
-                <p class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $agenda->count() }} {{ $isRiwayatView ? 'riwayat agenda selesai' : 'agenda' }} dari database.</p>
+                <p id="text-count-agenda" class="mt-0.5 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $agenda->count() }} {{ $isRiwayatView ? 'riwayat agenda selesai' : 'agenda' }} dari database.</p>
             </div>
+
+            <!-- Middle: Search Bar -->
+            <form method="GET" action="{{ route($activeRouteName) }}" class="flex-1 max-w-xl w-full">
+                <input type="hidden" name="kategori_surat" value="{{ $kategoriSurat }}">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input name="keyword" value="{{ request('keyword') }}" type="search" class="bg-gray-50 dark:bg-[#0f1c19] text-gray-700 dark:text-white text-xs rounded-xl block w-full pl-10 pr-4 py-2.5 outline-none border border-gray-200 dark:border-[#284c43] focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 transition shadow-xs placeholder-gray-400 dark:placeholder-gray-500" placeholder="Cari agenda, lokasi, asal surat...">
+                </div>
+            </form>
+
+            <!-- Right: Action Button -->
+            <button onclick="openModal('modal-tambah-agenda')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer shrink-0">
+                <span class="text-base leading-none">+</span>
+                <span>Tambah Agenda</span>
+            </button>
         </div>
 
         <div class="overflow-x-auto">
@@ -95,7 +97,7 @@
                             <td class="px-6 py-4 font-bold text-[#35635b] dark:text-emerald-400">{{ $item->nama_agenda }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200 whitespace-nowrap">
                                 <span class="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 text-[11px] font-bold px-2.5 py-0.5 rounded-lg">
-                                    🏢 {{ $item->dinas?->nama_dinas ?? 'Diskominfo' }}
+                                    {{ $item->dinas?->nama_dinas ?? 'Diskominfo' }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200 whitespace-nowrap">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
@@ -116,7 +118,6 @@
                                     <button type="button" 
                                             onclick="openDocumentPreview('{{ asset('storage/' . $item->lampiran) }}', 'Lampiran Surat - {{ addslashes($item->nama_agenda) }}', '{{ addslashes(basename($item->lampiran)) }}')" 
                                             class="inline-flex items-center gap-1.5 font-bold text-[#35635b] dark:text-emerald-400 hover:underline cursor-pointer">
-                                        <img src="{{ asset('assets/foto/Lampiranlogo.png') }}" alt="Lampiran" class="w-4 h-4 object-contain">
                                         <span>Lihat</span>
                                     </button>
                                 @else
@@ -155,7 +156,6 @@
                                         data-lampiran-name="{{ basename($item->lampiran ?? '') }}"
                                         class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-2.5 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs"
                                         title="Edit Agenda">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         <span>Edit</span>
                                     </button>
 
@@ -163,21 +163,18 @@
                                             onclick="openDeleteModal('{{ route('admin.agenda.destroy', $item->id_agenda) }}', 'Hapus Agenda?', 'Apakah Anda yakin ingin menghapus agenda ini?')"
                                             class="inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 px-2.5 py-1.5 text-xs font-bold transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer shadow-2xs" 
                                             title="Hapus Agenda">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         <span>Hapus</span>
                                     </button>
 
                                     <a href="{{ route('admin.agenda.detail', ['id' => $item->id_agenda]) }}" 
                                        class="inline-flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 px-2.5 py-1.5 text-xs font-bold transition hover:bg-slate-200 dark:hover:bg-slate-700/60 cursor-pointer shadow-2xs" 
                                        title="Lihat Detail Agenda">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                         <span>Detail</span>
                                     </a>
 
                                     <a href="{{ url('/admin/agenda/' . $item->id_agenda . '/generate-qr') }}"
                                        class="inline-flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 px-2.5 py-1.5 text-xs font-bold transition hover:bg-amber-100 dark:hover:bg-amber-900/60 cursor-pointer shadow-2xs"
                                        title="Generate QR Presensi">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-6v-4m6 6v10m6-2v-4m-6 0h2m-6-4h2m0 0h2m-6 0h-2m-4 0H4m0 4h2m0 0h2m-6 0v4m0 0h2m-6-4v-4m0 0H4"/></svg>
                                         <span>QR Presensi</span>
                                     </a>
                                 </div>

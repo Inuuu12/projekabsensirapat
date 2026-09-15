@@ -270,11 +270,11 @@
             <button type="button" id="open-weather-modal" class="lg:col-span-4 flex items-center justify-between p-4 md:p-5 rounded-2xl hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-all text-left cursor-pointer group">
                 <div class="flex-1 min-w-0 space-y-1">
                     <div class="flex items-center gap-1.5">
-                        <p id="home-weather-location" class="text-[11px] font-extrabold text-ijo-tua dark:text-emerald-400 tracking-wider uppercase truncate">Cibinong, Kab. Bogor</p>
+                        <p id="home-weather-location" class="text-[11px] font-bold text-ijo-tua dark:text-emerald-400 tracking-wider uppercase truncate">Cibinong, Kab. Bogor</p>
                     </div>
                     <div class="flex items-baseline gap-2.5">
-                        <h2 id="home-weather-temp" class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-none">-</h2>
-                        <p id="home-weather-condition" class="text-xs sm:text-sm font-extrabold text-gray-700 dark:text-gray-200 truncate">Memuat cuaca...</p>
+                        <h2 id="home-weather-temp" class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">-</h2>
+                        <p id="home-weather-condition" class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">Memuat cuaca...</p>
                     </div>
                     <p id="home-weather-humidity" class="text-[10px] sm:text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-0.5">
                         Kelembapan - &bull; Klik untuk detail
@@ -674,7 +674,7 @@
             <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34] shrink-0">
                 <div>
                     <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Cuaca API</p>
-                    <h2 id="weather-location" class="text-lg sm:text-xl font-extrabold mt-1 text-white">Cibinong, Kabupaten Bogor</h2>
+                    <h2 id="weather-location" class="text-lg sm:text-xl font-bold mt-1 text-white">Cibinong, Kabupaten Bogor</h2>
                     <p id="weather-updated" class="text-xs text-white/70 dark:text-gray-300 mt-1">Memuat data...</p>
                 </div>
                 <button type="button" id="close-weather-modal" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10 flex items-center justify-center text-lg font-bold cursor-pointer">x</button>
@@ -686,17 +686,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="rounded-2xl bg-ijo-sangatmuda dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-5">
                         <p class="text-[10px] uppercase font-bold text-ijo-tua dark:text-emerald-400">Suhu</p>
-                        <p id="weather-temp" class="text-3xl font-extrabold text-ijo-tua dark:text-emerald-400 mt-1">-</p>
+                        <p id="weather-temp" class="text-3xl font-bold text-ijo-tua dark:text-emerald-400 mt-1">-</p>
                         <p id="weather-condition" class="text-xs text-gray-600 dark:text-gray-300 mt-1">-</p>
                     </div>
                     <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-5">
                         <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Kelembapan</p>
-                        <p id="weather-humidity" class="text-2xl font-extrabold text-gray-900 dark:text-white mt-1">-</p>
+                        <p id="weather-humidity" class="text-2xl font-bold text-gray-900 dark:text-white mt-1">-</p>
                         <p id="weather-cloud" class="text-xs text-gray-500 dark:text-gray-300 mt-1">Awan -</p>
                     </div>
                     <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-5">
                         <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Angin</p>
-                        <p id="weather-wind" class="text-2xl font-extrabold text-gray-900 dark:text-white mt-1">-</p>
+                        <p id="weather-wind" class="text-2xl font-bold text-gray-900 dark:text-white mt-1">-</p>
                         <p id="weather-rain" class="text-xs text-gray-500 dark:text-gray-300 mt-1">Hujan -</p>
                     </div>
                 </div>

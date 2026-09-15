@@ -75,8 +75,8 @@
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->kepala_dinas ?: '-' }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">
                                 <div class="text-xs">
-                                    @if ($item->telepon) <p class="font-medium">📞 {{ $item->telepon }}</p> @endif
-                                    @if ($item->email) <p class="text-gray-500 dark:text-gray-400">✉️ {{ $item->email }}</p> @endif
+                                    @if ($item->telepon) <p class="font-medium">{{ $item->telepon }}</p> @endif
+                                    @if ($item->email) <p class="text-gray-500 dark:text-gray-400">{{ $item->email }}</p> @endif
                                     @if (!$item->telepon && !$item->email) - @endif
                                 </div>
                             </td>
@@ -95,14 +95,12 @@
                                         data-email="{{ $item->email }}"
                                         data-kepala="{{ $item->kepala_dinas }}"
                                         class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         <span>Edit</span>
                                     </button>
                                     <button
                                         type="button"
                                         onclick="openDeleteModal('{{ route('admin.dinas.destroy', $item->id_dinas) }}', 'Hapus Dinas?', 'Apakah Anda yakin ingin menghapus data dinas ini?')"
                                         class="inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer shadow-2xs">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         <span>Hapus</span>
                                     </button>
                                 </div>

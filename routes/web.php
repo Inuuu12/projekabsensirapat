@@ -7,11 +7,14 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminAkunDinasController;
 use App\Http\Controllers\AdminAkunKecamatanController;
 use App\Http\Controllers\AdminDinasController;
+use App\Http\Controllers\AdminInstansiController;
+use App\Http\Controllers\AdminKecamatanDataController;
 use App\Http\Controllers\AdminKehadiranController;
 use App\Http\Controllers\AdminKunjunganController;
 use App\Http\Controllers\AdminLaporanController;
 use App\Http\Controllers\AdminMasukkanController;
 use App\Http\Controllers\AdminPegawaiController;
+use App\Http\Controllers\AdminPengaturanController;
 use App\Http\Controllers\AdminPublikController;
 use App\Http\Controllers\AdminRuangController;
 use App\Http\Controllers\AdminTamuController;
@@ -125,12 +128,28 @@ Route::prefix('admin')->group(function () {
         Route::put('/masukkan/{id}', [AdminMasukkanController::class, 'update_Masukan'])->name('admin.masukkan.update');
         Route::delete('/masukkan/{id}', [AdminMasukkanController::class, 'hapus_Masukan'])->name('admin.masukkan.destroy');
 
-        // Master Data Dinas
-        Route::get('/dinas', [AdminDinasController::class, 'index'])->name('admin.dinas.index');
-        Route::get('/dinas/lihat', [AdminDinasController::class, 'index'])->name('admin.dinas.lihat');
-        Route::post('/dinas', [AdminDinasController::class, 'store'])->name('admin.dinas.store');
-        Route::put('/dinas/{id}', [AdminDinasController::class, 'update'])->name('admin.dinas.update');
-        Route::delete('/dinas/{id}', [AdminDinasController::class, 'destroy'])->name('admin.dinas.destroy');
+        // Master Data Instansi (Dinas & Kecamatan Combined)
+        Route::get('/instansi', [AdminInstansiController::class, 'index'])->name('admin.instansi.index');
+        Route::post('/instansi/dinas', [AdminInstansiController::class, 'storeDinas'])->name('admin.instansi.dinas.store');
+        Route::put('/instansi/dinas/{id}', [AdminInstansiController::class, 'updateDinas'])->name('admin.instansi.dinas.update');
+        Route::delete('/instansi/dinas/{id}', [AdminInstansiController::class, 'destroyDinas'])->name('admin.instansi.dinas.destroy');
+        Route::post('/instansi/kecamatan', [AdminInstansiController::class, 'storeKecamatan'])->name('admin.instansi.kecamatan.store');
+        Route::put('/instansi/kecamatan/{id}', [AdminInstansiController::class, 'updateKecamatan'])->name('admin.instansi.kecamatan.update');
+        Route::delete('/instansi/kecamatan/{id}', [AdminInstansiController::class, 'destroyKecamatan'])->name('admin.instansi.kecamatan.destroy');
+
+        // Master Data Dinas (Redirect / Legacy compatibility)
+        Route::get('/dinas', fn () => redirect()->route('admin.instansi.index', ['tab' => 'dinas']))->name('admin.dinas.index');
+        Route::get('/dinas/lihat', fn () => redirect()->route('admin.instansi.index', ['tab' => 'dinas']))->name('admin.dinas.lihat');
+        Route::post('/dinas', [AdminInstansiController::class, 'storeDinas'])->name('admin.dinas.store');
+        Route::put('/dinas/{id}', [AdminInstansiController::class, 'updateDinas'])->name('admin.dinas.update');
+        Route::delete('/dinas/{id}', [AdminInstansiController::class, 'destroyDinas'])->name('admin.dinas.destroy');
+
+        // Master Data Kecamatan (Redirect / Legacy compatibility)
+        Route::get('/kecamatan', fn () => redirect()->route('admin.instansi.index', ['tab' => 'kecamatan']))->name('admin.kecamatan.index');
+        Route::get('/kecamatan/lihat', fn () => redirect()->route('admin.instansi.index', ['tab' => 'kecamatan']))->name('admin.kecamatan.lihat');
+        Route::post('/kecamatan', [AdminInstansiController::class, 'storeKecamatan'])->name('admin.kecamatan.store');
+        Route::put('/kecamatan/{id}', [AdminInstansiController::class, 'updateKecamatan'])->name('admin.kecamatan.update');
+        Route::delete('/kecamatan/{id}', [AdminInstansiController::class, 'destroyKecamatan'])->name('admin.kecamatan.destroy');
 
         // Manajemen Akun Dinas
         Route::get('/akun/dinas', [AdminAkunDinasController::class, 'index'])->name('admin.akun.dinas.index');
@@ -145,6 +164,14 @@ Route::prefix('admin')->group(function () {
         Route::put('/akun/kecamatan/{id}', [AdminAkunKecamatanController::class, 'update'])->name('admin.akun.kecamatan.update');
         Route::post('/akun/kecamatan/{id}/reset-password', [AdminAkunKecamatanController::class, 'resetPassword'])->name('admin.akun.kecamatan.reset-password');
         Route::delete('/akun/kecamatan/{id}', [AdminAkunKecamatanController::class, 'destroy'])->name('admin.akun.kecamatan.destroy');
+
+        // Pengaturan (Setting)
+        Route::get('/pengaturan', [AdminPengaturanController::class, 'index'])->name('admin.pengaturan.index');
+        Route::post('/pengaturan/publik', [AdminPengaturanController::class, 'updatePublik'])->name('admin.pengaturan.publik.update');
+        Route::post('/pengaturan/bidang', [AdminPengaturanController::class, 'storeBidang'])->name('admin.pengaturan.bidang.store');
+        Route::delete('/pengaturan/bidang/{id}', [AdminPengaturanController::class, 'destroyBidang'])->name('admin.pengaturan.bidang.destroy');
+        Route::post('/pengaturan/jabatan', [AdminPengaturanController::class, 'storeJabatan'])->name('admin.pengaturan.jabatan.store');
+        Route::delete('/pengaturan/jabatan/{id}', [AdminPengaturanController::class, 'destroyJabatan'])->name('admin.pengaturan.jabatan.destroy');
     });
 });
 

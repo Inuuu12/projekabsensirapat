@@ -492,6 +492,7 @@
 
     @include('admin.agenda.deletepopup')
     @include('admin.layout.document-preview-modal')
+    @include('admin.layout.setting-modal')
 
     <script>
         function openModal(id) {

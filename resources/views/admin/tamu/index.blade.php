@@ -2,13 +2,6 @@
 
 @section('title', 'Data Tamu')
 
-@section('header_actions')
-<button onclick="openModal('modal-tambah-tamu')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer">
-    <span class="text-base leading-none">+</span>
-    <span>Tambah Tamu</span>
-</button>
-@endsection
-
 @section('content')
 <div class="max-w-[1400px] mx-auto space-y-6">
 
@@ -17,25 +10,35 @@
         <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalTamu ?? $tamu->count() }}</p>
     </div>
 
-    <form id="form-search-tamu" method="GET" action="{{ route('admin.tamu.lihat') }}" class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] p-5 transition-colors">
-        <div class="flex flex-col gap-3 lg:flex-row lg:items-end">
-            <div class="flex-1">
-                <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Search</label>
-                <input
-                    id="keyword"
-                    name="keyword"
-                    value="{{ $keyword ?? request('keyword') }}"
-                    type="search"
-                    class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
-                    placeholder="Cari nama, NIK, jabatan, no HP, instansi, agenda...">
-            </div>
-        </div>
-    </form>
-
     <div class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
-        <div class="border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
-            <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Daftar Tamu</h2>
-            <p id="text-count-tamu" class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $tamu->count() }} dari {{ $totalTamu ?? $tamu->count() }} tamu.</p>
+        <div class="border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+            <!-- Left: Title & Subtitle -->
+            <div class="shrink-0">
+                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Daftar Tamu</h2>
+                <p id="text-count-tamu" class="mt-0.5 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $tamu->count() }} dari {{ $totalTamu ?? $tamu->count() }} tamu.</p>
+            </div>
+
+            <!-- Middle: Search Bar -->
+            <form id="form-search-tamu" method="GET" action="{{ route('admin.tamu.lihat') }}" class="flex-1 max-w-xl w-full">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input
+                        id="keyword"
+                        name="keyword"
+                        value="{{ $keyword ?? request('keyword') }}"
+                        type="search"
+                        class="h-10 w-full pl-10 pr-4 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] text-xs text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
+                        placeholder="Cari nama, NIK, jabatan, no HP, instansi, agenda...">
+                </div>
+            </form>
+
+            <!-- Right: Action Button -->
+            <button onclick="openModal('modal-tambah-tamu')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer shrink-0">
+                <span class="text-base leading-none">+</span>
+                <span>Tambah Tamu</span>
+            </button>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[980px]">
@@ -84,8 +87,7 @@
                                         data-instansi="{{ $item->asal_instansi }}"
                                         data-agenda="{{ $item->id_agenda }}"
                                         class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs"
-                                        title="Edit Tamu">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                         title="Edit Tamu">
                                         <span>Edit</span>
                                     </button>
                                     <button
@@ -93,7 +95,6 @@
                                         onclick="openDeleteModal('{{ route('admin.tamu.destroy', $item->id_tamu) }}', 'Hapus Tamu?', 'Apakah Anda yakin ingin menghapus tamu ini?')"
                                         class="inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer shadow-2xs"
                                         title="Hapus Tamu">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         <span>Hapus</span>
                                     </button>
                                 </div>

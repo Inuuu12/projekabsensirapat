@@ -2,13 +2,6 @@
 
 @section('title', 'Daftar Kunjungan')
 
-@section('header_actions')
-<button onclick="openModal('modal-tambah-kunjungan')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer">
-    <span class="text-base leading-none">+</span>
-    <span>Tambah Kunjungan</span>
-</button>
-@endsection
-
 @section('content')
 <div class="max-w-[1400px] mx-auto space-y-6">
 
@@ -17,86 +10,67 @@
         <p class="mt-2 text-3xl font-black text-[#35635b] dark:text-emerald-400">{{ $totalKunjungan ?? $kunjungan->count() }}</p>
     </div>
 
-    <!-- Status Filter Pills (Kunker Style) -->
+    <!-- Status Filter Pills (Outside Card, Left) -->
     <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         <a href="{{ route('admin.kunjungan.lihat') }}"
-           class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ empty(request('tanggal')) ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-            Semua Kunjungan ({{ $totalKunjungan ?? $kunjungan->count() }})
+           class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ empty(request('tanggal')) ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+            Semua Kunjungan 
         </a>
         <a href="{{ route('admin.kunjungan.lihat', ['tanggal' => now()->format('Y-m-d')]) }}"
-           class="px-5 py-2 rounded-full text-xs font-extrabold transition-all whitespace-nowrap {{ request('tanggal') === now()->format('Y-m-d') ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
-            📅 Kunjungan Hari Ini
+           class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ request('tanggal') === now()->format('Y-m-d') ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
+             Kunjungan Hari Ini
         </a>
     </div>
 
-    <form id="form-search-kunjungan" method="GET" action="{{ route('admin.kunjungan.lihat') }}" class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] p-4 sm:p-5 transition-colors">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-[1fr_200px_200px_180px_auto] xl:items-end gap-3 sm:gap-4">
-            <div>
-                <label for="keyword" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Search</label>
-                <div class="relative">
-                    <input
-                        id="keyword"
-                        name="keyword"
-                        value="{{ $keyword ?? request('keyword') }}"
-                        type="search"
-                        class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] pl-10 pr-4 text-sm text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
-                        placeholder="Cari pengunjung, pihak dituju, instansi, no HP, email, keperluan...">
-                    <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
+    <div class="bg-white dark:bg-[#152420] rounded-2xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
+        <!-- Card Header: Title (Left), Search & Filters (Middle), Button (Right) -->
+        <div class="border-b border-gray-100 dark:border-[#233a34] px-5 sm:px-6 py-4 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+            <!-- Left: Title & Subtitle -->
+            <div class="shrink-0">
+                <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Daftar Kunjungan</h2>
+                <p id="text-count-kunjungan" class="mt-0.5 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $kunjungan->count() }} dari {{ $totalKunjungan ?? $kunjungan->count() }} kunjungan.</p>
             </div>
-            <div>
-                <label for="pihak-dituju-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Pihak Dituju</label>
-                <select
-                    id="pihak-dituju-filter"
-                    name="pihak_dituju"
-                    class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                    <option value="semua" @selected(($pihakDitujuFilter ?? 'semua') === 'semua')>Semua Pihak</option>
-                    @foreach (($pihakDitujuOptions ?? collect()) as $pihakDituju)
-                        <option value="{{ $pihakDituju }}" @selected(($pihakDitujuFilter ?? 'semua') === $pihakDituju)>{{ $pihakDituju }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label for="keperluan-filter" class="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Keperluan</label>
-                <select
-                    id="keperluan-filter"
-                    name="keperluan"
-                    class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-4 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
-                    <option value="semua" @selected(($keperluanFilter ?? 'semua') === 'semua')>Semua Keperluan</option>
-                    @foreach (($keperluanOptions ?? collect()) as $keperluan)
-                        <option value="{{ $keperluan }}" @selected(($keperluanFilter ?? 'semua') === $keperluan)>{{ \Illuminate\Support\Str::limit($keperluan, 42) }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <div class="flex items-center justify-between mb-2">
-                    <label for="tanggal-filter" class="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-300">Tanggal</label>
-                    <button type="button" onclick="clearTanggalFilter()" id="btn-reset-tanggal" class="{{ empty($tanggalFilter) ? 'hidden' : '' }} text-[11px] font-bold text-red-500 hover:underline cursor-pointer">Reset Tgl</button>
-                </div>
-                <div class="relative">
+
+            <!-- Middle: Search Bar & Filters -->
+            <form id="form-search-kunjungan" method="GET" action="{{ route('admin.kunjungan.lihat') }}" class="flex-1 max-w-3xl w-full">
+                <div class="flex flex-col sm:flex-row items-center gap-2">
+                    <div class="relative flex-1 w-full">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <input
+                            id="keyword"
+                            name="keyword"
+                            value="{{ $keyword ?? request('keyword') }}"
+                            type="search"
+                            class="h-10 w-full pl-10 pr-4 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] text-xs text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
+                            placeholder="Cari pengunjung, pihak dituju, instansi, keperluan...">
+                    </div>
+                    <select
+                        id="pihak-dituju-filter"
+                        name="pihak_dituju"
+                        onchange="document.getElementById('form-search-kunjungan').submit()"
+                        class="h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 text-xs font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        <option value="semua" @selected(($pihakDitujuFilter ?? 'semua') === 'semua')>Semua Pihak</option>
+                        @foreach (($pihakDitujuOptions ?? collect()) as $pihakDituju)
+                            <option value="{{ $pihakDituju }}" @selected(($pihakDitujuFilter ?? 'semua') === $pihakDituju)>{{ $pihakDituju }}</option>
+                        @endforeach
+                    </select>
                     <input
                         id="tanggal-filter"
                         name="tanggal"
                         value="{{ $tanggalFilter ?? request('tanggal') }}"
                         type="date"
-                        class="h-11 w-full rounded-xl border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] px-3.5 text-sm font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        onchange="document.getElementById('form-search-kunjungan').submit()"
+                        class="h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 text-xs font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                 </div>
-            </div>
-            <div>
-                <a href="{{ route('admin.kunjungan.lihat') }}" class="h-11 inline-flex items-center justify-center gap-1.5 px-4 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition whitespace-nowrap w-full" title="Reset Semua Filter">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    <span>Reset</span>
-                </a>
-            </div>
-        </div>
-    </form>
+            </form>
 
-    <div class="bg-white dark:bg-[#152420] rounded-xl shadow-xs border border-gray-100 dark:border-[#233a34] overflow-hidden transition-colors">
-        <div class="border-b border-gray-100 dark:border-[#233a34] px-6 py-4">
-            <h2 class="text-base font-extrabold text-gray-800 dark:text-white">Daftar Kunjungan</h2>
-            <p id="text-count-kunjungan" class="mt-1 text-xs text-gray-500 dark:text-gray-300">Menampilkan {{ $kunjungan->count() }} dari {{ $totalKunjungan ?? $kunjungan->count() }} kunjungan.</p>
+            <!-- Right: Action Button -->
+            <button onclick="openModal('modal-tambah-kunjungan')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer shrink-0">
+                <span class="text-base leading-none">+</span>
+                <span>Tambah Kunjungan</span>
+            </button>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[1040px]">
@@ -143,7 +117,6 @@
                                         data-tanggal="{{ $item->tanggal_kunjungan }}"
                                         class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs"
                                         title="Edit Kunjungan">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         <span>Edit</span>
                                     </button>
                                     <button
@@ -151,7 +124,6 @@
                                         onclick="openDeleteModal('{{ route('admin.kunjungan.destroy', $item->id_kunjungan) }}', 'Hapus Kunjungan?', 'Apakah Anda yakin ingin menghapus kunjungan ini?')"
                                         class="inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-red-100 dark:hover:bg-red-900/60 cursor-pointer shadow-2xs"
                                         title="Hapus Kunjungan">
-                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         <span>Hapus</span>
                                     </button>
                                 </div>
