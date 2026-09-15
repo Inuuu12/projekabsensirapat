@@ -12,6 +12,11 @@ class AdminInstansiController extends Controller
     public function index(Request $request)
     {
         $admin = Auth::guard('admin')->user();
+
+        if ($admin && !$admin->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Halaman Instansi hanya dapat diakses oleh Super Admin.');
+        }
+
         $tab = $request->query('tab', 'dinas');
         $keyword = trim((string) $request->query('keyword', ''));
 

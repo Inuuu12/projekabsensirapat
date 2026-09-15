@@ -5,12 +5,6 @@
 @section('content')
 <div class="max-w-[1400px] mx-auto space-y-6">
 
-    <!-- Header Section -->
-    <div>
-        <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
-        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">Selamat datang kembali di SIRAPI. Pantau analitik agenda dan laporan kegiatan {{ Auth::guard('admin')->user()?->getInstansiInfo()['singkatan'] ?? 'Diskominfo' }}.</p>
-    </div>
-
     <!-- 1. Top Stats Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         

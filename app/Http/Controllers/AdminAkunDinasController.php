@@ -13,6 +13,11 @@ class AdminAkunDinasController extends Controller
     public function index(Request $request)
     {
         $admin = Auth::guard('admin')->user();
+
+        if ($admin && !$admin->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Halaman Manajemen Akun hanya dapat diakses oleh Super Admin.');
+        }
+
         $keyword = trim((string) $request->query('keyword', ''));
         $dinasFilter = (string) $request->query('dinas', 'semua');
         $statusFilter = (string) $request->query('status', 'semua');

@@ -13,6 +13,11 @@ class AdminAkunKecamatanController extends Controller
     public function index(Request $request)
     {
         $admin = Auth::guard('admin')->user();
+
+        if ($admin && !$admin->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard')->with('error', 'Halaman Manajemen Akun hanya dapat diakses oleh Super Admin.');
+        }
+
         $keyword = trim((string) $request->query('keyword', ''));
         $kecamatanFilter = (string) $request->query('kecamatan', 'semua');
         $statusFilter = (string) $request->query('status', 'semua');

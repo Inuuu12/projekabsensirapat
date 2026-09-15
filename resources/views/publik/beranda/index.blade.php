@@ -418,15 +418,6 @@
                                 </div>
                                 <span class="text-gray-700 dark:text-gray-300">Kantor Dinas & Pemkab</span>
                             </div>
-                            <div class="flex items-center space-x-2">
-                                <div class="flex flex-col items-center shrink-0">
-                                    <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 relative overflow-hidden shadow-xs border border-white">
-                                        <span class="absolute top-0.5 left-0.5 w-2 h-1 bg-white/70 rounded-full rotate-[-30deg] z-20"></span>
-                                    </span>
-                                    <span class="w-[2px] h-1.5 bg-gray-900"></span>
-                                </div>
-                                <span class="text-gray-700 dark:text-gray-300">Titik Agenda Rapat</span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -1173,9 +1164,7 @@
                     matchedAgendas.forEach(ag => attachedAgendas.push(ag));
                 }
 
-                let bgClass = hasAgenda
-                    ? 'bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-800'
-                    : defaultBgClass;
+                let bgClass = defaultBgClass;
 
                 const currentZoom = map.getZoom();
                 const marker = L.marker([lat, lng], {
@@ -1199,7 +1188,7 @@
                     const topAg = matchedAgendas[0];
                     popupHtml += `
                         <div class="mt-2.5 pt-2 border-t border-gray-100 dark:border-gray-700">
-                            <span class="bg-emerald-100 text-emerald-800 text-[9.5px] font-black px-2 py-0.5 rounded-full">Ada Agenda Hari Ini</span>
+                            <span class="bg-red-100 text-red-800 text-[9.5px] font-black px-2 py-0.5 rounded-full">Ada Agenda Hari Ini</span>
                             <h5 class="font-bold text-xs text-gray-900 mt-1 leading-tight">${topAg.nama}</h5>
                             <p class="text-[10px] text-gray-500 mt-0.5">${topAg.waktu}</p>
                         </div>
@@ -1227,8 +1216,8 @@
                     lat,
                     lng,
                     'Kantor Dinas / SKPD',
-                    'bg-teal-100 text-teal-800',
-                    'bg-gradient-to-br from-teal-500 via-emerald-600 to-cyan-700',
+                    'bg-red-100 text-red-800',
+                    'bg-gradient-to-br from-red-500 via-red-600 to-red-800',
                     d.id_dinas,
                     null
                 );
@@ -1270,8 +1259,8 @@
                                 lat,
                                 lng,
                                 'Kantor Dinas / SKPD',
-                                'bg-teal-100 text-teal-800',
-                                'bg-gradient-to-br from-teal-500 via-emerald-600 to-cyan-700'
+                                'bg-red-100 text-red-800',
+                                'bg-gradient-to-br from-red-500 via-red-600 to-red-800'
                             );
                         }
                     });
@@ -1310,7 +1299,7 @@
                     // Render remaining standalone agendas
                     agendaLocations.forEach(item => {
                         if (attachedAgendas.includes(item)) return;
-                        const bgClass = 'bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700';
+                        const bgClass = 'bg-gradient-to-br from-red-500 via-red-600 to-red-800';
                         const currentZoom = map.getZoom();
 
                         const marker = L.marker([item.lat, item.lng], {
@@ -1324,7 +1313,7 @@
 
                         marker.bindPopup(`
                             <div class="p-2 font-sans max-w-[250px]">
-                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Agenda Kegiatan</span>
+                                <span class="bg-red-100 text-red-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Agenda Kegiatan</span>
                                 <h4 class="font-bold text-xs text-gray-900 mt-1 leading-snug">${item.nama}</h4>
                                 <p class="text-[11px] text-gray-600 mt-1">${item.lokasi}</p>
                                 <p class="text-[10px] text-gray-500 mt-0.5">${item.waktu}</p>

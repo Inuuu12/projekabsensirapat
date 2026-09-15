@@ -85,7 +85,8 @@
                 </div>
             </div>
 
-            <!-- Instansi (Single Page) -->
+            <!-- Instansi (Single Page) - Hanya untuk Superadmin -->
+            @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
             @php $isInstansiActive = request()->routeIs('admin.instansi.*') || request()->routeIs('admin.dinas.*') || request()->routeIs('admin.kecamatan.*'); @endphp
             <a href="{{ route('admin.instansi.index') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ $isInstansiActive ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }}">
                 <svg class="w-5 h-5 mr-3 {{ $isInstansiActive ? 'text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-emerald-400/80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,6 +94,7 @@
                 </svg>
                 <span>Instansi</span>
             </a>
+            @endif
 
             <!-- Kunjungan (Kunker) -->
             <a href="{{ route('admin.kunjungan.lihat') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.kunjungan.*') ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }}">
@@ -102,7 +104,8 @@
                 <span>Kunjungan</span>
             </a>
 
-            <!-- Manajemen Akun Submenu -->
+            <!-- Manajemen Akun Submenu - Hanya untuk Superadmin -->
+            @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
             @php $isAkunActive = request()->routeIs('admin.akun.*'); @endphp
             <div class="space-y-1">
                 <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isAkunActive ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
@@ -120,6 +123,7 @@
                     <a href="{{ route('admin.akun.kecamatan.index') }}" class="block text-xs font-semibold py-2 px-3 rounded-lg transition {{ request()->routeIs('admin.akun.kecamatan.*') ? 'bg-[#35635b]/15 dark:bg-[#23423b] font-bold text-[#35635b] dark:text-emerald-300' : 'text-[#35635b]/80 dark:text-gray-400 hover:bg-[#35635b]/10 dark:hover:bg-[#152420] dark:hover:text-white' }}">Akun Kecamatan</a>
                 </div>
             </div>
+            @endif
 
             <!-- Masukkan / Aduan -->
             <a href="{{ route('admin.masukkan.lihat') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.masukkan.lihat') ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }}">
