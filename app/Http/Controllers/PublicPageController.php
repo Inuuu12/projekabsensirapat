@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Models\Agenda;
 use App\Models\DataAduan;
+use App\Models\Dinas;
 use App\Models\DokumenNotulen;
 use App\Models\Galeri;
+use App\Models\Kecamatan;
 use App\Models\Kunjungan;
 use App\Models\Logbook;
 use App\Models\Pegawai;
@@ -77,6 +79,39 @@ class PublicPageController extends Controller
         $masukan = $this->queryOrDefault(fn () => DataAduan::latest('id_dataaduan')->take(5)->get(), collect());
         $youtubeEmbedUrl = $this->defaultYoutubeEmbedUrl();
 
+        // Data Dinas & Kecamatan dari Database untuk Peta GIS
+        $dinasListMap = $this->queryOrDefault(fn () => Dinas::whereNotNull('gps_lat')
+            ->whereNotNull('gps_long')
+            ->get(['id_dinas', 'kode_dinas', 'nama_dinas', 'alamat', 'gps_lat', 'gps_long']), collect());
+
+        $kecamatanListMap = $this->queryOrDefault(fn () => Kecamatan::whereNotNull('gps_lat')
+            ->whereNotNull('gps_long')
+            ->get(['id_kecamatan', 'kode_kecamatan', 'nama_kecamatan', 'alamat_kantor', 'gps_lat', 'gps_long']), collect());
+
+        // Seluruh Agenda Rapat untuk Modal Peta Lokasi
+        $allMapAgendas = $this->queryOrDefault(fn () => Agenda::with('dinas')
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('waktu', 'desc')
+            ->get()
+            ->map(function ($ag) {
+                return [
+                    'id_agenda' => $ag->id_agenda,
+                    'nama_agenda' => $ag->nama_agenda,
+                    'tanggal' => $ag->tanggal ? Carbon::parse($ag->tanggal)->translatedFormat('d M Y') : '-',
+                    'waktu' => $ag->waktu ? Carbon::parse($ag->waktu)->format('H:i') . ' WIB' : '-',
+                    'lokasi' => $ag->lokasi ?? '',
+                    'id_dinas' => $ag->id_dinas,
+                    'id_kecamatan' => $ag->id_kecamatan,
+                    'kategori' => strtolower((string)($ag->kategori_surat ?? 'internal')),
+                    'kategori_label' => match(strtolower((string)($ag->kategori_surat ?? ''))) {
+                        'masuk' => 'Surat Masuk',
+                        'keluar' => 'Surat Keluar',
+                        default => 'Surat Internal',
+                    },
+                    'detailUrl' => route('publik.agenda.detail', $ag->id_agenda),
+                ];
+            }), collect());
+
         return view('publik.beranda.index', compact(
             'agendaHariIni',
             'agendaBeranda',
@@ -90,7 +125,10 @@ class PublicPageController extends Controller
             'ulangTahun',
             'ulangTahunHariIni',
             'masukan',
-            'youtubeEmbedUrl'
+            'youtubeEmbedUrl',
+            'dinasListMap',
+            'kecamatanListMap',
+            'allMapAgendas'
         ));
     }
 

@@ -19,6 +19,8 @@ class Dinas extends Model
         'telepon',
         'email',
         'kepala_dinas',
+        'gps_lat',
+        'gps_long',
     ];
 
     public function admins()

@@ -13,79 +13,44 @@ class DinasKecamatanSeeder extends Seeder
     {
         $now = now();
 
-        // 1. Seed Master Data Dinas
-        $dinasData = [
-            [
-                'kode_dinas' => 'DISKOMINFO',
-                'nama_dinas' => 'Dinas Komunikasi dan Informatika',
-                'alamat' => 'Jl. Tegar Beriman, Cibinong, Kab. Bogor',
-                'telepon' => '(021) 8750001',
-                'email' => 'diskominfo@bogorkab.go.id',
-                'kepala_dinas' => 'Bambang Widodo, S.STP, M.Si',
-            ],
-            [
-                'kode_dinas' => 'DISDIK',
-                'nama_dinas' => 'Dinas Pendidikan',
-                'alamat' => 'Jl. Nyaman No. 1, Cibinong, Kab. Bogor',
-                'telepon' => '(021) 8753123',
-                'email' => 'disdik@bogorkab.go.id',
-                'kepala_dinas' => 'Bambang Supriyadi, M.Pd',
-            ],
-            [
-                'kode_dinas' => 'DINKES',
-                'nama_dinas' => 'Dinas Kesehatan',
-                'alamat' => 'Jl. Bersih No. 2, Cibinong, Kab. Bogor',
-                'telepon' => '(021) 8752456',
-                'email' => 'dinkes@bogorkab.go.id',
-                'kepala_dinas' => 'dr. Tri Wahyu, M.Kes',
-            ],
-            [
-                'kode_dinas' => 'DISHUB',
-                'nama_dinas' => 'Dinas Perhubungan',
-                'alamat' => 'Jl. Raya Sukabumi Km 2, Ciawi, Kab. Bogor',
-                'telepon' => '(0251) 8241001',
-                'email' => 'dishub@bogorkab.go.id',
-                'kepala_dinas' => 'Agus Ridho, S.H, M.H',
-            ],
-            [
-                'kode_dinas' => 'PUPR',
-                'nama_dinas' => 'Dinas Pekerjaan Umum dan Penataan Ruang',
-                'alamat' => 'Jl. Tegar Beriman, Pakansari, Cibinong',
-                'telepon' => '(021) 8754890',
-                'email' => 'pupr@bogorkab.go.id',
-                'kepala_dinas' => 'Iwan Setiawan, S.T, M.T',
-            ],
-            [
-                'kode_dinas' => 'BAPPEDALITBANG',
-                'nama_dinas' => 'Badan Perencanaan Pembangunan Penelitian dan Pengembangan Daerah',
-                'alamat' => 'Jl. Tegar Beriman, Cibinong, Kab. Bogor',
-                'telepon' => '(021) 8752002',
-                'email' => 'bappedalitbang@bogorkab.go.id',
-                'kepala_dinas' => 'Ajat Rochmat Jatnika, S.T, M.Si',
-            ],
-            [
-                'kode_dinas' => 'BAPPENDA',
-                'nama_dinas' => 'Badan Pengelolaan Pendapatan Daerah',
-                'alamat' => 'Jl. Tegar Beriman No. 1, Cibinong',
-                'telepon' => '(021) 8753000',
-                'email' => 'bappenda@bogorkab.go.id',
-                'kepala_dinas' => 'Aris Nurjatmiko, S.STP',
-            ],
-            [
-                'kode_dinas' => 'SATPOLPP',
-                'nama_dinas' => 'Satuan Polisi Pamong Praja',
-                'alamat' => 'Jl. Tegar Beriman, Cibinong, Kab. Bogor',
-                'telepon' => '(021) 8751111',
-                'email' => 'satpolpp@bogorkab.go.id',
-                'kepala_dinas' => 'Cecep Imam Nagararasit, M.Si',
-            ],
-        ];
+        // 1. Seed Master Data Dinas (39 Dinas/Badan/SKPD dari app_md_lokasidinas.csv)
+        $csvPath = public_path('app_md_lokasidinas.csv');
+        if (file_exists($csvPath)) {
+            $lines = file($csvPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            if (count($lines) > 1) {
+                foreach (array_slice($lines, 1) as $line) {
+                    $cols = str_getcsv($line);
+                    if (count($cols) >= 4) {
+                        $kode = strtoupper(trim($cols[0]));
+                        $nama = trim($cols[0]);
+                        $alamat = trim($cols[1]);
 
-        foreach ($dinasData as $dinas) {
-            DB::table('sirapi_md_dinas')->updateOrInsert(
-                ['kode_dinas' => $dinas['kode_dinas']],
-                $dinas + ['created_at' => $now, 'updated_at' => $now]
-            );
+                        $rawLat = preg_replace('/[^0-9]/', '', (string)$cols[2]);
+                        $lat = !empty($rawLat) ? preg_replace('/^6/', '-6.', $rawLat) : null;
+
+                        $rawLong = preg_replace('/[^0-9]/', '', (string)$cols[3]);
+                        $long = null;
+                        if (str_starts_with($rawLong, '106')) {
+                            $long = preg_replace('/^106/', '106.', $rawLong);
+                        } elseif (str_starts_with($rawLong, '107')) {
+                            $long = preg_replace('/^107/', '107.', $rawLong);
+                        } elseif (!empty($rawLong)) {
+                            $long = '106.' . ltrim($rawLong, '10');
+                        }
+
+                        DB::table('sirapi_md_dinas')->updateOrInsert(
+                            ['kode_dinas' => $kode],
+                            [
+                                'nama_dinas' => $nama,
+                                'alamat' => $alamat,
+                                'gps_lat' => $lat,
+                                'gps_long' => $long,
+                                'updated_at' => $now,
+                            ]
+                        );
+                    }
+                }
+            }
         }
 
         // 2. Seed Master Data 40 Kecamatan di Kabupaten Bogor
