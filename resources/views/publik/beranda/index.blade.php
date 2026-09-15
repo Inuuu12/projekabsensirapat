@@ -199,7 +199,7 @@
 <body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200 overflow-x-hidden">
     @include('publik.layout.navbarpublik')
 
-    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-0 space-y-16 sm:space-y-20">
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-6 sm:pt-8 space-y-16 sm:space-y-20">
         @php
             $agendaItems = collect($agendaBeranda ?? $agendaHariIni ?? []);
             $agendaTerbaruItems = collect($agendaTerbaru ?? []);
@@ -248,77 +248,11 @@
                     'email' => $maskEmail($aduan->email),
                     'isi_aduan' => $aduan->isi_aduan,
                     'balasan_admin' => $aduan->balasan_admin ?: 'Belum ada balasan dari admin.',
-                    'status' => $aduan->status ?? 'Pending',
+                    'status' => (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status,
                     'tanggal' => $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d F Y, H:i') : '-',
                 ],
             ])->all();
         @endphp
-        <!-- 1. Hero Banner Riset & Magang - Full Width Breakout -->
-        <div class="hero-fullwidth-breakout">
-        <section class="relative overflow-hidden shadow-2xl min-h-[480px] sm:min-h-[560px] md:min-h-[620px] flex items-center justify-center text-center group bg-[#0a0f1c]">
-            <!-- Background Image with blur -->
-            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[8s] ease-out group-hover:scale-110"
-                 style="background-image: url('{{ asset('assets/foto/hero-bg.jpg') }}'); transform-origin: center center; filter: blur(2px) brightness(0.7); transform: scale(1.05);"></div>
-
-            <!-- Strong dark overlay to reduce image visibility -->
-            <div class="absolute inset-0 bg-[#060c1a]/65"></div>
-            <!-- Cinematic Gradient Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-b from-[#060c1a]/50 via-[#0a1628]/60 to-[#060c1a]/88"></div>
-            <!-- Left/Right Vignette -->
-            <div class="absolute inset-0 bg-gradient-to-r from-[#060c1a]/60 via-transparent to-[#060c1a]/60"></div>
-            <!-- Bottom fade -->
-            <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#060c1a]/90 to-transparent"></div>
-
-            <!-- Subtle Grid Pattern -->
-            <div class="absolute inset-0 opacity-[0.04]" style="background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 60px 60px;"></div>
-
-            <!-- Content -->
-            <div class="relative z-10 max-w-3xl mx-auto px-6 sm:px-10 md:px-14 py-16 space-y-6 sm:space-y-7">
-
-
-
-                <h1 class="hero-fade-up-2 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.12] drop-shadow-lg">
-                    RAPID Kab. Bogor<br class="hidden sm:block"/>
-                    Rapat & Presensi Integrasi Dashboard
-                </h1>
-
-                <p class="hero-fade-up-3 text-sm sm:text-base text-slate-200/80 font-medium leading-relaxed max-w-xl mx-auto drop-shadow">
-                    Sistem informasi terintegrasi untuk pengelolaan agenda rapat, presensi digital, dan transparansi informasi di lingkungan Pemerintah Kabupaten Bogor.
-                </p>
-
-                <!-- Action Buttons -->
-                <div class="hero-fade-up-4 pt-2 flex items-center justify-center">
-                    <!-- Button: Lihat Agenda (Primary Green Centered) -->
-                    <a href="#section-layanan-data"
-                       onclick="event.preventDefault(); const el = document.getElementById('section-layanan-data'); if(el) { const y = el.getBoundingClientRect().top + window.pageYOffset - 90; window.scrollTo({top: y, behavior: 'smooth'}); }"
-                       class="hero-btn-primary">
-                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        <span>Lihat Agenda</span>
-                    </a>
-                </div>
-
-                <!-- Stats Bar -->
-                <div class="hero-fade-up-4 pt-4 flex items-center justify-center gap-6 sm:gap-10 border-t border-white/10 mt-2">
-                    <div class="text-center">
-                        <p class="text-xl sm:text-2xl font-black text-white">40+</p>
-                        <p class="text-[10px] sm:text-xs text-white/55 font-semibold uppercase tracking-wider">Kecamatan</p>
-                    </div>
-                    <div class="h-8 w-px bg-white/15"></div>
-                    <div class="text-center">
-                        <p class="text-xl sm:text-2xl font-black text-white">{{ $agendaItems->count() }}+</p>
-                        <p class="text-[10px] sm:text-xs text-white/55 font-semibold uppercase tracking-wider">Agenda Aktif</p>
-                    </div>
-                    <div class="h-8 w-px bg-white/15"></div>
-                    <div class="text-center">
-                        <p class="text-xl sm:text-2xl font-black text-white">{{ $beritaItems->count() }}+</p>
-                        <p class="text-[10px] sm:text-xs text-white/55 font-semibold uppercase tracking-wider">Berita Terkini</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        </div>
 
         <!-- Header Grid (Ingin Bertemu Kami & Widget Cuaca) -->
         <div id="section-layanan-data" class="scroll-reveal grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
@@ -344,22 +278,22 @@
                 </a>
             </div>
 
-            <!-- Sisi Kanan: Cuaca -->
-            <button type="button" id="open-weather-modal" class="lg:col-span-4 relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 md:p-6 text-left cursor-pointer hover:shadow-md hover:border-ijo-tua/30 dark:hover:border-emerald-700/40 transition-all duration-300 group">
-                <div class="flex items-start justify-between gap-3">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-1.5 mb-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-ijo-tua dark:bg-emerald-400 animate-pulse"></span>
-                            <p id="home-weather-location" class="text-[11px] font-bold text-ijo-tua dark:text-emerald-400 tracking-wide uppercase">Cibinong, Kab. Bogor</p>
-                        </div>
-                        <h2 id="home-weather-temp" class="text-4xl md:text-5xl font-black mt-1 text-gray-900 dark:text-white tracking-tight">-</h2>
-                        <p id="home-weather-condition" class="text-sm font-bold text-gray-700 dark:text-gray-200 mt-1">Memuat cuaca...</p>
-                        <p id="home-weather-humidity" class="text-[11px] font-semibold text-gray-500 dark:text-gray-400 mt-2">
-                            Kelembapan - &bull; Klik untuk detail
-                        </p>
+            <!-- Sisi Kanan: Cuaca Minimalis (Tanpa Card Box) -->
+            <button type="button" id="open-weather-modal" class="lg:col-span-4 flex items-center justify-between p-4 md:p-5 rounded-2xl hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-all text-left cursor-pointer group">
+                <div class="flex-1 min-w-0 space-y-1">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-ijo-tua dark:bg-emerald-400 animate-pulse shrink-0"></span>
+                        <p id="home-weather-location" class="text-[11px] font-extrabold text-ijo-tua dark:text-emerald-400 tracking-wider uppercase truncate">Cibinong, Kab. Bogor</p>
                     </div>
-                    <div class="text-5xl md:text-6xl shrink-0 group-hover:scale-110 transition-transform duration-300">⛅</div>
+                    <div class="flex items-baseline gap-2.5">
+                        <h2 id="home-weather-temp" class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-none">-</h2>
+                        <p id="home-weather-condition" class="text-xs sm:text-sm font-extrabold text-gray-700 dark:text-gray-200 truncate">Memuat cuaca...</p>
+                    </div>
+                    <p id="home-weather-humidity" class="text-[10px] sm:text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-0.5">
+                        Kelembapan - &bull; Klik untuk detail
+                    </p>
                 </div>
+                <div class="text-4xl md:text-5xl shrink-0 group-hover:scale-110 transition-transform duration-300 ml-3">⛅</div>
             </button>
         </div>
 
@@ -467,54 +401,17 @@
                         <svg style="width:1.1rem;height:1.1rem" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
                     </div>
                     <div class="min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Peta Sebaran Agenda & Kunjungan Kerja</h3>
-                            <span class="hidden sm:inline-flex bg-ijo-sangatmuda dark:bg-[#1b3832] text-ijo-tua dark:text-emerald-300 text-[9px] font-bold px-2 py-0.5 rounded-full border border-ijo-tua/20 dark:border-emerald-800/40 tracking-wide uppercase">GIS</span>
-                        </div>
+                        <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Peta Sebaran Agenda & Kunjungan Kerja</h3>
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Pemetaan 40 Kecamatan Kabupaten Bogor beserta sebaran titik kegiatan.</p>
                     </div>
                 </div>
-                <button type="button" id="btn-reset-map-view" class="self-start sm:self-auto shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-[#152420] border border-gray-200 dark:border-[#284c43] hover:bg-ijo-sangatmuda hover:border-ijo-tua/30 dark:hover:bg-[#1b3832] px-3.5 py-2 rounded-full transition-all shadow-sm whitespace-nowrap">
-                    <svg style="width:0.85rem;height:0.85rem" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    Reset Peta
-                </button>
             </div>
 
             <!-- Grid 2 Kolom: Peta (Kiri 8 Kolom) + Daftar Rapat Dinas (Kanan 4 Kolom) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                 <!-- Sisi Kiri: Card Container Peta (lg:col-span-8) -->
                 <div class="lg:col-span-8 bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-4 md:p-6 shadow-lg space-y-4 flex flex-col justify-between">
-                    <!-- Summary Stats Strip -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                        <div class="bg-[#F8F7F4] dark:bg-[#0f1c19] border border-gray-200/60 dark:border-[#233a34] rounded-xl p-3 flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg bg-ijo-tua text-white flex items-center justify-center font-black text-xs shrink-0 shadow-xs">🗺️</div>
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Batas Wilayah</p>
-                                <p class="font-extrabold text-gray-900 dark:text-white text-xs">40 Kecamatan</p>
-                            </div>
-                        </div>
-                        <div class="bg-[#F8F7F4] dark:bg-[#0f1c19] border border-gray-200/60 dark:border-[#233a34] rounded-xl p-3 flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-black text-xs shrink-0 shadow-xs">🏛️</div>
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Titik Instansi</p>
-                                <p class="font-extrabold text-gray-900 dark:text-white text-xs" id="stat-gov-points-count">41 Kantor Camat</p>
-                            </div>
-                        </div>
-                        <div class="bg-[#F8F7F4] dark:bg-[#0f1c19] border border-gray-200/60 dark:border-[#233a34] rounded-xl p-3 flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center font-black text-xs shrink-0 shadow-xs">📅</div>
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Agenda Rapat</p>
-                                <p class="font-extrabold text-gray-900 dark:text-white text-xs">{{ $agendaItems->count() }} Kegiatan</p>
-                            </div>
-                        </div>
-                        <div class="bg-[#F8F7F4] dark:bg-[#0f1c19] border border-gray-200/60 dark:border-[#233a34] rounded-xl p-3 flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center font-black text-xs shrink-0 shadow-xs">🏢</div>
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Pusat Pemkab</p>
-                                <p class="font-extrabold text-gray-900 dark:text-white text-xs">Cibinong</p>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <!-- Leaflet Container -->
                     <div class="relative z-10 isolate w-full h-[460px] md:h-[500px] rounded-xl overflow-hidden border border-gray-200/80 dark:border-[#284c43] shadow-inner flex-grow">
@@ -709,10 +606,16 @@
                         <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">Aspirasi & tindak lanjut pengaduan masyarakat Diskominfo Kab. Bogor</p>
                     </div>
                 </div>
-                <a href="{{ route('publik.riwayat-aduan') }}" class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-ijo-tua dark:text-emerald-400 bg-ijo-sangatmuda dark:bg-emerald-950/50 border border-ijo-tua/20 dark:border-emerald-800/40 hover:bg-ijo-tua hover:text-white dark:hover:bg-emerald-800/50 px-3.5 py-1.5 rounded-full transition-all whitespace-nowrap">
-                    <span class="hidden sm:inline">Selengkapnya</span>
-                    <span class="sm:hidden">Lihat</span>
-                </a>
+                <div class="flex items-center gap-2 shrink-0">
+                    <a href="{{ route('publik.masukan') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-oren-utama hover:bg-oren-tua dark:bg-[#d97706] dark:hover:bg-[#b45309] px-3.5 py-1.5 rounded-full transition-all shadow-xs hover:shadow-md hover:-translate-y-0.5 whitespace-nowrap">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                        <span>Tambah Aduan</span>
+                    </a>
+                    <a href="{{ route('publik.riwayat-aduan') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-ijo-tua dark:text-emerald-400 bg-ijo-sangatmuda dark:bg-emerald-950/50 border border-ijo-tua/20 dark:border-emerald-800/40 hover:bg-ijo-tua hover:text-white dark:hover:bg-emerald-800/50 px-3.5 py-1.5 rounded-full transition-all whitespace-nowrap">
+                        <span class="hidden sm:inline">Selengkapnya</span>
+                        <span class="sm:hidden">Lihat</span>
+                    </a>
+                </div>
             </div>
 
             <!-- Table Card -->
@@ -740,7 +643,7 @@
                                     <td class="px-5 py-3.5 text-gray-500 dark:text-gray-300 max-w-[140px] sm:max-w-[180px]"><span class="line-clamp-1">{{ \Illuminate\Support\Str::limit($aduan->isi_aduan, 50) }}</span></td>
                                     <td class="px-5 py-3.5 text-gray-500 dark:text-gray-300 max-w-[140px] sm:max-w-[180px] hidden md:table-cell"><span class="line-clamp-1">{{ $aduan->balasan_admin ? \Illuminate\Support\Str::limit($aduan->balasan_admin, 50) : 'Belum ada balasan' }}</span></td>
                                     <td class="px-5 py-3.5 text-center">
-                                        <span class="{{ $statusClass($aduan->status) }} font-bold px-3 py-1 rounded-full text-[10px] whitespace-nowrap">{{ $aduan->status ?? 'Pending' }}</span>
+                                        <span class="{{ $statusClass($aduan->status) }} font-bold px-3 py-1 rounded-full text-[10px] whitespace-nowrap">{{ (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status }}</span>
                                     </td>
                                     <td class="px-5 py-3.5 text-right text-gray-400 dark:text-gray-400 whitespace-nowrap hidden sm:table-cell">{{ $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d M Y') : '-' }}</td>
                                 </tr>
@@ -758,8 +661,12 @@
                     </table>
                 </div>
 
-                <div class="px-5 py-4 bg-gray-50/60 dark:bg-[#0f1c19]/60 border-t border-gray-100 dark:border-[#233a34]">
+                <div class="px-5 py-3.5 bg-gray-50/60 dark:bg-[#0f1c19]/60 border-t border-gray-100 dark:border-[#233a34] flex items-center justify-between gap-3 flex-wrap">
                     <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">Klik baris untuk melihat detail aduan</p>
+                    <a href="{{ route('publik.masukan') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-oren-utama hover:bg-oren-tua dark:bg-[#d97706] dark:hover:bg-[#b45309] px-3.5 py-1.5 rounded-full transition-all shadow-xs hover:shadow-md hover:-translate-y-0.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                        <span>Tambah Aduan</span>
+                    </a>
                 </div>
             </div>
         </section>

@@ -54,7 +54,7 @@
                     'email' => $maskEmail($aduan->email),
                     'isi_aduan' => $aduan->isi_aduan,
                     'balasan_admin' => $aduan->balasan_admin ?: 'Belum ada balasan dari admin.',
-                    'status' => $aduan->status ?? 'Pending',
+                    'status' => (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status,
                     'tanggal' => $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d F Y, H:i') : '-',
                     'foto_url' => (!empty($aduan->foto) && $aduan->foto !== 'aduan/default.jpg' && (file_exists(public_path('storage/' . $aduan->foto)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($aduan->foto))) ? asset('storage/' . $aduan->foto) : null,
                 ],
@@ -99,7 +99,7 @@
                                     {{ $aduan->balasan_admin ? \Illuminate\Support\Str::limit($aduan->balasan_admin, 90) : 'Belum ada balasan' }}
                                 </td>
                                 <td class="p-3 text-center">
-                                    <span class="{{ $statusClass($aduan->status) }} font-bold px-3 py-1 rounded-full text-[10px]">{{ $aduan->status ?? 'Pending' }}</span>
+                                    <span class="{{ $statusClass($aduan->status) }} font-bold px-3 py-1 rounded-full text-[10px]">{{ (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status }}</span>
                                 </td>
                                 <td class="p-3 text-right text-gray-400 dark:text-gray-400 whitespace-nowrap">{{ $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d M Y') : '-' }}</td>
                             </tr>
