@@ -71,6 +71,7 @@
                 <thead>
                     <tr class="bg-[#35635b] dark:bg-[#1b3832] text-white text-xs font-bold uppercase tracking-wider">
                         <th class="px-6 py-4">Nama Agenda</th>
+                        <th class="px-6 py-4">Dinas / OPD</th>
                         <th class="px-6 py-4">Tanggal</th>
                         <th class="px-6 py-4">Waktu</th>
                         @if ($kategoriSurat === 'masuk')
@@ -92,6 +93,11 @@
                         @endphp
                         <tr class="hover:bg-gray-50/80 dark:hover:bg-[#1b332d] transition">
                             <td class="px-6 py-4 font-bold text-[#35635b] dark:text-emerald-400">{{ $item->nama_agenda }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200 whitespace-nowrap">
+                                <span class="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 text-[11px] font-bold px-2.5 py-0.5 rounded-lg">
+                                    🏢 {{ $item->dinas?->nama_dinas ?? 'Diskominfo' }}
+                                </span>
+                            </td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200 whitespace-nowrap">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200 whitespace-nowrap">
                                 {{ substr((string) $item->waktu, 0, 5) }}{{ $item->waktu_selesai ? ' - ' . substr((string) $item->waktu_selesai, 0, 5) : '' }}
@@ -142,6 +148,7 @@
                                         data-kuota="{{ $item->kuota }}"
                                         data-lokasi="{{ $item->lokasi }}"
                                         data-ruang="{{ $item->id_ruangrapat }}"
+                                        data-dinas="{{ $item->id_dinas }}"
                                         data-statusqr="{{ $item->status_qr }}"
                                         data-statusfr="{{ (int) $item->status_fr }}"
                                         data-lampiran="{{ $item->lampiran ? asset('storage/' . $item->lampiran) : '' }}"
@@ -378,6 +385,7 @@
         }
 
         if(document.getElementById('edit-id_ruangrapat')) document.getElementById('edit-id_ruangrapat').value = button.dataset.ruang || '';
+        if(document.getElementById('edit-id_dinas')) document.getElementById('edit-id_dinas').value = button.dataset.dinas || '';
         if(document.getElementById('edit-status_qr')) document.getElementById('edit-status_qr').value = button.dataset.statusqr || 'nonaktif';
         if(document.getElementById('edit-status_fr')) document.getElementById('edit-status_fr').value = button.dataset.statusfr === '1' ? '1' : '0';
         

@@ -62,11 +62,6 @@
         @endphp
 
         <div class="space-y-3">
-            <nav class="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2">
-                <a href="{{ route('publik.beranda') }}" class="hover:underline">Beranda</a>
-                <span>/</span>
-                <span class="text-gray-800 dark:text-gray-200 font-semibold">Daftar Aduan</span>
-            </nav>
 
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>

@@ -25,7 +25,7 @@
         }
     </script>
 </head>
-<body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
+<body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200 overflow-x-hidden">
     @include('publik.layout.navbarpublik')
 
     <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -35,11 +35,6 @@
         @endphp
 
         <div class="space-y-4">
-            <nav class="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2">
-                <a href="{{ route('publik.beranda') }}" class="hover:underline">Beranda</a>
-                <span>/</span>
-                <span class="text-gray-800 dark:text-gray-200 font-semibold">Agenda</span>
-            </nav>
 
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -101,6 +96,7 @@
                                             <span class="inline-flex items-center text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800/40">Pegawai & Tamu</span>
                                         @endif
                                     </div>
+                                    <p class="text-xs font-bold text-[#35635b] dark:text-emerald-400 flex items-center gap-1">{{ $item->dinas?->nama_dinas ?? 'Dinas Komunikasi dan Informatika' }}</p>
                                     <p class="text-xs {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-300' }}">{{ $item->lokasi_display ?? '-' }}</p>
                                 </div>
                             </div>
@@ -125,7 +121,7 @@
                                     @endif
                                 </div>
                                 <a href="{{ route('publik.agenda.detail', $item->id_agenda) }}" class="{{ $isBerlangsung ? 'bg-emerald-600 hover:bg-emerald-700 text-white font-bold' : ($isSelesai ? 'bg-gray-200 dark:bg-[#1a2925] text-gray-600 dark:text-gray-300 hover:bg-gray-300' : 'bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 text-white') }} text-xs font-bold px-4 py-2 rounded-xl transition-colors">
-                                    {{ $isBerlangsung ? 'Ikuti &rsaquo;' : 'Detail &rsaquo;' }}
+                                    {{ $isBerlangsung ? 'Ikuti ' : 'Detail' }}
                                 </a>
                             </div>
                         </div>

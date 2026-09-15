@@ -33,13 +33,8 @@
 
     <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-        <!-- Breadcrumb & Header Section -->
+        <!-- Header Section -->
         <div class="space-y-2">
-            <nav class="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2">
-                <a href="{{ route('publik.beranda') }}" class="hover:underline">Beranda</a>
-                <span>/</span>
-                <span class="text-gray-800 dark:text-gray-200 font-semibold">Aduan & Feedback</span>
-            </nav>
 
             <div>
                 <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">Sampaikan Masukan / Aduan Anda</h1>
@@ -244,11 +239,12 @@
                         </div>
                     </div>
 
-                    <!-- Badge Estimasi Penanganan -->
+                    <!-- Pemberitahuan Estimasi Penanganan -->
                     <div class="pt-1">
-                        <span class="bg-ijo-tua dark:bg-[#107050] text-white text-[11px] font-bold px-4 py-2 rounded-full inline-block border border-transparent dark:border-[#10b981]/30">
-                            Rata-rata 1×24 Jam
-                        </span>
+                        <div class="p-3 bg-ijo-sangatmuda dark:bg-emerald-950/40 border border-ijo-tua/20 dark:border-emerald-800/40 rounded-xl text-xs text-ijo-tua dark:text-emerald-300">
+                            <p class="font-bold">Estimasi Penanganan:</p>
+                            <p class="text-[11px] mt-0.5 text-gray-600 dark:text-gray-300">Rata-rata aduan diproses dalam 1×24 Jam.</p>
+                        </div>
                     </div>
                 </div>
 

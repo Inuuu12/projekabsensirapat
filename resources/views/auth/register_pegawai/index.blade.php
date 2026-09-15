@@ -439,7 +439,7 @@
                 <div class="relative w-full aspect-[4/3] bg-gray-950 rounded-2xl overflow-hidden shadow-inner border border-gray-200 dark:border-[#284c43]">
                     <div id="face-status-container" class="absolute inset-0 flex flex-col items-center justify-center text-white text-xs font-medium z-10 p-4 gap-2">
                         <div class="w-8 h-8 border-2 border-white/20 border-t-emerald-400 rounded-full animate-spin"></div>
-                        <p id="face-status" class="animate-pulse text-center">Memuat kamera dan model AI...</p>
+                        <p id="face-status" class="animate-pulse text-center">Memuat kamera dan sistem pendeteksi...</p>
                     </div>
                     <video id="face-video" class="absolute top-0 left-0 w-full h-full object-cover hidden" style="transform: scaleX(-1);" autoplay muted playsinline></video>
                     <canvas id="face-overlay" class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none" style="transform: scaleX(-1);"></canvas>
@@ -721,7 +721,7 @@
             faceVideo.classList.add('hidden');
             btnCaptureFace.classList.add('hidden');
             faceStatusContainer.classList.remove('hidden');
-            faceStatus.innerText = "Memuat kamera dan model AI...";
+            faceStatus.innerText = "Memuat kamera dan sistem pendeteksi...";
 
             try {
                 if (!faceModelsLoaded) {
@@ -776,7 +776,7 @@
             faceVideo.classList.add('hidden');
             btnCaptureFace.classList.add('hidden');
             faceStatusContainer.classList.remove('hidden');
-            faceStatus.innerText = "Memuat kamera dan model AI...";
+            faceStatus.innerText = "Memuat kamera dan sistem pendeteksi...";
             if (faceOverlay) {
                 const ctx = faceOverlay.getContext('2d');
                 ctx.clearRect(0, 0, faceOverlay.width, faceOverlay.height);

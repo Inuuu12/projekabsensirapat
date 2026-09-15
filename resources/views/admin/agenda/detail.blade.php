@@ -20,10 +20,6 @@
             <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1F2937] dark:text-white tracking-tight">Detail Agenda</h1>
             <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Informasi agenda, berkas dokumen, QR code, dan rekap log kehadiran real-time.</p>
         </div>
-        <a href="{{ route('admin.agenda.lihat', ['kategori_surat' => $agenda->kategori_surat ?? 'internal']) }}" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420] px-4 text-xs font-bold text-gray-700 dark:text-gray-200 transition hover:bg-gray-50 dark:hover:bg-white/5 shadow-2xs">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            <span>Kembali ke Daftar Agenda</span>
-        </a>
     </div>
 
     <!-- Grid Informasi Utama & QR Code -->
@@ -60,7 +56,14 @@
                         </dd>
                     </div>
                     <div class="space-y-1">
-                        <dt class="font-semibold text-gray-400 dark:text-gray-400 uppercase text-[10px] tracking-wider">Asal Surat / Penyelenggara</dt>
+                        <dt class="font-semibold text-gray-400 dark:text-gray-400 uppercase text-[10px] tracking-wider">Dinas / OPD Penyelenggara</dt>
+                        <dd class="font-bold text-gray-800 dark:text-slate-100 text-xs flex items-center gap-1">
+                            <span class="text-emerald-600 dark:text-emerald-400">🏢</span>
+                            <span>{{ $agenda->dinas?->nama_dinas ?? 'Dinas Komunikasi dan Informatika' }}</span>
+                        </dd>
+                    </div>
+                    <div class="space-y-1">
+                        <dt class="font-semibold text-gray-400 dark:text-gray-400 uppercase text-[10px] tracking-wider">Asal Surat / Pengaju</dt>
                         <dd class="font-bold text-gray-800 dark:text-slate-100 text-xs">{{ $agenda->asal_surat ?: 'Bidang Informasi Publik' }}</dd>
                     </div>
                     <div class="space-y-1">

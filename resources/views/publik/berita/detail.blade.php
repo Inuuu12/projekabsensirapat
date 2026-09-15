@@ -50,17 +50,10 @@
             };
         @endphp
 
-        <nav class="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2 flex-wrap">
-            <a href="{{ route('publik.beranda') }}" class="hover:underline">Beranda</a>
-            <span>/</span>
-            <a href="{{ route('publik.berita') }}" class="hover:underline">Berita</a>
-            <span>/</span>
-            <span class="text-gray-800 dark:text-gray-200 font-semibold truncate max-w-xs md:max-w-md">{{ $beritaAktif?->judul ?? 'Detail berita' }}</span>
-        </nav>
+
 
         <div>
             <a href="{{ route('publik.berita') }}" class="inline-flex items-center space-x-2 text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:text-ijo-semitua transition-colors">
-                <span>&larr;</span>
                 <span>Kembali ke Berita</span>
             </a>
         </div>

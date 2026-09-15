@@ -25,7 +25,7 @@
         }
     </script>
 </head>
-<body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200">
+<body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200 overflow-x-hidden">
     @include('publik.layout.navbarpublik')
 
     <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -54,16 +54,8 @@
         @endphp
 
         <div class="space-y-3">
-            <nav class="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-2">
-                <a href="{{ route('publik.beranda') }}" class="hover:underline">Beranda</a>
-                <span>/</span>
-                <a href="{{ route('publik.agenda') }}" class="hover:underline">Agenda</a>
-                <span>/</span>
-                <span class="text-gray-800 dark:text-gray-200 font-semibold truncate">{{ $agendaAktif?->nama_agenda ?? 'Detail agenda' }}</span>
-            </nav>
 
             <a href="{{ route('publik.agenda') }}" class="inline-flex items-center space-x-1 text-xs font-bold text-ijo-tua dark:text-emerald-400 hover:underline">
-                <span>&larr;</span>
                 <span>Kembali ke Semua Agenda</span>
             </a>
         </div>
@@ -101,7 +93,8 @@
                                     <span class="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-800/40">Pegawai & Tamu</span>
                                 @endif
                             </div>
-                            <p><span class="font-bold text-gray-800 dark:text-white">Asal Surat:</span> {{ $agendaAktif->asal_surat ?? '-' }}</p>
+                            <p><span class="font-bold text-gray-800 dark:text-white">Dinas Penyelenggara:</span> <span class="font-extrabold text-[#35635b] dark:text-emerald-400">{{ $agendaAktif->dinas?->nama_dinas ?? 'Dinas Komunikasi dan Informatika' }}</span></p>
+                            <p><span class="font-bold text-gray-800 dark:text-white">Asal Surat / Pengaju:</span> {{ $agendaAktif->asal_surat ?? '-' }}</p>
                             <p><span class="font-bold text-gray-800 dark:text-white">Ditugaskan:</span> {{ $agendaAktif->ditugaskan ?? '-' }}</p>
                         </div>
                     </div>
