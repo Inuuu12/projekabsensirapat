@@ -250,6 +250,7 @@
                     'balasan_admin' => $aduan->balasan_admin ?: 'Belum ada balasan dari admin.',
                     'status' => (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status,
                     'tanggal' => $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d F Y, H:i') : '-',
+                    'foto_url' => (!empty($aduan->foto) && $aduan->foto !== 'aduan/default.jpg' && (file_exists(public_path('storage/' . $aduan->foto)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($aduan->foto))) ? asset('storage/' . $aduan->foto) : null,
                 ],
             ])->all();
         @endphp
@@ -640,7 +641,16 @@
                                             <span class="truncate max-w-[120px] sm:max-w-none">{{ $aduan->nama_pengadu }}</span>
                                         </div>
                                     </td>
-                                    <td class="px-5 py-3.5 text-gray-500 dark:text-gray-300 max-w-[140px] sm:max-w-[180px]"><span class="line-clamp-1">{{ \Illuminate\Support\Str::limit($aduan->isi_aduan, 50) }}</span></td>
+                                    <td class="px-5 py-3.5 text-gray-500 dark:text-gray-300 max-w-[140px] sm:max-w-[180px]">
+                                        <div class="flex items-center gap-1.5">
+                                            @if(!empty($aduan->foto) && $aduan->foto !== 'aduan/default.jpg' && (file_exists(public_path('storage/' . $aduan->foto)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($aduan->foto)))
+                                                <span class="inline-flex items-center text-ijo-semitua dark:text-emerald-400 shrink-0" title="Memiliki lampiran foto">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                </span>
+                                            @endif
+                                            <span class="line-clamp-1">{{ \Illuminate\Support\Str::limit($aduan->isi_aduan, 50) }}</span>
+                                        </div>
+                                    </td>
                                     <td class="px-5 py-3.5 text-gray-500 dark:text-gray-300 max-w-[140px] sm:max-w-[180px] hidden md:table-cell"><span class="line-clamp-1">{{ $aduan->balasan_admin ? \Illuminate\Support\Str::limit($aduan->balasan_admin, 50) : 'Belum ada balasan' }}</span></td>
                                     <td class="px-5 py-3.5 text-center">
                                         <span class="{{ $statusClass($aduan->status) }} font-bold px-3 py-1 rounded-full text-[10px] whitespace-nowrap">{{ (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status }}</span>
@@ -704,6 +714,28 @@
                     <p id="home-aduan-body" class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-200 whitespace-pre-line">-</p>
                 </div>
 
+                <div id="home-aduan-photo-container" class="hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5">
+                    <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Lampiran Foto</p>
+                    <div class="mt-2 flex items-center gap-3">
+                        <button type="button" 
+                                onclick="openHomePhotoModal()" 
+                                class="group relative inline-block overflow-hidden rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#152420] transition hover:border-ijo-semitua hover:shadow-md cursor-pointer text-left"
+                                title="Klik untuk memperbesar foto">
+                            <img id="home-aduan-photo-img" src="" alt="Lampiran Foto" class="max-h-48 w-auto rounded-xl object-contain transition duration-200 group-hover:scale-105">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl">
+                                <span class="rounded-lg bg-white/95 dark:bg-[#0f1c19] px-3 py-1.5 text-xs font-bold text-ijo-tua dark:text-emerald-400 shadow-xs flex items-center gap-1.5 border border-transparent dark:border-[#284c43]">
+                                    <span>🔍</span>
+                                    <span>Perbesar Foto</span>
+                                </span>
+                            </div>
+                        </button>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                            <p class="font-bold text-gray-800 dark:text-gray-200">Lampiran foto aduan</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Klik foto untuk melihat dalam ukuran penuh dengan fitur zoom & geser bebas.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="rounded-2xl bg-ijo-sangatmuda dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-5">
                     <p class="text-[10px] uppercase font-bold text-ijo-tua dark:text-emerald-400">Balasan Admin</p>
                     <p id="home-aduan-reply" class="mt-2 text-sm leading-relaxed text-gray-800 dark:text-gray-100 whitespace-pre-line">-</p>
@@ -759,17 +791,31 @@
         const homeAduanDetails = @json($aduanDetailItems);
         const homeAduanModal = document.getElementById('home-aduan-modal');
         const homeAduanClose = document.getElementById('home-aduan-close');
+        const homeAduanPhotoContainer = document.getElementById('home-aduan-photo-container');
+        const homeAduanPhotoImg = document.getElementById('home-aduan-photo-img');
         const weatherModal = document.getElementById('weather-modal');
         const weatherOpen = document.getElementById('open-weather-modal');
         const weatherClose = document.getElementById('close-weather-modal');
         const weatherError = document.getElementById('weather-error');
         const weatherDaily = document.getElementById('weather-daily');
         let weatherLoaded = false;
+        let currentHomePhotoUrl = '';
+        let currentHomePhotoAuthor = '';
+        let currentHomePhotoDate = '';
 
         function setHomeAduanText(id, value) {
             const element = document.getElementById(id);
             if (element) {
                 element.textContent = value || '-';
+            }
+        }
+
+        function openHomePhotoModal() {
+            if (!currentHomePhotoUrl) return;
+            if (typeof openImagePreview === 'function') {
+                openImagePreview(currentHomePhotoUrl, 'Lampiran Foto Aduan - ' + (currentHomePhotoAuthor || 'Anonim'), currentHomePhotoDate || '-');
+            } else {
+                window.open(currentHomePhotoUrl, '_blank');
             }
         }
 
@@ -789,6 +835,18 @@
                 setHomeAduanText('home-aduan-body', detail.isi_aduan);
                 setHomeAduanText('home-aduan-reply', detail.balasan_admin);
 
+                currentHomePhotoUrl = detail.foto_url || '';
+                currentHomePhotoAuthor = detail.nama_pengadu || 'Anonim';
+                currentHomePhotoDate = detail.tanggal || '-';
+
+                if (detail.foto_url && homeAduanPhotoImg && homeAduanPhotoContainer) {
+                    homeAduanPhotoImg.src = detail.foto_url;
+                    homeAduanPhotoContainer.classList.remove('hidden');
+                } else if (homeAduanPhotoContainer) {
+                    homeAduanPhotoContainer.classList.add('hidden');
+                    if (homeAduanPhotoImg) homeAduanPhotoImg.src = '';
+                }
+
                 homeAduanModal.classList.remove('hidden');
                 homeAduanModal.classList.add('flex');
             });
@@ -803,6 +861,26 @@
             if (event.target === homeAduanModal) {
                 homeAduanModal.classList.add('hidden');
                 homeAduanModal.classList.remove('flex');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const previewModal = document.getElementById('modal-preview-foto');
+                if (previewModal && !previewModal.classList.contains('hidden')) {
+                    if (typeof closeImagePreview === 'function') {
+                        closeImagePreview();
+                    }
+                    return;
+                }
+                if (homeAduanModal && !homeAduanModal.classList.contains('hidden')) {
+                    homeAduanModal.classList.add('hidden');
+                    homeAduanModal.classList.remove('flex');
+                }
+                if (weatherModal && !weatherModal.classList.contains('hidden')) {
+                    weatherModal.classList.add('hidden');
+                    weatherModal.classList.remove('flex');
+                }
             }
         });
 

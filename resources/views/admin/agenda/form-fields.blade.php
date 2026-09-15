@@ -1,8 +1,17 @@
-@php($prefix = $prefix ?? '')
-@php($kategori = old('kategori_surat', $kategoriSurat ?? 'internal'))
-@php($isMasuk = $kategori === 'masuk')
-@php($isKeluar = $kategori === 'keluar')
-@php($isInternal = $kategori === 'internal')
+@php
+    $prefix = $prefix ?? '';
+    $kategori = old('kategori_surat', $kategoriSurat ?? 'internal');
+    $isMasuk = $kategori === 'masuk';
+    $isKeluar = $kategori === 'keluar';
+    $isInternal = $kategori === 'internal';
+    $currentAdmin = Auth::guard('admin')->user();
+    $instansiInfo = $instansiInfo ?? ($currentAdmin ? $currentAdmin->getInstansiInfo() : [
+        'nama' => 'Dinas Komunikasi & Informatika (Diskominfo)',
+        'singkatan' => 'Diskominfo',
+        'alamat' => 'Jl. Tegar Beriman, Cibinong, Kabupaten Bogor (Pusat Pemkab Bogor)',
+        'tipe' => 'superadmin',
+    ]);
+@endphp
 
 <input id="{{ $prefix }}kategori_surat" name="kategori_surat" type="hidden" value="{{ $kategori }}">
 <input id="{{ $prefix }}status_qr" name="status_qr" type="hidden" value="nonaktif">
@@ -110,7 +119,7 @@
         @endif
     </label>
     <input id="{{ $prefix }}asal_surat" name="asal_surat" type="text" 
-        placeholder="{{ $isKeluar ? 'Instansi / pihak luar yang diundang (misal: Seluruh Kecamatan se-Kab. Bogor, Dinas Pendidikan)' : ($isInternal ? 'Bidang / Seksi pengaju rapat (misal: Bidang Informasi dan Komunikasi Publik)' : 'Instansi asal surat (misal: Kantor Camat Cariu)') }}" 
+        placeholder="{{ $isKeluar ? 'Instansi / pihak luar yang diundang (misal: Seluruh Kecamatan se-Kab. Bogor, Dinas Pendidikan)' : ($isInternal ? 'Bidang / Seksi pengaju rapat di ' . ($instansiInfo['singkatan'] ?? $instansiInfo['nama']) . ' (misal: Bagian Umum / Sekretariat)' : 'Instansi asal surat (misal: Kantor Camat Cariu)') }}" 
         class="h-10 sm:h-11 w-full rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
 </div>
 
@@ -149,39 +158,53 @@
         </div>
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
-                <span class="text-xs sm:text-sm font-extrabold text-[#0e2f27] dark:text-emerald-300">Dinas Komunikasi & Informatika (Diskominfo)</span>
+                <span class="text-xs sm:text-sm font-extrabold text-[#0e2f27] dark:text-emerald-300">{{ $instansiInfo['nama'] }}</span>
                 @if ($isInternal)
                     <span class="text-[9.5px] font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full">Internal Instansi</span>
                 @else
                     <span class="text-[9.5px] font-bold bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded-full">Tuan Rumah Acara</span>
                 @endif
             </div>
-            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 truncate">Jl. Tegar Beriman, Cibinong, Kabupaten Bogor (Pusat Pemkab Bogor)</p>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 truncate">{{ $instansiInfo['alamat'] }}</p>
         </div>
     </div>
-    <input id="{{ $prefix }}lokasi" name="lokasi" type="hidden" value="Dinas Komunikasi dan Informatika">
+    <input id="{{ $prefix }}lokasi" name="lokasi" type="hidden" value="{{ $instansiInfo['nama'] }}">
 </div>
 
 <div>
     <div class="flex items-center justify-between mb-1.5">
         <label class="block text-xs sm:text-sm font-bold text-[#0e2f27] dark:text-gray-200">
-            {{ $isKeluar ? 'Ruangan Pertemuan / Acara di Diskominfo' : 'Ruangan Rapat Diskominfo' }}
+            {{ $isKeluar ? 'Ruangan Pertemuan / Acara di ' . ($instansiInfo['singkatan'] ?? $instansiInfo['nama']) : 'Ruangan Rapat ' . ($instansiInfo['singkatan'] ?? $instansiInfo['nama']) }}
         </label>
-        <span class="text-[10px] font-semibold text-[#35635b] dark:text-emerald-400">Pilih ruang gedung Diskominfo</span>
+        <span class="text-[10px] font-semibold text-[#35635b] dark:text-emerald-400">Pilih ruang gedung {{ $instansiInfo['singkatan'] ?? $instansiInfo['nama'] }}</span>
     </div>
     <div class="relative">
-        <select id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" required data-agenda-room-select="{{ $prefix }}" class="h-10 sm:h-11 w-full appearance-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 pr-10 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 cursor-pointer">
-            <option value="" data-kapasitas="0">Pilih ruang pertemuan Diskominfo...</option>
-            @foreach ($ruang as $item)
-                <option value="{{ $item->id_ruangrapat }}" data-nama-ruang="{{ $item->nama_ruang }}" data-kapasitas="{{ $item->kapasitas }}">
-                    {{ $item->nama_ruang }} (Kapasitas: {{ $item->kapasitas }} org{{ $item->dynamic_status === 'terpakai' ? ' • Ruangan Terpakai' : ' • Tersedia' }})
-                </option>
-            @endforeach
+        <select id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" {{ $ruang->isNotEmpty() ? 'required' : '' }} data-agenda-room-select="{{ $prefix }}" class="h-10 sm:h-11 w-full appearance-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 pr-10 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 cursor-pointer">
+            @if ($ruang->isEmpty())
+                <option value="" data-kapasitas="0">Belum ada ruangan terdaftar di {{ $instansiInfo['singkatan'] ?? $instansiInfo['nama'] }} (Kosong)</option>
+            @else
+                <option value="" data-kapasitas="0">Pilih ruang pertemuan {{ $instansiInfo['singkatan'] ?? $instansiInfo['nama'] }}...</option>
+                @foreach ($ruang as $item)
+                    <option value="{{ $item->id_ruangrapat }}" data-nama-ruang="{{ $item->nama_ruang }}" data-kapasitas="{{ $item->kapasitas }}">
+                        {{ $item->nama_ruang }} (Kapasitas: {{ $item->kapasitas }} org{{ $item->dynamic_status === 'terpakai' ? ' • Ruangan Terpakai' : ' • Tersedia' }})
+                    </option>
+                @endforeach
+            @endif
         </select>
         <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
     </div>
+    @if ($ruang->isEmpty())
+        <div class="mt-2 flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 p-2.5 border border-amber-200/80 dark:border-amber-800/50">
+            <svg class="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-[11px] text-amber-800 dark:text-amber-300 leading-tight">
+                <strong>{{ $instansiInfo['singkatan'] ?? $instansiInfo['nama'] }}</strong> belum mendaftarkan data ruangan. Rapat otomatis berlokasi di kantor instansi, atau tambahkan ruangan di menu <strong>Ruang Rapat</strong>.
+            </p>
+        </div>
+    @endif
 </div>
 @else
 {{-- KHUSUS SURAT MASUK (TUGAS LUAR KE INSTANSI LAIN) --}}
@@ -206,9 +229,7 @@
                 </optgroup>
                 <optgroup label="🏬 Dinas & OPD Pemkab Bogor">
                     @foreach($listInstansi->where('tipe', 'Dinas / OPD') as $dinas)
-                        @if($dinas['nama'] !== 'Dinas Komunikasi dan Informatika')
-                            <option value="{{ $dinas['nama'] }}">{{ $dinas['nama'] }}</option>
-                        @endif
+                        <option value="{{ $dinas['nama'] }}">{{ $dinas['nama'] }}</option>
                     @endforeach
                 </optgroup>
             @endif
@@ -227,7 +248,7 @@
     </div>
     <p class="mt-1 text-[10.5px] text-gray-500 dark:text-gray-400">Pilih dari 40 Kecamatan / Dinas agar titik agenda tugas luar muncul tepat pada peta GIS.</p>
 </div>
-<input id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" type="hidden" value="{{ $ruang->first()->id_ruangrapat ?? 1 }}">
+<input id="{{ $prefix }}id_ruangrapat" name="id_ruangrapat" type="hidden" value="{{ $ruang->first()?->id_ruangrapat ?? '' }}">
 @endif
 
 {{-- 7. Lampiran Surat Undangan --}}

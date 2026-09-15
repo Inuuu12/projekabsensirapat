@@ -37,6 +37,7 @@ class Agenda extends Model
         'id_ruangrapat',
         'id_statusagenda',
         'id_dinas',
+        'id_kecamatan',
     ];
 
     protected function casts(): array
@@ -49,15 +50,25 @@ class Agenda extends Model
 
     protected static function booted(): void
     {
-        static::addGlobalScope('dinas', function (Builder $builder) {
-            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
-                $builder->where($builder->getQuery()->from . '.id_dinas', auth('admin')->user()->id_dinas);
+        static::addGlobalScope('instansi', function (Builder $builder) {
+            if (auth('admin')->check()) {
+                $user = auth('admin')->user();
+                if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas) {
+                    $builder->where($builder->getQuery()->from . '.id_dinas', $user->id_dinas);
+                } elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan']) && $user->id_kecamatan) {
+                    $builder->where($builder->getQuery()->from . '.id_kecamatan', $user->id_kecamatan);
+                }
             }
         });
 
         static::creating(function ($model) {
-            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
-                $model->id_dinas = auth('admin')->user()->id_dinas;
+            if (auth('admin')->check()) {
+                $user = auth('admin')->user();
+                if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas) {
+                    $model->id_dinas = $user->id_dinas;
+                } elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan']) && $user->id_kecamatan) {
+                    $model->id_kecamatan = $user->id_kecamatan;
+                }
             }
         });
 
@@ -127,6 +138,11 @@ class Agenda extends Model
     public function dinas()
     {
         return $this->belongsTo(Dinas::class, 'id_dinas', 'id_dinas');
+    }
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class, 'id_kecamatan', 'id_kecamatan');
     }
 
     public function ruangRapat()
@@ -424,3 +440,4 @@ class Agenda extends Model
             ->exists();
     }
 }
+

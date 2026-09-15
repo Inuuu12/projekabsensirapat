@@ -8,7 +8,7 @@
     <!-- Header Section -->
     <div>
         <h1 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
-        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">Selamat datang kembali di SIRAPI. Pantau analitik agenda dan laporan kegiatan Diskominfo.</p>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">Selamat datang kembali di SIRAPI. Pantau analitik agenda dan laporan kegiatan {{ Auth::guard('admin')->user()?->getInstansiInfo()['singkatan'] ?? 'Diskominfo' }}.</p>
     </div>
 
     <!-- 1. Top Stats Cards Grid (Matching Modern Dashboard Reference) -->
@@ -340,6 +340,156 @@
 </div>
 
 @push('scripts')
+<style>
+    /* ========================================================
+       PREMIUM APEXCHARTS TOOLBAR STYLING (SIRAPI THEME)
+       ======================================================== */
+    #monthly-agenda-chart .apexcharts-toolbar {
+        z-index: 10 !important;
+        top: 2px !important;
+        right: 12px !important;
+        padding: 3px 6px !important;
+        border-radius: 10px !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 3px !important;
+    }
+    .dark #monthly-agenda-chart .apexcharts-toolbar {
+        background: #152420 !important;
+        border-color: #233a34 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    /* Individual tool buttons */
+    #monthly-agenda-chart .apexcharts-toolbar > div {
+        width: 26px !important;
+        height: 26px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 7px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: 1px solid transparent !important;
+        transition: all 0.18s ease !important;
+        cursor: pointer !important;
+    }
+
+    /* SVG icon default styles (all toolbar icons are stroke-based: +, -, zoom, pan, reset) */
+    #monthly-agenda-chart .apexcharts-toolbar > div svg {
+        fill: none !important;
+        stroke: #64748b !important;
+        color: #64748b !important;
+        width: 14px !important;
+        height: 14px !important;
+        transition: all 0.18s ease !important;
+    }
+    .dark #monthly-agenda-chart .apexcharts-toolbar > div svg {
+        fill: none !important;
+        stroke: #9ca3af !important;
+        color: #9ca3af !important;
+    }
+
+    /* Hover state */
+    #monthly-agenda-chart .apexcharts-toolbar > div:hover {
+        background: #ecfdf5 !important;
+        border-color: #a7f3d0 !important;
+    }
+    .dark #monthly-agenda-chart .apexcharts-toolbar > div:hover {
+        background: #1b3832 !important;
+        border-color: #284c43 !important;
+    }
+    #monthly-agenda-chart .apexcharts-toolbar > div:hover svg {
+        fill: none !important;
+        stroke: #059669 !important;
+        color: #059669 !important;
+        transform: scale(1.1) !important;
+    }
+    .dark #monthly-agenda-chart .apexcharts-toolbar > div:hover svg {
+        fill: none !important;
+        stroke: #34d399 !important;
+        color: #34d399 !important;
+    }
+
+    /* Active / Selected tool state (Overrides the harsh ApexCharts blue #008FFB) */
+    #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected,
+    #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected:hover,
+    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-pan-icon.apexcharts-selected,
+    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-zoom-icon.apexcharts-selected {
+        background: #d1fae5 !important;
+        border-color: #6ee7b7 !important;
+        color: #047857 !important;
+    }
+    .dark #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected,
+    .dark #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected:hover,
+    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-pan-icon.apexcharts-selected,
+    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-zoom-icon.apexcharts-selected {
+        background: #1b3832 !important;
+        border-color: #059669 !important;
+        color: #34d399 !important;
+    }
+    #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg,
+    #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg path,
+    #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg circle,
+    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-pan-icon.apexcharts-selected svg,
+    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-zoom-icon.apexcharts-selected svg,
+    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-pan-icon.apexcharts-selected svg path,
+    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-zoom-icon.apexcharts-selected svg path,
+    #monthly-agenda-chart .apexcharts-theme-light .apexcharts-zoom-icon.apexcharts-selected svg circle {
+        fill: none !important;
+        stroke: #047857 !important;
+        color: #047857 !important;
+    }
+    .dark #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg,
+    .dark #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg path,
+    .dark #monthly-agenda-chart .apexcharts-toolbar > div.apexcharts-selected svg circle,
+    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-pan-icon.apexcharts-selected svg,
+    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-zoom-icon.apexcharts-selected svg,
+    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-pan-icon.apexcharts-selected svg path,
+    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-zoom-icon.apexcharts-selected svg path,
+    .dark #monthly-agenda-chart .apexcharts-theme-dark .apexcharts-zoom-icon.apexcharts-selected svg circle {
+        fill: none !important;
+        stroke: #34d399 !important;
+        color: #34d399 !important;
+    }
+
+    /* Pastikan tombol reset zoom selalu tampil di toolbar (jangan disembunyikan oleh .apexcharts-hide bawaan ApexCharts) */
+    #monthly-agenda-chart .apexcharts-reset-icon,
+    #monthly-agenda-chart .apexcharts-reset-icon.apexcharts-hide {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Reset button specific SVG styling - keeps circular restart arrow crisp and clean */
+    #monthly-agenda-chart .apexcharts-reset-icon svg {
+        fill: none !important;
+        stroke: #64748b !important;
+        color: #64748b !important;
+        stroke-width: 2.3 !important;
+        stroke-linecap: round !important;
+        stroke-linejoin: round !important;
+    }
+    .dark #monthly-agenda-chart .apexcharts-reset-icon svg {
+        fill: none !important;
+        stroke: #9ca3af !important;
+        color: #9ca3af !important;
+    }
+    #monthly-agenda-chart .apexcharts-reset-icon:hover svg {
+        fill: none !important;
+        stroke: #059669 !important;
+        color: #059669 !important;
+    }
+    .dark #monthly-agenda-chart .apexcharts-reset-icon:hover svg {
+        fill: none !important;
+        stroke: #34d399 !important;
+        color: #34d399 !important;
+    }
+</style>
 <!-- Load ApexCharts CDN -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
@@ -352,15 +502,50 @@
         return document.documentElement.classList.contains('dark');
     }
 
+    function resetChartZoom() {
+        const icon = document.querySelector('#monthly-agenda-chart .apexcharts-reset-icon');
+        if (icon) {
+            icon.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        }
+        if (splineChart) {
+            splineChart.updateOptions({
+                xaxis: {
+                    min: undefined,
+                    max: undefined
+                }
+            });
+        }
+    }
+
     function initSplineChart() {
         const isDark = isDarkMode();
         const activeSeriesData = chartPayload.series[currentCategory] || chartPayload.series.semua;
 
         const options = {
             chart: {
+                id: 'monthly-agenda-spline',
                 type: 'area',
                 height: 320,
-                toolbar: { show: false },
+                toolbar: {
+                    show: true,
+                    offsetX: 0,
+                    offsetY: 2,
+                    tools: {
+                        download: false,
+                        selection: false,
+                        zoom: true,
+                        zoomin: true,
+                        zoomout: true,
+                        pan: true,
+                        reset: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.8 11.2L9.2 7.6L13.4 4.6A8.2 8.2 0 1 1 5.4 9.2"/></svg>'
+                    },
+                    autoSelected: 'zoom'
+                },
+                zoom: {
+                    enabled: true,
+                    type: 'x',
+                    autoScaleYaxis: true
+                },
                 fontFamily: 'Poppins, sans-serif',
                 background: 'transparent',
                 animations: {
@@ -447,6 +632,24 @@
             container.innerHTML = '';
             splineChart = new ApexCharts(container, options);
             splineChart.render();
+
+            container.addEventListener('dblclick', function(e) {
+                if (e.target.closest('.apexcharts-toolbar')) return;
+                resetChartZoom();
+            });
+
+            // Pastikan klik tombol reset zoom selalu mereset tampilan grafik
+            container.addEventListener('click', function(e) {
+                const resetBtn = e.target.closest('.apexcharts-reset-icon');
+                if (resetBtn && splineChart) {
+                    splineChart.updateOptions({
+                        xaxis: {
+                            min: undefined,
+                            max: undefined
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -547,6 +750,7 @@
 
     function switchChartCategory(cat) {
         currentCategory = cat;
+        resetChartZoom();
         
         // Update styling of pills
         document.querySelectorAll('.cat-pill').forEach(btn => {

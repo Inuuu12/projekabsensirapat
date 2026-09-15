@@ -13,19 +13,42 @@ class RuangRapat extends Model
 
     protected $table = 'sirapi_md_ruangrapat';
     protected $primaryKey = 'id_ruangrapat';
-    protected $fillable = ['nama_ruang', 'kapasitas', 'status', 'keterangan', 'id_dinas'];
+    protected $fillable = ['nama_ruang', 'kapasitas', 'status', 'keterangan', 'id_dinas', 'id_kecamatan'];
 
     protected static function booted(): void
     {
-        static::addGlobalScope('dinas', function (Builder $builder) {
-            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
-                $builder->where($builder->getQuery()->from . '.id_dinas', auth('admin')->user()->id_dinas);
+        static::addGlobalScope('instansi', function (Builder $builder) {
+            if (auth('admin')->check()) {
+                $user = auth('admin')->user();
+                $table = $builder->getQuery()->from;
+                if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas) {
+                    $builder->where($table . '.id_dinas', $user->id_dinas);
+                } elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan']) && $user->id_kecamatan) {
+                    $builder->where($table . '.id_kecamatan', $user->id_kecamatan);
+                } elseif ($user->role === 'superadmin') {
+                    $builder->where(function ($q) use ($table) {
+                        $q->where($table . '.id_dinas', 1)
+                          ->orWhere(function ($q2) use ($table) {
+                              $q2->whereNull($table . '.id_dinas')
+                                 ->whereNull($table . '.id_kecamatan');
+                          });
+                    });
+                }
             }
         });
 
         static::creating(function ($model) {
-            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
-                $model->id_dinas = auth('admin')->user()->id_dinas;
+            if (auth('admin')->check()) {
+                $user = auth('admin')->user();
+                if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas) {
+                    $model->id_dinas = $user->id_dinas;
+                } elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan']) && $user->id_kecamatan) {
+                    $model->id_kecamatan = $user->id_kecamatan;
+                } elseif ($user->role === 'superadmin') {
+                    if (empty($model->id_dinas) && empty($model->id_kecamatan)) {
+                        $model->id_dinas = 1;
+                    }
+                }
             }
         });
     }
@@ -33,6 +56,11 @@ class RuangRapat extends Model
     public function dinas()
     {
         return $this->belongsTo(Dinas::class, 'id_dinas', 'id_dinas');
+    }
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class, 'id_kecamatan', 'id_kecamatan');
     }
 
     public function agendas()

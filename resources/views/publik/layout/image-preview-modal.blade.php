@@ -119,6 +119,15 @@
         }
     }
 
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('modal-preview-foto');
+            if (modal && !modal.classList.contains('hidden')) {
+                closeImagePreview();
+            }
+        }
+    });
+
     function zoomImage(delta) {
         const newScale = Math.min(Math.max(photoCurrentScale + delta, photoMinScale), photoMaxScale);
         if (newScale === photoCurrentScale) return;

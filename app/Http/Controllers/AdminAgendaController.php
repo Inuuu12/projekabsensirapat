@@ -38,19 +38,24 @@ class AdminAgendaController extends Controller
             'id_statusagenda' => 'nullable|exists:sirapi_md_statusagenda,id_statusagenda',
         ]);
 
-        if (empty($validated['id_ruangrapat'])) {
-            $defaultRuang = RuangRapat::first();
-            $validated['id_ruangrapat'] = $defaultRuang?->id_ruangrapat ?? 1;
-        }
-
         $kategoriSurat = $validated['kategori_surat'] ?? 'internal';
         $isInternal = $kategoriSurat === 'internal';
         $isKeluar = $kategoriSurat === 'keluar';
         $ruang = ! empty($request->input('id_ruangrapat')) ? RuangRapat::find($request->input('id_ruangrapat')) : null;
 
+        $admin = Auth::guard('admin')->user();
+        $instansiInfo = $admin ? $admin->getInstansiInfo() : [
+            'nama' => 'Dinas Komunikasi & Informatika (Diskominfo)',
+            'singkatan' => 'Diskominfo',
+            'alamat' => 'Jl. Tegar Beriman, Cibinong, Kabupaten Bogor (Pusat Pemkab Bogor)',
+        ];
+        $namaInstansi = $instansiInfo['nama'];
+
         if ($isInternal || $isKeluar) {
-            $validated['lokasi'] = $ruang?->nama_ruang ? $ruang->nama_ruang . ' (Diskominfo)' : 'Dinas Komunikasi dan Informatika';
+            $validated['id_ruangrapat'] = $ruang?->id_ruangrapat;
+            $validated['lokasi'] = $ruang?->nama_ruang ? $ruang->nama_ruang . ' (' . $namaInstansi . ')' : $namaInstansi;
         } else {
+            $validated['id_ruangrapat'] = null;
             $chosenLokasi = trim((string) ($request->input('lokasi') ?? ''));
             $validated['lokasi'] = ! empty($chosenLokasi) ? $chosenLokasi : 'Kantor Bupati Bogor';
         }
@@ -135,19 +140,27 @@ class AdminAgendaController extends Controller
         }
 
         $admin = Auth::guard('admin')->user();
+        $instansiInfo = $admin ? $admin->getInstansiInfo() : [
+            'nama' => 'Dinas Komunikasi & Informatika (Diskominfo)',
+            'singkatan' => 'Diskominfo',
+            'alamat' => 'Jl. Tegar Beriman, Cibinong, Kabupaten Bogor (Pusat Pemkab Bogor)',
+            'tipe' => 'superadmin',
+        ];
+
         $ruang = RuangRapat::latest('id_ruangrapat')->get();
+
         $pegawaiList = Pegawai::orderBy('bidang')->orderBy('nama_pegawai')->get();
         $agendaStats = Agenda::query()
             ->selectRaw('kategori_surat, COUNT(*) as total')
             ->groupBy('kategori_surat')
             ->pluck('total', 'kategori_surat');
 
-        $listInstansi = $this->getListInstansi();
+        $listInstansi = $this->getListInstansi($instansiInfo['nama']);
 
-        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats', 'listInstansi'));
+        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats', 'listInstansi', 'instansiInfo'));
     }
 
-    protected function getListInstansi()
+    protected function getListInstansi(?string $excludeNama = null)
     {
         $list = collect();
 
@@ -189,6 +202,12 @@ class AdminAgendaController extends Controller
             }
         }
 
+        if ($excludeNama) {
+            $list = $list->filter(function ($item) use ($excludeNama) {
+                return stripos($item['nama'], $excludeNama) === false && stripos($excludeNama, $item['nama']) === false;
+            })->values();
+        }
+
         return $list;
     }
 
@@ -226,7 +245,15 @@ class AdminAgendaController extends Controller
         }
 
         $admin = Auth::guard('admin')->user();
+        $instansiInfo = $admin ? $admin->getInstansiInfo() : [
+            'nama' => 'Dinas Komunikasi & Informatika (Diskominfo)',
+            'singkatan' => 'Diskominfo',
+            'alamat' => 'Jl. Tegar Beriman, Cibinong, Kabupaten Bogor (Pusat Pemkab Bogor)',
+            'tipe' => 'superadmin',
+        ];
+
         $ruang = RuangRapat::latest('id_ruangrapat')->get();
+
         $pegawaiList = Pegawai::orderBy('bidang')->orderBy('nama_pegawai')->get();
         $isRiwayat = true;
 
@@ -235,7 +262,9 @@ class AdminAgendaController extends Controller
             ->groupBy('kategori_surat')
             ->pluck('total', 'kategori_surat');
 
-        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats', 'isRiwayat'));
+        $listInstansi = $this->getListInstansi($instansiInfo['nama']);
+
+        return view('admin.agenda.index', compact('admin', 'agenda', 'ruang', 'pegawaiList', 'kategoriSurat', 'agendaStats', 'isRiwayat', 'listInstansi', 'instansiInfo'));
     }
 
     public function detail_Agenda(Request $request, ?int $id = null)
@@ -456,19 +485,24 @@ class AdminAgendaController extends Controller
             'id_statusagenda' => 'nullable|exists:sirapi_md_statusagenda,id_statusagenda',
         ]);
 
-        if (empty($validated['id_ruangrapat'])) {
-            $defaultRuang = RuangRapat::first();
-            $validated['id_ruangrapat'] = $defaultRuang?->id_ruangrapat ?? 1;
-        }
-
         $kategoriSurat = $validated['kategori_surat'] ?? 'internal';
         $isInternal = $kategoriSurat === 'internal';
         $isKeluar = $kategoriSurat === 'keluar';
         $ruang = ! empty($request->input('id_ruangrapat')) ? RuangRapat::find($request->input('id_ruangrapat')) : null;
 
+        $admin = Auth::guard('admin')->user();
+        $instansiInfo = $admin ? $admin->getInstansiInfo() : [
+            'nama' => 'Dinas Komunikasi & Informatika (Diskominfo)',
+            'singkatan' => 'Diskominfo',
+            'alamat' => 'Jl. Tegar Beriman, Cibinong, Kabupaten Bogor (Pusat Pemkab Bogor)',
+        ];
+        $namaInstansi = $instansiInfo['nama'];
+
         if ($isInternal || $isKeluar) {
-            $validated['lokasi'] = $ruang?->nama_ruang ? $ruang->nama_ruang . ' (Diskominfo)' : 'Dinas Komunikasi dan Informatika';
+            $validated['id_ruangrapat'] = $ruang?->id_ruangrapat;
+            $validated['lokasi'] = $ruang?->nama_ruang ? $ruang->nama_ruang . ' (' . $namaInstansi . ')' : $namaInstansi;
         } else {
+            $validated['id_ruangrapat'] = null;
             $chosenLokasi = trim((string) ($request->input('lokasi') ?? ''));
             $validated['lokasi'] = ! empty($chosenLokasi) ? $chosenLokasi : 'Kantor Bupati Bogor';
         }
