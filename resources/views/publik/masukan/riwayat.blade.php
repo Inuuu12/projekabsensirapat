@@ -115,70 +115,120 @@
         </section>
     </main>
 
-    <div id="aduan-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
-        <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col rounded-xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-xl overflow-hidden border border-transparent dark:border-[#233a34]">
-            <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34] shrink-0">
-                <div>
-                    <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Detail Aduan</p>
-                    <h2 id="aduan-modal-title" class="text-lg sm:text-xl font-extrabold mt-1 text-white">-</h2>
-                    <p id="aduan-modal-date" class="text-xs text-white/70 dark:text-gray-300 mt-1">-</p>
+    <!-- Modal Detail Aduan Publik (Z-Index 2000 untuk menutupi sticky navbar z-1001) -->
+    <div id="aduan-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center bg-slate-950/70 backdrop-blur-md p-3 sm:p-6 overflow-y-auto transition-all duration-300">
+        <div class="relative my-auto flex max-h-[92vh] sm:max-h-[85vh] w-full max-w-2xl flex-col rounded-3xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-2xl overflow-hidden border border-gray-100 dark:border-[#233a34] transform transition-all animate-in fade-in zoom-in-95 duration-200">
+            <!-- Header Modal -->
+            <div class="bg-gradient-to-r from-ijo-tua to-ijo-semitua dark:from-[#0f1c19] dark:to-[#152420] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-white/10 dark:border-[#233a34] shrink-0">
+                <div class="space-y-1 min-w-0 flex-1">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/15 dark:bg-emerald-950/80 text-emerald-100 dark:text-emerald-300 border border-white/20 dark:border-emerald-800/40">
+                            📌 Detail Aduan Publik
+                        </span>
+                    </div>
+                    <h2 id="aduan-modal-title" class="text-base sm:text-lg font-bold text-white leading-snug line-clamp-2 mt-1.5">-</h2>
+                    <p id="aduan-modal-date" class="text-xs text-emerald-100/80 dark:text-gray-300 flex items-center gap-1.5 pt-0.5">
+                        <span>📅</span>
+                        <span>-</span>
+                    </p>
                 </div>
-                <button type="button" id="aduan-modal-close" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/10 flex items-center justify-center text-lg font-bold cursor-pointer">x</button>
+                <button type="button" id="aduan-modal-close" onclick="closeAduanModal()" class="shrink-0 w-9 h-9 rounded-2xl bg-white/10 hover:bg-white/20 dark:bg-white/5 dark:hover:bg-white/15 flex items-center justify-center text-white text-base font-bold transition cursor-pointer shadow-xs" title="Tutup Modal">
+                    ✕
+                </button>
             </div>
 
+            <!-- Body Modal -->
             <div class="flex-1 min-h-0 overflow-y-auto p-5 sm:p-6 space-y-4 sm:space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                    <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4">
-                        <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Nama</p>
-                        <p id="aduan-modal-name" class="mt-1 font-bold text-gray-900 dark:text-white">-</p>
+                <!-- Info Cards Grid (Nama, Email, Status) -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div class="rounded-2xl bg-gray-50/80 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#233a34] p-4 space-y-1">
+                        <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1">
+                            <span>👤</span><span>Nama Pengadu</span>
+                        </p>
+                        <p id="aduan-modal-name" class="font-bold text-gray-900 dark:text-white truncate text-xs sm:text-sm">-</p>
                     </div>
-                    <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4">
-                        <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Email</p>
-                        <p id="aduan-modal-email" class="mt-1 font-bold text-gray-900 dark:text-white">-</p>
+                    <div class="rounded-2xl bg-gray-50/80 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#233a34] p-4 space-y-1">
+                        <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1">
+                            <span>✉️</span><span>Email</span>
+                        </p>
+                        <p id="aduan-modal-email" class="font-bold text-gray-900 dark:text-white truncate text-xs sm:text-sm font-mono">-</p>
                     </div>
-                    <div class="rounded-2xl bg-gray-50 dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-4">
-                        <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Status</p>
-                        <p id="aduan-modal-status" class="mt-1 font-bold text-gray-900 dark:text-white">-</p>
-                    </div>
-                </div>
-
-                <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5">
-                    <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Isi Aduan</p>
-                    <p id="aduan-modal-body" class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-200 whitespace-pre-line">-</p>
-                </div>
-
-                <div id="aduan-modal-photo-container" class="hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5">
-                    <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-400">Lampiran Foto</p>
-                    <div class="mt-2 flex items-center gap-3">
-                        <button type="button" 
-                                onclick="openPhotoModal(currentPhotoUrl, currentPhotoAuthor)" 
-                                class="group relative inline-block overflow-hidden rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#152420] transition hover:border-ijo-semitua hover:shadow-md cursor-pointer text-left"
-                                title="Klik untuk memperbesar foto">
-                            <img id="aduan-modal-photo-img" src="" alt="Lampiran Foto" class="max-h-48 w-auto rounded-xl object-contain transition duration-200 group-hover:scale-105">
-                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl">
-                                <span class="rounded-lg bg-white/95 dark:bg-[#0f1c19] px-3 py-1.5 text-xs font-bold text-ijo-tua dark:text-emerald-400 shadow-xs flex items-center gap-1.5 border border-transparent dark:border-[#284c43]">
-                                    <span>🔍</span>
-                                    <span>Perbesar Foto</span>
-                                </span>
-                            </div>
-                        </button>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">
-                            <p class="font-bold text-gray-800 dark:text-gray-200">Lampiran foto aduan</p>
-                            <p class="text-[11px] text-gray-400 mt-0.5">Klik foto untuk melihat dalam ukuran penuh dengan fitur zoom & geser bebas.</p>
+                    <div class="rounded-2xl bg-gray-50/80 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#233a34] p-4 space-y-1">
+                        <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1">
+                            <span>⚡</span><span>Status</span>
+                        </p>
+                        <div id="aduan-modal-status-badge" class="mt-0.5">
+                            <p id="aduan-modal-status" class="font-bold text-gray-900 dark:text-white text-xs sm:text-sm">-</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="rounded-2xl bg-ijo-sangatmuda dark:bg-[#1a332d] border border-transparent dark:border-[#284c43] p-5">
-                    <p class="text-[10px] uppercase font-bold text-ijo-tua dark:text-emerald-400">Balasan Admin</p>
-                    <p id="aduan-modal-reply" class="mt-2 text-sm leading-relaxed text-gray-800 dark:text-gray-200 whitespace-pre-line">-</p>
+                <!-- Card Isi Aduan -->
+                <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5 space-y-2 shadow-2xs">
+                    <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1.5">
+                        <span>📝</span><span>Isi Aduan / Masukan</span>
+                    </p>
+                    <p id="aduan-modal-body" class="text-xs sm:text-sm leading-relaxed text-gray-700 dark:text-gray-200 whitespace-pre-line font-medium">-</p>
                 </div>
+
+                <!-- Card Lampiran Foto -->
+                <div id="aduan-modal-photo-container" class="hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5 space-y-2 shadow-2xs">
+                    <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1.5">
+                        <span>🖼️</span><span>Lampiran Foto Aduan</span>
+                    </p>
+                    <div class="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4 p-3.5 bg-gray-50/80 dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#284c43]">
+                        <button type="button" 
+                                onclick="openPhotoModal(currentPhotoUrl, currentPhotoAuthor)" 
+                                class="group relative inline-block overflow-hidden rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-100 dark:bg-[#0f1c19] transition hover:border-ijo-semitua hover:shadow-md cursor-pointer shrink-0"
+                                title="Klik untuk memperbesar foto">
+                            <img id="aduan-modal-photo-img" src="" alt="Lampiran Foto" class="h-24 w-36 object-cover rounded-xl transition duration-200 group-hover:scale-105">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl">
+                                <span class="rounded-lg bg-white/95 dark:bg-[#0f1c19] px-2.5 py-1 text-[11px] font-bold text-ijo-tua dark:text-emerald-400 shadow-xs flex items-center gap-1 border border-transparent dark:border-[#284c43]">
+                                    <span>🔍</span>
+                                    <span>Perbesar</span>
+                                </span>
+                            </div>
+                        </button>
+                        <div class="text-xs text-gray-600 dark:text-gray-300 space-y-1">
+                            <p class="font-bold text-gray-900 dark:text-white">Foto Lampiran Tersedia</p>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">Klik gambar untuk melihat dalam ukuran penuh dengan fitur zoom & geser bebas.</p>
+                            <button type="button" 
+                                    onclick="openPhotoModal(currentPhotoUrl, currentPhotoAuthor)" 
+                                    class="inline-flex items-center gap-1 text-[11px] font-bold text-ijo-tua dark:text-emerald-400 hover:underline pt-0.5 cursor-pointer">
+                                <span>🔍</span> Lihat Tampilan Penuh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Balasan Admin -->
+                <div class="rounded-2xl bg-emerald-50/70 dark:bg-[#1a332d] border border-emerald-200/60 dark:border-[#284c43] p-5 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] uppercase font-extrabold tracking-wider text-ijo-tua dark:text-emerald-400 flex items-center gap-1.5">
+                            <span>🛡️</span><span>Tanggapan Resmi Admin</span>
+                        </p>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+                            Diskominfo Bogor
+                        </span>
+                    </div>
+                    <p id="aduan-modal-reply" class="text-xs sm:text-sm leading-relaxed text-gray-800 dark:text-gray-100 whitespace-pre-line font-medium">-</p>
+                </div>
+            </div>
+
+            <!-- Footer Modal -->
+            <div class="px-5 sm:px-6 py-3 bg-gray-50/80 dark:bg-[#0f1c19] border-t border-gray-100 dark:border-[#233a34] flex items-center justify-between shrink-0">
+                <span class="text-[11px] text-gray-400 dark:text-gray-400 flex items-center gap-1">
+                    <span>💡</span><span>Klik di luar area atau tekan ESC untuk menutup</span>
+                </span>
+                <button type="button" onclick="closeAduanModal()" class="px-5 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 dark:bg-white/10 dark:hover:bg-white/20 text-gray-700 dark:text-gray-200 text-xs font-bold transition cursor-pointer">
+                    Tutup
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Preview Foto Lampiran Pop-Up (Z-Index 90 di atas modal detail aduan) -->
-    <div id="photo-preview-modal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/80 backdrop-blur-xs p-3 sm:p-6 transition-all duration-300">
+    <!-- Modal Preview Foto Lampiran Pop-Up (Z-Index 3000) -->
+    <div id="photo-preview-modal" class="fixed inset-0 z-[3000] hidden items-center justify-center bg-black/80 backdrop-blur-xs p-3 sm:p-6 transition-all duration-300">
         <div class="relative w-full max-w-5xl rounded-2xl bg-white dark:bg-[#152420] shadow-2xl overflow-hidden flex flex-col max-h-[94vh] animate-in fade-in zoom-in-95 duration-200 border border-transparent dark:border-[#233a34]">
             <!-- Header Modal -->
             <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 shrink-0 border-b border-white/10 dark:border-[#233a34]">
@@ -245,7 +295,6 @@
     <script>
         const aduanDetails = @json($aduanDetailItems);
         const aduanModal = document.getElementById('aduan-modal');
-        const aduanModalClose = document.getElementById('aduan-modal-close');
         const aduanModalPhotoContainer = document.getElementById('aduan-modal-photo-container');
         const aduanModalPhotoImg = document.getElementById('aduan-modal-photo-img');
 
@@ -256,6 +305,26 @@
             const element = document.getElementById(id);
             if (element) {
                 element.textContent = value || '-';
+            }
+        }
+
+        function updateAduanStatusBadge(statusText) {
+            const badgeEl = document.getElementById('aduan-modal-status-badge');
+            if (!badgeEl) return;
+            const st = (statusText || '').toLowerCase().trim();
+            if (st === 'selesai') {
+                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-extrabold px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800/40">✓ Selesai</span>`;
+            } else if (st === 'diproses' || st === 'proses') {
+                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-sky-100 dark:bg-sky-950/80 text-sky-800 dark:text-sky-300 text-[11px] font-extrabold px-2.5 py-1 rounded-full border border-sky-200 dark:border-sky-800/40">🔄 Diproses</span>`;
+            } else {
+                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-[11px] font-extrabold px-2.5 py-1 rounded-full border border-amber-200 dark:border-amber-700/40">⏳ Menunggu</span>`;
+            }
+        }
+
+        function closeAduanModal() {
+            if (aduanModal) {
+                aduanModal.classList.add('hidden');
+                aduanModal.classList.remove('flex');
             }
         }
 
@@ -271,7 +340,7 @@
                 setAduanText('aduan-modal-date', detail.tanggal);
                 setAduanText('aduan-modal-name', detail.nama_pengadu);
                 setAduanText('aduan-modal-email', detail.email);
-                setAduanText('aduan-modal-status', detail.status);
+                updateAduanStatusBadge(detail.status);
                 setAduanText('aduan-modal-body', detail.isi_aduan);
                 setAduanText('aduan-modal-reply', detail.balasan_admin);
 
@@ -291,15 +360,15 @@
             });
         });
 
-        aduanModalClose?.addEventListener('click', () => {
-            aduanModal.classList.add('hidden');
-            aduanModal.classList.remove('flex');
-        });
-
         aduanModal?.addEventListener('click', (event) => {
             if (event.target === aduanModal) {
-                aduanModal.classList.add('hidden');
-                aduanModal.classList.remove('flex');
+                closeAduanModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && aduanModal && !aduanModal.classList.contains('hidden')) {
+                closeAduanModal();
             }
         });
 
