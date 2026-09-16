@@ -351,7 +351,11 @@
                                 <h4 class="font-bold text-sm text-gray-900 dark:text-white">Presensi Agenda</h4>
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
                                     @if ($isSuratKeluar)
+<<<<<<< HEAD
                                         Presensi Pegawai Internal & Tamu Undangan
+=======
+                                        Scan kode QR kehadiran (Pegawai / Tamu)
+>>>>>>> c3f7f68afbb4c3684bdd57f30c4a6d016e65cf26
                                     @elseif ($isSuratMasuk)
                                         Presensi pegawai yang ditugaskan
                                     @else
@@ -418,6 +422,7 @@
                             </div>
                         @else
                             @if ($isSuratKeluar)
+<<<<<<< HEAD
                                 {{-- KHUSUS SURAT KELUAR: PRESENSI PEGAWAI & PRESENSI GUEST DISANDINGKAN BERDAMPINGAN (TANPA BUTTON TAB) --}}
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {{-- 1. Presensi Pegawai --}}
@@ -441,10 +446,29 @@
                                         @else
                                             <div class="rounded-xl border border-dashed border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420] p-4 text-center">
                                                 <p class="text-[11px] font-medium text-gray-400">QR pegawai belum diaktifkan.</p>
+=======
+                                <!-- Dual QR Code Bersebelahan (Pegawai & Tamu) -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <!-- QR Absen Pegawai -->
+                                    <div class="bg-gray-50/80 dark:bg-[#0f1c19] rounded-2xl p-3 border border-gray-100 dark:border-[#233a34] text-center flex flex-col justify-between space-y-3">
+                                        <div class="space-y-0.5">
+                                            <p class="text-[11px] font-extrabold text-gray-800 dark:text-gray-100">QR Absen Pegawai</p>
+                                            <p class="text-[10px] text-gray-400">Scan untuk presensi pegawai</p>
+                                        </div>
+
+                                        @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlPegawai)
+                                            <div class="rounded-xl border border-gray-100 dark:border-[#233a34] bg-white p-2.5 shadow-xs">
+                                                <img src="{{ $qrImageUrlPegawai }}" alt="QR Presensi Pegawai {{ $agendaAktif->nama_agenda }}" class="mx-auto h-36 w-36 sm:h-40 sm:w-40 rounded-lg object-contain">
+                                            </div>
+                                        @else
+                                            <div class="rounded-xl border border-dashed border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420] p-4 text-center my-auto">
+                                                <p class="text-[11px] font-semibold text-gray-500 dark:text-gray-400">QR pegawai belum diaktifkan.</p>
+>>>>>>> c3f7f68afbb4c3684bdd57f30c4a6d016e65cf26
                                             </div>
                                         @endif
                                     </div>
 
+<<<<<<< HEAD
                                     {{-- 2. Presensi Tamu / Guest --}}
                                     <div id="panel-presensi-tamu" class="rounded-2xl border border-emerald-100 dark:border-[#233a34] bg-emerald-50/40 dark:bg-[#0f1c19] p-4 flex flex-col justify-between space-y-3.5">
                                         <div class="space-y-1.5">
@@ -466,12 +490,32 @@
                                         @else
                                             <div class="rounded-xl border border-dashed border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420] p-4 text-center">
                                                 <p class="text-[11px] font-medium text-gray-400">QR tamu belum diaktifkan.</p>
+=======
+                                    <!-- QR Absen Tamu -->
+                                    <div class="bg-gray-50/80 dark:bg-[#0f1c19] rounded-2xl p-3 border border-gray-100 dark:border-[#233a34] text-center flex flex-col justify-between space-y-3">
+                                        <div class="space-y-0.5">
+                                            <p class="text-[11px] font-extrabold text-gray-800 dark:text-gray-100">QR Absen Tamu</p>
+                                            <p class="text-[10px] text-gray-400">Scan untuk presensi tamu</p>
+                                        </div>
+
+                                        @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlTamu)
+                                            <div class="rounded-xl border border-gray-100 dark:border-[#233a34] bg-white p-2.5 shadow-xs">
+                                                <img src="{{ $qrImageUrlTamu }}" alt="QR Presensi Tamu {{ $agendaAktif->nama_agenda }}" class="mx-auto h-36 w-36 sm:h-40 sm:w-40 rounded-lg object-contain">
+                                            </div>
+                                        @else
+                                            <div class="rounded-xl border border-dashed border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420] p-4 text-center my-auto">
+                                                <p class="text-[11px] font-semibold text-gray-500 dark:text-gray-400">QR tamu belum diaktifkan.</p>
+>>>>>>> c3f7f68afbb4c3684bdd57f30c4a6d016e65cf26
                                             </div>
                                         @endif
                                     </div>
                                 </div>
                             @else
+<<<<<<< HEAD
                                 {{-- SURAT INTERNAL ATAU SURAT MASUK (TUNGGAL PEGAWAI) --}}
+=======
+                                <!-- Single QR Code (Pegawai Internal / Ditugaskan) -->
+>>>>>>> c3f7f68afbb4c3684bdd57f30c4a6d016e65cf26
                                 <div id="panel-presensi-pegawai" class="space-y-4">
                                     <div class="bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] text-center">
                                         <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">
@@ -533,6 +577,7 @@
     @include('publik.layout.footer')
 
     <script>
+<<<<<<< HEAD
         function switchPresensiTab(type) {
             const btnPegawai = document.getElementById('tab-btn-pegawai');
             const btnTamu = document.getElementById('tab-btn-tamu');
@@ -551,6 +596,25 @@
                 btnPegawai.className = 'py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all flex items-center justify-center space-x-2';
                 panelTamu.classList.remove('hidden');
                 panelPegawai.classList.add('hidden');
+=======
+        function openDokumentasiModal(imgSrc, title) {
+            const modal = document.getElementById('dokumentasi-modal');
+            const modalImg = document.getElementById('dokumentasi-modal-img');
+            const modalTitle = document.getElementById('dokumentasi-modal-title');
+            if (modal && modalImg) {
+                modalImg.src = imgSrc;
+                if (modalTitle) modalTitle.textContent = title;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeDokumentasiModal() {
+            const modal = document.getElementById('dokumentasi-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+>>>>>>> c3f7f68afbb4c3684bdd57f30c4a6d016e65cf26
             }
         }
 
@@ -573,6 +637,7 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+<<<<<<< HEAD
 
         document.addEventListener('DOMContentLoaded', function() {
             const isSuratMasuk = {{ $isSuratMasuk ? 'true' : 'false' }};
@@ -588,6 +653,9 @@
                 @endif
             }
         });
+=======
+    </script>
+>>>>>>> c3f7f68afbb4c3684bdd57f30c4a6d016e65cf26
 
         /* --- SCRIPT KONTROL ZOOM IN / ZOOM OUT & DRAG PAN LAMPIRAN INLINE --- */
         let inlineLampiranScale = 1.0;
