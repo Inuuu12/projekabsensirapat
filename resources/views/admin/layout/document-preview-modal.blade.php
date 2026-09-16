@@ -14,6 +14,19 @@
 
             <!-- Tombol Aksi Header -->
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <!-- Image Zoom Controls (ditampilkan jika file berupa gambar) -->
+                <div id="doc-preview-zoom-controls" class="hidden items-center gap-1 sm:gap-1.5 shrink-0">
+                    <button id="doc-btn-zoom-out" type="button" onclick="zoomDocImage(-0.25)" class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15 hover:bg-white/25 text-white transition backdrop-blur-xs cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" title="Perkecil">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                    </button>
+                    <button type="button" onclick="resetDocImageZoom()" class="flex h-8 px-2 sm:px-2.5 items-center justify-center rounded-lg bg-white/15 hover:bg-white/25 text-white text-[10px] sm:text-xs font-bold transition backdrop-blur-xs cursor-pointer" title="Reset (100%)">
+                        <span id="doc-preview-scale">100%</span>
+                    </button>
+                    <button id="doc-btn-zoom-in" type="button" onclick="zoomDocImage(0.25)" class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15 hover:bg-white/25 text-white transition backdrop-blur-xs cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" title="Perbesar">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </button>
+                </div>
+
                 <!-- Tombol Unduh / Buka Asli -->
                 <a id="doc-preview-download" href="#" target="_blank" download class="inline-flex items-center gap-1.5 rounded-lg bg-white/15 hover:bg-white/25 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-white transition backdrop-blur-xs" title="Unduh file">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,8 +51,8 @@
             <iframe id="doc-preview-pdf" src="" class="hidden w-full h-[65dvh] sm:h-[72vh] border-0 bg-white dark:bg-[#0f1c19]" title="Preview PDF"></iframe>
 
             <!-- 2. Preview Gambar (img) -->
-            <div id="doc-preview-image-container" class="hidden w-full h-full p-2 sm:p-4 flex items-center justify-center overflow-auto max-h-[65dvh] sm:max-h-[72vh]">
-                <img id="doc-preview-img" src="" alt="Preview Gambar" class="max-h-[60dvh] sm:max-h-[68vh] max-w-full rounded-lg object-contain shadow-md transition-transform duration-200">
+            <div id="doc-preview-image-container" class="hidden w-full h-full p-2 sm:p-4 flex items-center justify-center overflow-hidden max-h-[65dvh] sm:max-h-[72vh] select-none touch-none cursor-default">
+                <img id="doc-preview-img" src="" alt="Preview Gambar" ondragstart="return false;" class="max-h-[60dvh] sm:max-h-[68vh] max-w-full rounded-lg object-contain shadow-md origin-center will-change-transform select-none pointer-events-auto">
             </div>
 
             <!-- 3. Fallback Dokumen Lain (Word/Excel/dll) -->
@@ -64,12 +77,69 @@
 </div>
 
 <script>
+    let docPhotoScale = 1.0;
+    const docPhotoMinScale = 1.0;
+    const docPhotoMaxScale = 3.5;
+    let docPhotoTranslateX = 0;
+    let docPhotoTranslateY = 0;
+    let isDraggingDocPhoto = false;
+    let docPhotoStartX = 0;
+    let docPhotoStartY = 0;
+    let docPhotoLastTranslateX = 0;
+    let docPhotoLastTranslateY = 0;
+
+    function zoomDocImage(delta) {
+        const newScale = Math.min(Math.max(Number((docPhotoScale + delta).toFixed(2)), docPhotoMinScale), docPhotoMaxScale);
+        if (newScale === docPhotoScale) return;
+        docPhotoScale = newScale;
+        if (docPhotoScale <= docPhotoMinScale) {
+            docPhotoTranslateX = 0;
+            docPhotoTranslateY = 0;
+        }
+        applyDocPhotoTransform(true);
+    }
+
+    function resetDocImageZoom() {
+        docPhotoScale = 1.0;
+        docPhotoTranslateX = 0;
+        docPhotoTranslateY = 0;
+        applyDocPhotoTransform(true);
+    }
+
+    function applyDocPhotoTransform(smooth = true) {
+        const img = document.getElementById('doc-preview-img');
+        const container = document.getElementById('doc-preview-image-container');
+        const scaleEl = document.getElementById('doc-preview-scale');
+        const btnOut = document.getElementById('doc-btn-zoom-out');
+        const btnIn = document.getElementById('doc-btn-zoom-in');
+
+        if (!img) return;
+
+        if (docPhotoScale <= docPhotoMinScale) {
+            docPhotoScale = docPhotoMinScale;
+            docPhotoTranslateX = 0;
+            docPhotoTranslateY = 0;
+            if (container) container.style.cursor = 'default';
+        } else {
+            if (container) container.style.cursor = isDraggingDocPhoto ? 'grabbing' : 'grab';
+        }
+
+        img.style.transition = smooth ? 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)' : 'none';
+        img.style.transform = `translate(${docPhotoTranslateX}px, ${docPhotoTranslateY}px) scale(${docPhotoScale})`;
+
+        const percentText = `${Math.round(docPhotoScale * 100)}%`;
+        if (scaleEl) scaleEl.textContent = percentText;
+        if (btnOut) btnOut.disabled = (docPhotoScale <= docPhotoMinScale);
+        if (btnIn) btnIn.disabled = (docPhotoScale >= docPhotoMaxScale);
+    }
+
     function openDocumentPreview(fileUrl, title = 'Preview Dokumen', fileName = '') {
         const modal = document.getElementById('modal-preview-dokumen');
         const titleEl = document.getElementById('doc-preview-title');
         const filenameEl = document.getElementById('doc-preview-filename');
         const downloadBtn = document.getElementById('doc-preview-download');
         const iconEl = document.getElementById('doc-preview-icon');
+        const zoomControls = document.getElementById('doc-preview-zoom-controls');
 
         const pdfFrame = document.getElementById('doc-preview-pdf');
         const imgContainer = document.getElementById('doc-preview-image-container');
@@ -98,6 +168,10 @@
         imgContainer.classList.add('hidden');
         imgEl.src = '';
         unsupportedContainer.classList.add('hidden');
+        if (zoomControls) {
+            zoomControls.classList.remove('flex');
+            zoomControls.classList.add('hidden');
+        }
 
         // Deteksi Tipe File
         const imageExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'];
@@ -112,6 +186,11 @@
             if (iconEl) iconEl.textContent = '🖼️';
             imgEl.src = fileUrl;
             imgContainer.classList.remove('hidden');
+            if (zoomControls) {
+                zoomControls.classList.remove('hidden');
+                zoomControls.classList.add('flex');
+            }
+            resetDocImageZoom();
         } else {
             if (iconEl) iconEl.textContent = '📄';
             if (unsupportedName) unsupportedName.textContent = cleanFileName;
@@ -149,6 +228,65 @@
             if (modal && !modal.classList.contains('hidden')) {
                 closeDocumentPreview();
             }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('doc-preview-image-container');
+        if (container) {
+            container.addEventListener('wheel', (e) => {
+                const modal = document.getElementById('modal-preview-dokumen');
+                if (modal && !modal.classList.contains('hidden')) {
+                    e.preventDefault();
+                    zoomDocImage(e.deltaY < 0 ? 0.25 : -0.25);
+                }
+            }, { passive: false });
+
+            const startDrag = (clientX, clientY) => {
+                if (docPhotoScale <= docPhotoMinScale) return;
+                isDraggingDocPhoto = true;
+                docPhotoStartX = clientX;
+                docPhotoStartY = clientY;
+                docPhotoLastTranslateX = docPhotoTranslateX;
+                docPhotoLastTranslateY = docPhotoTranslateY;
+                container.style.cursor = 'grabbing';
+            };
+
+            const moveDrag = (clientX, clientY) => {
+                if (!isDraggingDocPhoto || docPhotoScale <= docPhotoMinScale) return;
+                const deltaX = clientX - docPhotoStartX;
+                const deltaY = clientY - docPhotoStartY;
+                const boundX = (container.clientWidth * (docPhotoScale - 1)) / 1.5 + 50;
+                const boundY = (container.clientHeight * (docPhotoScale - 1)) / 1.5 + 50;
+                docPhotoTranslateX = Math.max(-boundX, Math.min(boundX, docPhotoLastTranslateX + deltaX));
+                docPhotoTranslateY = Math.max(-boundY, Math.min(boundY, docPhotoLastTranslateY + deltaY));
+                applyDocPhotoTransform(false);
+            };
+
+            const endDrag = () => {
+                if (isDraggingDocPhoto) {
+                    isDraggingDocPhoto = false;
+                    container.style.cursor = docPhotoScale > docPhotoMinScale ? 'grab' : 'default';
+                    applyDocPhotoTransform(true);
+                }
+            };
+
+            container.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+            window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
+            window.addEventListener('mouseup', endDrag);
+
+            container.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+            container.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1) moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+            container.addEventListener('touchend', endDrag);
+
+            container.addEventListener('dblclick', () => {
+                if (docPhotoScale > 1.0) resetDocImageZoom();
+                else zoomDocImage(1.0);
+            });
         }
     });
 </script>

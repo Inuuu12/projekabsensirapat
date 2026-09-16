@@ -181,12 +181,6 @@ class AdminAgendaController extends Controller
             'tipe' => 'Pemerintah Kabupaten',
         ]);
 
-        $list->push([
-            'nama' => 'Dinas Komunikasi dan Informatika',
-            'alamat' => 'Jl. Tegar Beriman No. 1, Cibinong, Kab. Bogor',
-            'tipe' => 'Dinas / OPD',
-        ]);
-
         // 2. 40 Kecamatan se-Kabupaten Bogor
         if (Schema::hasTable('sirapi_md_kecamatan')) {
             $kecamatans = DB::table('sirapi_md_kecamatan')->orderBy('nama_kecamatan')->get();
@@ -204,8 +198,11 @@ class AdminAgendaController extends Controller
         if (Schema::hasTable('sirapi_md_dinas')) {
             $dinases = DB::table('sirapi_md_dinas')->orderBy('nama_dinas')->get();
             foreach ($dinases as $dinas) {
+                $label = !empty($dinas->kode_dinas) ? "{$dinas->nama_dinas} ({$dinas->kode_dinas})" : $dinas->nama_dinas;
                 $list->push([
-                    'nama' => $dinas->nama_dinas,
+                    'nama' => $label,
+                    'nama_asli' => $dinas->nama_dinas,
+                    'kode' => $dinas->kode_dinas,
                     'alamat' => $dinas->alamat ?? 'Cibinong, Kab. Bogor',
                     'tipe' => 'Dinas / OPD',
                 ]);

@@ -13,7 +13,283 @@ class DinasKecamatanSeeder extends Seeder
     {
         $now = now();
 
-        // 1. Seed Master Data Dinas (39 Dinas/Badan/SKPD dari app_md_lokasidinas.csv)
+        // 1. Bersihkan dummy row jika ada (contoh: id_dinas 9 dengan kode kosong)
+        DB::table('sirapi_md_dinas')
+            ->where('id_dinas', 9)
+            ->where(function ($q) {
+                $q->whereNull('kode_dinas')->orWhere('kode_dinas', '');
+            })
+            ->delete();
+
+        // Kamus Data Resmi OPD / Dinas / Badan / RSUD Kabupaten Bogor
+        $agencyMeta = [
+            'BAKESBANGPOL' => [
+                'kode' => 'BAKESBANGPOL',
+                'nama' => 'Badan Kesatuan Bangsa dan Politik',
+                'telepon' => '(021) 87901234',
+                'email' => 'bakesbangpol@bogorkab.go.id'
+            ],
+            'BAPPENDA' => [
+                'kode' => 'BAPPENDA',
+                'nama' => 'Badan Pengelolaan Pendapatan Daerah',
+                'telepon' => '(021) 87912462',
+                'email' => 'bappenda@bogorkab.go.id'
+            ],
+            'BAPPERIDA' => [
+                'kode' => 'BAPPERIDA',
+                'nama' => 'Badan Perencanaan Pembangunan, Riset dan Inovasi Daerah',
+                'telepon' => '(021) 8758605',
+                'email' => 'bapperida@bogorkab.go.id'
+            ],
+            'BKPSDM' => [
+                'kode' => 'BKPSDM',
+                'nama' => 'Badan Kepegawaian dan Pengembangan Sumber Daya Manusia',
+                'telepon' => '(021) 8758071',
+                'email' => 'bkpsdm@bogorkab.go.id'
+            ],
+            'BPBD' => [
+                'kode' => 'BPBD',
+                'nama' => 'Badan Penanggulangan Bencana Daerah',
+                'telepon' => '(021) 87914800',
+                'email' => 'bpbd@bogorkab.go.id'
+            ],
+            'BPKAD' => [
+                'kode' => 'BPKAD',
+                'nama' => 'Badan Pengelolaan Keuangan dan Aset Daerah',
+                'telepon' => '(021) 8758607',
+                'email' => 'bpkad@bogorkab.go.id'
+            ],
+            'DAMKAR' => [
+                'kode' => 'DAMKAR',
+                'nama' => 'Dinas Pemadam Kebakaran',
+                'telepon' => '(021) 8753540',
+                'email' => 'damkar@bogorkab.go.id'
+            ],
+            'DAPD' => [
+                'kode' => 'DAPD',
+                'nama' => 'Dinas Arsip dan Perpustakaan Daerah',
+                'telepon' => '(021) 8759367',
+                'email' => 'dapd@bogorkab.go.id'
+            ],
+            'DINKES' => [
+                'kode' => 'DINKES',
+                'nama' => 'Dinas Kesehatan',
+                'telepon' => '(021) 8751070',
+                'email' => 'dinkes@bogorkab.go.id'
+            ],
+            'DINSOS' => [
+                'kode' => 'DINSOS',
+                'nama' => 'Dinas Sosial',
+                'telepon' => '(021) 8751410',
+                'email' => 'dinsos@bogorkab.go.id'
+            ],
+            'DISBUD' => [
+                'kode' => 'DISBUD',
+                'nama' => 'Dinas Kebudayaan dan Kepariwisataan',
+                'telepon' => '(0251) 8651234',
+                'email' => 'disbud@bogorkab.go.id'
+            ],
+            'DISDAGIN' => [
+                'kode' => 'DISDAGIN',
+                'nama' => 'Dinas Perdagangan dan Perindustrian',
+                'telepon' => '(021) 8758608',
+                'email' => 'disdagin@bogorkab.go.id'
+            ],
+            'DISDIK' => [
+                'kode' => 'DISDIK',
+                'nama' => 'Dinas Pendidikan',
+                'telepon' => '(021) 8753191',
+                'email' => 'disdik@bogorkab.go.id'
+            ],
+            'DISDUKCAKPIL' => [
+                'kode' => 'DISDUKCAPIL',
+                'nama' => 'Dinas Kependudukan dan Pencatatan Sipil',
+                'telepon' => '(021) 8758606',
+                'email' => 'disdukcapil@bogorkab.go.id'
+            ],
+            'DISHUB' => [
+                'kode' => 'DISHUB',
+                'nama' => 'Dinas Perhubungan',
+                'telepon' => '(0251) 8653291',
+                'email' => 'dishub@bogorkab.go.id'
+            ],
+            'DISKANAK' => [
+                'kode' => 'DISKANAK',
+                'nama' => 'Dinas Perikanan dan Peternakan',
+                'telepon' => '(021) 8758609',
+                'email' => 'diskanak@bogorkab.go.id'
+            ],
+            'DISKOMINFO' => [
+                'kode' => 'DISKOMINFO',
+                'nama' => 'Dinas Komunikasi dan Informatika',
+                'telepon' => '(021) 8758605',
+                'email' => 'diskominfo@bogorkab.go.id'
+            ],
+            'DISKOPUKM' => [
+                'kode' => 'DISKOPUKM',
+                'nama' => 'Dinas Koperasi, Usaha Kecil dan Menengah',
+                'telepon' => '(021) 87901111',
+                'email' => 'diskopukm@bogorkab.go.id'
+            ],
+            'DISNAKER' => [
+                'kode' => 'DISNAKER',
+                'nama' => 'Dinas Tenaga Kerja',
+                'telepon' => '(021) 8758604',
+                'email' => 'disnaker@bogorkab.go.id'
+            ],
+            'DISPAREKRAF' => [
+                'kode' => 'DISPAREKRAF',
+                'nama' => 'Dinas Pariwisata dan Kebudayaan',
+                'telepon' => '(021) 8758610',
+                'email' => 'disparbud@bogorkab.go.id'
+            ],
+            'DISPORA' => [
+                'kode' => 'DISPORA',
+                'nama' => 'Dinas Pemuda dan Olahraga',
+                'telepon' => '(021) 87918800',
+                'email' => 'dispora@bogorkab.go.id'
+            ],
+            'DISTANHORBUN' => [
+                'kode' => 'DISTANHORBUN',
+                'nama' => 'Dinas Tanaman Pangan, Hortikultura dan Perkebunan',
+                'telepon' => '(021) 8758611',
+                'email' => 'distanhorbun@bogorkab.go.id'
+            ],
+            'DKP' => [
+                'kode' => 'DKP',
+                'nama' => 'Dinas Ketahanan Pangan',
+                'telepon' => '(021) 8758612',
+                'email' => 'dkp@bogorkab.go.id',
+                'alamat' => 'Komplek Perkantoran Pemda, Jl. Bersih, Kelurahan Tengah, Cibinong'
+            ],
+            'DLH' => [
+                'kode' => 'DLH',
+                'nama' => 'Dinas Lingkungan Hidup',
+                'telepon' => '(021) 8758613',
+                'email' => 'dlh@bogorkab.go.id'
+            ],
+            'DP3AP2KB' => [
+                'kode' => 'DP3AP2KB',
+                'nama' => 'Dinas Pemberdayaan Perempuan dan Perlindungan Anak, Pengendalian Penduduk dan Keluarga Berencana',
+                'telepon' => '(021) 8758614',
+                'email' => 'dp3ap2kb@bogorkab.go.id'
+            ],
+            'DPKP' => [
+                'kode' => 'DPKP',
+                'nama' => 'Dinas Perumahan, Kawasan Permukiman dan Pertanahan',
+                'telepon' => '(021) 8758615',
+                'email' => 'dpkp@bogorkab.go.id'
+            ],
+            'DPMD' => [
+                'kode' => 'DPMD',
+                'nama' => 'Dinas Pemberdayaan Masyarakat dan Desa',
+                'telepon' => '(021) 8758616',
+                'email' => 'dpmd@bogorkab.go.id'
+            ],
+            'DPMPTSP' => [
+                'kode' => 'DPMPTSP',
+                'nama' => 'Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu',
+                'telepon' => '(021) 8758617',
+                'email' => 'dpmptsp@bogorkab.go.id'
+            ],
+            'DPTR' => [
+                'kode' => 'DPTR',
+                'nama' => 'Dinas Pertanahan dan Tata Ruang',
+                'telepon' => '(021) 8758618',
+                'email' => 'dptr@bogorkab.go.id'
+            ],
+            'DPU' => [
+                'kode' => 'PUPR', // Pertahankan kode PUPR untuk ID 5
+                'nama' => 'Dinas Pekerjaan Umum dan Penataan Ruang',
+                'telepon' => '(021) 8758603',
+                'email' => 'pupr@bogorkab.go.id'
+            ],
+            'INSPEKTORAT' => [
+                'kode' => 'INSPEKTORAT',
+                'nama' => 'Inspektorat Daerah',
+                'telepon' => '(021) 8758602',
+                'email' => 'inspektorat@bogorkab.go.id'
+            ],
+            'RSUD CIAWI' => [
+                'kode' => 'RSUD Ciawi',
+                'nama' => 'Rumah Sakit Umum Daerah Ciawi',
+                'telepon' => '(0251) 8240797',
+                'email' => 'rsudciawi@bogorkab.go.id',
+                'alamat' => 'Jl. Raya Puncak No.479, Bendungan, Kec. Ciawi, Kabupaten Bogor 16720'
+            ],
+            'RSUD CIBINONG' => [
+                'kode' => 'RSUD Cibinong',
+                'nama' => 'Rumah Sakit Umum Daerah Cibinong',
+                'telepon' => '(021) 8753482',
+                'email' => 'rsudcibinong@bogorkab.go.id'
+            ],
+            'RSUD CILEUNGSI' => [
+                'kode' => 'RSUD Cileungsi',
+                'nama' => 'Rumah Sakit Umum Daerah Cileungsi',
+                'telepon' => '(021) 89934666',
+                'email' => 'rsudcileungsi@bogorkab.go.id'
+            ],
+            'RSUD LEUWILIANG' => [
+                'kode' => 'RSUD Leuwiliang',
+                'nama' => 'Rumah Sakit Umum Daerah Leuwiliang',
+                'telepon' => '(0251) 8643291',
+                'email' => 'rsudleuwiliang@bogorkab.go.id',
+                'alamat' => 'Jl. Raya Cibeber No.1, Leuwiliang, Kec. Leuwiliang, Kabupaten Bogor 16640'
+            ],
+            'SATPOLPP' => [
+                'kode' => 'SATPOL PP',
+                'nama' => 'Satuan Polisi Pamong Praja',
+                'telepon' => '(021) 8758601',
+                'email' => 'satpolpp@bogorkab.go.id'
+            ],
+            'SETDA' => [
+                'kode' => 'SETDA',
+                'nama' => 'Sekretariat Daerah',
+                'telepon' => '(021) 8758600',
+                'email' => 'setda@bogorkab.go.id'
+            ],
+            'SETWAN' => [
+                'kode' => 'SETWAN',
+                'nama' => 'Sekretariat DPRD',
+                'telepon' => '(021) 8758605',
+                'email' => 'setwan@bogorkab.go.id'
+            ],
+        ];
+
+        // 2. Helper Normalisasi GPS
+        $sanitizeLat = function ($raw) {
+            if (!$raw) return null;
+            $str = trim((string)$raw);
+            if (substr_count($str, '.') === 1) {
+                $num = floatval($str);
+                if (!is_nan($num) && $num < 0 && $num > -10) return number_format($num, 6, '.', '');
+            }
+            $digits = preg_replace('/[^0-9]/', '', $str);
+            if (empty($digits)) return null;
+            $val = floatval(preg_replace('/^6/', '-6.', $digits));
+            return number_format($val, 6, '.', '');
+        };
+
+        $sanitizeLong = function ($raw) {
+            if (!$raw) return null;
+            $str = trim((string)$raw);
+            if (substr_count($str, '.') === 1) {
+                $num = floatval($str);
+                if (!is_nan($num) && $num > 100 && $num < 115) return number_format($num, 6, '.', '');
+            }
+            $digits = preg_replace('/[^0-9]/', '', $str);
+            if (empty($digits)) return null;
+            if (str_starts_with($digits, '106')) {
+                $val = floatval(preg_replace('/^106/', '106.', $digits));
+            } elseif (str_starts_with($digits, '107')) {
+                $val = floatval(preg_replace('/^107/', '107.', $digits));
+            } else {
+                $val = floatval('106.' . ltrim($digits, '10'));
+            }
+            return number_format($val, 6, '.', '');
+        };
+
+        // 3. Seed Master Data Dinas (38 Dinas/Badan/SKPD/RSUD dari app_md_lokasidinas.csv)
         $csvPath = public_path('app_md_lokasidinas.csv');
         if (file_exists($csvPath)) {
             $lines = file($csvPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -21,32 +297,32 @@ class DinasKecamatanSeeder extends Seeder
                 foreach (array_slice($lines, 1) as $line) {
                     $cols = str_getcsv($line);
                     if (count($cols) >= 4) {
-                        $kode = strtoupper(trim($cols[0]));
-                        $nama = trim($cols[0]);
-                        $alamat = trim($cols[1]);
+                        $csvKey = strtoupper(trim($cols[0]));
+                        $meta = $agencyMeta[$csvKey] ?? null;
 
-                        $rawLat = preg_replace('/[^0-9]/', '', (string)$cols[2]);
-                        $lat = !empty($rawLat) ? preg_replace('/^6/', '-6.', $rawLat) : null;
+                        $kode = $meta ? $meta['kode'] : $csvKey;
+                        $nama = $meta ? $meta['nama'] : trim($cols[0]);
+                        $alamat = !empty($meta['alamat']) ? $meta['alamat'] : trim($cols[1]);
+                        $telepon = $meta['telepon'] ?? null;
+                        $email = $meta['email'] ?? null;
 
-                        $rawLong = preg_replace('/[^0-9]/', '', (string)$cols[3]);
-                        $long = null;
-                        if (str_starts_with($rawLong, '106')) {
-                            $long = preg_replace('/^106/', '106.', $rawLong);
-                        } elseif (str_starts_with($rawLong, '107')) {
-                            $long = preg_replace('/^107/', '107.', $rawLong);
-                        } elseif (!empty($rawLong)) {
-                            $long = '106.' . ltrim($rawLong, '10');
-                        }
+                        $lat = $sanitizeLat($cols[2]);
+                        $long = $sanitizeLong($cols[3]);
+
+                        $dataToSave = [
+                            'nama_dinas' => $nama,
+                            'alamat' => $alamat,
+                            'gps_lat' => $lat,
+                            'gps_long' => $long,
+                            'updated_at' => $now,
+                        ];
+
+                        if ($telepon) $dataToSave['telepon'] = $telepon;
+                        if ($email) $dataToSave['email'] = $email;
 
                         DB::table('sirapi_md_dinas')->updateOrInsert(
                             ['kode_dinas' => $kode],
-                            [
-                                'nama_dinas' => $nama,
-                                'alamat' => $alamat,
-                                'gps_lat' => $lat,
-                                'gps_long' => $long,
-                                'updated_at' => $now,
-                            ]
+                            $dataToSave
                         );
                     }
                 }

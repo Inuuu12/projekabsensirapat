@@ -358,8 +358,9 @@
             if (locEl.tagName === 'SELECT') {
                 let matched = false;
                 for (let opt of locEl.options) {
-                    if (opt.value === locVal) {
-                        locEl.value = locVal;
+                    if (!opt.value || opt.value === '__custom__') continue;
+                    if (opt.value === locVal || (locVal && opt.value.toLowerCase().startsWith(locVal.toLowerCase())) || (locVal && locVal.toLowerCase().startsWith(opt.value.toLowerCase()))) {
+                        locEl.value = opt.value;
                         matched = true;
                         break;
                     }

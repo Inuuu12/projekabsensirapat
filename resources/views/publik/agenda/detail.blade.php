@@ -26,32 +26,33 @@
     </script>
 </head>
 <body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200 overflow-x-hidden">
+    @php
+        $agendaAktif = $agenda ?? null;
+        $lampiranFileUrl = $agendaAktif?->lampiran
+            ? route('publik.agenda.lampiran.file', $agendaAktif->id_agenda)
+            : null;
+        $lampiranUrl = $lampiranFileUrl;
+        $lampiranExtension = strtolower(pathinfo((string) $agendaAktif?->lampiran, PATHINFO_EXTENSION));
+        $isImageLampiran = in_array($lampiranExtension, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true);
+        $isPdfLampiran = $lampiranExtension === 'pdf';
+        $lampiranPreviewable = $isImageLampiran || $isPdfLampiran;
+        $qrPayloadPegawai = $qrCode?->qr_codepath ?: ($agendaAktif ? route('publik.presensi.pegawai', ['agenda_id' => $agendaAktif->id_agenda]) : null);
+        $qrImageUrlPegawai = $qrPayloadPegawai ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayloadPegawai) : null;
+        $qrImageUrl = $qrImageUrlPegawai;
+
+        $qrPayloadTamu = $agendaAktif ? route('publik.presensi.tamu', ['agenda_id' => $agendaAktif->id_agenda]) : null;
+        $qrImageUrlTamu = $qrPayloadTamu ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayloadTamu) : null;
+
+        $kategoriSurat = strtolower((string) ($agendaAktif?->kategori_surat ?? 'internal'));
+        $isSuratInternal = $kategoriSurat === 'internal';
+        $isSuratMasuk = $kategoriSurat === 'masuk';
+        $isSuratKeluar = $kategoriSurat === 'keluar';
+        $allowsTamu = $isSuratKeluar;
+    @endphp
+
     @include('publik.layout.navbarpublik')
 
-    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        @php
-            $agendaAktif = $agenda ?? null;
-            $lampiranFileUrl = $agendaAktif?->lampiran
-                ? route('publik.agenda.lampiran.file', $agendaAktif->id_agenda)
-                : null;
-            $lampiranUrl = $lampiranFileUrl;
-            $lampiranExtension = strtolower(pathinfo((string) $agendaAktif?->lampiran, PATHINFO_EXTENSION));
-            $isImageLampiran = in_array($lampiranExtension, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true);
-            $isPdfLampiran = $lampiranExtension === 'pdf';
-            $lampiranPreviewable = $isImageLampiran || $isPdfLampiran;
-            $qrPayloadPegawai = $qrCode?->qr_codepath ?: ($agendaAktif ? route('publik.presensi.pegawai', ['agenda_id' => $agendaAktif->id_agenda]) : null);
-            $qrImageUrlPegawai = $qrPayloadPegawai ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayloadPegawai) : null;
-            $qrImageUrl = $qrImageUrlPegawai;
-
-            $qrPayloadTamu = $agendaAktif ? route('publik.presensi.tamu', ['agenda_id' => $agendaAktif->id_agenda]) : null;
-            $qrImageUrlTamu = $qrPayloadTamu ? 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' . urlencode($qrPayloadTamu) : null;
-
-            $kategoriSurat = strtolower((string) ($agendaAktif?->kategori_surat ?? 'internal'));
-            $isSuratInternal = $kategoriSurat === 'internal';
-            $isSuratMasuk = $kategoriSurat === 'masuk';
-            $isSuratKeluar = $kategoriSurat === 'keluar';
-            $allowsTamu = $isSuratKeluar;
-        @endphp
+    <main class="flex-grow w-full {{ $isSuratKeluar ? 'max-w-7xl' : 'max-w-6xl' }} mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
         <div class="space-y-3">
 
@@ -79,7 +80,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <section class="lg:col-span-7 space-y-8">
+                <section class="{{ $isSuratKeluar ? 'lg:col-span-6' : 'lg:col-span-7' }} space-y-8">
                     <div class="space-y-2">
                         <h3 class="text-sm font-bold text-gray-900 dark:text-white">Deskripsi Kegiatan</h3>
                         <div class="bg-white dark:bg-[#152420] rounded-2xl p-5 border border-gray-100 dark:border-[#233a34] shadow-xs text-xs text-gray-600 dark:text-gray-300 leading-relaxed space-y-2.5">
@@ -100,17 +101,155 @@
                     </div>
 
                     <div class="space-y-3">
-                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">Surat Undangan / Lampiran</h3>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                <svg class="w-4 h-4 text-ijo-tua dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                <span>Surat Undangan / Lampiran</span>
+                            </h3>
+                            @if ($lampiranUrl)
+                                <span class="bg-[#35635b]/10 dark:bg-emerald-400/10 text-[#35635b] dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">
+                                    {{ $lampiranExtension ? strtoupper($lampiranExtension) : 'BERKAS' }}
+                                </span>
+                            @endif
+                        </div>
+
                         @if ($lampiranUrl)
-                            <button type="button" id="open-lampiran-modal" class="w-full bg-white dark:bg-[#152420] rounded-2xl p-3.5 border border-gray-100 dark:border-[#233a34] shadow-xs flex items-center space-x-3.5 text-left hover:border-gray-300 dark:hover:border-[#284c43] transition-colors cursor-pointer">
-                                <div class="w-10 h-10 rounded-xl bg-oren-muda dark:bg-amber-950/50 text-oren-tua dark:text-amber-200 font-bold text-[10px] flex items-center justify-center shrink-0 uppercase border border-transparent dark:border-amber-700/40">FILE</div>
-                                <div class="overflow-hidden min-w-0">
-                                    <h5 class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ basename($agendaAktif->lampiran) }}</h5>
-                                    <p class="text-[10px] text-gray-400 dark:text-gray-400 mt-0.5">Lihat file surat undangan / lampiran agenda</p>
+                            @if ($isImageLampiran)
+                                <!-- PREVIEW GAMBAR INTERAKTIF DENGAN ZOOM IN / ZOOM OUT & PAN -->
+                                <div class="bg-white dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#233a34] shadow-xs overflow-hidden transition-colors">
+                                    <!-- Toolbar Atas Gambar -->
+                                    <div class="flex flex-wrap items-center justify-between gap-2.5 px-4 py-3 bg-gray-50/90 dark:bg-[#0f1c19] border-b border-gray-100 dark:border-[#233a34]">
+                                        <div class="flex items-center gap-2 min-w-0">
+                                            <div class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-extrabold text-[10px] flex items-center justify-center shrink-0 border border-emerald-200/60 dark:border-emerald-800/40 uppercase">
+                                                {{ $lampiranExtension ?: 'IMG' }}
+                                            </div>
+                                            <div class="min-w-0">
+                                                <h4 class="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[180px] sm:max-w-xs" title="{{ basename($agendaAktif->lampiran) }}">
+                                                    {{ basename($agendaAktif->lampiran) }}
+                                                </h4>
+                                                <p class="text-[10px] text-gray-400 dark:text-gray-400 leading-none mt-0.5">Lampiran Foto/Gambar • Bebas Zoom & Geser</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Tombol Kontrol Zoom & Aksi -->
+                                        <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                                            <!-- Zoom Out -->
+                                            <button type="button" id="btn-inline-zoom-out" onclick="inlineZoomLampiran(-0.25)" class="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-white dark:bg-[#1b3832] border border-gray-200 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-[#23473f] text-gray-700 dark:text-gray-200 transition shadow-2xs cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" title="Perkecil (Zoom Out)">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M20 12H4"></path></svg>
+                                            </button>
+
+                                            <!-- Reset Scale Indicator -->
+                                            <button type="button" onclick="inlineResetLampiran()" class="flex h-7 px-2 sm:h-8 sm:px-2.5 items-center justify-center rounded-lg bg-white dark:bg-[#1b3832] border border-gray-200 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-[#23473f] text-gray-700 dark:text-gray-200 text-[10px] sm:text-xs font-bold transition shadow-2xs cursor-pointer" title="Reset Skala Zoom (100%)">
+                                                <span id="inline-lampiran-scale">100%</span>
+                                            </button>
+
+                                            <!-- Zoom In -->
+                                            <button type="button" id="btn-inline-zoom-in" onclick="inlineZoomLampiran(0.25)" class="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-white dark:bg-[#1b3832] border border-gray-200 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-[#23473f] text-gray-700 dark:text-gray-200 transition shadow-2xs cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" title="Perbesar (Zoom In)">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"></path></svg>
+                                            </button>
+
+                                            <div class="h-4 w-px bg-gray-200 dark:bg-[#284c43] mx-0.5"></div>
+
+                                            <!-- Layar Penuh (Modal Zoom) -->
+                                            <button type="button" onclick="openImagePreview('{{ $lampiranFileUrl }}', 'Surat Undangan - {{ addslashes($agendaAktif->nama_agenda) }}', '{{ $agendaAktif->tanggal?->translatedFormat('l, d F Y') ?? '-' }}')" class="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-[#35635b]/10 dark:bg-emerald-400/10 hover:bg-[#35635b]/20 dark:hover:bg-emerald-400/20 text-[#35635b] dark:text-emerald-400 border border-[#35635b]/20 dark:border-emerald-400/20 transition shadow-2xs cursor-pointer" title="Perbesar Layar Penuh">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                                            </button>
+
+                                            <!-- Unduh -->
+                                            <a href="{{ $lampiranFileUrl }}" download class="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-[#1b3832] hover:bg-gray-200 dark:hover:bg-[#23473f] text-gray-700 dark:text-gray-200 transition shadow-2xs" title="Unduh Berkas Lampiran">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3M7 10l5 5m0 0l5-5m-5 5V3"></path></svg>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Viewport Display Gambar Interaktif -->
+                                    <div id="inline-lampiran-viewport" class="relative overflow-hidden min-h-[320px] sm:min-h-[420px] max-h-[540px] bg-[#f5f8f7] dark:bg-[#091210] flex items-center justify-center p-3 sm:p-4 select-none touch-none cursor-default">
+                                        <img id="inline-lampiran-img" 
+                                             src="{{ $lampiranFileUrl }}" 
+                                             alt="Lampiran {{ $agendaAktif->nama_agenda }}" 
+                                             ondragstart="return false;"
+                                             class="max-h-[300px] sm:max-h-[400px] max-w-full rounded-xl object-contain shadow-xs origin-center will-change-transform select-none pointer-events-auto cursor-zoom-in">
+                                    </div>
+
+                                    <!-- Footer Tips & Quick Info -->
+                                    <div class="px-4 py-2.5 bg-gray-50/70 dark:bg-[#0d1c18] border-t border-gray-100 dark:border-[#233a34] flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-500 dark:text-gray-400 select-none">
+                                        <span class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-[#35635b] dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            <span class="hidden sm:inline">Tips: Klik tombol zoom (+/-) atau scroll mouse. Saat diperbesar, geser gambar untuk melihat detail.</span>
+                                            <span class="sm:hidden">Tips: Zoom dengan (+/-) atau geser foto saat diperbesar.</span>
+                                        </span>
+                                        <button type="button" onclick="openImagePreview('{{ $lampiranFileUrl }}', 'Surat Undangan - {{ addslashes($agendaAktif->nama_agenda) }}', '{{ $agendaAktif->tanggal?->translatedFormat('l, d F Y') ?? '-' }}')" class="font-bold text-[#35635b] dark:text-emerald-400 hover:underline cursor-pointer">
+                                            Buka Layar Penuh ↗
+                                        </button>
+                                    </div>
                                 </div>
-                            </button>
+                            @elseif ($isPdfLampiran)
+                                <!-- PREVIEW PDF INTERAKTIF TERTANAM LANGSUNG DI HALAMAN -->
+                                <div class="bg-white dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#233a34] shadow-xs overflow-hidden transition-colors">
+                                    <!-- Toolbar Atas PDF -->
+                                    <div class="flex items-center justify-between gap-3 px-4 py-3 bg-gray-50/90 dark:bg-[#0f1c19] border-b border-gray-100 dark:border-[#233a34]">
+                                        <div class="flex items-center gap-2.5 min-w-0">
+                                            <div class="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-300 font-extrabold text-[10px] flex items-center justify-center shrink-0 border border-red-200/60 dark:border-red-800/40 uppercase">
+                                                PDF
+                                            </div>
+                                            <div class="min-w-0">
+                                                <h4 class="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[200px] sm:max-w-xs" title="{{ basename($agendaAktif->lampiran) }}">
+                                                    {{ basename($agendaAktif->lampiran) }}
+                                                </h4>
+                                                <p class="text-[10px] text-gray-400 dark:text-gray-400 leading-none mt-0.5">Dokumen Surat Undangan Resmi</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center gap-1.5 shrink-0">
+                                            <!-- Tab Baru -->
+                                            <a href="{{ $lampiranFileUrl }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 rounded-lg bg-white dark:bg-[#1b3832] border border-gray-200 dark:border-[#284c43] hover:bg-gray-100 dark:hover:bg-[#23473f] px-2.5 py-1.5 text-xs font-bold text-gray-700 dark:text-gray-200 transition shadow-2xs" title="Buka di tab baru">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                                <span class="hidden sm:inline">Tab Baru</span>
+                                            </a>
+                                            <!-- Unduh -->
+                                            <a href="{{ $lampiranFileUrl }}" download class="inline-flex items-center gap-1 rounded-lg bg-ijo-tua dark:bg-[#107050] hover:bg-ijo-semitua dark:hover:bg-[#0c5940] px-2.5 py-1.5 text-xs font-bold text-white transition shadow-2xs" title="Unduh file PDF">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3M7 10l5 5m0 0l5-5m-5 5V3"></path></svg>
+                                                <span class="hidden sm:inline">Unduh</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Embed PDF Viewport -->
+                                    <div class="w-full bg-gray-100 dark:bg-[#091210] p-1 sm:p-2">
+                                        <iframe src="{{ $lampiranFileUrl }}#toolbar=1&navpanes=0" title="Lampiran {{ $agendaAktif->nama_agenda }}" class="h-[480px] sm:h-[580px] w-full rounded-xl border border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420]"></iframe>
+                                    </div>
+
+                                    <!-- Footer Info PDF -->
+                                    <div class="px-4 py-2 bg-gray-50/70 dark:bg-[#0d1c18] border-t border-gray-100 dark:border-[#233a34] flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400 select-none">
+                                        <span class="flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5 text-[#35635b] dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            <span>Gunakan tombol kontrol zoom (+/-) pada dokumen PDF di atas untuk memperbesar isi surat.</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            @else
+                                <!-- DOKUMEN LAIN (WORD/EXCEL/DLL) -->
+                                <div class="bg-white dark:bg-[#152420] rounded-2xl p-4 sm:p-5 border border-gray-100 dark:border-[#233a34] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div class="flex items-center space-x-3.5 min-w-0">
+                                        <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-200 font-bold text-[11px] flex items-center justify-center shrink-0 border border-amber-200 dark:border-amber-700/40 uppercase">
+                                            {{ strtoupper($lampiranExtension ?: 'BERKAS') }}
+                                        </div>
+                                        <div class="min-w-0">
+                                            <h5 class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ basename($agendaAktif->lampiran) }}</h5>
+                                            <p class="text-[10px] text-gray-400 dark:text-gray-400 mt-0.5">Berkas lampiran surat undangan agenda</p>
+                                        </div>
+                                    </div>
+                                    <a href="{{ $lampiranFileUrl }}" download class="shrink-0 inline-flex items-center justify-center space-x-1.5 bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition">
+                                        <span>Unduh Berkas</span>
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3M7 10l5 5m0 0l5-5m-5 5V3"></path></svg>
+                                    </a>
+                                </div>
+                            @endif
                         @else
-                            <p class="bg-white dark:bg-[#152420] rounded-2xl p-5 border border-gray-100 dark:border-[#233a34] shadow-xs text-xs text-gray-500 dark:text-gray-400">Belum ada surat undangan / lampiran untuk agenda ini.</p>
+                            <div class="bg-white dark:bg-[#152420] rounded-2xl p-5 border border-gray-100 dark:border-[#233a34] shadow-xs text-xs text-gray-500 dark:text-gray-400 text-center flex flex-col items-center justify-center py-8">
+                                <svg class="w-8 h-8 text-gray-300 dark:text-gray-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                <p class="font-medium">Belum ada surat undangan / lampiran untuk agenda ini.</p>
+                            </div>
                         @endif
                     </div>
 
@@ -152,7 +291,7 @@
                             </div>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                 @foreach ($dokumentasi as $item)
-                                    <div class="group relative rounded-2xl overflow-hidden border border-gray-100 dark:border-[#233a34] bg-gray-100 dark:bg-[#152420] shadow-xs aspect-[4/3] cursor-pointer" onclick="openDokumentasiModal('{{ asset('storage/' . $item->file_path) }}', '{{ addslashes($item->nama_file) }}')">
+                                    <div class="group relative rounded-2xl overflow-hidden border border-gray-100 dark:border-[#233a34] bg-gray-100 dark:bg-[#152420] shadow-xs aspect-[4/3] cursor-pointer" onclick="openImagePreview('{{ asset('storage/' . $item->file_path) }}', 'Dokumentasi - {{ addslashes($item->nama_file) }}', '{{ $agendaAktif->tanggal?->translatedFormat('l, d F Y') ?? '-' }}')">
                                         <img src="{{ asset('storage/' . $item->file_path) }}" alt="{{ $item->nama_file }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2.5">
                                             <p class="text-[10px] font-bold text-white truncate">{{ $item->nama_file }}</p>
@@ -165,7 +304,7 @@
                     @endif
                 </section>
 
-                <aside class="lg:col-span-5 space-y-5">
+                <aside class="{{ $isSuratKeluar ? 'lg:col-span-6' : 'lg:col-span-5' }} space-y-5">
                     <div class="bg-white dark:bg-[#152420] rounded-xl p-6 border border-gray-100 dark:border-[#233a34] shadow-lg hover:shadow-xl transition-all duration-300 space-y-4">
                         <h4 class="font-bold text-sm text-gray-900 dark:text-white">Informasi Kegiatan</h4>
                         <div class="space-y-3 text-xs divide-y divide-gray-100 dark:divide-[#233a34]">
@@ -212,7 +351,7 @@
                                 <h4 class="font-bold text-sm text-gray-900 dark:text-white">Presensi Agenda</h4>
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
                                     @if ($isSuratKeluar)
-                                        Pilih kategori kehadiran Anda (Pegawai / Tamu)
+                                        Presensi Pegawai Internal & Tamu Undangan
                                     @elseif ($isSuratMasuk)
                                         Presensi pegawai yang ditugaskan
                                     @else
@@ -279,72 +418,91 @@
                             </div>
                         @else
                             @if ($isSuratKeluar)
-                                <!-- Tombol Pilihan Jenis Presensi (Hanya pada Surat Keluar yang bisa dihadiri Pegawai & Tamu) -->
-                                <div class="grid grid-cols-2 gap-2 bg-[#F4F3EE] dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-1.5 rounded-2xl">
-                                    <button type="button" id="tab-btn-pegawai" onclick="switchPresensiTab('pegawai')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua dark:bg-[#107050] text-white shadow-xs cursor-pointer">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                        <span>Presensi Pegawai</span>
-                                    </button>
-                                    <button type="button" id="tab-btn-tamu" onclick="switchPresensiTab('tamu')" class="py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all flex items-center justify-center space-x-2 cursor-pointer">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                        <span>Presensi Tamu</span>
-                                    </button>
-                                </div>
-                            @endif
-
-                            <!-- Panel Presensi Pegawai (QR Code) -->
-                            <div id="panel-presensi-pegawai" class="space-y-4">
-                                <div class="bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] text-center">
-                                    <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">
-                                        @if ($isSuratInternal)
-                                            QR Absen Pegawai Internal
-                                        @elseif ($isSuratMasuk)
-                                            QR Absen Pegawai Ditugaskan
-                                        @else
-                                            QR Absen Pegawai
-                                        @endif
-                                    </p>
-                                    <p class="text-[10px] text-gray-400 mt-0.5">
-                                        @if ($isSuratInternal)
-                                            Scan kode QR berikut untuk presensi pegawai internal Diskominfo
-                                        @elseif ($isSuratMasuk)
-                                            Scan kode QR berikut untuk absensi pegawai yang ditugaskan
-                                        @else
-                                            Scan kode QR berikut untuk melakukan absensi pegawai
-                                        @endif
-                                    </p>
-                                </div>
-
-                                @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlPegawai)
-                                    <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-4 text-center">
-                                        <div class="inline-block rounded-2xl bg-white p-3 shadow-xs border border-gray-100 dark:border-[#284c43]">
-                                            <img src="{{ $qrImageUrlPegawai }}" alt="QR Presensi Pegawai {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
+                                {{-- KHUSUS SURAT KELUAR: PRESENSI PEGAWAI & PRESENSI GUEST DISANDINGKAN BERDAMPINGAN (TANPA BUTTON TAB) --}}
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {{-- 1. Presensi Pegawai --}}
+                                    <div id="panel-presensi-pegawai" class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-gray-50/70 dark:bg-[#0f1c19] p-4 flex flex-col justify-between space-y-3.5">
+                                        <div class="space-y-1.5">
+                                            <div class="flex items-center justify-between gap-2">
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#35635b]/10 dark:bg-emerald-400/10 text-[#35635b] dark:text-emerald-400">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                                    <span>Pegawai</span>
+                                                </span>
+                                                <span class="text-[10px] text-gray-400 font-semibold">Khusus Internal</span>
+                                            </div>
+                                            <h5 class="text-xs font-bold text-gray-900 dark:text-white">QR Absen Pegawai</h5>
+                                            <p class="text-[10.5px] text-gray-500 dark:text-gray-400 leading-snug">Scan kode QR berikut untuk absensi pegawai</p>
                                         </div>
-                                    </div>
-                                @else
-                                    <div class="rounded-2xl border border-dashed border-gray-200 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-5 text-center">
-                                        <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">QR presensi pegawai belum diaktifkan admin untuk agenda ini.</p>
-                                    </div>
-                                @endif
-                            </div>
 
-                            @if ($isSuratKeluar)
-                                <!-- Panel Presensi Tamu (QR Code - Hanya jika Surat Keluar) -->
-                                <div id="panel-presensi-tamu" class="hidden space-y-4">
+                                        @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlPegawai)
+                                            <div class="rounded-xl bg-white p-3 shadow-2xs border border-gray-100 dark:border-[#284c43] text-center my-auto">
+                                                <img src="{{ $qrImageUrlPegawai }}" alt="QR Presensi Pegawai {{ $agendaAktif->nama_agenda }}" class="mx-auto h-40 w-40 sm:h-48 sm:w-48 rounded-lg object-contain">
+                                            </div>
+                                        @else
+                                            <div class="rounded-xl border border-dashed border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420] p-4 text-center">
+                                                <p class="text-[11px] font-medium text-gray-400">QR pegawai belum diaktifkan.</p>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    {{-- 2. Presensi Tamu / Guest --}}
+                                    <div id="panel-presensi-tamu" class="rounded-2xl border border-emerald-100 dark:border-[#233a34] bg-emerald-50/40 dark:bg-[#0f1c19] p-4 flex flex-col justify-between space-y-3.5">
+                                        <div class="space-y-1.5">
+                                            <div class="flex items-center justify-between gap-2">
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                                    <span>Tamu / Guest</span>
+                                                </span>
+                                                <span class="text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold">Undangan Luar</span>
+                                            </div>
+                                            <h5 class="text-xs font-bold text-gray-900 dark:text-white">QR Absen Tamu</h5>
+                                            <p class="text-[10.5px] text-gray-500 dark:text-gray-400 leading-snug">Scan kode QR berikut untuk absensi tamu</p>
+                                        </div>
+
+                                        @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlTamu)
+                                            <div class="rounded-xl bg-white p-3 shadow-2xs border border-gray-100 dark:border-[#284c43] text-center my-auto">
+                                                <img src="{{ $qrImageUrlTamu }}" alt="QR Presensi Tamu {{ $agendaAktif->nama_agenda }}" class="mx-auto h-40 w-40 sm:h-48 sm:w-48 rounded-lg object-contain">
+                                            </div>
+                                        @else
+                                            <div class="rounded-xl border border-dashed border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420] p-4 text-center">
+                                                <p class="text-[11px] font-medium text-gray-400">QR tamu belum diaktifkan.</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @else
+                                {{-- SURAT INTERNAL ATAU SURAT MASUK (TUNGGAL PEGAWAI) --}}
+                                <div id="panel-presensi-pegawai" class="space-y-4">
                                     <div class="bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] text-center">
-                                        <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">QR Absen Tamu</p>
-                                        <p class="text-[10px] text-gray-400 mt-0.5">Scan kode QR berikut untuk mengisi formulir presensi tamu rapat</p>
+                                        <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">
+                                            @if ($isSuratInternal)
+                                                QR Absen Pegawai Internal
+                                            @elseif ($isSuratMasuk)
+                                                QR Absen Pegawai Ditugaskan
+                                            @else
+                                                QR Absen Pegawai
+                                            @endif
+                                        </p>
+                                        <p class="text-[10px] text-gray-400 mt-0.5">
+                                            @if ($isSuratInternal)
+                                                Scan kode QR berikut untuk presensi pegawai internal Diskominfo
+                                            @elseif ($isSuratMasuk)
+                                                Scan kode QR berikut untuk absensi pegawai yang ditugaskan
+                                            @else
+                                                Scan kode QR berikut untuk melakukan absensi pegawai
+                                            @endif
+                                        </p>
                                     </div>
 
-                                    @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlTamu)
+                                    @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlPegawai)
                                         <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-4 text-center">
                                             <div class="inline-block rounded-2xl bg-white p-3 shadow-xs border border-gray-100 dark:border-[#284c43]">
-                                                <img src="{{ $qrImageUrlTamu }}" alt="QR Presensi Tamu {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
+                                                <img src="{{ $qrImageUrlPegawai }}" alt="QR Presensi Pegawai {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
                                             </div>
                                         </div>
                                     @else
                                         <div class="rounded-2xl border border-dashed border-gray-200 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-5 text-center">
-                                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">QR presensi tamu belum diaktifkan admin untuk agenda ini.</p>
+                                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">QR presensi pegawai belum diaktifkan admin untuk agenda ini.</p>
                                         </div>
                                     @endif
                                 </div>
@@ -369,85 +527,12 @@
         @endif
     </main>
 
-    @if ($lampiranUrl)
-        <div id="lampiran-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-4">
-            <div class="flex max-h-[calc(100vh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white dark:bg-[#152420] shadow-2xl sm:max-h-[calc(100vh-2rem)] border border-transparent dark:border-[#233a34]">
-                <div class="flex items-center justify-between gap-4 bg-ijo-tua dark:bg-[#0f1c19] px-5 py-4 text-white sm:px-6 border-b border-transparent dark:border-[#233a34]">
-                    <div class="min-w-0">
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-white/70 dark:text-emerald-400">Lampiran Agenda</p>
-                        <h3 class="truncate text-sm font-extrabold text-white">{{ basename($agendaAktif->lampiran) }}</h3>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        @if ($lampiranFileUrl)
-                            <a href="{{ $lampiranFileUrl }}" target="_blank" rel="noopener" class="inline-flex h-9 shrink-0 items-center justify-center rounded-lg bg-white/10 dark:bg-white/5 px-3 text-xs font-bold text-white transition hover:bg-white/20 dark:hover:bg-white/10" title="Buka di tab baru">
-                                <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                                Tab Baru
-                            </a>
-                            <a href="{{ $lampiranFileUrl }}" download class="inline-flex h-9 shrink-0 items-center justify-center rounded-lg bg-white/10 dark:bg-white/5 px-3 text-xs font-bold text-white transition hover:bg-white/20 dark:hover:bg-white/10" title="Unduh lampiran">
-                                <svg class="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                Unduh
-                            </a>
-                        @endif
-                        <button type="button" id="close-lampiran-modal" class="inline-flex h-9 shrink-0 items-center justify-center rounded-lg bg-white/20 dark:bg-white/10 px-4 text-xs font-bold text-white transition hover:bg-white/30 dark:hover:bg-white/20 cursor-pointer">
-                            Kembali
-                        </button>
-                    </div>
-                </div>
-
-                <div class="min-h-0 flex-1 bg-gray-100 dark:bg-[#0f1c19] p-3 sm:p-4">
-                    @if ($isPdfLampiran)
-                        <iframe src="{{ $lampiranFileUrl }}" title="Lampiran {{ $agendaAktif->nama_agenda }}" class="h-[70vh] w-full rounded-xl border border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420]"></iframe>
-                    @elseif ($isImageLampiran)
-                        <div class="flex h-[70vh] items-center justify-center overflow-auto rounded-xl bg-black/5 dark:bg-black/30 p-2">
-                            <img src="{{ $lampiranFileUrl }}" alt="Lampiran {{ $agendaAktif->nama_agenda }}" class="max-h-full max-w-full rounded-lg object-contain shadow-sm">
-                        </div>
-                    @else
-                        <div class="flex h-[45vh] flex-col items-center justify-center rounded-xl bg-white dark:bg-[#152420] p-6 text-center border border-gray-100 dark:border-[#233a34]">
-                            <h4 class="text-sm font-extrabold text-gray-900 dark:text-white">Preview tidak tersedia</h4>
-                            <p class="mt-2 max-w-md text-xs text-gray-500 dark:text-gray-400">Format file ini tidak bisa ditampilkan langsung di halaman. Gunakan tombol unduh untuk melihat lampiran.</p>
-                            <a href="{{ $lampiranFileUrl }}" download class="mt-4 rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] px-5 py-2.5 text-xs font-bold text-white transition shadow-xs">Unduh Lampiran</a>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    @endif
-
-    <!-- Modal Dokumentasi Foto Viewer -->
-    <div id="dokumentasi-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/85 p-4 backdrop-blur-xs transition-opacity" onclick="closeDokumentasiModal()">
-        <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center" onclick="event.stopPropagation()">
-            <button type="button" onclick="closeDokumentasiModal()" class="absolute -top-10 right-0 text-white/90 hover:text-white flex items-center space-x-1.5 text-xs font-bold bg-white/20 hover:bg-white/30 px-3.5 py-1.5 rounded-full transition" title="Tutup">
-                <span>Tutup</span>
-                <span class="text-base leading-none">&times;</span>
-            </button>
-            <img id="dokumentasi-modal-img" src="" alt="Dokumentasi" class="max-h-[78vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl border border-white/10 bg-black/50">
-            <p id="dokumentasi-modal-title" class="text-xs font-medium text-white/90 mt-3 text-center truncate max-w-xl"></p>
-        </div>
-    </div>
+    {{-- Modal Preview Foto & Lampiran dengan Fitur Zoom In, Zoom Out, dan Drag Pan --}}
+    @include('publik.layout.image-preview-modal')
 
     @include('publik.layout.footer')
 
     <script>
-        function openDokumentasiModal(imgSrc, title) {
-            const modal = document.getElementById('dokumentasi-modal');
-            const modalImg = document.getElementById('dokumentasi-modal-img');
-            const modalTitle = document.getElementById('dokumentasi-modal-title');
-            if (modal && modalImg) {
-                modalImg.src = imgSrc;
-                if (modalTitle) modalTitle.textContent = title;
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            }
-        }
-
-        function closeDokumentasiModal() {
-            const modal = document.getElementById('dokumentasi-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        }
-
         function switchPresensiTab(type) {
             const btnPegawai = document.getElementById('tab-btn-pegawai');
             const btnTamu = document.getElementById('tab-btn-tamu');
@@ -503,32 +588,161 @@
                 @endif
             }
         });
-    </script>
 
-    @if ($lampiranUrl)
-        <script>
-            const lampiranModal = document.getElementById('lampiran-modal');
-            const openLampiranModal = document.getElementById('open-lampiran-modal');
-            const closeLampiranModal = document.getElementById('close-lampiran-modal');
+        /* --- SCRIPT KONTROL ZOOM IN / ZOOM OUT & DRAG PAN LAMPIRAN INLINE --- */
+        let inlineLampiranScale = 1.0;
+        const inlineLampiranMinScale = 1.0;
+        const inlineLampiranMaxScale = 3.5;
+        let inlineLampiranTranslateX = 0;
+        let inlineLampiranTranslateY = 0;
+        let isDraggingInlineLampiran = false;
+        let inlineStartX = 0;
+        let inlineStartY = 0;
+        let inlineLastTranslateX = 0;
+        let inlineLastTranslateY = 0;
+        let inlineHasMoved = false;
 
-            function hideLampiranModal() {
-                lampiranModal?.classList.add('hidden');
-                lampiranModal?.classList.remove('flex');
+        function inlineZoomLampiran(delta) {
+            const newScale = Math.min(Math.max(Number((inlineLampiranScale + delta).toFixed(2)), inlineLampiranMinScale), inlineLampiranMaxScale);
+            if (newScale === inlineLampiranScale) return;
+            inlineLampiranScale = newScale;
+            if (inlineLampiranScale <= inlineLampiranMinScale) {
+                inlineLampiranTranslateX = 0;
+                inlineLampiranTranslateY = 0;
+            }
+            applyInlineLampiranTransform(true);
+        }
+
+        function inlineResetLampiran() {
+            inlineLampiranScale = 1.0;
+            inlineLampiranTranslateX = 0;
+            inlineLampiranTranslateY = 0;
+            applyInlineLampiranTransform(true);
+        }
+
+        function applyInlineLampiranTransform(smooth = true) {
+            const img = document.getElementById('inline-lampiran-img');
+            const container = document.getElementById('inline-lampiran-viewport');
+            const scaleEl = document.getElementById('inline-lampiran-scale');
+            const btnOut = document.getElementById('btn-inline-zoom-out');
+            const btnIn = document.getElementById('btn-inline-zoom-in');
+
+            if (!img) return;
+
+            if (inlineLampiranScale <= inlineLampiranMinScale) {
+                inlineLampiranScale = inlineLampiranMinScale;
+                inlineLampiranTranslateX = 0;
+                inlineLampiranTranslateY = 0;
+                if (container) container.style.cursor = 'default';
+                img.style.cursor = 'zoom-in';
+            } else {
+                if (container) container.style.cursor = isDraggingInlineLampiran ? 'grabbing' : 'grab';
+                img.style.cursor = isDraggingInlineLampiran ? 'grabbing' : 'grab';
             }
 
-            openLampiranModal?.addEventListener('click', () => {
-                lampiranModal?.classList.remove('hidden');
-                lampiranModal?.classList.add('flex');
-            });
+            img.style.transition = smooth ? 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)' : 'none';
+            img.style.transform = `translate(${inlineLampiranTranslateX}px, ${inlineLampiranTranslateY}px) scale(${inlineLampiranScale})`;
 
-            closeLampiranModal?.addEventListener('click', hideLampiranModal);
+            const percentText = `${Math.round(inlineLampiranScale * 100)}%`;
+            if (scaleEl) scaleEl.textContent = percentText;
 
-            lampiranModal?.addEventListener('click', (event) => {
-                if (event.target === lampiranModal) {
-                    hideLampiranModal();
-                }
-            });
-        </script>
-    @endif
+            if (btnOut) btnOut.disabled = (inlineLampiranScale <= inlineLampiranMinScale);
+            if (btnIn) btnIn.disabled = (inlineLampiranScale >= inlineLampiranMaxScale);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('inline-lampiran-viewport');
+            const img = document.getElementById('inline-lampiran-img');
+
+            if (container && img) {
+                // Wheel Zoom (Scroll mouse untuk zoom)
+                container.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    inlineZoomLampiran(e.deltaY < 0 ? 0.25 : -0.25);
+                }, { passive: false });
+
+                // Drag Start
+                const startDrag = (clientX, clientY) => {
+                    if (inlineLampiranScale <= inlineLampiranMinScale) return;
+                    isDraggingInlineLampiran = true;
+                    inlineHasMoved = false;
+                    inlineStartX = clientX;
+                    inlineStartY = clientY;
+                    inlineLastTranslateX = inlineLampiranTranslateX;
+                    inlineLastTranslateY = inlineLampiranTranslateY;
+                    container.style.cursor = 'grabbing';
+                    img.style.cursor = 'grabbing';
+                };
+
+                // Drag Move
+                const moveDrag = (clientX, clientY) => {
+                    if (!isDraggingInlineLampiran || inlineLampiranScale <= inlineLampiranMinScale) return;
+                    const deltaX = clientX - inlineStartX;
+                    const deltaY = clientY - inlineStartY;
+                    if (Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4) {
+                        inlineHasMoved = true;
+                    }
+
+                    const boundX = (container.clientWidth * (inlineLampiranScale - 1)) / 1.6 + 50;
+                    const boundY = (container.clientHeight * (inlineLampiranScale - 1)) / 1.6 + 50;
+
+                    inlineLampiranTranslateX = Math.max(-boundX, Math.min(boundX, inlineLastTranslateX + deltaX));
+                    inlineLampiranTranslateY = Math.max(-boundY, Math.min(boundY, inlineLastTranslateY + deltaY));
+
+                    applyInlineLampiranTransform(false);
+                };
+
+                // Drag End
+                const endDrag = () => {
+                    if (isDraggingInlineLampiran) {
+                        isDraggingInlineLampiran = false;
+                        container.style.cursor = inlineLampiranScale > inlineLampiranMinScale ? 'grab' : 'default';
+                        img.style.cursor = inlineLampiranScale > inlineLampiranMinScale ? 'grab' : 'zoom-in';
+                        applyInlineLampiranTransform(true);
+                    }
+                };
+
+                // Mouse Events
+                container.addEventListener('mousedown', (e) => {
+                    startDrag(e.clientX, e.clientY);
+                });
+                window.addEventListener('mousemove', (e) => {
+                    moveDrag(e.clientX, e.clientY);
+                });
+                window.addEventListener('mouseup', endDrag);
+
+                // Touch Events (Mobile)
+                container.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 1) {
+                        startDrag(e.touches[0].clientX, e.touches[0].clientY);
+                    }
+                }, { passive: true });
+
+                container.addEventListener('touchmove', (e) => {
+                    if (e.touches.length === 1) {
+                        moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+                    }
+                }, { passive: true });
+
+                container.addEventListener('touchend', endDrag);
+
+                // Double Click untuk Toggle Zoom Cepat (100% <-> 200%)
+                container.addEventListener('dblclick', (e) => {
+                    if (inlineLampiranScale > 1.0) {
+                        inlineResetLampiran();
+                    } else {
+                        inlineZoomLampiran(1.0);
+                    }
+                });
+
+                // Klik gambar untuk buka modal layar penuh jika tidak sedang digeser
+                img.addEventListener('click', (e) => {
+                    if (!inlineHasMoved && inlineLampiranScale <= 1.05) {
+                        openImagePreview(img.src, 'Surat Undangan - ' + @json($agendaAktif?->nama_agenda ?? 'Agenda'), @json($agendaAktif?->tanggal?->translatedFormat('l, d F Y') ?? '-'));
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
