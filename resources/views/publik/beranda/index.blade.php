@@ -638,12 +638,11 @@
                 <div class="space-y-1 min-w-0 flex-1">
                     <div class="flex items-center gap-2">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/15 dark:bg-emerald-950/80 text-emerald-100 dark:text-emerald-300 border border-white/20 dark:border-emerald-800/40">
-                            📌 Detail Aduan Publik
+                            Detail Aduan Publik
                         </span>
                     </div>
                     <h2 id="home-aduan-title" class="text-base sm:text-lg font-bold text-white leading-snug line-clamp-2 mt-1.5">-</h2>
                     <p id="home-aduan-date" class="text-xs text-emerald-100/80 dark:text-gray-300 flex items-center gap-1.5 pt-0.5">
-                        <span>📅</span>
                         <span>-</span>
                     </p>
                 </div>
@@ -658,19 +657,19 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                     <div class="rounded-2xl bg-gray-50/80 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#233a34] p-4 space-y-1">
                         <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1">
-                            <span>👤</span><span>Nama Pengadu</span>
+                            <span>Nama Pengadu</span>
                         </p>
                         <p id="home-aduan-name" class="font-bold text-gray-900 dark:text-white truncate text-xs sm:text-sm">-</p>
                     </div>
                     <div class="rounded-2xl bg-gray-50/80 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#233a34] p-4 space-y-1">
                         <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1">
-                            <span>✉️</span><span>Email</span>
+                            <span>Email</span>
                         </p>
                         <p id="home-aduan-email" class="font-bold text-gray-900 dark:text-white truncate text-xs sm:text-sm font-mono">-</p>
                     </div>
                     <div class="rounded-2xl bg-gray-50/80 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#233a34] p-4 space-y-1">
                         <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1">
-                            <span>⚡</span><span>Status</span>
+                            <span>Status</span>
                         </p>
                         <div id="home-aduan-status-badge" class="mt-0.5">
                             <p id="home-aduan-status" class="font-bold text-gray-900 dark:text-white text-xs sm:text-sm">-</p>
@@ -681,7 +680,7 @@
                 <!-- Card Isi Aduan -->
                 <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5 space-y-2 shadow-2xs">
                     <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1.5">
-                        <span>📝</span><span>Isi Aduan / Masukan</span>
+                        <span>Isi Aduan / Masukan</span>
                     </p>
                     <p id="home-aduan-body" class="text-xs sm:text-sm leading-relaxed text-gray-700 dark:text-gray-200 whitespace-pre-line font-medium">-</p>
                 </div>
@@ -689,7 +688,7 @@
                 <!-- Card Lampiran Foto -->
                 <div id="home-aduan-photo-container" class="hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5 space-y-2 shadow-2xs">
                     <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1.5">
-                        <span>🖼️</span><span>Lampiran Foto Aduan</span>
+                        <span>Lampiran Foto Aduan</span>
                     </p>
                     <div class="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4 p-3.5 bg-gray-50/80 dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#284c43]">
                         <button type="button" 
@@ -699,7 +698,6 @@
                             <img id="home-aduan-photo-img" src="" alt="Lampiran Foto" class="h-24 w-36 object-cover rounded-xl transition duration-200 group-hover:scale-105">
                             <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl">
                                 <span class="rounded-lg bg-white/95 dark:bg-[#0f1c19] px-2.5 py-1 text-[11px] font-bold text-ijo-tua dark:text-emerald-400 shadow-xs flex items-center gap-1 border border-transparent dark:border-[#284c43]">
-                                    <span>🔍</span>
                                     <span>Perbesar</span>
                                 </span>
                             </div>
@@ -710,7 +708,7 @@
                             <button type="button" 
                                     onclick="openHomePhotoModal()" 
                                     class="inline-flex items-center gap-1 text-[11px] font-bold text-ijo-tua dark:text-emerald-400 hover:underline pt-0.5 cursor-pointer">
-                                <span>🔍</span> Lihat Tampilan Penuh
+                                Lihat Tampilan Penuh
                             </button>
                         </div>
                     </div>
@@ -720,7 +718,7 @@
                 <div class="rounded-2xl bg-emerald-50/70 dark:bg-[#1a332d] border border-emerald-200/60 dark:border-[#284c43] p-5 space-y-2">
                     <div class="flex items-center justify-between">
                         <p class="text-[10px] uppercase font-extrabold tracking-wider text-ijo-tua dark:text-emerald-400 flex items-center gap-1.5">
-                            <span>🛡️</span><span>Tanggapan Resmi Admin</span>
+                            <span>Tanggapan Resmi Admin</span>
                         </p>
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
                             Diskominfo Bogor
@@ -733,7 +731,7 @@
             <!-- Footer Modal -->
             <div class="px-5 sm:px-6 py-3 bg-gray-50/80 dark:bg-[#0f1c19] border-t border-gray-100 dark:border-[#233a34] flex items-center justify-between shrink-0">
                 <span class="text-[11px] text-gray-400 dark:text-gray-400 flex items-center gap-1">
-                    <span>💡</span><span>Klik di luar area atau tekan ESC untuk menutup</span>
+                    <span>Klik di luar area atau tekan ESC untuk menutup</span>
                 </span>
                 <button type="button" onclick="closeHomeAduanModal()" class="px-5 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 dark:bg-white/10 dark:hover:bg-white/20 text-gray-700 dark:text-gray-200 text-xs font-bold transition cursor-pointer">
                     Tutup
@@ -813,11 +811,11 @@
             if (!badgeEl) return;
             const st = (statusText || '').toLowerCase().trim();
             if (st === 'selesai') {
-                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-extrabold px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800/40">✓ Selesai</span>`;
+                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-extrabold px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800/40">Selesai</span>`;
             } else if (st === 'diproses' || st === 'proses') {
-                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-sky-100 dark:bg-sky-950/80 text-sky-800 dark:text-sky-300 text-[11px] font-extrabold px-2.5 py-1 rounded-full border border-sky-200 dark:border-sky-800/40">🔄 Diproses</span>`;
+                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-sky-100 dark:bg-sky-950/80 text-sky-800 dark:text-sky-300 text-[11px] font-extrabold px-2.5 py-1 rounded-full border border-sky-200 dark:border-sky-800/40">Diproses</span>`;
             } else {
-                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-[11px] font-extrabold px-2.5 py-1 rounded-full border border-amber-200 dark:border-amber-700/40">⏳ Menunggu</span>`;
+                badgeEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-[11px] font-extrabold px-2.5 py-1 rounded-full border border-amber-200 dark:border-amber-700/40">Menunggu</span>`;
             }
         }
 

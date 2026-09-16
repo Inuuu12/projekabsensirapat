@@ -212,7 +212,7 @@
                                 <h4 class="font-bold text-sm text-gray-900 dark:text-white">Presensi Agenda</h4>
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
                                     @if ($isSuratKeluar)
-                                        Pilih kategori kehadiran Anda (Pegawai / Tamu)
+                                        Scan kode QR kehadiran (Pegawai / Tamu)
                                     @elseif ($isSuratMasuk)
                                         Presensi pegawai yang ditugaskan
                                     @else
@@ -279,72 +279,77 @@
                             </div>
                         @else
                             @if ($isSuratKeluar)
-                                <!-- Tombol Pilihan Jenis Presensi (Hanya pada Surat Keluar yang bisa dihadiri Pegawai & Tamu) -->
-                                <div class="grid grid-cols-2 gap-2 bg-[#F4F3EE] dark:bg-[#0f1c19] border border-transparent dark:border-[#233a34] p-1.5 rounded-2xl">
-                                    <button type="button" id="tab-btn-pegawai" onclick="switchPresensiTab('pegawai')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua dark:bg-[#107050] text-white shadow-xs cursor-pointer">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                        <span>Presensi Pegawai</span>
-                                    </button>
-                                    <button type="button" id="tab-btn-tamu" onclick="switchPresensiTab('tamu')" class="py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all flex items-center justify-center space-x-2 cursor-pointer">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                        <span>Presensi Tamu</span>
-                                    </button>
-                                </div>
-                            @endif
-
-                            <!-- Panel Presensi Pegawai (QR Code) -->
-                            <div id="panel-presensi-pegawai" class="space-y-4">
-                                <div class="bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] text-center">
-                                    <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">
-                                        @if ($isSuratInternal)
-                                            QR Absen Pegawai Internal
-                                        @elseif ($isSuratMasuk)
-                                            QR Absen Pegawai Ditugaskan
-                                        @else
-                                            QR Absen Pegawai
-                                        @endif
-                                    </p>
-                                    <p class="text-[10px] text-gray-400 mt-0.5">
-                                        @if ($isSuratInternal)
-                                            Scan kode QR berikut untuk presensi pegawai internal Diskominfo
-                                        @elseif ($isSuratMasuk)
-                                            Scan kode QR berikut untuk absensi pegawai yang ditugaskan
-                                        @else
-                                            Scan kode QR berikut untuk melakukan absensi pegawai
-                                        @endif
-                                    </p>
-                                </div>
-
-                                @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlPegawai)
-                                    <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-4 text-center">
-                                        <div class="inline-block rounded-2xl bg-white p-3 shadow-xs border border-gray-100 dark:border-[#284c43]">
-                                            <img src="{{ $qrImageUrlPegawai }}" alt="QR Presensi Pegawai {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
+                                <!-- Dual QR Code Bersebelahan (Pegawai & Tamu) -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <!-- QR Absen Pegawai -->
+                                    <div class="bg-gray-50/80 dark:bg-[#0f1c19] rounded-2xl p-3 border border-gray-100 dark:border-[#233a34] text-center flex flex-col justify-between space-y-3">
+                                        <div class="space-y-0.5">
+                                            <p class="text-[11px] font-extrabold text-gray-800 dark:text-gray-100">QR Absen Pegawai</p>
+                                            <p class="text-[10px] text-gray-400">Scan untuk presensi pegawai</p>
                                         </div>
-                                    </div>
-                                @else
-                                    <div class="rounded-2xl border border-dashed border-gray-200 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-5 text-center">
-                                        <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">QR presensi pegawai belum diaktifkan admin untuk agenda ini.</p>
-                                    </div>
-                                @endif
-                            </div>
 
-                            @if ($isSuratKeluar)
-                                <!-- Panel Presensi Tamu (QR Code - Hanya jika Surat Keluar) -->
-                                <div id="panel-presensi-tamu" class="hidden space-y-4">
+                                        @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlPegawai)
+                                            <div class="rounded-xl border border-gray-100 dark:border-[#233a34] bg-white p-2.5 shadow-xs">
+                                                <img src="{{ $qrImageUrlPegawai }}" alt="QR Presensi Pegawai {{ $agendaAktif->nama_agenda }}" class="mx-auto h-36 w-36 sm:h-40 sm:w-40 rounded-lg object-contain">
+                                            </div>
+                                        @else
+                                            <div class="rounded-xl border border-dashed border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420] p-4 text-center my-auto">
+                                                <p class="text-[11px] font-semibold text-gray-500 dark:text-gray-400">QR pegawai belum diaktifkan.</p>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <!-- QR Absen Tamu -->
+                                    <div class="bg-gray-50/80 dark:bg-[#0f1c19] rounded-2xl p-3 border border-gray-100 dark:border-[#233a34] text-center flex flex-col justify-between space-y-3">
+                                        <div class="space-y-0.5">
+                                            <p class="text-[11px] font-extrabold text-gray-800 dark:text-gray-100">QR Absen Tamu</p>
+                                            <p class="text-[10px] text-gray-400">Scan untuk presensi tamu</p>
+                                        </div>
+
+                                        @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlTamu)
+                                            <div class="rounded-xl border border-gray-100 dark:border-[#233a34] bg-white p-2.5 shadow-xs">
+                                                <img src="{{ $qrImageUrlTamu }}" alt="QR Presensi Tamu {{ $agendaAktif->nama_agenda }}" class="mx-auto h-36 w-36 sm:h-40 sm:w-40 rounded-lg object-contain">
+                                            </div>
+                                        @else
+                                            <div class="rounded-xl border border-dashed border-gray-200 dark:border-[#233a34] bg-white dark:bg-[#152420] p-4 text-center my-auto">
+                                                <p class="text-[11px] font-semibold text-gray-500 dark:text-gray-400">QR tamu belum diaktifkan.</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @else
+                                <!-- Single QR Code (Pegawai Internal / Ditugaskan) -->
+                                <div id="panel-presensi-pegawai" class="space-y-4">
                                     <div class="bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-4 border border-gray-100 dark:border-[#233a34] text-center">
-                                        <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">QR Absen Tamu</p>
-                                        <p class="text-[10px] text-gray-400 mt-0.5">Scan kode QR berikut untuk mengisi formulir presensi tamu rapat</p>
+                                        <p class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">
+                                            @if ($isSuratInternal)
+                                                QR Absen Pegawai Internal
+                                            @elseif ($isSuratMasuk)
+                                                QR Absen Pegawai Ditugaskan
+                                            @else
+                                                QR Absen Pegawai
+                                            @endif
+                                        </p>
+                                        <p class="text-[10px] text-gray-400 mt-0.5">
+                                            @if ($isSuratInternal)
+                                                Scan kode QR berikut untuk presensi pegawai internal Diskominfo
+                                            @elseif ($isSuratMasuk)
+                                                Scan kode QR berikut untuk absensi pegawai yang ditugaskan
+                                            @else
+                                                Scan kode QR berikut untuk melakukan absensi pegawai
+                                            @endif
+                                        </p>
                                     </div>
 
-                                    @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlTamu)
+                                    @if ($agendaAktif->status_qr === 'aktif' && $qrImageUrlPegawai)
                                         <div class="rounded-2xl border border-gray-100 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-4 text-center">
                                             <div class="inline-block rounded-2xl bg-white p-3 shadow-xs border border-gray-100 dark:border-[#284c43]">
-                                                <img src="{{ $qrImageUrlTamu }}" alt="QR Presensi Tamu {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
+                                                <img src="{{ $qrImageUrlPegawai }}" alt="QR Presensi Pegawai {{ $agendaAktif->nama_agenda }}" class="mx-auto h-52 w-52 rounded-xl object-contain">
                                             </div>
                                         </div>
                                     @else
                                         <div class="rounded-2xl border border-dashed border-gray-200 dark:border-[#233a34] bg-gray-50 dark:bg-[#0f1c19] p-5 text-center">
-                                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">QR presensi tamu belum diaktifkan admin untuk agenda ini.</p>
+                                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">QR presensi pegawai belum diaktifkan admin untuk agenda ini.</p>
                                         </div>
                                     @endif
                                 </div>
@@ -448,27 +453,6 @@
             }
         }
 
-        function switchPresensiTab(type) {
-            const btnPegawai = document.getElementById('tab-btn-pegawai');
-            const btnTamu = document.getElementById('tab-btn-tamu');
-            const panelPegawai = document.getElementById('panel-presensi-pegawai');
-            const panelTamu = document.getElementById('panel-presensi-tamu');
-
-            if (!btnPegawai || !btnTamu || !panelPegawai || !panelTamu) return;
-
-            if (type === 'pegawai') {
-                btnPegawai.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua dark:bg-[#107050] text-white shadow-xs';
-                btnTamu.className = 'py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all flex items-center justify-center space-x-2';
-                panelPegawai.classList.remove('hidden');
-                panelTamu.classList.add('hidden');
-            } else {
-                btnTamu.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-2 bg-ijo-tua dark:bg-[#107050] text-white shadow-xs';
-                btnPegawai.className = 'py-2.5 px-3 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all flex items-center justify-center space-x-2';
-                panelTamu.classList.remove('hidden');
-                panelPegawai.classList.add('hidden');
-            }
-        }
-
         function previewTamuImage(event) {
             const input = event.target;
             const preview = document.getElementById('tamu-foto-preview');
@@ -488,21 +472,6 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const isSuratMasuk = {{ $isSuratMasuk ? 'true' : 'false' }};
-            if (!isSuratMasuk) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const hasTamuParam = urlParams.get('presensi') === 'tamu' || window.location.hash === '#presensi-tamu';
-                @if ($errors->any() || session('success'))
-                    switchPresensiTab('tamu');
-                @else
-                    if (hasTamuParam) {
-                        switchPresensiTab('tamu');
-                    }
-                @endif
-            }
-        });
     </script>
 
     @if ($lampiranUrl)
