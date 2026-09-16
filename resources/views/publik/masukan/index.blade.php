@@ -110,6 +110,25 @@
                         <p class="text-[10px] text-gray-400 dark:text-gray-400 pt-0.5">Maksimal 13 digit angka (hanya angka tanpa spasi/huruf/simbol).</p>
                     </div>
 
+                    <!-- Perangkat Daerah / Dinas Tujuan Dropdown -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">Perangkat Daerah / Dinas Tujuan *</label>
+                        <div class="relative">
+                            <select name="id_dinas" required class="w-full bg-[#EAE8E1]/60 dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] focus:border-ijo-semitua focus:bg-white dark:focus:bg-[#152420] text-xs rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-200 appearance-none focus:outline-none transition-all cursor-pointer">
+                                <option value="" disabled selected>Pilih Perangkat Daerah / Dinas yang dituju</option>
+                                @foreach ($dinasList ?? [] as $dinasItem)
+                                    <option value="{{ $dinasItem->id_dinas }}" @selected(old('id_dinas') == $dinasItem->id_dinas)>
+                                        {{ $dinasItem->nama_dinas }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500 text-xs">
+                                ▼
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-gray-400 dark:text-gray-400 pt-0.5">Pilih Dinas tujuan agar aduan diteruskan dan ditangani langsung oleh instansi yang sesuai.</p>
+                    </div>
+
                     <!-- Kategori Masalah Dropdown -->
                     <div class="space-y-1.5">
                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">Kategori Masalah *</label>

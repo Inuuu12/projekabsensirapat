@@ -96,6 +96,7 @@
                 <thead>
                     <tr class="bg-[#35635b] dark:bg-[#1b3832] text-white text-xs font-extrabold uppercase tracking-wider">
                         <th class="px-6 py-4">Pengadu</th>
+                        <th class="px-6 py-4">Dinas Tujuan</th>
                         <th class="px-6 py-4">Email & Kontak</th>
                         <th class="px-6 py-4">Isi Aduan</th>
                         <th class="px-6 py-4">Balasan Admin</th>
@@ -109,6 +110,9 @@
                         <tr class="hover:bg-gray-50/80 dark:hover:bg-[#1b332d] transition">
                             <td class="px-6 py-4 font-extrabold text-gray-900 dark:text-white">
                                 {{ $item->nama_pengadu }}
+                            </td>
+                            <td class="px-6 py-4 text-xs font-bold text-[#35635b] dark:text-emerald-400">
+                                {{ $item->dinas?->nama_dinas ?? 'Umum / Diskominfo' }}
                             </td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200 text-xs">
                                 <p class="font-medium">{{ $item->email }}</p>

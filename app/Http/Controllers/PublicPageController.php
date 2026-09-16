@@ -51,7 +51,7 @@ class PublicPageController extends Controller
         }
 
         // 2. Terapkan Smart Live Priority Sorting: Berlangsung > Mendatang Hari Ini > Mendatang Esok > Selesai
-        $agendaBeranda = Agenda::sortSmartLivePriority($rawAgendas)->take(6);
+        $agendaBeranda = Agenda::sortSmartLivePriority($rawAgendas)->take(3);
         $totalAgendaHariIni = $this->queryOrDefault(fn () => Agenda::whereDate('tanggal', $today)->count(), 0);
 
         $agendaHariIni = $agendaBeranda;
@@ -287,9 +287,10 @@ class PublicPageController extends Controller
 
     public function masukan()
     {
-        $aduans = $this->queryOrDefault(fn () => DataAduan::latest('id_dataaduan')->get(), collect());
+        $dinasList = $this->queryOrDefault(fn () => Dinas::orderBy('nama_dinas', 'asc')->get(), collect());
+        $aduans = $this->queryOrDefault(fn () => DataAduan::with('dinas')->latest('id_dataaduan')->get(), collect());
 
-        return view('publik.masukan.index', compact('aduans'));
+        return view('publik.masukan.index', compact('aduans', 'dinasList'));
     }
 
     public function petaSitus()
@@ -299,7 +300,7 @@ class PublicPageController extends Controller
 
     public function riwayatAduan()
     {
-        $masukan = $this->queryOrDefault(fn () => DataAduan::latest('id_dataaduan')->paginate(10), collect());
+        $masukan = $this->queryOrDefault(fn () => DataAduan::with('dinas')->latest('id_dataaduan')->paginate(10), collect());
 
         return view('publik.masukan.riwayat', compact('masukan'));
     }

@@ -134,6 +134,7 @@ class UserController extends Controller
             'nomor_pengadu' => 'required|string|max:13|regex:/^[0-9]+$/',
             'email' => 'required|email|max:255',
             'otp' => 'required|digits:6',
+            'id_dinas' => 'nullable|exists:sirapi_md_dinas,id_dinas',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'isi_aduan'    => 'required|string',
         ], [
@@ -141,6 +142,7 @@ class UserController extends Controller
             'nomor_pengadu.max' => 'Nomor HP maksimal 13 digit angka.',
             'nomor_pengadu.regex' => 'Nomor HP hanya boleh berisi angka.',
             'otp.digits' => 'Kode OTP harus berupa 6 digit angka.',
+            'id_dinas.exists' => 'Perangkat daerah / Dinas yang dipilih tidak valid.',
         ]);
 
         $this->validateAduanOtp($validated['email'], $validated['otp']);
@@ -153,6 +155,7 @@ class UserController extends Controller
             'nama_pengadu' => $validated['nama_pengadu'],
             'nomor_pengadu' => $validated['nomor_pengadu'],
             'email' => $validated['email'],
+            'id_dinas' => $validated['id_dinas'] ?? null,
             'foto' => $validated['foto'] ?? null,
             'isi_aduan'    => $validated['isi_aduan'],
             'status'       => 'Menunggu',

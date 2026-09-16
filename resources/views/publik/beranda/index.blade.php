@@ -195,7 +195,7 @@
 
     <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-6 sm:pt-8 space-y-16 sm:space-y-20">
         @php
-            $agendaItems = collect($agendaBeranda ?? $agendaHariIni ?? []);
+            $agendaItems = collect($agendaBeranda ?? $agendaHariIni ?? [])->take(3);
             $agendaTerbaruItems = collect($agendaTerbaru ?? []);
             $beritaItems = collect($beritaTerbaru ?? []);
             $galeriItems = collect($galeri ?? []);
@@ -1509,7 +1509,7 @@
     </script>
 
     <!-- Modal Daftar Rapat Per Lokasi / Dinas -->
-    <div id="modal-agenda-lokasi" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 transition-all duration-300" onclick="if(event.target === this) closeLocationAgendasModal()">
+    <div id="modal-agenda-lokasi" class="fixed inset-0 z-[2500] hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 transition-all duration-300" onclick="if(event.target === this) closeLocationAgendasModal()">
         <div class="relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-3xl bg-white dark:bg-[#152420] shadow-2xl border border-gray-100 dark:border-[#284c43] transform transition-all scale-95 opacity-0" id="modal-agenda-lokasi-card">
             
             <!-- Header Modal -->

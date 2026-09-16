@@ -52,6 +52,7 @@
                 $aduan->id_dataaduan => [
                     'nama_pengadu' => $aduan->nama_pengadu,
                     'email' => $maskEmail($aduan->email),
+                    'dinas_nama' => $aduan->dinas?->nama_dinas ?? 'Dinas Komunikasi dan Informatika',
                     'isi_aduan' => $aduan->isi_aduan,
                     'balasan_admin' => $aduan->balasan_admin ?: 'Belum ada balasan dari admin.',
                     'status' => (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status,
@@ -138,8 +139,8 @@
 
             <!-- Body Modal -->
             <div class="flex-1 min-h-0 overflow-y-auto p-5 sm:p-6 space-y-4 sm:space-y-5">
-                <!-- Info Cards Grid (Nama, Email, Status) -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <!-- Info Cards Grid (Nama, Email, Dinas, Status) -->
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
                     <div class="rounded-2xl bg-gray-50/80 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#233a34] p-4 space-y-1">
                         <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1">
                             <span>Nama Pengadu</span>
@@ -151,6 +152,12 @@
                             <span>Email</span>
                         </p>
                         <p id="aduan-modal-email" class="font-bold text-gray-900 dark:text-white truncate text-xs sm:text-sm font-mono">-</p>
+                    </div>
+                    <div class="rounded-2xl bg-gray-50/80 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#233a34] p-4 space-y-1">
+                        <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1">
+                            <span>Dinas Tujuan</span>
+                        </p>
+                        <p id="aduan-modal-dinas" class="font-bold text-ijo-tua dark:text-emerald-400 truncate text-xs sm:text-sm">-</p>
                     </div>
                     <div class="rounded-2xl bg-gray-50/80 dark:bg-[#0f1c19] border border-gray-100 dark:border-[#233a34] p-4 space-y-1">
                         <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1">
@@ -338,6 +345,7 @@
                 setAduanText('aduan-modal-date', detail.tanggal);
                 setAduanText('aduan-modal-name', detail.nama_pengadu);
                 setAduanText('aduan-modal-email', detail.email);
+                setAduanText('aduan-modal-dinas', detail.dinas_nama);
                 updateAduanStatusBadge(detail.status);
                 setAduanText('aduan-modal-body', detail.isi_aduan);
                 setAduanText('aduan-modal-reply', detail.balasan_admin);

@@ -11,7 +11,7 @@ class AdminMasukkanController extends Controller
     public function umpanBalik()
     {
         $admin = Auth::guard('admin')->user();
-        $masukan = DataAduan::latest('id_dataaduan')->get();
+        $masukan = DataAduan::with('dinas')->latest('id_dataaduan')->get();
 
         return view('admin.masukkan.index', compact('admin', 'masukan'));
     }

@@ -1,5 +1,5 @@
 <!-- MODAL PREVIEW FOTO GALERI DENGAN DRAGGABLE PAN & ZOOM IN / ZOOM OUT -->
-<div id="modal-preview-foto" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/85 backdrop-blur-xs p-2 sm:p-4 md:p-6 transition-all duration-200" onclick="handleImageModalClick(event)">
+<div id="modal-preview-foto" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/85 backdrop-blur-xs p-2 sm:p-4 md:p-6 transition-all duration-200" onclick="handleImageModalClick(event)">
     <div class="relative flex flex-col w-full max-w-5xl max-h-[calc(100dvh-1rem)] sm:max-h-[92vh] rounded-2xl bg-white dark:bg-[#152420] shadow-2xl dark:border dark:border-[#284c43] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         <!-- Header Modal -->
