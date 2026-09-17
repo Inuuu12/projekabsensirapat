@@ -55,7 +55,7 @@ class SirapiMailer
                 . '<h2 style="color: #107050; margin-bottom: 20px;">' . e($subject) . '</h2>'
                 . nl2br(e($content))
                 . '<hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;">'
-                . '<small style="color: #888;">Pesan otomatis dari Rapat dan Presensi Integrasi Dashboard (RAPID) Kabupaten Bogor.</small>'
+                . '<small style="color: #888;">Pesan otomatis dari Rapat dan Presensi Integrasi Digital (RAPID) Kabupaten Bogor.</small>'
             . '</div>';
 
         $textContent = $isHtml ? strip_tags($content) : $content;
@@ -102,7 +102,7 @@ class SirapiMailer
                 . '<h2 style="color: #107050; margin-bottom: 20px;">' . e($subject) . '</h2>'
                 . nl2br(e($content))
                 . '<hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;">'
-                . '<small style="color: #888;">Pesan otomatis dari Rapat dan Presensi Integrasi Dashboard (RAPID) Kabupaten Bogor.</small>'
+                . '<small style="color: #888;">Pesan otomatis dari Rapat dan Presensi Integrasi Digital (RAPID) Kabupaten Bogor.</small>'
             . '</div>';
 
         $textContent = $isHtml ? strip_tags($content) : $content;

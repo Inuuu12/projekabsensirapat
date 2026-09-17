@@ -407,7 +407,7 @@
                                     </span>
                                     <span class="w-[2px] h-1.5 bg-gray-900"></span>
                                 </div>
-                                <span class="text-gray-700 dark:text-gray-300">Kantor Kecamatan (40 Titik)</span>
+                                <span class="text-gray-700 dark:text-gray-300">Kantor Kecamatan</span>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <div class="flex flex-col items-center shrink-0">

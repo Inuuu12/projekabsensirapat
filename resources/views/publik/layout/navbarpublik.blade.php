@@ -12,7 +12,7 @@
             <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 object-contain group-hover:scale-105 transition-transform drop-shadow-sm shrink-0">
             <div class="flex flex-col justify-center min-w-0">
                 <span class="font-black text-base sm:text-lg md:text-xl tracking-wide text-white leading-none">RAPID</span>
-                <p class="text-[7.5px] sm:text-[9.5px] md:text-[10px] font-bold text-white/85 dark:text-gray-300 tracking-wider uppercase leading-none mt-1 whitespace-nowrap">RAPAT DAN PRESENSI INTEGRASI DASHBOARD</p>
+                <p class="text-[7.5px] sm:text-[9.5px] md:text-[10px] font-bold text-white/85 dark:text-gray-300 tracking-wider uppercase leading-none mt-1 whitespace-nowrap">RAPAT DAN PRESENSI INTEGRASI DIGITAL</p>
             </div>
         </a>
 

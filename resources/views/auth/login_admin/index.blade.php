@@ -99,7 +99,7 @@
                 
                 <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight mb-3">{{ config('sirapi.name', 'RAPID') }}</h1>
                 <p class="text-sm sm:text-base md:text-lg font-extrabold opacity-95 max-w-sm mb-2 leading-snug">
-                    Rapat dan Presensi Integrasi Dashboard
+                    Rapat dan Presensi Integrasi Digital
                 </p>
                 <p class="text-xs sm:text-sm md:text-base font-semibold opacity-90 max-w-sm">
                     {{ $regionName }}

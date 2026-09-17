@@ -21,7 +21,7 @@
                                 RAPID
                             </h1>
                             <p style="margin: 6px 0 0 0; font-size: 13px; color: #d1fae5; font-weight: 500;">
-                                Rapat dan Presensi Integrasi Dashboard
+                                Rapat dan Presensi Integrasi Digital
                             </p>
                         </td>
                     </tr>

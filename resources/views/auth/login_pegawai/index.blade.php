@@ -90,7 +90,7 @@
         <div class="relative flex flex-col items-center text-center px-4">
             <img src="{{ asset('assets/foto/logo-bappenda.png') }}" alt="Logo Kabupaten Bogor" class="h-16 sm:h-24 w-auto object-contain drop-shadow">
             <h1 class="mt-3 sm:mt-5 text-xl sm:text-2xl font-extrabold tracking-wide">RAPID</h1>
-            <p class="mt-1 sm:mt-2 text-xs sm:text-sm font-bold">Rapat dan Presensi Integrasi Dashboard</p>
+            <p class="mt-1 sm:mt-2 text-xs sm:text-sm font-bold">Rapat dan Presensi Integrasi Digital</p>
         </div>
     </header>
 

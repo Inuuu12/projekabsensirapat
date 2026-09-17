@@ -22,7 +22,7 @@
             </div>
             <div class="min-w-0 flex-1">
                 <h1 class="font-black text-xl leading-none tracking-wide text-[#35635b] dark:text-white">RAPID</h1>
-                <p class="text-[8px] font-bold text-gray-400 dark:text-gray-400 tracking-wider uppercase mt-1 leading-none whitespace-nowrap">RAPAT DAN PRESENSI INTEGRASI DASHBOARD</p>
+                <p class="text-[8px] font-bold text-gray-400 dark:text-gray-400 tracking-wider uppercase mt-1 leading-none whitespace-nowrap">RAPAT DAN PRESENSI INTEGRASI DIGITAL</p>
             </div>
             <!-- Mobile Close Button -->
             <button onclick="toggleSidebar()" class="md:hidden ml-auto w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 flex items-center justify-center text-[#35635b] dark:text-white focus:outline-none shrink-0 transition-colors cursor-pointer" title="Tutup Menu">
