@@ -9,6 +9,8 @@ use App\Models\DokumenNotulen;
 use App\Models\Jabatan;
 use App\Models\Kecamatan;
 use App\Models\Pegawai;
+use App\Models\PengajuanAgenda;
+use App\Models\RuangRapat;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -64,7 +66,7 @@ class PegawaiAuthController extends Controller
                     ->with('success', 'Kehadiran Anda pada agenda ' . $agenda->nama_agenda . ' telah tercatat!');
             }
 
-            return redirect()->route('pegawai.presensi.index', array_filter(['agenda_id' => $request->query('agenda_id')]));
+            return redirect()->route('pegawai.dashboard');
         }
 
         return view('auth.login_pegawai.index');
@@ -165,7 +167,7 @@ class PegawaiAuthController extends Controller
                     ->with('success', 'Login berhasil dan kehadiran Anda pada agenda ' . $agenda->nama_agenda . ' telah tercatat!');
             }
 
-            return redirect()->intended(route('pegawai.presensi.index'));
+            return redirect()->intended(route('pegawai.dashboard'));
         }
 
         return back()->withErrors([
@@ -959,5 +961,267 @@ class PegawaiAuthController extends Controller
                 ]);
             }
         });
+    }
+
+    // =========================================================================
+    // PORTAL PEGAWAI: Dashboard, Pengajuan, Booking, History, Profil
+    // =========================================================================
+
+    /**
+     * Helper untuk mengambil daftar ruang rapat sesuai instansi pegawai (dinas / kecamatan).
+     */
+    private function getRuangRapatForPegawai($pegawai)
+    {
+        $query = RuangRapat::withoutGlobalScopes();
+
+        if ($pegawai->id_dinas) {
+            $query->where('id_dinas', $pegawai->id_dinas);
+        } elseif ($pegawai->id_kecamatan) {
+            $query->where('id_kecamatan', $pegawai->id_kecamatan);
+        }
+
+        return $query->orderBy('nama_ruang')->get();
+    }
+
+    /**
+     * Helper untuk mengambil query agenda sesuai instansi pegawai (dinas / kecamatan).
+     */
+    private function getAgendaQueryForPegawai($pegawai)
+    {
+        $query = Agenda::query();
+
+        if ($pegawai->id_dinas) {
+            $query->where(function ($q) use ($pegawai) {
+                $q->where('id_dinas', $pegawai->id_dinas)
+                  ->orWhereHas('ruangRapat', function ($rq) use ($pegawai) {
+                      $rq->where('id_dinas', $pegawai->id_dinas);
+                  });
+            });
+        } elseif ($pegawai->id_kecamatan) {
+            $query->where(function ($q) use ($pegawai) {
+                $q->where('id_kecamatan', $pegawai->id_kecamatan)
+                  ->orWhereHas('ruangRapat', function ($rq) use ($pegawai) {
+                      $rq->where('id_kecamatan', $pegawai->id_kecamatan);
+                  });
+            });
+        }
+
+        return $query;
+    }
+
+    public function dashboard(Request $request)
+    {
+        $pegawai = Auth::guard('pegawai')->user();
+
+        // Hitung total rapat yang diikuti pegawai ini
+        $peserta = DB::table('sirapi_md_peserta')
+            ->where('email', $pegawai->email)
+            ->first();
+
+        $totalRapatDiikuti = $peserta
+            ? DB::table('sirapi_md_kehadiran')->where('id_peserta', $peserta->id_peserta)->count()
+            : 0;
+
+        // Stat Pengajuan & Booking
+        $totalPengajuanPending = PengajuanAgenda::where('id_pegawai', $pegawai->id_pegawai)
+            ->where('status', 'pending')
+            ->count();
+
+        $totalBookingDisetujui = PengajuanAgenda::where('id_pegawai', $pegawai->id_pegawai)
+            ->where('status', 'disetujui')
+            ->count();
+
+        // Ruang Rapat & Agenda mendatang sesuai instansi pegawai
+        $ruangList = $this->getRuangRapatForPegawai($pegawai);
+        $agendaMendatang = $this->getAgendaQueryForPegawai($pegawai)
+            ->with('ruangRapat')
+            ->where('tanggal', '>=', now()->toDateString())
+            ->orderBy('tanggal', 'asc')
+            ->orderBy('waktu', 'asc')
+            ->take(6)
+            ->get();
+
+        $riwayatPengajuanTerbaru = PengajuanAgenda::with('ruangRapat')
+            ->where('id_pegawai', $pegawai->id_pegawai)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('pegawai.dashboard.index', compact(
+            'pegawai',
+            'totalRapatDiikuti',
+            'totalPengajuanPending',
+            'totalBookingDisetujui',
+            'ruangList',
+            'agendaMendatang',
+            'riwayatPengajuanTerbaru'
+        ));
+    }
+
+    public function pengajuanAgenda(Request $request)
+    {
+        $pegawai = Auth::guard('pegawai')->user();
+
+        $pengajuanList = PengajuanAgenda::with('ruangRapat')
+            ->where('id_pegawai', $pegawai->id_pegawai)
+            ->latest()
+            ->get();
+
+        $ruangList = $this->getRuangRapatForPegawai($pegawai);
+
+        return view('pegawai.agenda.index', compact('pegawai', 'pengajuanList', 'ruangList'));
+    }
+
+    public function simpanPengajuanAgenda(Request $request)
+    {
+        $pegawai = Auth::guard('pegawai')->user();
+
+        $validated = $request->validate([
+            'nama_agenda' => 'required|string|max:255',
+            'tanggal' => 'required|date',
+            'waktu' => 'required',
+            'waktu_selesai' => 'nullable',
+            'id_ruangrapat' => 'nullable|integer',
+            'penyelenggara' => 'nullable|string|max:255',
+            'kuota' => 'nullable|integer|min:1',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        if (!empty($validated['id_ruangrapat'])) {
+            $allowedRuangIds = $this->getRuangRapatForPegawai($pegawai)->pluck('id_ruangrapat')->toArray();
+            if (!empty($allowedRuangIds) && !in_array($validated['id_ruangrapat'], $allowedRuangIds)) {
+                return back()->withErrors(['id_ruangrapat' => 'Ruang rapat yang dipilih tidak berada di bawah instansi Anda.'])->withInput();
+            }
+
+            // Cek bentrok jadwal ruangan
+            $ruang = RuangRapat::withoutGlobalScopes()->find($validated['id_ruangrapat']);
+            if ($ruang) {
+                $conflict = $ruang->checkScheduleConflict(
+                    $validated['tanggal'],
+                    $validated['waktu'],
+                    $validated['waktu_selesai'] ?? null
+                );
+
+                if ($conflict) {
+                    $tglFormatted = Carbon::parse($validated['tanggal'])->translatedFormat('d M Y');
+                    $msg = "Ruangan {$ruang->nama_ruang} sudah terpakai/terbooking pada {$tglFormatted} pukul {$conflict['waktu_mulai']} - {$conflict['waktu_selesai']} WIB untuk agenda '{$conflict['nama']}'. Silakan pilih ruangan lain atau atur jam rapat yang tidak bentrok.";
+                    return back()->withErrors(['id_ruangrapat' => $msg])->withInput();
+                }
+            }
+        }
+
+        $validated['id_pegawai'] = $pegawai->id_pegawai;
+        $validated['kategori_surat'] = 'Pengajuan Rapat Pegawai';
+        $validated['status'] = 'pending';
+        $validated['kuota'] = $validated['kuota'] ?? 20;
+        $validated['id_dinas'] = $pegawai->id_dinas;
+        $validated['id_kecamatan'] = $pegawai->id_kecamatan;
+
+        PengajuanAgenda::create($validated);
+
+        return redirect()->route('pegawai.pengajuan.index')->with('success', 'Pengajuan agenda berhasil dikirim. Menunggu persetujuan admin.');
+    }
+
+    public function bookingRuang(Request $request)
+    {
+        $pegawai = Auth::guard('pegawai')->user();
+
+        $ruangList = $this->getRuangRapatForPegawai($pegawai);
+
+        // Ambil agenda & pengajuan 30 hari ke depan & 7 hari ke belakang untuk kalender
+        $startDate = now()->subDays(7)->toDateString();
+        $endDate = now()->addDays(30)->toDateString();
+
+        $agendas = $this->getAgendaQueryForPegawai($pegawai)
+            ->with('ruangRapat')
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->orderBy('tanggal')
+            ->orderBy('waktu')
+            ->get();
+
+        $pengajuans = PengajuanAgenda::with('ruangRapat')
+            ->whereIn('status', ['pending', 'disetujui'])
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->orderBy('tanggal')
+            ->orderBy('waktu')
+            ->get();
+
+        // Group by date for the JS calendar
+        $agendaByDate = [];
+        $existingKeys = [];
+
+        foreach ($agendas as $agenda) {
+            $dateKey = \Carbon\Carbon::parse($agenda->tanggal)->format('Y-m-d');
+            $uniqueKey = $dateKey . '_' . $agenda->id_ruangrapat . '_' . substr((string)$agenda->waktu, 0, 5);
+            $existingKeys[$uniqueKey] = true;
+
+            $agendaByDate[$dateKey][] = [
+                'id_agenda' => 'agenda_' . $agenda->id_agenda,
+                'nama_agenda' => $agenda->nama_agenda,
+                'tanggal' => $dateKey,
+                'waktu' => $agenda->waktu ? \Carbon\Carbon::parse($agenda->waktu)->format('H:i') : null,
+                'waktu_selesai' => $agenda->waktu_selesai ? \Carbon\Carbon::parse($agenda->waktu_selesai)->format('H:i') : null,
+                'id_ruangrapat' => $agenda->id_ruangrapat,
+                'nama_ruang' => $agenda->ruangRapat?->nama_ruang,
+                'status_label' => 'Agenda Resmi',
+                'status_badge' => 'disetujui',
+            ];
+        }
+
+        foreach ($pengajuans as $pengajuan) {
+            $dateKey = \Carbon\Carbon::parse($pengajuan->tanggal)->format('Y-m-d');
+            $uniqueKey = $dateKey . '_' . $pengajuan->id_ruangrapat . '_' . substr((string)$pengajuan->waktu, 0, 5);
+
+            // Avoid duplicate entry if the approved pengajuan was already converted into an Agenda
+            if (isset($existingKeys[$uniqueKey]) && $pengajuan->status === 'disetujui') {
+                continue;
+            }
+
+            $agendaByDate[$dateKey][] = [
+                'id_agenda' => 'pengajuan_' . $pengajuan->id_pengajuan,
+                'nama_agenda' => $pengajuan->nama_agenda,
+                'tanggal' => $dateKey,
+                'waktu' => $pengajuan->waktu ? \Carbon\Carbon::parse($pengajuan->waktu)->format('H:i') : null,
+                'waktu_selesai' => $pengajuan->waktu_selesai ? \Carbon\Carbon::parse($pengajuan->waktu_selesai)->format('H:i') : null,
+                'id_ruangrapat' => $pengajuan->id_ruangrapat,
+                'nama_ruang' => $pengajuan->ruangRapat?->nama_ruang,
+                'status_label' => $pengajuan->status === 'disetujui' ? 'Disetujui' : 'Menunggu Persetujuan Admin',
+                'status_badge' => $pengajuan->status,
+            ];
+        }
+
+        return view('pegawai.booking.index', compact('pegawai', 'ruangList', 'agendaByDate'));
+    }
+
+    public function historyRapat(Request $request)
+    {
+        $pegawai = Auth::guard('pegawai')->user();
+
+        $historyList = DB::table('sirapi_md_kehadiran as k')
+            ->join('sirapi_md_peserta as p', 'k.id_peserta', '=', 'p.id_peserta')
+            ->join('sirapi_md_agenda as a', 'k.id_agenda', '=', 'a.id_agenda')
+            ->leftJoin('sirapi_md_ruangrapat as r', 'a.id_ruangrapat', '=', 'r.id_ruangrapat')
+            ->where('p.email', $pegawai->email)
+            ->select(
+                'a.nama_agenda',
+                'a.tanggal',
+                'a.waktu',
+                'r.nama_ruang',
+                'k.lokasi_presensi',
+                'k.foto_kehadiran',
+                'k.created_at as waktu_presensi'
+            )
+            ->orderByDesc('a.tanggal')
+            ->orderByDesc('a.waktu')
+            ->get();
+
+        return view('pegawai.history.index', compact('pegawai', 'historyList'));
+    }
+
+    public function profilPegawai(Request $request)
+    {
+        $pegawai = Auth::guard('pegawai')->user();
+
+        return view('pegawai.profil.index', compact('pegawai'));
     }
 }

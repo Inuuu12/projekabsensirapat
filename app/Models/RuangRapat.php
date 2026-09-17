@@ -162,4 +162,83 @@ class RuangRapat extends Model
 
         return null;
     }
+
+    /**
+     * Memeriksa bentrok jadwal ruangan baik di Agenda resmi maupun Pengajuan Agenda (pending/disetujui).
+     */
+    public function checkScheduleConflict(string $tanggal, string $waktuMulai, ?string $waktuSelesai = null, ?int $ignoreAgendaId = null, ?int $ignorePengajuanId = null): ?array
+    {
+        $timezone = config('app.timezone', 'Asia/Jakarta');
+        $targetStart = Carbon::parse($tanggal . ' ' . substr($waktuMulai, 0, 5), $timezone);
+        $targetEnd = !empty($waktuSelesai)
+            ? Carbon::parse($tanggal . ' ' . substr($waktuSelesai, 0, 5), $timezone)
+            : $targetStart->copy()->addHour();
+
+        if ($targetEnd->lessThanOrEqualTo($targetStart)) {
+            $targetEnd->addDay();
+        }
+
+        // 1. Cek Agenda Resmi (sirapi_md_agenda)
+        $agendas = $this->agendas()
+            ->whereDate('tanggal', $tanggal)
+            ->when($ignoreAgendaId, fn ($q) => $q->where('id_agenda', '!=', $ignoreAgendaId))
+            ->get();
+
+        foreach ($agendas as $existing) {
+            $existDate = $existing->tanggal instanceof Carbon ? $existing->tanggal->toDateString() : (string) $existing->tanggal;
+            $existStartTime = substr((string) $existing->waktu, 0, 5) ?: '00:00';
+            $existEndTime = substr((string) $existing->waktu_selesai, 0, 5);
+
+            $existStart = Carbon::parse($existDate . ' ' . $existStartTime, $timezone);
+            $existEnd = $existEndTime
+                ? Carbon::parse($existDate . ' ' . $existEndTime, $timezone)
+                : $existStart->copy()->addHour();
+
+            if ($existEnd->lessThanOrEqualTo($existStart)) {
+                $existEnd->addDay();
+            }
+
+            if ($targetStart->lt($existEnd) && $targetEnd->gt($existStart)) {
+                return [
+                    'nama' => $existing->nama_agenda,
+                    'waktu_mulai' => $existStartTime,
+                    'waktu_selesai' => $existEndTime ?: 'selesai',
+                    'sumber' => 'Agenda Resmi',
+                ];
+            }
+        }
+
+        // 2. Cek Pengajuan Agenda Pegawai (sirapi_md_pengajuan_agenda: disetujui & pending)
+        $pengajuans = \App\Models\PengajuanAgenda::where('id_ruangrapat', $this->id_ruangrapat)
+            ->whereDate('tanggal', $tanggal)
+            ->whereIn('status', ['pending', 'disetujui'])
+            ->when($ignorePengajuanId, fn ($q) => $q->where('id_pengajuan', '!=', $ignorePengajuanId))
+            ->get();
+
+        foreach ($pengajuans as $p) {
+            $existDate = $p->tanggal instanceof Carbon ? $p->tanggal->toDateString() : (string) $p->tanggal;
+            $existStartTime = substr((string) $p->waktu, 0, 5) ?: '00:00';
+            $existEndTime = substr((string) $p->waktu_selesai, 0, 5);
+
+            $existStart = Carbon::parse($existDate . ' ' . $existStartTime, $timezone);
+            $existEnd = $existEndTime
+                ? Carbon::parse($existDate . ' ' . $existEndTime, $timezone)
+                : $existStart->copy()->addHour();
+
+            if ($existEnd->lessThanOrEqualTo($existStart)) {
+                $existEnd->addDay();
+            }
+
+            if ($targetStart->lt($existEnd) && $targetEnd->gt($existStart)) {
+                return [
+                    'nama' => $p->nama_agenda,
+                    'waktu_mulai' => $existStartTime,
+                    'waktu_selesai' => $existEndTime ?: 'selesai',
+                    'sumber' => $p->status === 'disetujui' ? 'Pengajuan Disetujui' : 'Pengajuan Pending',
+                ];
+            }
+        }
+
+        return null;
+    }
 }

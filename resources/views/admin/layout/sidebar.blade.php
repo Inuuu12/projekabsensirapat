@@ -40,7 +40,10 @@
             </a>
 
             <!-- Agenda Submenu -->
-            @php $isAgendaActive = request()->routeIs('admin.agenda.*') || request()->routeIs('admin.ruang.*'); @endphp
+            @php
+                $isAgendaActive = request()->routeIs('admin.agenda.*') || request()->routeIs('admin.ruang.*') || request()->routeIs('admin.pengajuan.*');
+                $pendingPengajuanCount = \App\Models\PengajuanAgenda::where('status', 'pending')->count();
+            @endphp
             <div class="space-y-1">
                 <button type="button" onclick="toggleSidebarSubmenu(this)" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all {{ $isAgendaActive ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }} focus:outline-none cursor-pointer">
                     <div class="flex items-center">
@@ -56,6 +59,12 @@
                 
                 <div class="{{ $isAgendaActive ? 'flex' : 'hidden' }} flex-col pl-11 pr-4 py-1 space-y-1">
                     <a href="{{ route('admin.agenda.lihat') }}" class="block text-xs font-semibold py-2 px-3 rounded-lg transition {{ request()->routeIs('admin.agenda.lihat') ? 'bg-[#35635b]/15 dark:bg-[#23423b] font-bold text-[#35635b] dark:text-emerald-300' : 'text-[#35635b]/80 dark:text-gray-400 hover:bg-[#35635b]/10 dark:hover:bg-[#152420] dark:hover:text-white' }}">Daftar Agenda</a>
+                    <a href="{{ route('admin.pengajuan.index') }}" class="flex items-center justify-between text-xs font-semibold py-2 px-3 rounded-lg transition {{ request()->routeIs('admin.pengajuan.*') ? 'bg-[#35635b]/15 dark:bg-[#23423b] font-bold text-[#35635b] dark:text-emerald-300' : 'text-[#35635b]/80 dark:text-gray-400 hover:bg-[#35635b]/10 dark:hover:bg-[#152420] dark:hover:text-white' }}">
+                        <span>Pengajuan Agenda</span>
+                        @if ($pendingPengajuanCount > 0)
+                            <span class="inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-extrabold leading-none text-white bg-amber-500 rounded-full shadow-xs">{{ $pendingPengajuanCount }}</span>
+                        @endif
+                    </a>
                     <a href="{{ route('admin.ruang.lihat') }}" class="block text-xs font-semibold py-2 px-3 rounded-lg transition {{ request()->routeIs('admin.ruang.lihat') ? 'bg-[#35635b]/15 dark:bg-[#23423b] font-bold text-[#35635b] dark:text-emerald-300' : 'text-[#35635b]/80 dark:text-gray-400 hover:bg-[#35635b]/10 dark:hover:bg-[#152420] dark:hover:text-white' }}">Daftar Ruangan</a>
                 </div>
             </div>

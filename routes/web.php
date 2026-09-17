@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminPengajuanAgendaController;
 use App\Http\Controllers\AdminAgendaController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminDashboardController;
@@ -61,6 +62,12 @@ Route::prefix('admin')->group(function () {
         Route::redirect('/agenda', '/admin/agenda/lihat')->name('admin.agenda');
         Route::get('/agenda/cari', [AdminAgendaController::class, 'cari_Agenda']);
         
+        // Pengajuan Agenda Pegawai
+        Route::get('/pengajuan-agenda', [AdminPengajuanAgendaController::class, 'index'])->name('admin.pengajuan.index');
+        Route::post('/pengajuan-agenda/{id}/setujui', [AdminPengajuanAgendaController::class, 'setujui'])->name('admin.pengajuan.setujui');
+        Route::post('/pengajuan-agenda/{id}/tolak', [AdminPengajuanAgendaController::class, 'tolak'])->name('admin.pengajuan.tolak');
+        Route::delete('/pengajuan-agenda/{id}', [AdminPengajuanAgendaController::class, 'destroy'])->name('admin.pengajuan.destroy');
+
         // Halaman admin
         Route::get('/ruang', [AdminRuangController::class, 'daftarRuang'])->name('admin.ruang.lihat');
 
@@ -197,9 +204,18 @@ Route::prefix('pegawai')->group(function () {
     })->name('pegawai.presensi.index');
 
     Route::middleware('auth:pegawai')->group(function () {
+        // Portal Pegawai
+        Route::get('/dashboard', [PegawaiAuthController::class, 'dashboard'])->name('pegawai.dashboard');
+        Route::get('/pengajuan-agenda', [PegawaiAuthController::class, 'pengajuanAgenda'])->name('pegawai.pengajuan.index');
+        Route::post('/pengajuan-agenda', [PegawaiAuthController::class, 'simpanPengajuanAgenda'])->name('pegawai.pengajuan.store');
+        Route::get('/booking-ruang', [PegawaiAuthController::class, 'bookingRuang'])->name('pegawai.booking.index');
+        Route::get('/history-rapat', [PegawaiAuthController::class, 'historyRapat'])->name('pegawai.history.index');
+        Route::get('/profil', [PegawaiAuthController::class, 'profilPegawai'])->name('pegawai.profil.index');
+
+        // Presensi & Profil existing
         Route::post('/presensi', [PegawaiAuthController::class, 'simpanPresensi'])->name('pegawai.presensi.submit');
         Route::post('/profil/password-otp', [PegawaiAuthController::class, 'kirimOtpPassword'])->name('pegawai.profil.password-otp');
-        Route::put('/profil', [PegawaiAuthController::class, 'updateProfil'])->name('pegawai.profil.update');
+        Route::put('/profil/update', [PegawaiAuthController::class, 'updateProfil'])->name('pegawai.profil.update');
         Route::post('/profil/face', [PegawaiAuthController::class, 'updateFace'])->name('pegawai.profil.face');
         Route::post('/logout', [PegawaiAuthController::class, 'logout'])->name('pegawai.logout');
     });
