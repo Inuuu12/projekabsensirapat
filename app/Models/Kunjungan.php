@@ -33,10 +33,11 @@ class Kunjungan extends Model
         static::addGlobalScope('dinas_kecamatan', function (Builder $builder) {
             if (auth('admin')->check()) {
                 $user = auth('admin')->user();
-                if ($user->role === 'admin_dinas' && $user->id_dinas) {
-                    $builder->where($builder->getQuery()->from . '.id_dinas', $user->id_dinas);
-                } elseif ($user->role === 'admin_kecamatan' && $user->id_kecamatan) {
-                    $builder->where($builder->getQuery()->from . '.id_kecamatan', $user->id_kecamatan);
+                $table = $builder->getQuery()->from;
+                if ($user->role === 'admin_dinas' && $user->id_dinas && \Illuminate\Support\Facades\Schema::hasColumn($table, 'id_dinas')) {
+                    $builder->where($table . '.id_dinas', $user->id_dinas);
+                } elseif ($user->role === 'admin_kecamatan' && $user->id_kecamatan && \Illuminate\Support\Facades\Schema::hasColumn($table, 'id_kecamatan')) {
+                    $builder->where($table . '.id_kecamatan', $user->id_kecamatan);
                 }
             }
         });
@@ -44,9 +45,9 @@ class Kunjungan extends Model
         static::creating(function ($model) {
             if (auth('admin')->check()) {
                 $user = auth('admin')->user();
-                if ($user->role === 'admin_dinas' && $user->id_dinas) {
+                if ($user->role === 'admin_dinas' && $user->id_dinas && \Illuminate\Support\Facades\Schema::hasColumn('sirapi_md_kunjungan', 'id_dinas')) {
                     $model->id_dinas = $user->id_dinas;
-                } elseif ($user->role === 'admin_kecamatan' && $user->id_kecamatan) {
+                } elseif ($user->role === 'admin_kecamatan' && $user->id_kecamatan && \Illuminate\Support\Facades\Schema::hasColumn('sirapi_md_kunjungan', 'id_kecamatan')) {
                     $model->id_kecamatan = $user->id_kecamatan;
                 }
             }

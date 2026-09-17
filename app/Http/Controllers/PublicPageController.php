@@ -524,6 +524,13 @@ class PublicPageController extends Controller
         $validated['waktu'] = $now->format('H:i:s');
         $validated['id_admin'] = $this->queryOrDefault(fn () => Admin::first()?->id_admin);
 
+        if (! \Illuminate\Support\Facades\Schema::hasColumn('sirapi_md_kunjungan', 'id_dinas')) {
+            unset($validated['id_dinas']);
+        }
+        if (! \Illuminate\Support\Facades\Schema::hasColumn('sirapi_md_kunjungan', 'id_kecamatan')) {
+            unset($validated['id_kecamatan']);
+        }
+
         try {
             Kunjungan::create($validated);
         } catch (\Illuminate\Database\QueryException $e) {

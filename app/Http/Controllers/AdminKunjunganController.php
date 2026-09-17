@@ -88,6 +88,13 @@ class AdminKunjunganController extends Controller
         ]);
         $validated['id_admin'] = Auth::guard('admin')->id();
 
+        if (! \Illuminate\Support\Facades\Schema::hasColumn('sirapi_md_kunjungan', 'id_dinas')) {
+            unset($validated['id_dinas']);
+        }
+        if (! \Illuminate\Support\Facades\Schema::hasColumn('sirapi_md_kunjungan', 'id_kecamatan')) {
+            unset($validated['id_kecamatan']);
+        }
+
         $kunjungan = Kunjungan::create($validated);
         if (! $request->wantsJson()) {
             return back()->with('success', 'Kunjungan berhasil ditambahkan.');
@@ -114,6 +121,13 @@ class AdminKunjunganController extends Controller
             'id_dinas' => 'nullable|integer',
             'id_kecamatan' => 'nullable|integer',
         ]);
+
+        if (! \Illuminate\Support\Facades\Schema::hasColumn('sirapi_md_kunjungan', 'id_dinas')) {
+            unset($validated['id_dinas']);
+        }
+        if (! \Illuminate\Support\Facades\Schema::hasColumn('sirapi_md_kunjungan', 'id_kecamatan')) {
+            unset($validated['id_kecamatan']);
+        }
 
         Kunjungan::findOrFail($id)->update($validated);
 
