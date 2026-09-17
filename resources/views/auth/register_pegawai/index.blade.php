@@ -198,6 +198,44 @@
                     </div>
                 </div>
 
+                <!-- Instansi (Dinas / Kecamatan) -->
+                <div class="sm:col-span-2">
+                    <label for="instansi" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
+                        Instansi (Dinas / Kecamatan) <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 sm:pl-4 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="landmark" class="h-4 sm:h-5 w-4 sm:w-5"></i>
+                        </span>
+                        <select id="instansi" name="instansi" required
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-8 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15 cursor-pointer appearance-none">
+                            <option value="">Pilih Instansi (Dinas / Kecamatan)</option>
+                            @if (!empty($dinasList) && $dinasList->isNotEmpty())
+                                <optgroup label="🏢 Dinas / Perangkat Daerah">
+                                    @foreach ($dinasList as $dinas)
+                                        <option value="dinas_{{ $dinas->id_dinas }}" @selected(old('instansi') === 'dinas_' . $dinas->id_dinas)>
+                                            {{ $dinas->nama_dinas }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                            @endif
+                            @if (!empty($kecamatanList) && $kecamatanList->isNotEmpty())
+                                <optgroup label="🏛️ Kecamatan">
+                                    @foreach ($kecamatanList as $kecamatan)
+                                        <option value="kecamatan_{{ $kecamatan->id_kecamatan }}" @selected(old('instansi') === 'kecamatan_' . $kecamatan->id_kecamatan)>
+                                            {{ $kecamatan->nama_kecamatan }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                            @endif
+                        </select>
+                        <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 dark:text-gray-500">
+                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        </span>
+                    </div>
+                    <p class="mt-1.5 text-[11px] text-gray-500 dark:text-gray-400">Pilih instansi tempat Anda bertugas agar akun terhubung ke Admin instansi yang bersangkutan.</p>
+                </div>
+
                 <!-- NIP -->
                 <div>
                     <label for="nip" class="block text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200 mb-1.5">
@@ -237,15 +275,23 @@
                             <i data-lucide="briefcase" class="h-4 sm:h-5 w-4 sm:w-5"></i>
                         </span>
                         <select id="jabatan" name="jabatan" required
-                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-8 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15 cursor-pointer appearance-none">
-                            <option value="">Pilih jabatan</option>
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-8 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15 cursor-pointer appearance-none disabled:opacity-60 disabled:cursor-not-allowed">
+                            <option value="">{{ old('instansi') ? 'Pilih jabatan' : '-- Pilih Instansi Terlebih Dahulu --' }}</option>
                             @foreach ($jabatanOptions as $jabatan)
                                 <option value="{{ $jabatan }}" @selected(old('jabatan') === $jabatan)>{{ $jabatan }}</option>
                             @endforeach
+                            @if (old('instansi'))
+                                <option value="__lainnya__" @selected(old('jabatan') && !in_array(old('jabatan'), $jabatanOptions))>Lainnya / Tulis Manual</option>
+                            @endif
                         </select>
                         <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 dark:text-gray-500">
                             <i data-lucide="chevron-down" class="h-4 w-4"></i>
                         </span>
+                    </div>
+                    <div id="jabatan_manual_container" class="{{ old('jabatan') && !in_array(old('jabatan'), $jabatanOptions) ? '' : 'hidden' }} mt-2">
+                        <input type="text" id="jabatan_manual" placeholder="Ketik nama jabatan Anda..."
+                            value="{{ old('jabatan') && !in_array(old('jabatan'), $jabatanOptions) ? old('jabatan') : '' }}"
+                            class="h-10 sm:h-11 w-full rounded-xl border border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-[#12221e] px-3.5 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/20">
                     </div>
                 </div>
 
@@ -259,15 +305,23 @@
                             <i data-lucide="building" class="h-4 sm:h-5 w-4 sm:w-5"></i>
                         </span>
                         <select id="bidang" name="bidang"
-                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-8 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15 cursor-pointer appearance-none">
-                            <option value="">Pilih bidang (opsional)</option>
+                            class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-8 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15 cursor-pointer appearance-none disabled:opacity-60 disabled:cursor-not-allowed">
+                            <option value="">{{ old('instansi') ? 'Pilih bidang (opsional)' : '-- Pilih Instansi Terlebih Dahulu --' }}</option>
                             @foreach ($bidangOptions as $bidang)
                                 <option value="{{ $bidang }}" @selected(old('bidang') === $bidang)>{{ $bidang }}</option>
                             @endforeach
+                            @if (old('instansi'))
+                                <option value="__lainnya__" @selected(old('bidang') && !in_array(old('bidang'), $bidangOptions))>Lainnya / Tulis Manual</option>
+                            @endif
                         </select>
                         <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 dark:text-gray-500">
                             <i data-lucide="chevron-down" class="h-4 w-4"></i>
                         </span>
+                    </div>
+                    <div id="bidang_manual_container" class="{{ old('bidang') && !in_array(old('bidang'), $bidangOptions) ? '' : 'hidden' }} mt-2">
+                        <input type="text" id="bidang_manual" placeholder="Ketik nama bidang/bagian Anda..."
+                            value="{{ old('bidang') && !in_array(old('bidang'), $bidangOptions) ? old('bidang') : '' }}"
+                            class="h-10 sm:h-11 w-full rounded-xl border border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-[#12221e] px-3.5 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:ring-2 focus:ring-sirapi-green/20">
                     </div>
                 </div>
 
@@ -861,8 +915,152 @@
             }
         });
 
+        // ==========================================
+        // DYNAMIC JABATAN & BIDANG SESUAI INSTANSI
+        // ==========================================
+        const instansiMasterData = @json($masterInstansiData ?? []);
+        const instansiSelect = document.getElementById('instansi');
+        const jabatanSelect = document.getElementById('jabatan');
+        const bidangSelect = document.getElementById('bidang');
+        const jabatanManualContainer = document.getElementById('jabatan_manual_container');
+        const jabatanManualInput = document.getElementById('jabatan_manual');
+        const bidangManualContainer = document.getElementById('bidang_manual_container');
+        const bidangManualInput = document.getElementById('bidang_manual');
+
+        let initialOldJabatan = @json(old('jabatan') ?? '');
+        let initialOldBidang = @json(old('bidang') ?? '');
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function populateJabatanDanBidang(instansiKey, preserveOld = false) {
+            if (!jabatanSelect || !bidangSelect) return;
+
+            if (!instansiKey || !instansiMasterData[instansiKey]) {
+                jabatanSelect.innerHTML = '<option value="">-- Pilih Instansi Terlebih Dahulu --</option>';
+                jabatanSelect.disabled = true;
+                if (jabatanManualContainer) jabatanManualContainer.classList.add('hidden');
+                if (jabatanManualInput) jabatanManualInput.value = '';
+
+                bidangSelect.innerHTML = '<option value="">-- Pilih Instansi Terlebih Dahulu --</option>';
+                bidangSelect.disabled = true;
+                if (bidangManualContainer) bidangManualContainer.classList.add('hidden');
+                if (bidangManualInput) bidangManualInput.value = '';
+                return;
+            }
+
+            const data = instansiMasterData[instansiKey] || { jabatan: [], bidang: [] };
+            jabatanSelect.disabled = false;
+            bidangSelect.disabled = false;
+
+            // 1. Populate Jabatan
+            let jabatanHtml = '<option value="">Pilih jabatan</option>';
+            const targetJabatan = preserveOld ? initialOldJabatan : jabatanSelect.value;
+            let jabatanMatched = false;
+
+            (data.jabatan || []).forEach(j => {
+                const isSelected = targetJabatan && targetJabatan === j;
+                if (isSelected) jabatanMatched = true;
+                jabatanHtml += `<option value="${escapeHtml(j)}" ${isSelected ? 'selected' : ''}>${escapeHtml(j)}</option>`;
+            });
+
+            const isManualJabatan = targetJabatan && !jabatanMatched;
+            jabatanHtml += `<option value="__lainnya__" ${isManualJabatan ? 'selected' : ''}>Lainnya / Tulis Manual</option>`;
+            jabatanSelect.innerHTML = jabatanHtml;
+
+            if (isManualJabatan) {
+                if (jabatanManualContainer) jabatanManualContainer.classList.remove('hidden');
+                if (jabatanManualInput) jabatanManualInput.value = targetJabatan;
+            } else {
+                if (jabatanManualContainer) jabatanManualContainer.classList.add('hidden');
+                if (jabatanManualInput) jabatanManualInput.value = '';
+            }
+
+            // 2. Populate Bidang
+            let bidangHtml = '<option value="">Pilih bidang (opsional)</option>';
+            const targetBidang = preserveOld ? initialOldBidang : bidangSelect.value;
+            let bidangMatched = false;
+
+            (data.bidang || []).forEach(b => {
+                const isSelected = targetBidang && targetBidang === b;
+                if (isSelected) bidangMatched = true;
+                bidangHtml += `<option value="${escapeHtml(b)}" ${isSelected ? 'selected' : ''}>${escapeHtml(b)}</option>`;
+            });
+
+            const isManualBidang = targetBidang && !bidangMatched;
+            bidangHtml += `<option value="__lainnya__" ${isManualBidang ? 'selected' : ''}>Lainnya / Tulis Manual</option>`;
+            bidangSelect.innerHTML = bidangHtml;
+
+            if (isManualBidang) {
+                if (bidangManualContainer) bidangManualContainer.classList.remove('hidden');
+                if (bidangManualInput) bidangManualInput.value = targetBidang;
+            } else {
+                if (bidangManualContainer) bidangManualContainer.classList.add('hidden');
+                if (bidangManualInput) bidangManualInput.value = '';
+            }
+        }
+
+        instansiSelect?.addEventListener('change', function () {
+            initialOldJabatan = '';
+            initialOldBidang = '';
+            populateJabatanDanBidang(this.value, false);
+        });
+
+        jabatanSelect?.addEventListener('change', function () {
+            if (this.value === '__lainnya__') {
+                if (jabatanManualContainer) jabatanManualContainer.classList.remove('hidden');
+                jabatanManualInput?.focus();
+            } else {
+                if (jabatanManualContainer) jabatanManualContainer.classList.add('hidden');
+                if (jabatanManualInput) jabatanManualInput.value = '';
+            }
+        });
+
+        bidangSelect?.addEventListener('change', function () {
+            if (this.value === '__lainnya__') {
+                if (bidangManualContainer) bidangManualContainer.classList.remove('hidden');
+                bidangManualInput?.focus();
+            } else {
+                if (bidangManualContainer) bidangManualContainer.classList.add('hidden');
+                if (bidangManualInput) bidangManualInput.value = '';
+            }
+        });
+
+        const registerForm = document.querySelector('form[action="{{ route("pegawai.register.submit") }}"]') || document.querySelector('form');
+        registerForm?.addEventListener('submit', function (e) {
+            if (jabatanSelect && jabatanSelect.value === '__lainnya__') {
+                const val = jabatanManualInput ? jabatanManualInput.value.trim() : '';
+                if (!val) {
+                    e.preventDefault();
+                    alert('Mohon ketikkan nama jabatan Anda pada kotak input manual.');
+                    jabatanManualInput?.focus();
+                    return false;
+                }
+                jabatanSelect.options[jabatanSelect.selectedIndex].value = val;
+            }
+
+            if (bidangSelect && bidangSelect.value === '__lainnya__') {
+                const val = bidangManualInput ? bidangManualInput.value.trim() : '';
+                bidangSelect.options[bidangSelect.selectedIndex].value = val;
+            }
+        });
+
         // Cek apakah ada old data foto_wajah dan face_descriptor (misal jika ada error validasi field lain)
         document.addEventListener('DOMContentLoaded', function () {
+            // Inisialisasi dropdown Jabatan & Bidang
+            if (instansiSelect && instansiSelect.value) {
+                populateJabatanDanBidang(instansiSelect.value, true);
+            } else {
+                populateJabatanDanBidang('', false);
+            }
+
             const existingFotoWajah = fotoWajahInput?.value;
             const existingDescriptor = faceDescriptorInput?.value;
             if (existingFotoWajah && existingDescriptor) {

@@ -39,19 +39,19 @@
 
     <!-- Status Filter Pills (Outside Card, Left) -->
     <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'semua', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'semua', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan'), 'instansi' => request('instansi')])) }}"
            class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? 'semua') === 'semua' ? 'bg-[#35635b] text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
             Semua Pegawai 
         </a>
-        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'aktif', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'aktif', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan'), 'instansi' => request('instansi')])) }}"
            class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'aktif' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
             Aktif 
         </a>
-        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'pending', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'pending', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan'), 'instansi' => request('instansi')])) }}"
            class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'pending' ? 'bg-amber-600 text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
             Menunggu Verifikasi 
         </a>
-        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'ditolak', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan')])) }}"
+        <a href="{{ route('admin.pegawai.lihat', array_filter(['status' => 'ditolak', 'keyword' => request('keyword'), 'bidang' => request('bidang'), 'jabatan' => request('jabatan'), 'instansi' => request('instansi')])) }}"
            class="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap {{ ($statusFilter ?? '') === 'ditolak' ? 'bg-rose-600 text-white shadow-sm' : 'bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200 dark:border-[#284c43]' }}">
             Ditolak 
         </a>
@@ -67,7 +67,7 @@
             </div>
 
             <!-- Middle: Search Bar & Filters -->
-            <form id="form-search-pegawai" method="GET" action="{{ route('admin.pegawai.lihat') }}" class="flex-1 max-w-2xl w-full">
+            <form id="form-search-pegawai" method="GET" action="{{ route('admin.pegawai.lihat') }}" class="flex-1 max-w-3xl w-full">
                 <input type="hidden" name="status" value="{{ request('status', 'semua') }}">
                 <div class="flex flex-col sm:flex-row items-center gap-2">
                     <div class="relative flex-1 w-full">
@@ -82,6 +82,25 @@
                             class="h-10 w-full pl-10 pr-4 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] text-xs text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20 placeholder-gray-400 dark:placeholder-gray-500"
                             placeholder="Cari nama, NIP, jabatan, bidang, HP...">
                     </div>
+                    @if ($admin->isSuperAdmin())
+                        <select
+                            id="instansi-filter"
+                            name="instansi"
+                            onchange="document.getElementById('form-search-pegawai').submit()"
+                            class="h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 text-xs font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                            <option value="semua" @selected(($instansiFilter ?? 'semua') === 'semua')>Semua Instansi</option>
+                            <optgroup label="🏢 Dinas / Perangkat Daerah">
+                                @foreach (($dinasList ?? collect()) as $dinas)
+                                    <option value="dinas_{{ $dinas->id_dinas }}" @selected(($instansiFilter ?? 'semua') === 'dinas_' . $dinas->id_dinas)>{{ $dinas->nama_dinas }}</option>
+                                @endforeach
+                            </optgroup>
+                            <optgroup label="🏛️ Kecamatan">
+                                @foreach (($kecamatanList ?? collect()) as $kecamatan)
+                                    <option value="kecamatan_{{ $kecamatan->id_kecamatan }}" @selected(($instansiFilter ?? 'semua') === 'kecamatan_' . $kecamatan->id_kecamatan)>{{ $kecamatan->nama_kecamatan }}</option>
+                                @endforeach
+                            </optgroup>
+                        </select>
+                    @endif
                     <select
                         id="bidang-filter"
                         name="bidang"
@@ -112,12 +131,13 @@
             </button>
         </div>
         <div class="overflow-x-auto overflow-y-auto max-h-[450px] custom-scrollbar">
-            <table class="w-full text-left min-w-[1280px]">
+            <table class="w-full text-left min-w-[1380px]">
                 <thead class="sticky top-0 z-10">
                     <tr class="bg-[#35635b] dark:bg-[#1b3832] text-white text-xs font-bold uppercase tracking-wider outline outline-1 outline-[#35635b] dark:outline-[#1b3832]">
                         <th class="px-6 py-4">Foto</th>
                         <th class="px-6 py-4">Nama</th>
                         <th class="px-6 py-4">NIP</th>
+                        <th class="px-6 py-4">Instansi</th>
                         <th class="px-6 py-4">Tanggal Lahir</th>
                         <th class="px-6 py-4">Jabatan</th>
                         <th class="px-6 py-4">Bidang</th>
@@ -143,6 +163,21 @@
                             </td>
                             <td class="px-6 py-4 font-bold text-[#35635b] dark:text-emerald-400">{{ $item->nama_pegawai }}</td>
                             <td class="px-6 py-4 font-semibold text-gray-700 dark:text-slate-200">{{ $item->nip }}</td>
+                            <td class="px-6 py-4">
+                                @if ($item->dinas)
+                                    <span class="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 px-2.5 py-1 text-xs font-bold text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/50 whitespace-nowrap">
+                                        <span class="text-xs">🏢</span>
+                                        <span>{{ $item->dinas->nama_dinas }}</span>
+                                    </span>
+                                @elseif ($item->kecamatan)
+                                    <span class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/50 whitespace-nowrap">
+                                        <span class="text-xs">🏛️</span>
+                                        <span>{{ $item->kecamatan->nama_kecamatan }}</span>
+                                    </span>
+                                @else
+                                    <span class="text-xs text-gray-400 dark:text-gray-500 italic">Pusat / Belum Diatur</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->tanggal_lahir?->format('d/m/Y') ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->jabatan }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->bidang ?? '-' }}</td>
@@ -210,6 +245,7 @@
                                         data-foto-url="{{ $item->foto ? asset('storage/' . $item->foto) : '' }}"
                                         data-nama="{{ $item->nama_pegawai }}"
                                         data-nip="{{ $item->nip }}"
+                                        data-instansi="{{ $item->id_dinas ? 'dinas_' . $item->id_dinas : ($item->id_kecamatan ? 'kecamatan_' . $item->id_kecamatan : '') }}"
                                         data-tanggal-lahir="{{ $item->tanggal_lahir?->format('Y-m-d') }}"
                                         data-jabatan="{{ $item->jabatan }}"
                                         data-bidang="{{ $item->bidang }}"
@@ -357,6 +393,9 @@
             const form = document.getElementById('form-tambah-pegawai');
             if (form) form.reset();
             setPegawaiPhotoPreview('', '');
+            if (document.getElementById('instansi')) {
+                document.getElementById('instansi').value = '';
+            }
         }
         if (modal) {
             if (modal.parentElement !== document.body) {
@@ -386,6 +425,9 @@
         document.getElementById('edit-bidang').value = button.dataset.bidang || '';
         document.getElementById('edit-nomor_hp').value = button.dataset.nomor;
         document.getElementById('edit-email').value = button.dataset.email;
+        if (document.getElementById('edit-instansi')) {
+            document.getElementById('edit-instansi').value = button.dataset.instansi || '';
+        }
         setPegawaiPhotoPreview('edit-', button.dataset.fotoUrl || '');
         openModal('modal-edit-pegawai');
     }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Agenda;
 use App\Models\Bidang;
+use App\Models\Dinas;
 use App\Models\DokumenNotulen;
 use App\Models\Jabatan;
+use App\Models\Kecamatan;
 use App\Models\Pegawai;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use App\Services\SirapiMailer;
+use App\Services\MasterInstansiService;
 
 class PegawaiAuthController extends Controller
 {
@@ -73,9 +76,35 @@ class PegawaiAuthController extends Controller
             return redirect()->route('pegawai.presensi.index');
         }
 
-        [$bidangOptions, $jabatanOptions] = $this->masterPegawaiOptions();
+        $dinasList = $this->queryOrDefault(function () {
+            $list = Dinas::orderBy('nama_dinas')->get();
+            return $list->isNotEmpty() ? $list : $this->fallbackDinasList();
+        }, $this->fallbackDinasList());
 
-        return view('auth.register_pegawai.index', compact('bidangOptions', 'jabatanOptions'));
+        $kecamatanList = $this->queryOrDefault(function () {
+            $list = Kecamatan::orderBy('nama_kecamatan')->get();
+            return $list->isNotEmpty() ? $list : $this->fallbackKecamatanList();
+        }, $this->fallbackKecamatanList());
+
+        $masterInstansiData = MasterInstansiService::getAllOptionsMap($dinasList, $kecamatanList);
+
+        $selectedInstansi = old('instansi');
+        if ($selectedInstansi) {
+            $selectedData = MasterInstansiService::getOptionsForInstansi($selectedInstansi);
+            $jabatanOptions = $selectedData['jabatan'] ?? [];
+            $bidangOptions = $selectedData['bidang'] ?? [];
+        } else {
+            $jabatanOptions = [];
+            $bidangOptions = [];
+        }
+
+        return view('auth.register_pegawai.index', compact(
+            'bidangOptions',
+            'jabatanOptions',
+            'dinasList',
+            'kecamatanList',
+            'masterInstansiData'
+        ));
     }
 
     public function login(Request $request)
@@ -148,6 +177,23 @@ class PegawaiAuthController extends Controller
     {
         $validated = $request->validate([
             'nama_pegawai' => ['required', 'string', 'max:255'],
+            'instansi' => ['required', 'string', function ($attribute, $value, $fail) {
+                if (!str_starts_with($value, 'dinas_') && !str_starts_with($value, 'kecamatan_')) {
+                    $fail('Pilihan instansi tidak valid.');
+                    return;
+                }
+                if (str_starts_with($value, 'dinas_')) {
+                    $id = (int) substr($value, 6);
+                    if (!Dinas::where('id_dinas', $id)->exists()) {
+                        $fail('Dinas yang dipilih tidak ditemukan.');
+                    }
+                } else {
+                    $id = (int) substr($value, 10);
+                    if (!Kecamatan::where('id_kecamatan', $id)->exists()) {
+                        $fail('Kecamatan yang dipilih tidak ditemukan.');
+                    }
+                }
+            }],
             'nip' => ['required', 'string', 'max:18', 'regex:/^[0-9]+$/', 'unique:sirapi_md_pegawai,nip'],
             'tanggal_lahir' => ['nullable', 'date'],
             'jabatan' => ['required', 'string', 'max:255'],
@@ -158,7 +204,18 @@ class PegawaiAuthController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'face_descriptor' => ['nullable', 'string'],
             'foto_wajah' => ['nullable', 'string'],
+        ], [
+            'instansi.required' => 'Silakan pilih instansi (Dinas atau Kecamatan) tempat Anda bertugas.',
         ]);
+
+        if (str_starts_with($validated['instansi'], 'dinas_')) {
+            $validated['id_dinas'] = (int) substr($validated['instansi'], 6);
+            $validated['id_kecamatan'] = null;
+        } else {
+            $validated['id_dinas'] = null;
+            $validated['id_kecamatan'] = (int) substr($validated['instansi'], 10);
+        }
+        unset($validated['instansi']);
 
         if ($request->hasFile('foto')) {
             $validated['foto'] = $request->file('foto')->store('pegawai', 'public');
@@ -585,9 +642,99 @@ class PegawaiAuthController extends Controller
     {
         try {
             return $query();
-        } catch (QueryException) {
+        } catch (\Throwable) {
             return $default;
         }
+    }
+
+    private function fallbackDinasList(): \Illuminate\Support\Collection
+    {
+        return collect([
+            (object) ['id_dinas' => 11, 'nama_dinas' => 'Badan Kepegawaian dan Pengembangan Sumber Daya Manusia'],
+            (object) ['id_dinas' => 10, 'nama_dinas' => 'Badan Kesatuan Bangsa dan Politik'],
+            (object) ['id_dinas' => 12, 'nama_dinas' => 'Badan Penanggulangan Bencana Daerah'],
+            (object) ['id_dinas' => 13, 'nama_dinas' => 'Badan Pengelolaan Keuangan dan Aset Daerah'],
+            (object) ['id_dinas' => 7, 'nama_dinas' => 'Badan Pengelolaan Pendapatan Daerah'],
+            (object) ['id_dinas' => 6, 'nama_dinas' => 'Badan Perencanaan Pembangunan, Riset dan Inovasi Daerah'],
+            (object) ['id_dinas' => 15, 'nama_dinas' => 'Dinas Arsip dan Perpustakaan Daerah'],
+            (object) ['id_dinas' => 17, 'nama_dinas' => 'Dinas Kebudayaan dan Kepariwisataan'],
+            (object) ['id_dinas' => 19, 'nama_dinas' => 'Dinas Kependudukan dan Pencatatan Sipil'],
+            (object) ['id_dinas' => 3, 'nama_dinas' => 'Dinas Kesehatan'],
+            (object) ['id_dinas' => 26, 'nama_dinas' => 'Dinas Ketahanan Pangan'],
+            (object) ['id_dinas' => 1, 'nama_dinas' => 'Dinas Komunikasi dan Informatika'],
+            (object) ['id_dinas' => 21, 'nama_dinas' => 'Dinas Koperasi, Usaha Kecil dan Menengah'],
+            (object) ['id_dinas' => 27, 'nama_dinas' => 'Dinas Lingkungan Hidup'],
+            (object) ['id_dinas' => 23, 'nama_dinas' => 'Dinas Pariwisata dan Kebudayaan'],
+            (object) ['id_dinas' => 5, 'nama_dinas' => 'Dinas Pekerjaan Umum dan Penataan Ruang'],
+            (object) ['id_dinas' => 14, 'nama_dinas' => 'Dinas Pemadam Kebakaran'],
+            (object) ['id_dinas' => 30, 'nama_dinas' => 'Dinas Pemberdayaan Masyarakat dan Desa'],
+            (object) ['id_dinas' => 28, 'nama_dinas' => 'Dinas Pemberdayaan Perempuan dan Perlindungan Anak, Pengendalian Penduduk dan Keluarga Berencana'],
+            (object) ['id_dinas' => 24, 'nama_dinas' => 'Dinas Pemuda dan Olahraga'],
+            (object) ['id_dinas' => 31, 'nama_dinas' => 'Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu'],
+            (object) ['id_dinas' => 2, 'nama_dinas' => 'Dinas Pendidikan'],
+            (object) ['id_dinas' => 18, 'nama_dinas' => 'Dinas Perdagangan dan Perindustrian'],
+            (object) ['id_dinas' => 4, 'nama_dinas' => 'Dinas Perhubungan'],
+            (object) ['id_dinas' => 20, 'nama_dinas' => 'Dinas Perikanan dan Peternakan'],
+            (object) ['id_dinas' => 32, 'nama_dinas' => 'Dinas Pertanahan dan Tata Ruang'],
+            (object) ['id_dinas' => 29, 'nama_dinas' => 'Dinas Perumahan, Kawasan Permukiman dan Pertanahan'],
+            (object) ['id_dinas' => 16, 'nama_dinas' => 'Dinas Sosial'],
+            (object) ['id_dinas' => 25, 'nama_dinas' => 'Dinas Tanaman Pangan, Hortikultura dan Perkebunan'],
+            (object) ['id_dinas' => 22, 'nama_dinas' => 'Dinas Tenaga Kerja'],
+            (object) ['id_dinas' => 33, 'nama_dinas' => 'Inspektorat Daerah'],
+            (object) ['id_dinas' => 34, 'nama_dinas' => 'Rumah Sakit Umum Daerah Ciawi'],
+            (object) ['id_dinas' => 35, 'nama_dinas' => 'Rumah Sakit Umum Daerah Cibinong'],
+            (object) ['id_dinas' => 36, 'nama_dinas' => 'Rumah Sakit Umum Daerah Cileungsi'],
+            (object) ['id_dinas' => 37, 'nama_dinas' => 'Rumah Sakit Umum Daerah Leuwiliang'],
+            (object) ['id_dinas' => 8, 'nama_dinas' => 'Satuan Polisi Pamong Praja'],
+            (object) ['id_dinas' => 38, 'nama_dinas' => 'Sekretariat Daerah'],
+            (object) ['id_dinas' => 39, 'nama_dinas' => 'Sekretariat DPRD'],
+        ]);
+    }
+
+    private function fallbackKecamatanList(): \Illuminate\Support\Collection
+    {
+        return collect([
+            (object) ['id_kecamatan' => 5, 'nama_kecamatan' => 'Kecamatan Babakan Madang'],
+            (object) ['id_kecamatan' => 13, 'nama_kecamatan' => 'Kecamatan Bojong Gede'],
+            (object) ['id_kecamatan' => 27, 'nama_kecamatan' => 'Kecamatan Caringin'],
+            (object) ['id_kecamatan' => 8, 'nama_kecamatan' => 'Kecamatan Cariu'],
+            (object) ['id_kecamatan' => 15, 'nama_kecamatan' => 'Kecamatan Ciampea'],
+            (object) ['id_kecamatan' => 24, 'nama_kecamatan' => 'Kecamatan Ciawi'],
+            (object) ['id_kecamatan' => 1, 'nama_kecamatan' => 'Kecamatan Cibinong'],
+            (object) ['id_kecamatan' => 16, 'nama_kecamatan' => 'Kecamatan Cibungbulang'],
+            (object) ['id_kecamatan' => 38, 'nama_kecamatan' => 'Kecamatan Cigombong'],
+            (object) ['id_kecamatan' => 22, 'nama_kecamatan' => 'Kecamatan Cigudeg'],
+            (object) ['id_kecamatan' => 28, 'nama_kecamatan' => 'Kecamatan Cijeruk'],
+            (object) ['id_kecamatan' => 7, 'nama_kecamatan' => 'Kecamatan Cileungsi'],
+            (object) ['id_kecamatan' => 29, 'nama_kecamatan' => 'Kecamatan Ciomas'],
+            (object) ['id_kecamatan' => 25, 'nama_kecamatan' => 'Kecamatan Cisarua'],
+            (object) ['id_kecamatan' => 33, 'nama_kecamatan' => 'Kecamatan Ciseeng'],
+            (object) ['id_kecamatan' => 3, 'nama_kecamatan' => 'Kecamatan Citeureup'],
+            (object) ['id_kecamatan' => 30, 'nama_kecamatan' => 'Kecamatan Dramaga'],
+            (object) ['id_kecamatan' => 2, 'nama_kecamatan' => 'Kecamatan Gunung Putri'],
+            (object) ['id_kecamatan' => 11, 'nama_kecamatan' => 'Kecamatan Gunung Sindur'],
+            (object) ['id_kecamatan' => 19, 'nama_kecamatan' => 'Kecamatan Jasinga'],
+            (object) ['id_kecamatan' => 6, 'nama_kecamatan' => 'Kecamatan Jonggol'],
+            (object) ['id_kecamatan' => 12, 'nama_kecamatan' => 'Kecamatan Kemang'],
+            (object) ['id_kecamatan' => 32, 'nama_kecamatan' => 'Kecamatan Klapanunggal'],
+            (object) ['id_kecamatan' => 14, 'nama_kecamatan' => 'Kecamatan Leuwiliang'],
+            (object) ['id_kecamatan' => 39, 'nama_kecamatan' => 'Kecamatan Leuwisadeng'],
+            (object) ['id_kecamatan' => 26, 'nama_kecamatan' => 'Kecamatan Megamendung'],
+            (object) ['id_kecamatan' => 21, 'nama_kecamatan' => 'Kecamatan Nanggung'],
+            (object) ['id_kecamatan' => 17, 'nama_kecamatan' => 'Kecamatan Pamijahan'],
+            (object) ['id_kecamatan' => 10, 'nama_kecamatan' => 'Kecamatan Parung'],
+            (object) ['id_kecamatan' => 20, 'nama_kecamatan' => 'Kecamatan Parung Panjang'],
+            (object) ['id_kecamatan' => 34, 'nama_kecamatan' => 'Kecamatan Rancabungur'],
+            (object) ['id_kecamatan' => 18, 'nama_kecamatan' => 'Kecamatan Rumpin'],
+            (object) ['id_kecamatan' => 35, 'nama_kecamatan' => 'Kecamatan Sukajaya'],
+            (object) ['id_kecamatan' => 9, 'nama_kecamatan' => 'Kecamatan Sukamakmur'],
+            (object) ['id_kecamatan' => 4, 'nama_kecamatan' => 'Kecamatan Sukaraja'],
+            (object) ['id_kecamatan' => 37, 'nama_kecamatan' => 'Kecamatan Tajurhalang'],
+            (object) ['id_kecamatan' => 31, 'nama_kecamatan' => 'Kecamatan Tamansari'],
+            (object) ['id_kecamatan' => 36, 'nama_kecamatan' => 'Kecamatan Tanjungsari'],
+            (object) ['id_kecamatan' => 23, 'nama_kecamatan' => 'Kecamatan Tenjo'],
+            (object) ['id_kecamatan' => 40, 'nama_kecamatan' => 'Kecamatan Tenjolaya'],
+        ]);
     }
 
     public function updateFace(Request $request)

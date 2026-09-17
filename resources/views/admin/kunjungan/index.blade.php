@@ -96,11 +96,11 @@
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">
                                 @if($item->dinas)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300">
-                                        🏢 {{ $item->dinas->nama_dinas }}
+                                        {{ $item->dinas->nama_dinas }}
                                     </span>
                                 @elseif($item->kecamatan)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-950/70 text-blue-800 dark:text-blue-300">
-                                        🏛️ {{ $item->kecamatan->nama_kecamatan }}
+                                        {{ $item->kecamatan->nama_kecamatan }}
                                     </span>
                                 @else
                                     <span class="text-gray-400 dark:text-gray-500">-</span>

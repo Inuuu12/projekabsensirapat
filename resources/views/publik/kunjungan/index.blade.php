@@ -93,11 +93,11 @@
                     <div class="grid grid-cols-2 gap-2 mb-2.5">
                         <button type="button" id="btn-tujuan-dinas" onclick="switchTujuanType('dinas')"
                                 class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-center border cursor-pointer bg-ijo-tua text-white border-transparent shadow-xs">
-                            🏢 Dinas / SKPD
+                            Dinas / SKPD
                         </button>
                         <button type="button" id="btn-tujuan-kecamatan" onclick="switchTujuanType('kecamatan')"
                                 class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-center border cursor-pointer bg-[#F3F2ED] dark:bg-[#0f1c19] text-gray-700 dark:text-gray-300 border-transparent hover:bg-gray-200 dark:hover:bg-[#1a2d28]">
-                            🏛️ Kecamatan
+                            Kecamatan
                         </button>
                     </div>
 

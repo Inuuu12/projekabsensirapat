@@ -38,7 +38,16 @@ class AppServiceProvider extends ServiceProvider
                 || str_ends_with($host, '.test')
                 || str_ends_with($host, '.local');
 
-            if (!$isLocal && (app()->environment('production') || str_starts_with((string) config('app.url'), 'https://'))) {
+            if ($isLocal) {
+                if (config('database.connections.mysql.username') === 'devlop_rapidadmn' || config('database.connections.mysql.database') === 'devlop_dbrapid') {
+                    config([
+                        'database.connections.mysql.database' => 'devlop_dbsirapi',
+                        'database.connections.mysql.username' => 'root',
+                        'database.connections.mysql.password' => '',
+                    ]);
+                    \Illuminate\Support\Facades\DB::purge('mysql');
+                }
+            } elseif (app()->environment('production') || str_starts_with((string) config('app.url'), 'https://')) {
                 \Illuminate\Support\Facades\URL::forceScheme('https');
             }
         }

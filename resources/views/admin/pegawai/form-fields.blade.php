@@ -24,6 +24,19 @@
     </div>
 </div>
 
+@if (auth('admin')->check() && !auth('admin')->user()->isSuperAdmin())
+    @php
+        $instansiInfo = auth('admin')->user()->getInstansiInfo();
+    @endphp
+    <div class="col-span-full bg-gray-50 dark:bg-[#0f1c19] border border-gray-200 dark:border-[#284c43] rounded-xl p-3 flex items-center gap-2.5">
+        <span class="text-base">{{ $instansiInfo['tipe'] === 'kecamatan' ? '🏛️' : '🏢' }}</span>
+        <div class="text-xs">
+            <p class="font-bold text-gray-700 dark:text-gray-200">{{ $instansiInfo['nama'] }}</p>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400">Pegawai otomatis terdaftar pada instansi ini.</p>
+        </div>
+    </div>
+@endif
+
 <div class="col-span-full sm:col-span-1">
     <label class="mb-1.5 block text-xs font-bold text-gray-900 dark:text-gray-200">Nama Lengkap <span class="text-red-500">*</span></label>
     <div class="relative">
@@ -33,6 +46,30 @@
         <input id="{{ $prefix }}nama_pegawai" name="nama_pegawai" type="text" required placeholder="Masukkan nama lengkap" class="h-10 sm:h-11 w-full rounded-xl border border-[#b9c9c1] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] pl-10 pr-3 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
     </div>
 </div>
+
+@if (auth('admin')->check() && auth('admin')->user()->isSuperAdmin())
+<div class="col-span-full sm:col-span-1">
+    <label class="mb-1.5 block text-xs font-bold text-gray-900 dark:text-gray-200">Instansi <span class="text-red-500">*</span></label>
+    <div class="relative">
+        <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        </svg>
+        <select id="{{ $prefix }}instansi" name="instansi" class="h-10 sm:h-11 w-full rounded-xl border border-[#b9c9c1] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] pl-10 pr-3 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
+            <option value="">Pilih Instansi</option>
+            <optgroup label="🏢 Dinas / Perangkat Daerah">
+                @foreach (($dinasList ?? collect()) as $dinas)
+                    <option value="dinas_{{ $dinas->id_dinas }}">{{ $dinas->nama_dinas }}</option>
+                @endforeach
+            </optgroup>
+            <optgroup label="🏛️ Kecamatan">
+                @foreach (($kecamatanList ?? collect()) as $kecamatan)
+                    <option value="kecamatan_{{ $kecamatan->id_kecamatan }}">{{ $kecamatan->nama_kecamatan }}</option>
+                @endforeach
+            </optgroup>
+        </select>
+    </div>
+</div>
+@endif
 
 <div>
     <label class="mb-1.5 block text-xs font-bold text-gray-900 dark:text-gray-200">NIP <span class="text-red-500">*</span></label>

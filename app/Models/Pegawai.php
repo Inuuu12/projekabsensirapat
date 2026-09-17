@@ -84,6 +84,28 @@ class Pegawai extends Authenticatable
         return $this->belongsTo(Kecamatan::class, 'id_kecamatan', 'id_kecamatan');
     }
 
+    public function getNamaInstansiAttribute(): string
+    {
+        if ($this->dinas) {
+            return $this->dinas->nama_dinas;
+        }
+        if ($this->kecamatan) {
+            return $this->kecamatan->nama_kecamatan;
+        }
+        return '-';
+    }
+
+    public function getTipeInstansiAttribute(): string
+    {
+        if ($this->id_dinas) {
+            return 'dinas';
+        }
+        if ($this->id_kecamatan) {
+            return 'kecamatan';
+        }
+        return 'pusat';
+    }
+
     public function isAktif(): bool
     {
         return ($this->status_verifikasi ?? self::STATUS_AKTIF) === self::STATUS_AKTIF;

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bidang;
+use App\Models\Dinas;
 use App\Models\Jabatan;
+use App\Models\Kecamatan;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,8 +23,10 @@ class AdminPegawaiController extends Controller
         $statusFilter = (string) $request->query('status', 'semua');
         $bidangFilter = (string) $request->query('bidang', 'semua');
         $jabatanFilter = (string) $request->query('jabatan', 'semua');
+        $instansiFilter = (string) $request->query('instansi', 'semua');
 
         $pegawaiQuery = Pegawai::query()
+            ->with(['dinas', 'kecamatan'])
             ->when($keyword !== '', function ($query) use ($keyword) {
                 $query->where(function ($search) use ($keyword) {
                     $search->where('nama_pegawai', 'like', "%{$keyword}%")
@@ -38,11 +42,25 @@ class AdminPegawaiController extends Controller
             ->when($bidangFilter !== 'semua', fn ($query) => $query->where('bidang', $bidangFilter))
             ->when($jabatanFilter !== 'semua', fn ($query) => $query->where('jabatan', $jabatanFilter));
 
+        // Filter Instansi (khusus untuk Super Admin)
+        if ($admin->isSuperAdmin() && $instansiFilter !== 'semua') {
+            if (str_starts_with($instansiFilter, 'dinas_')) {
+                $idDinas = (int) substr($instansiFilter, 6);
+                $pegawaiQuery->where('sirapi_md_pegawai.id_dinas', $idDinas);
+            } elseif (str_starts_with($instansiFilter, 'kecamatan_')) {
+                $idKecamatan = (int) substr($instansiFilter, 10);
+                $pegawaiQuery->where('sirapi_md_pegawai.id_kecamatan', $idKecamatan);
+            }
+        }
+
         $pegawai = $pegawaiQuery->latest('id_pegawai')->get();
         $totalPegawai = Pegawai::count();
         $totalAktif = Pegawai::where('status_verifikasi', 'aktif')->count();
         $totalPending = Pegawai::where('status_verifikasi', 'pending')->count();
         $totalDitolak = Pegawai::where('status_verifikasi', 'ditolak')->count();
+
+        $dinasList = Dinas::orderBy('nama_dinas')->get();
+        $kecamatanList = Kecamatan::orderBy('nama_kecamatan')->get();
 
         $bidangMaster = Bidang::orderBy('nama_bidang')->get();
         $jabatanMaster = Jabatan::orderByRaw("
@@ -88,15 +106,19 @@ class AdminPegawaiController extends Controller
             'statusFilter',
             'bidangFilter',
             'jabatanFilter',
+            'instansiFilter',
             'bidangOptions',
             'jabatanOptions',
             'bidangMaster',
-            'jabatanMaster'
+            'jabatanMaster',
+            'dinasList',
+            'kecamatanList'
         ));
     }
 
     public function store_Pegawai(Request $request)
     {
+        $admin = Auth::guard('admin')->user();
         $validated = $request->validate([
             'nama_pegawai' => 'required|string|max:255',
             'nip' => 'required|string|max:18|regex:/^[0-9]+$/|unique:sirapi_md_pegawai,nip',
@@ -106,11 +128,33 @@ class AdminPegawaiController extends Controller
             'nomor_hp' => 'required|string|max:13|regex:/^[0-9]+$/',
             'email' => 'required|email|max:255|unique:sirapi_md_pegawai,email',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'instansi' => $admin->isSuperAdmin() ? 'required|string' : 'nullable|string',
+        ], [
+            'instansi.required' => 'Pilih instansi untuk pegawai ini.',
         ]);
 
         if ($request->hasFile('foto')) {
             $validated['foto'] = $request->file('foto')->store('pegawai', 'public');
         }
+
+        if ($admin->isSuperAdmin()) {
+            if (!empty($validated['instansi'])) {
+                if (str_starts_with($validated['instansi'], 'dinas_')) {
+                    $validated['id_dinas'] = (int) substr($validated['instansi'], 6);
+                    $validated['id_kecamatan'] = null;
+                } elseif (str_starts_with($validated['instansi'], 'kecamatan_')) {
+                    $validated['id_dinas'] = null;
+                    $validated['id_kecamatan'] = (int) substr($validated['instansi'], 10);
+                }
+            }
+        } elseif ($admin->isAdminDinas()) {
+            $validated['id_dinas'] = $admin->id_dinas;
+            $validated['id_kecamatan'] = null;
+        } elseif ($admin->isAdminKecamatan()) {
+            $validated['id_dinas'] = null;
+            $validated['id_kecamatan'] = $admin->id_kecamatan;
+        }
+        unset($validated['instansi']);
 
         $defaultPassword = Str::password(12);
         $validated['password'] = $defaultPassword;
@@ -174,6 +218,7 @@ class AdminPegawaiController extends Controller
 
     public function update_Pegawai($id, Request $request)
     {
+        $admin = Auth::guard('admin')->user();
         $pegawai = Pegawai::findOrFail($id);
 
         $validated = $request->validate([
@@ -185,6 +230,7 @@ class AdminPegawaiController extends Controller
             'nomor_hp' => 'required|string|max:13|regex:/^[0-9]+$/',
             'email' => 'required|email|max:255|unique:sirapi_md_pegawai,email,' . $id . ',id_pegawai',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'instansi' => 'nullable|string',
         ]);
 
         if ($request->hasFile('foto')) {
@@ -199,6 +245,17 @@ class AdminPegawaiController extends Controller
             }
             $validated['foto'] = null;
         }
+
+        if ($admin->isSuperAdmin() && !empty($validated['instansi'])) {
+            if (str_starts_with($validated['instansi'], 'dinas_')) {
+                $validated['id_dinas'] = (int) substr($validated['instansi'], 6);
+                $validated['id_kecamatan'] = null;
+            } elseif (str_starts_with($validated['instansi'], 'kecamatan_')) {
+                $validated['id_dinas'] = null;
+                $validated['id_kecamatan'] = (int) substr($validated['instansi'], 10);
+            }
+        }
+        unset($validated['instansi']);
 
         $pegawai->update($validated);
 
