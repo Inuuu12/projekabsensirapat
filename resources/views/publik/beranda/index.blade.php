@@ -400,8 +400,8 @@
 
                     <!-- Leaflet Container -->
                     <div class="relative z-10 isolate w-full h-[460px] md:h-[500px] rounded-xl overflow-hidden border border-gray-200/80 dark:border-[#284c43] shadow-inner flex-grow">
-                        <!-- Map Search Bar Overlay -->
-                        <div class="absolute top-3 left-3 right-3 sm:right-auto sm:w-80 z-20 pointer-events-auto">
+                        <!-- Map Search Bar Overlay (Top Right) -->
+                        <div class="absolute top-3 right-3 left-3 sm:left-auto sm:w-80 z-20 pointer-events-auto">
                             <div class="relative">
                                 <div class="relative flex items-center">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
