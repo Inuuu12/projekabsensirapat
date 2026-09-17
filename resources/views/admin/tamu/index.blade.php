@@ -58,8 +58,15 @@
                     @forelse ($tamu as $item)
                         <tr class="hover:bg-gray-50/80 dark:hover:bg-[#1b332d] transition">
                             <td class="px-6 py-4">
-                                @if (!empty($item->foto_selfie) && (file_exists(public_path('storage/' . $item->foto_selfie)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto_selfie)))
-                                    <img src="{{ asset('storage/' . $item->foto_selfie) }}" 
+                                @if (!empty($item->foto_selfie))
+                                    @php
+                                        $cleanSelfie = ltrim(str_replace('\\', '/', $item->foto_selfie), '/');
+                                        if (str_starts_with($cleanSelfie, 'storage/')) {
+                                            $cleanSelfie = substr($cleanSelfie, 8);
+                                        }
+                                        $tamuSelfieUrl = route('storage.media', ['path' => $cleanSelfie]);
+                                    @endphp
+                                    <img src="{{ $tamuSelfieUrl }}" 
                                          alt="{{ $item->nama }}" 
                                          class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-[#233a34]">
                                 @else
@@ -79,7 +86,7 @@
                                         type="button"
                                         onclick="openEditTamu(this)"
                                         data-action="{{ route('admin.tamu.update', $item->id_tamu) }}"
-                                        data-foto-selfie-url="{{ $item->foto_selfie ? asset('storage/' . $item->foto_selfie) : '' }}"
+                                        data-foto-selfie-url="{{ $item->foto_selfie ? route('storage.media', ['path' => ltrim(str_replace('\\', '/', $item->foto_selfie), '/')]) : '' }}"
                                         data-nama="{{ $item->nama }}"
                                         data-nik="{{ $item->nik }}"
                                         data-jabatan="{{ $item->jabatan }}"

@@ -330,14 +330,21 @@
                             <!-- 8. Bukti / Foto Scan Wajah & Swafoto -->
                             <td class="py-4 px-4 text-center">
                                 @if (!empty($peserta->foto_bukti))
+                                    @php
+                                        $cleanFotoPath = ltrim(str_replace('\\', '/', $peserta->foto_bukti), '/');
+                                        if (str_starts_with($cleanFotoPath, 'storage/')) {
+                                            $cleanFotoPath = substr($cleanFotoPath, 8);
+                                        }
+                                        $fotoUrl = route('storage.media', ['path' => $cleanFotoPath]);
+                                    @endphp
                                     <div class="inline-flex items-center gap-2">
-                                        <div class="relative group cursor-pointer" onclick="openDocumentPreview('{{ asset('storage/' . $peserta->foto_bukti) }}', 'Bukti Presensi {{ $isPegawai ? 'Scan Wajah' : 'Swafoto' }} - {{ addslashes($peserta->nama) }}', '{{ addslashes(basename($peserta->foto_bukti)) }}')">
-                                            <img src="{{ asset('storage/' . $peserta->foto_bukti) }}" alt="Bukti {{ $peserta->nama }}" class="w-10 h-10 rounded-xl object-cover border-2 border-emerald-300 dark:border-emerald-700/60 shadow-xs group-hover:scale-105 transition">
+                                        <div class="relative group cursor-pointer" onclick="openDocumentPreview('{{ $fotoUrl }}', 'Bukti Presensi {{ $isPegawai ? 'Scan Wajah' : 'Swafoto' }} - {{ addslashes($peserta->nama) }}', '{{ addslashes(basename($peserta->foto_bukti)) }}')">
+                                            <img src="{{ $fotoUrl }}" alt="Bukti {{ $peserta->nama }}" class="w-10 h-10 rounded-xl object-cover border-2 border-emerald-300 dark:border-emerald-700/60 shadow-xs group-hover:scale-105 transition">
                                             <div class="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
                                                 <svg class="w-4 h-4 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                             </div>
                                         </div>
-                                        <button type="button" onclick="openDocumentPreview('{{ asset('storage/' . $peserta->foto_bukti) }}', 'Bukti Presensi {{ $isPegawai ? 'Scan Wajah' : 'Swafoto' }} - {{ addslashes($peserta->nama) }}', '{{ addslashes(basename($peserta->foto_bukti)) }}')" class="text-left hidden sm:block">
+                                        <button type="button" onclick="openDocumentPreview('{{ $fotoUrl }}', 'Bukti Presensi {{ $isPegawai ? 'Scan Wajah' : 'Swafoto' }} - {{ addslashes($peserta->nama) }}', '{{ addslashes(basename($peserta->foto_bukti)) }}')" class="text-left hidden sm:block">
                                             <span class="block text-[11px] font-bold text-emerald-700 dark:text-emerald-400 hover:underline cursor-pointer">Lihat Foto</span>
                                             <span class="block text-[9px] font-medium text-gray-400">{{ $isPegawai ? 'Scan Wajah' : 'Swafoto' }}</span>
                                         </button>

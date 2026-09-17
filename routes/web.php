@@ -306,6 +306,14 @@ $serveStorageFile = function (string $path) {
         public_path('storage/' . $cleanPath),
         public_path('uploads/' . $cleanPath),
         public_path($cleanPath),
+        storage_path('app/public/presensi/' . $cleanPath),
+        storage_path('app/public/tamu/' . $cleanPath),
+        storage_path('app/public/aduan/' . $cleanPath),
+        storage_path('app/public/pegawai/' . $cleanPath),
+        public_path('storage/presensi/' . $cleanPath),
+        public_path('storage/tamu/' . $cleanPath),
+        public_path('storage/aduan/' . $cleanPath),
+        public_path('storage/pegawai/' . $cleanPath),
     ];
 
     foreach ($candidates as $filePath) {
@@ -322,10 +330,10 @@ $serveStorageFile = function (string $path) {
     // Jika file fisik belum ter-upload di server, kembalikan gambar SVG pesan informasi (bukan broken image browser)
     $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260" fill="none">
         <rect width="400" height="260" fill="#152420" rx="16"/>
-        <circle cx="200" cy="100" r="35" fill="#284c43"/>
-        <path d="M190 90L210 110M210 90L190 110" stroke="#a7f3d0" stroke-width="3" stroke-linecap="round"/>
-        <text x="200" y="165" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="bold">Foto Lampiran Aduan</text>
-        <text x="200" y="190" text-anchor="middle" fill="#9ca3af" font-family="sans-serif" font-size="12">File gambar belum ada di folder storage server</text>
+        <circle cx="200" cy="95" r="35" fill="#284c43"/>
+        <path d="M190 85L210 105M210 85L190 105" stroke="#a7f3d0" stroke-width="3" stroke-linecap="round"/>
+        <text x="200" y="160" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="bold">Foto Bukti Presensi</text>
+        <text x="200" y="185" text-anchor="middle" fill="#9ca3af" font-family="sans-serif" font-size="12">File gambar belum tersimpan di folder storage server</text>
     </svg>';
 
     return response($svg, 200, [
