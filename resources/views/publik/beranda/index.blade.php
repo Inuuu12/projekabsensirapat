@@ -400,6 +400,26 @@
 
                     <!-- Leaflet Container -->
                     <div class="relative z-10 isolate w-full h-[460px] md:h-[500px] rounded-xl overflow-hidden border border-gray-200/80 dark:border-[#284c43] shadow-inner flex-grow">
+                        <!-- Map Search Bar Overlay -->
+                        <div class="absolute top-3 left-3 right-3 sm:right-auto sm:w-80 z-20 pointer-events-auto">
+                            <div class="relative">
+                                <div class="relative flex items-center">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                    </div>
+                                    <input type="text" id="map-search-input" placeholder="Cari Dinas / Kecamatan (contoh: Diskominfo, Cibinong)..." 
+                                           class="w-full pl-9 pr-8 py-2.5 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/90 dark:border-[#284c43] rounded-xl text-xs font-medium text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 shadow-md focus:outline-none focus:ring-2 focus:ring-[#35635b] dark:focus:ring-emerald-500 transition-all">
+                                    <button type="button" id="map-search-clear" onclick="clearMapSearch()" class="hidden absolute right-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                                        ✕
+                                    </button>
+                                </div>
+
+                                <!-- Search Results Dropdown -->
+                                <div id="map-search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/90 dark:border-[#284c43] rounded-xl shadow-xl max-h-60 overflow-y-auto z-30 divide-y divide-gray-100 dark:divide-[#233a34]">
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="beranda-map" class="w-full h-full z-0 bg-[#e5e3df] dark:bg-[#121f1c]"></div>
 
                         <!-- Overlay Legend -->
@@ -1119,6 +1139,7 @@
                 .catch(err => console.log('GeoJSON Map Notice:', err));
 
             let allMarkers = [];
+            let searchableLocations = [];
 
             // Dynamic Pushpin Icon Sizer based on Zoom Level
             const getIconConfigForZoom = (zoom) => {
@@ -1253,6 +1274,14 @@
                 }).addTo(map);
 
                 allMarkers.push({ marker: marker, bgClass: bgClass });
+                searchableLocations.push({
+                    name: name,
+                    addr: addr || 'Kabupaten Bogor',
+                    lat: lat,
+                    lng: lng,
+                    typeBadge: typeBadge,
+                    marker: marker
+                });
 
                 const safeName = name.replace(/'/g, "\\'");
                 const safeAddr = (addr || '').replace(/'/g, "\\'");
@@ -1413,6 +1442,80 @@
                 })
                 .catch(err => console.log('CSV Gov Points Notice:', err));
 
+
+            // Map Search Input & Suggestion Dropdown
+            const searchInput = document.getElementById('map-search-input');
+            const searchResults = document.getElementById('map-search-results');
+            const searchClear = document.getElementById('map-search-clear');
+
+            if (searchInput && searchResults) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.trim().toLowerCase();
+                    if (searchClear) searchClear.classList.toggle('hidden', query === '');
+
+                    if (query.length < 2) {
+                        searchResults.classList.add('hidden');
+                        searchResults.innerHTML = '';
+                        return;
+                    }
+
+                    const matches = searchableLocations.filter(item => 
+                        item.name.toLowerCase().includes(query) || 
+                        item.addr.toLowerCase().includes(query)
+                    ).slice(0, 8);
+
+                    if (matches.length === 0) {
+                        searchResults.innerHTML = `
+                            <div class="px-3.5 py-3 text-xs text-gray-500 dark:text-gray-400 text-center">
+                                Dinas / Kecamatan tidak ditemukan.
+                            </div>
+                        `;
+                    } else {
+                        searchResults.innerHTML = matches.map(item => `
+                            <button type="button" onclick="focusOnMapLocation(${item.lat}, ${item.lng})" 
+                                    class="w-full text-left px-3.5 py-2.5 hover:bg-gray-100 dark:hover:bg-[#1f352f] transition-colors flex items-center justify-between gap-2 cursor-pointer border-b border-gray-100 dark:border-[#233a34] last:border-0">
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-bold text-xs text-gray-900 dark:text-white truncate">${item.name}</p>
+                                    <p class="text-[10px] text-gray-500 dark:text-gray-400 truncate mt-0.5">${item.addr}</p>
+                                </div>
+                                <span class="text-[9.5px] font-extrabold px-2 py-0.5 rounded-full shrink-0 ${item.typeBadge.includes('Kecamatan') ? 'bg-orange-100 dark:bg-orange-950/70 text-orange-800 dark:text-orange-300' : 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300'}">
+                                    ${item.typeBadge}
+                                </span>
+                            </button>
+                        `).join('');
+                    }
+
+                    searchResults.classList.remove('hidden');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                        searchResults.classList.add('hidden');
+                    }
+                });
+            }
+
+            window.clearMapSearch = function() {
+                if (searchInput) {
+                    searchInput.value = '';
+                    if (searchClear) searchClear.classList.add('hidden');
+                }
+                if (searchResults) {
+                    searchResults.classList.add('hidden');
+                    searchResults.innerHTML = '';
+                }
+            };
+
+            window.focusOnMapLocation = function(lat, lng) {
+                map.flyTo([lat, lng], 15, { animate: true, duration: 1.2 });
+                const found = searchableLocations.find(loc => Math.abs(loc.lat - lat) < 0.0001 && Math.abs(loc.lng - lng) < 0.0001);
+                if (found && found.marker) {
+                    setTimeout(() => {
+                        found.marker.openPopup();
+                    }, 1200);
+                }
+                if (searchResults) searchResults.classList.add('hidden');
+            };
 
             // Reset Zoom Button
             const btnReset = document.getElementById('btn-reset-map-view');
