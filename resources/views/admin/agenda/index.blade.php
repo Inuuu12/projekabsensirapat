@@ -171,12 +171,6 @@
                                        title="Lihat Detail Agenda">
                                         <span>Detail</span>
                                     </a>
-
-                                    <a href="{{ url('/admin/agenda/' . $item->id_agenda . '/generate-qr') }}"
-                                       class="inline-flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 px-2.5 py-1.5 text-xs font-bold transition hover:bg-amber-100 dark:hover:bg-amber-900/60 cursor-pointer shadow-2xs"
-                                       title="Generate QR Presensi">
-                                        <span>QR Presensi</span>
-                                    </a>
                                 </div>
                             </td>
                         </tr>

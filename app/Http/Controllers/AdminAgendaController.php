@@ -105,14 +105,11 @@ class AdminAgendaController extends Controller
         }
 
         $validated['status_fr'] = $request->boolean('status_fr');
-        $validated['status_qr'] = $validated['status_qr'] ?? 'nonaktif';
+        $validated['status_qr'] = 'aktif';
         $validated['id_statusagenda'] = $this->statusAgendaIdFor($validated);
 
         $agenda = Agenda::create($validated);
-
-        if ($agenda->status_qr === 'aktif') {
-            QRCode::generateQR($agenda->id_agenda);
-        }
+        QRCode::generateQR($agenda->id_agenda);
 
         if (! $request->wantsJson()) {
             return back()->with('success', 'Agenda berhasil ditambahkan.');
@@ -556,15 +553,12 @@ class AdminAgendaController extends Controller
         }
 
         $validated['status_fr'] = $request->boolean('status_fr');
-        $validated['status_qr'] = $validated['status_qr'] ?? 'nonaktif';
+        $validated['status_qr'] = 'aktif';
         $validated['id_statusagenda'] = $this->statusAgendaIdFor($validated);
 
         $agenda = Agenda::findOrFail($id);
         $agenda->update($validated);
-
-        if ($agenda->status_qr === 'aktif') {
-            QRCode::generateQR($agenda->id_agenda);
-        }
+        QRCode::generateQR($agenda->id_agenda);
 
         return back()->with('success', 'Agenda berhasil diperbarui.');
     }

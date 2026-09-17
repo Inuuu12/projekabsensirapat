@@ -85,10 +85,60 @@
             <form action="{{ route('publik.form-kunjungan.simpan') }}" method="POST" class="space-y-5">
                 @csrf
 
+                <!-- Perangkat Daerah / Dinas / Kecamatan Dituju -->
+                <div>
+                    <label class="block text-xs md:text-sm font-bold text-gray-900 dark:text-gray-200 mb-1.5">Dinas / Kecamatan Tujuan *</label>
+                    
+                    <!-- Type Selector Buttons -->
+                    <div class="grid grid-cols-2 gap-2 mb-2.5">
+                        <button type="button" id="btn-tujuan-dinas" onclick="switchTujuanType('dinas')"
+                                class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-center border cursor-pointer bg-ijo-tua text-white border-transparent shadow-xs">
+                            🏢 Dinas / SKPD
+                        </button>
+                        <button type="button" id="btn-tujuan-kecamatan" onclick="switchTujuanType('kecamatan')"
+                                class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-center border cursor-pointer bg-[#F3F2ED] dark:bg-[#0f1c19] text-gray-700 dark:text-gray-300 border-transparent hover:bg-gray-200 dark:hover:bg-[#1a2d28]">
+                            🏛️ Kecamatan
+                        </button>
+                    </div>
+
+                    <!-- Hidden Input for Tipe -->
+                    <input type="hidden" name="tujuan_tipe" id="tujuan_tipe" value="dinas">
+
+                    <!-- Select Dinas -->
+                    <div id="container-dinas" class="relative">
+                        <select name="id_dinas" id="id_dinas" class="w-full bg-[#F3F2ED] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] rounded-2xl p-4 text-xs md:text-sm text-gray-900 dark:text-white appearance-none focus:ring-2 focus:ring-ijo-tua focus:bg-white dark:focus:bg-[#152420] transition-all cursor-pointer">
+                            <option value="" disabled @selected(!old('id_dinas')) class="bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300">-- Pilih Dinas / SKPD yang Dituju --</option>
+                            @foreach ($dinasList ?? [] as $dinasItem)
+                                <option value="{{ $dinasItem->id_dinas }}" @selected(old('id_dinas') == $dinasItem->id_dinas) class="bg-white dark:bg-[#152420] text-gray-900 dark:text-white py-1">
+                                    {{ $dinasItem->nama_dinas }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500 text-xs">
+                            ▼
+                        </div>
+                    </div>
+
+                    <!-- Select Kecamatan -->
+                    <div id="container-kecamatan" class="relative hidden">
+                        <select name="id_kecamatan" id="id_kecamatan" disabled class="w-full bg-[#F3F2ED] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] rounded-2xl p-4 text-xs md:text-sm text-gray-900 dark:text-white appearance-none focus:ring-2 focus:ring-ijo-tua focus:bg-white dark:focus:bg-[#152420] transition-all cursor-pointer">
+                            <option value="" disabled @selected(!old('id_kecamatan')) class="bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300">-- Pilih Kecamatan yang Dituju --</option>
+                            @foreach ($kecamatanList ?? [] as $kecItem)
+                                <option value="{{ $kecItem->id_kecamatan }}" @selected(old('id_kecamatan') == $kecItem->id_kecamatan) class="bg-white dark:bg-[#152420] text-gray-900 dark:text-white py-1">
+                                    {{ $kecItem->nama_kecamatan }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500 text-xs">
+                            ▼
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Pihak yang Dituju -->
                 <div>
                     <label class="block text-xs md:text-sm font-bold text-gray-900 dark:text-gray-200 mb-1.5">Pihak / Pejabat yang Dituju *</label>
-                    <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai', old('nama_pejabat')) }}" placeholder="Contoh: Kepala Bidang / Ibu Anita / Diskominfo" required
+                    <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai', old('nama_pejabat')) }}" placeholder="Contoh: Kepala Bidang / Ibu Anita / Sekdis" required
                            class="w-full bg-[#F3F2ED] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] rounded-2xl p-4 text-xs md:text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-ijo-tua focus:bg-white dark:focus:bg-[#152420] transition-all">
                 </div>
 
@@ -137,6 +187,42 @@
     </main>
 
     @include('publik.layout.footer')
+
+    <script>
+        function switchTujuanType(type) {
+            const btnDinas = document.getElementById('btn-tujuan-dinas');
+            const btnKecamatan = document.getElementById('btn-tujuan-kecamatan');
+            const containerDinas = document.getElementById('container-dinas');
+            const containerKecamatan = document.getElementById('container-kecamatan');
+            const selectDinas = document.getElementById('id_dinas');
+            const selectKecamatan = document.getElementById('id_kecamatan');
+            const tipeInput = document.getElementById('tujuan_tipe');
+
+            if (type === 'kecamatan') {
+                tipeInput.value = 'kecamatan';
+                btnDinas.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-center border cursor-pointer bg-[#F3F2ED] dark:bg-[#0f1c19] text-gray-700 dark:text-gray-300 border-transparent hover:bg-gray-200 dark:hover:bg-[#1a2d28]';
+                btnKecamatan.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-center border cursor-pointer bg-ijo-tua text-white border-transparent shadow-xs';
+                containerDinas.classList.add('hidden');
+                containerKecamatan.classList.remove('hidden');
+                selectDinas.disabled = true;
+                selectKecamatan.disabled = false;
+            } else {
+                tipeInput.value = 'dinas';
+                btnDinas.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-center border cursor-pointer bg-ijo-tua text-white border-transparent shadow-xs';
+                btnKecamatan.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-center border cursor-pointer bg-[#F3F2ED] dark:bg-[#0f1c19] text-gray-700 dark:text-gray-300 border-transparent hover:bg-gray-200 dark:hover:bg-[#1a2d28]';
+                containerDinas.classList.remove('hidden');
+                containerKecamatan.classList.add('hidden');
+                selectDinas.disabled = false;
+                selectKecamatan.disabled = true;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(old('id_kecamatan'))
+                switchTujuanType('kecamatan');
+            @endif
+        });
+    </script>
 
 </body>
 </html>

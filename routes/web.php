@@ -288,13 +288,52 @@ Route::get('/publik/presensi/qr/{agenda}/hadir', [PublicPageController::class, '
 
 Route::get('/peta-situs', [PublicPageController::class, 'petaSitus'])->name('peta.situs');
 
-// Fallback jika symlink storage cPanel hilang/belum dibuat
-Route::get('/storage/{path}', function (string $path) {
+// Route handler media storage publik (Laragon, cPanel, fallback tanpa symlink)
+$serveStorageFile = function (string $path) {
     if (str_contains($path, '..')) {
         abort(400);
     }
-    abort_if(! \Illuminate\Support\Facades\Storage::disk('public')->exists($path), 404);
 
-    return \Illuminate\Support\Facades\Storage::disk('public')->response($path);
-})->where('path', '.*')->name('storage.fallback');
+    $cleanPath = ltrim(str_replace('\\', '/', $path), '/');
+    if (str_starts_with($cleanPath, 'storage/')) {
+        $cleanPath = substr($cleanPath, 8);
+    }
+
+    // Cek di berbagai lokasi penyimpanan server (Laragon, cPanel, public/storage, storage/app/public)
+    $candidates = [
+        storage_path('app/public/' . $cleanPath),
+        storage_path('app/' . $cleanPath),
+        public_path('storage/' . $cleanPath),
+        public_path('uploads/' . $cleanPath),
+        public_path($cleanPath),
+    ];
+
+    foreach ($candidates as $filePath) {
+        if (file_exists($filePath) && is_file($filePath)) {
+            $mime = mime_content_type($filePath) ?: 'image/jpeg';
+            return response()->file($filePath, [
+                'Content-Type' => $mime,
+                'Cache-Control' => 'public, max-age=86400',
+                'Access-Control-Allow-Origin' => '*',
+            ]);
+        }
+    }
+
+    // Jika file fisik belum ter-upload di server, kembalikan gambar SVG pesan informasi (bukan broken image browser)
+    $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260" fill="none">
+        <rect width="400" height="260" fill="#152420" rx="16"/>
+        <circle cx="200" cy="100" r="35" fill="#284c43"/>
+        <path d="M190 90L210 110M210 90L190 110" stroke="#a7f3d0" stroke-width="3" stroke-linecap="round"/>
+        <text x="200" y="165" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="14" font-weight="bold">Foto Lampiran Aduan</text>
+        <text x="200" y="190" text-anchor="middle" fill="#9ca3af" font-family="sans-serif" font-size="12">File gambar belum ada di folder storage server</text>
+    </svg>';
+
+    return response($svg, 200, [
+        'Content-Type' => 'image/svg+xml',
+        'Cache-Control' => 'no-cache',
+    ]);
+};
+
+Route::get('/media-storage/{path}', $serveStorageFile)->where('path', '.*')->name('storage.media');
+Route::get('/storage/{path}', $serveStorageFile)->where('path', '.*')->name('storage.fallback');
 

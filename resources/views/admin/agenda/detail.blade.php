@@ -8,8 +8,8 @@
     $dokumentasiItems = $dokumen->where('jenis_dokumen', 'dokumentasi')->values();
     $waktuMulai = substr((string) $agenda->waktu, 0, 5);
     $waktuSelesai = $agenda->waktu_selesai ? substr((string) $agenda->waktu_selesai, 0, 5) : null;
-    $qrPayload = $qrCode?->qr_codepath;
-    $qrImageUrl = $qrPayload ? 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' . urlencode($qrPayload) : null;
+    $qrPayload = $qrCode?->qr_codepath ?: route('publik.presensi.pegawai', ['agenda_id' => $agenda->id_agenda]);
+    $qrImageUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' . urlencode($qrPayload);
     $lokasiAgenda = $agenda->lokasi ?: ($ruang->nama_ruang ?? 'Ruang Rapat');
 @endphp
 

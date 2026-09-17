@@ -78,6 +78,7 @@
                     <tr class="bg-[#35635b] dark:bg-[#1b3832] text-white text-xs font-bold uppercase tracking-wider">
                         <th class="px-6 py-4">Pengunjung</th>
                         <th class="px-6 py-4">Pihak Dituju</th>
+                        <th class="px-6 py-4">Dinas / Kecamatan</th>
                         <th class="px-6 py-4">Instansi</th>
                         <th class="px-6 py-4">No HP</th>
                         <th class="px-6 py-4">Email</th>
@@ -92,6 +93,19 @@
                         <tr class="hover:bg-gray-50/80 dark:hover:bg-[#1b332d] transition">
                             <td class="px-6 py-4 font-bold text-[#35635b] dark:text-emerald-400">{{ $item->nama_pengunjung ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->nama_pejabat ?? '-' }}</td>
+                            <td class="px-6 py-4 text-gray-700 dark:text-slate-200">
+                                @if($item->dinas)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300">
+                                        🏢 {{ $item->dinas->nama_dinas }}
+                                    </span>
+                                @elseif($item->kecamatan)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-950/70 text-blue-800 dark:text-blue-300">
+                                        🏛️ {{ $item->kecamatan->nama_kecamatan }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-400 dark:text-gray-500">-</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->asal_instansi ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->nomorhp_pengunjung ?? '-' }}</td>
                             <td class="px-6 py-4 text-gray-700 dark:text-slate-200">{{ $item->email_pengunjung ?? '-' }}</td>
@@ -115,6 +129,8 @@
                                         data-keperluan="{{ $item->keperluan }}"
                                         data-waktu="{{ $item->waktu }}"
                                         data-tanggal="{{ $item->tanggal_kunjungan }}"
+                                        data-dinas="{{ $item->id_dinas }}"
+                                        data-kecamatan="{{ $item->id_kecamatan }}"
                                         class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs"
                                         title="Edit Kunjungan">
                                         <span>Edit</span>
@@ -131,7 +147,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Belum ada data kunjungan.</td>
+                            <td colspan="10" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Belum ada data kunjungan.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -268,6 +284,8 @@
         document.getElementById('edit-keperluan').value = button.dataset.keperluan || '';
         document.getElementById('edit-waktu').value = button.dataset.waktu || '';
         document.getElementById('edit-tanggal_kunjungan').value = button.dataset.tanggal || '';
+        if (document.getElementById('edit-id_dinas')) document.getElementById('edit-id_dinas').value = button.dataset.dinas || '';
+        if (document.getElementById('edit-id_kecamatan')) document.getElementById('edit-id_kecamatan').value = button.dataset.kecamatan || '';
         openModal('modal-edit-kunjungan');
     }
 

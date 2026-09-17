@@ -16,6 +16,16 @@
         };
     };
 
+    $getFotoUrl = function($path) {
+        if (empty($path) || $path === 'aduan/default.jpg') return null;
+        if (filter_var($path, FILTER_VALIDATE_URL)) return $path;
+        $cleanPath = ltrim(str_replace('\\', '/', $path), '/');
+        if (str_starts_with($cleanPath, 'storage/')) {
+            $cleanPath = substr($cleanPath, 8);
+        }
+        return route('storage.media', ['path' => $cleanPath]);
+    };
+
     $filteredMasukan = $statusFilter === 'semua'
         ? $masukan
         : $masukan->filter(fn ($item) => $statusCategory($item->status) === $statusFilter);
@@ -92,10 +102,11 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[1100px]">
+            <table class="w-full text-left min-w-[1200px]">
                 <thead>
                     <tr class="bg-[#35635b] dark:bg-[#1b3832] text-white text-xs font-extrabold uppercase tracking-wider">
                         <th class="px-6 py-4">Pengadu</th>
+                        <th class="px-6 py-4">Foto Lampiran</th>
                         <th class="px-6 py-4">Dinas Tujuan</th>
                         <th class="px-6 py-4">Email & Kontak</th>
                         <th class="px-6 py-4">Isi Aduan</th>
@@ -107,9 +118,21 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100 dark:divide-[#233a34] text-sm">
                     @forelse ($filteredMasukan as $item)
+                        @php $fotoUrl = $getFotoUrl($item->foto); @endphp
                         <tr class="hover:bg-gray-50/80 dark:hover:bg-[#1b332d] transition">
                             <td class="px-6 py-4 font-extrabold text-gray-900 dark:text-white">
                                 {{ $item->nama_pengadu }}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                @if ($fotoUrl)
+                                    <img src="{{ $fotoUrl }}"
+                                         onclick="openDocumentPreviewModal('{{ $fotoUrl }}', 'Foto Pengaduan - {{ e($item->nama_pengadu) }}')"
+                                         alt="Foto Lampiran"
+                                         class="w-12 h-12 object-cover rounded-xl border border-gray-200 dark:border-[#284c43] shadow-2xs hover:scale-105 transition cursor-pointer mx-auto"
+                                         title="Klik untuk memperbesar foto">
+                                @else
+                                    <span class="text-xs text-gray-400 dark:text-gray-500 italic">Tidak ada foto</span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 text-xs font-bold text-[#35635b] dark:text-emerald-400">
                                 {{ $item->dinas?->nama_dinas ?? 'Umum / Diskominfo' }}
@@ -159,6 +182,7 @@
                                         data-pengadu="{{ $item->nama_pengadu }}"
                                         data-aduan="{{ $item->isi_aduan }}"
                                         data-balasan="{{ $item->balasan_admin }}"
+                                        data-foto="{{ $fotoUrl }}"
                                         class="inline-flex items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#0f513f] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-3 py-1.5 text-xs font-bold transition hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer shadow-2xs">
                                         Balas
                                     </button>
@@ -173,7 +197,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Belum ada pengaduan masyarakat.</td>
+                            <td colspan="9" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">Belum ada pengaduan masyarakat.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -192,9 +216,18 @@
         <form id="form-reply-aduan" method="POST" class="space-y-4">
             @csrf
             @method('PUT')
-            <div class="bg-gray-50 dark:bg-[#0f1c19] p-3.5 rounded-xl border border-gray-200 dark:border-[#284c43]">
+            <div class="bg-gray-50 dark:bg-[#0f1c19] p-3.5 rounded-xl border border-gray-200 dark:border-[#284c43] space-y-2">
                 <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Pengadu: <span id="reply-pengadu-nama" class="text-gray-900 dark:text-white"></span></p>
-                <p id="reply-aduan-teks" class="mt-1 text-xs text-gray-700 dark:text-gray-300 italic"></p>
+                <p id="reply-aduan-teks" class="text-xs text-gray-700 dark:text-gray-300 italic"></p>
+                <div id="reply-foto-container" class="hidden pt-2 border-t border-gray-200 dark:border-[#284c43]">
+                    <p class="text-[11px] font-extrabold text-gray-500 dark:text-gray-400 uppercase mb-1">Foto Bukti Aduan:</p>
+                    <div class="flex items-center gap-3">
+                        <img id="reply-foto-img" src="" class="w-16 h-16 object-cover rounded-xl border border-gray-200 dark:border-[#284c43] cursor-pointer" onclick="openDocumentPreviewModal(this.src, 'Foto Aduan')">
+                        <button type="button" id="reply-foto-btn" onclick="" class="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline">
+                            🔍 Lihat Foto Ukuran Penuh
+                        </button>
+                    </div>
+                </div>
             </div>
             <div>
                 <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">Respon / Balasan Admin *</label>
@@ -212,9 +245,24 @@
     function openReplyModal(btn) {
         const form = document.getElementById('form-reply-aduan');
         form.action = btn.dataset.action;
-        document.getElementById('reply-pengadu-nama').textContent = btn.dataset.pengadu || '';
+        const pengadu = btn.dataset.pengadu || '';
+        document.getElementById('reply-pengadu-nama').textContent = pengadu;
         document.getElementById('reply-aduan-teks').textContent = '"' + (btn.dataset.aduan || '') + '"';
         document.getElementById('reply-balasan-text').value = btn.dataset.balasan || '';
+
+        const fotoUrl = btn.dataset.foto;
+        const fotoContainer = document.getElementById('reply-foto-container');
+        const fotoImg = document.getElementById('reply-foto-img');
+        const fotoBtn = document.getElementById('reply-foto-btn');
+
+        if (fotoUrl && fotoUrl.trim() !== '') {
+            fotoImg.src = fotoUrl;
+            fotoBtn.onclick = function() { openDocumentPreviewModal(fotoUrl, 'Foto Aduan - ' + pengadu); };
+            fotoContainer.classList.remove('hidden');
+        } else {
+            fotoContainer.classList.add('hidden');
+        }
+
         openModal('modal-reply-aduan');
     }
 </script>

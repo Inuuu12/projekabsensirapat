@@ -1,6 +1,34 @@
 @php
     $prefix = isset($prefix) ? $prefix : '';
 @endphp
+<div>
+    <label for="{{ $prefix }}id_dinas" class="block text-xs font-bold text-gray-700 dark:text-gray-200 uppercase mb-1.5">Dinas Tujuan</label>
+    <div class="relative">
+        <select id="{{ $prefix }}id_dinas" name="id_dinas" class="h-10 sm:h-11 w-full appearance-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 pr-10 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20">
+            <option value="" class="bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300">-- Pilih Dinas / SKPD --</option>
+            @foreach ($dinasList ?? [] as $d)
+                <option value="{{ $d->id_dinas }}" class="bg-white dark:bg-[#152420] text-gray-900 dark:text-white">{{ $d->nama_dinas }}</option>
+            @endforeach
+        </select>
+        <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </div>
+</div>
+<div>
+    <label for="{{ $prefix }}id_kecamatan" class="block text-xs font-bold text-gray-700 dark:text-gray-200 uppercase mb-1.5">Kecamatan Tujuan</label>
+    <div class="relative">
+        <select id="{{ $prefix }}id_kecamatan" name="id_kecamatan" class="h-10 sm:h-11 w-full appearance-none rounded-xl border border-[#c9ddd4] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] px-3.5 sm:px-4 pr-10 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] dark:focus:border-emerald-500 focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10 dark:focus:ring-emerald-500/20">
+            <option value="" class="bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300">-- Pilih Kecamatan --</option>
+            @foreach ($kecamatanList ?? [] as $k)
+                <option value="{{ $k->id_kecamatan }}" class="bg-white dark:bg-[#152420] text-gray-900 dark:text-white">{{ $k->nama_kecamatan }}</option>
+            @endforeach
+        </select>
+        <svg class="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#61706a] dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </div>
+</div>
 <div class="col-span-full">
     <label for="{{ $prefix }}nama_pegawai" class="block text-xs font-bold text-gray-700 dark:text-gray-200 uppercase mb-1.5">Pihak Dituju *</label>
     <div class="relative">

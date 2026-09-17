@@ -115,9 +115,9 @@
                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">Perangkat Daerah / Dinas Tujuan *</label>
                         <div class="relative">
                             <select name="id_dinas" required class="w-full bg-[#EAE8E1]/60 dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] focus:border-ijo-semitua focus:bg-white dark:focus:bg-[#152420] text-xs rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-200 appearance-none focus:outline-none transition-all cursor-pointer">
-                                <option value="" disabled selected>Pilih Perangkat Daerah / Dinas yang dituju</option>
+                                <option value="" disabled selected class="bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300">Pilih Perangkat Daerah / Dinas yang dituju</option>
                                 @foreach ($dinasList ?? [] as $dinasItem)
-                                    <option value="{{ $dinasItem->id_dinas }}" @selected(old('id_dinas') == $dinasItem->id_dinas)>
+                                    <option value="{{ $dinasItem->id_dinas }}" @selected(old('id_dinas') == $dinasItem->id_dinas) class="bg-white dark:bg-[#152420] text-gray-900 dark:text-white py-1">
                                         {{ $dinasItem->nama_dinas }}
                                     </option>
                                 @endforeach
@@ -134,11 +134,11 @@
                         <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">Kategori Masalah *</label>
                         <div class="relative">
                             <select name="kategori" required class="w-full bg-[#EAE8E1]/60 dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] focus:border-ijo-semitua focus:bg-white dark:focus:bg-[#152420] text-xs rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-200 appearance-none focus:outline-none transition-all cursor-pointer">
-                                <option value="" disabled selected>Pilih kategori masalah</option>
-                                <option value="rapat">Kendala Pelaksanaan Rapat</option>
-                                <option value="aplikasi">Masalah Teknis Aplikasi</option>
-                                <option value="infrastruktur">Jaringan / WiFi / Jaringan TI</option>
-                                <option value="lainnya">Lainnya</option>
+                                <option value="" disabled selected class="bg-white dark:bg-[#152420] text-gray-700 dark:text-gray-300">Pilih kategori masalah</option>
+                                <option value="rapat" class="bg-white dark:bg-[#152420] text-gray-900 dark:text-white py-1">Kendala Pelaksanaan Rapat</option>
+                                <option value="aplikasi" class="bg-white dark:bg-[#152420] text-gray-900 dark:text-white py-1">Masalah Teknis Aplikasi</option>
+                                <option value="infrastruktur" class="bg-white dark:bg-[#152420] text-gray-900 dark:text-white py-1">Jaringan / WiFi / Jaringan TI</option>
+                                <option value="lainnya" class="bg-white dark:bg-[#152420] text-gray-900 dark:text-white py-1">Lainnya</option>
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500 text-xs">
                                 ▼

@@ -236,6 +236,15 @@
 
                 return $visible . '***@' . $domain;
             };
+            $getFotoUrl = function($path) {
+                if (empty($path) || $path === 'aduan/default.jpg') return null;
+                if (filter_var($path, FILTER_VALIDATE_URL)) return $path;
+                $cleanPath = ltrim(str_replace('\\', '/', $path), '/');
+                if (str_starts_with($cleanPath, 'storage/')) {
+                    $cleanPath = substr($cleanPath, 8);
+                }
+                return route('storage.media', ['path' => $cleanPath]);
+            };
             $aduanDetailItems = $masukanItems->mapWithKeys(fn ($aduan) => [
                 $aduan->id_dataaduan => [
                     'nama_pengadu' => $aduan->nama_pengadu,
@@ -244,7 +253,7 @@
                     'balasan_admin' => $aduan->balasan_admin ?: 'Belum ada balasan dari admin.',
                     'status' => (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status,
                     'tanggal' => $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d F Y, H:i') : '-',
-                    'foto_url' => (!empty($aduan->foto) && $aduan->foto !== 'aduan/default.jpg' && (file_exists(public_path('storage/' . $aduan->foto)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($aduan->foto))) ? asset('storage/' . $aduan->foto) : null,
+                    'foto_url' => $getFotoUrl($aduan->foto),
                 ],
             ])->all();
         @endphp
@@ -1012,8 +1021,12 @@
 
             let isDark = document.documentElement.classList.contains('dark');
             const getTileUrl = (dark) => dark
-                ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
                 : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+            const getAttribution = (dark) => dark
+                ? '&copy; <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a> &mdash; Esri, DeLorme, NAVTEQ'
+                : '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
 
             const map = L.map('beranda-map', {
                 center: [centerLat, centerLng],
@@ -1023,8 +1036,8 @@
             });
 
             let currentTileLayer = L.tileLayer(getTileUrl(isDark), {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
-                subdomains: 'abc',
+                attribution: getAttribution(isDark),
+                maxNativeZoom: isDark ? 16 : 19,
                 maxZoom: 19
             }).addTo(map);
 
@@ -1033,8 +1046,8 @@
             const updateMapTheme = (dark) => {
                 map.removeLayer(currentTileLayer);
                 currentTileLayer = L.tileLayer(getTileUrl(dark), {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
-                    subdomains: 'abc',
+                    attribution: getAttribution(dark),
+                    maxNativeZoom: dark ? 16 : 19,
                     maxZoom: 19
                 }).addTo(map);
 

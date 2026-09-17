@@ -19,7 +19,7 @@ class AdminKunjunganController extends Controller
         $hasNamaPegawai = \Illuminate\Support\Facades\Schema::hasColumn('sirapi_md_kunjungan', 'nama_pegawai');
         $colPegawai = $hasNamaPegawai ? 'nama_pegawai' : 'nama_pejabat';
 
-        $kunjungan = Kunjungan::query()
+        $kunjungan = Kunjungan::with(['dinas', 'kecamatan'])
             ->when($keyword !== '', function ($query) use ($keyword, $colPegawai) {
                 $query->where(function ($search) use ($keyword, $colPegawai) {
                     $search->where('nama_pengunjung', 'like', "%{$keyword}%")
@@ -49,6 +49,8 @@ class AdminKunjunganController extends Controller
             ->orderBy('keperluan')
             ->pluck('keperluan');
         $pegawaiList = \App\Models\Pegawai::orderBy('nama_pegawai')->get();
+        $dinasList = \App\Models\Dinas::orderBy('nama_dinas')->get();
+        $kecamatanList = \App\Models\Kecamatan::orderBy('nama_kecamatan')->get();
 
         return view('admin.kunjungan.index', compact(
             'admin',
@@ -60,7 +62,9 @@ class AdminKunjunganController extends Controller
             'tanggalFilter',
             'pihakDitujuOptions',
             'keperluanOptions',
-            'pegawaiList'
+            'pegawaiList',
+            'dinasList',
+            'kecamatanList'
         ));
     }
 
@@ -79,6 +83,8 @@ class AdminKunjunganController extends Controller
             'keperluan' => 'required|string',
             'waktu' => 'nullable',
             'tanggal_kunjungan' => 'required|date',
+            'id_dinas' => 'nullable|integer',
+            'id_kecamatan' => 'nullable|integer',
         ]);
         $validated['id_admin'] = Auth::guard('admin')->id();
 
@@ -105,6 +111,8 @@ class AdminKunjunganController extends Controller
             'keperluan' => 'required|string',
             'waktu' => 'nullable',
             'tanggal_kunjungan' => 'required|date',
+            'id_dinas' => 'nullable|integer',
+            'id_kecamatan' => 'nullable|integer',
         ]);
 
         Kunjungan::findOrFail($id)->update($validated);

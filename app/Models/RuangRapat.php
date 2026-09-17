@@ -21,18 +21,29 @@ class RuangRapat extends Model
             if (auth('admin')->check()) {
                 $user = auth('admin')->user();
                 $table = $builder->getQuery()->from;
-                if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas) {
+                $hasDinas = \Illuminate\Support\Facades\Schema::hasColumn($table, 'id_dinas');
+                $hasKecamatan = \Illuminate\Support\Facades\Schema::hasColumn($table, 'id_kecamatan');
+
+                if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas && $hasDinas) {
                     $builder->where($table . '.id_dinas', $user->id_dinas);
-                } elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan']) && $user->id_kecamatan) {
+                } elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan']) && $user->id_kecamatan && $hasKecamatan) {
                     $builder->where($table . '.id_kecamatan', $user->id_kecamatan);
                 } elseif ($user->role === 'superadmin') {
-                    $builder->where(function ($q) use ($table) {
-                        $q->where($table . '.id_dinas', 1)
-                          ->orWhere(function ($q2) use ($table) {
-                              $q2->whereNull($table . '.id_dinas')
-                                 ->whereNull($table . '.id_kecamatan');
-                          });
-                    });
+                    if ($hasDinas || $hasKecamatan) {
+                        $builder->where(function ($q) use ($table, $hasDinas, $hasKecamatan) {
+                            if ($hasDinas) {
+                                $q->where($table . '.id_dinas', 1);
+                            }
+                            $q->orWhere(function ($q2) use ($table, $hasDinas, $hasKecamatan) {
+                                if ($hasDinas) {
+                                    $q2->whereNull($table . '.id_dinas');
+                                }
+                                if ($hasKecamatan) {
+                                    $q2->whereNull($table . '.id_kecamatan');
+                                }
+                            });
+                        });
+                    }
                 }
             }
         });

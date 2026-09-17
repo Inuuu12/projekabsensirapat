@@ -25,19 +25,30 @@ class Kunjungan extends Model
         'tanggal_kunjungan',
         'id_admin',
         'id_dinas',
+        'id_kecamatan',
     ];
 
     protected static function booted(): void
     {
-        static::addGlobalScope('dinas', function (Builder $builder) {
-            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
-                $builder->where($builder->getQuery()->from . '.id_dinas', auth('admin')->user()->id_dinas);
+        static::addGlobalScope('dinas_kecamatan', function (Builder $builder) {
+            if (auth('admin')->check()) {
+                $user = auth('admin')->user();
+                if ($user->role === 'admin_dinas' && $user->id_dinas) {
+                    $builder->where($builder->getQuery()->from . '.id_dinas', $user->id_dinas);
+                } elseif ($user->role === 'admin_kecamatan' && $user->id_kecamatan) {
+                    $builder->where($builder->getQuery()->from . '.id_kecamatan', $user->id_kecamatan);
+                }
             }
         });
 
         static::creating(function ($model) {
-            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
-                $model->id_dinas = auth('admin')->user()->id_dinas;
+            if (auth('admin')->check()) {
+                $user = auth('admin')->user();
+                if ($user->role === 'admin_dinas' && $user->id_dinas) {
+                    $model->id_dinas = $user->id_dinas;
+                } elseif ($user->role === 'admin_kecamatan' && $user->id_kecamatan) {
+                    $model->id_kecamatan = $user->id_kecamatan;
+                }
             }
         });
     }
@@ -45,6 +56,11 @@ class Kunjungan extends Model
     public function dinas()
     {
         return $this->belongsTo(Dinas::class, 'id_dinas', 'id_dinas');
+    }
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class, 'id_kecamatan', 'id_kecamatan');
     }
 
     public function getNamaPegawaiAttribute($value)

@@ -50,10 +50,14 @@ class Pegawai extends Authenticatable
         static::addGlobalScope('instansi', function (Builder $builder) {
             if (auth('admin')->check()) {
                 $user = auth('admin')->user();
-                if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas) {
-                    $builder->where($builder->getQuery()->from . '.id_dinas', $user->id_dinas);
-                } elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan']) && $user->id_kecamatan) {
-                    $builder->where($builder->getQuery()->from . '.id_kecamatan', $user->id_kecamatan);
+                $table = $builder->getQuery()->from;
+                $hasDinas = \Illuminate\Support\Facades\Schema::hasColumn($table, 'id_dinas');
+                $hasKecamatan = \Illuminate\Support\Facades\Schema::hasColumn($table, 'id_kecamatan');
+
+                if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas && $hasDinas) {
+                    $builder->where($table . '.id_dinas', $user->id_dinas);
+                } elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan']) && $user->id_kecamatan && $hasKecamatan) {
+                    $builder->where($table . '.id_kecamatan', $user->id_kecamatan);
                 }
             }
         });

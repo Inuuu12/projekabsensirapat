@@ -48,6 +48,15 @@
 
                 return $visible . '***@' . $domain;
             };
+            $getFotoUrl = function($path) {
+                if (empty($path) || $path === 'aduan/default.jpg') return null;
+                if (filter_var($path, FILTER_VALIDATE_URL)) return $path;
+                $cleanPath = ltrim(str_replace('\\', '/', $path), '/');
+                if (str_starts_with($cleanPath, 'storage/')) {
+                    $cleanPath = substr($cleanPath, 8);
+                }
+                return route('storage.media', ['path' => $cleanPath]);
+            };
             $aduanDetailItems = $masukanItems->mapWithKeys(fn ($aduan) => [
                 $aduan->id_dataaduan => [
                     'nama_pengadu' => $aduan->nama_pengadu,
@@ -57,7 +66,7 @@
                     'balasan_admin' => $aduan->balasan_admin ?: 'Belum ada balasan dari admin.',
                     'status' => (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status,
                     'tanggal' => $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d F Y, H:i') : '-',
-                    'foto_url' => (!empty($aduan->foto) && $aduan->foto !== 'aduan/default.jpg' && (file_exists(public_path('storage/' . $aduan->foto)) || \Illuminate\Support\Facades\Storage::disk('public')->exists($aduan->foto))) ? asset('storage/' . $aduan->foto) : null,
+                    'foto_url' => $getFotoUrl($aduan->foto),
                 ],
             ])->all();
         @endphp
