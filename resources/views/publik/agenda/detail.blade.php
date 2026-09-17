@@ -558,7 +558,6 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-    </script>
 
         /* --- SCRIPT KONTROL ZOOM IN / ZOOM OUT & DRAG PAN LAMPIRAN INLINE --- */
         let inlineLampiranScale = 1.0;

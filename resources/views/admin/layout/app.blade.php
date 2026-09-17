@@ -103,6 +103,17 @@
             border-color: #233a34 !important;
         }
 
+        /* Preserve white dots, indicators, and avatars inside colored badges in dark mode */
+        .dark [class*="bg-emerald"] .bg-white,
+        .dark [class*="bg-green"] .bg-white,
+        .dark [class*="bg-red"] .bg-white,
+        .dark [class*="bg-blue"] .bg-white,
+        .dark [class*="bg-amber"] .bg-white,
+        .dark .animate-ping.bg-white,
+        .dark .keep-white {
+            background-color: #ffffff !important;
+        }
+
         /* Enhanced Card & Container Shadows */
         main .shadow-xs,
         main .shadow-sm,

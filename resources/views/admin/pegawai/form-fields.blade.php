@@ -29,7 +29,6 @@
         $instansiInfo = auth('admin')->user()->getInstansiInfo();
     @endphp
     <div class="col-span-full bg-gray-50 dark:bg-[#0f1c19] border border-gray-200 dark:border-[#284c43] rounded-xl p-3 flex items-center gap-2.5">
-        <span class="text-base">{{ $instansiInfo['tipe'] === 'kecamatan' ? '🏛️' : '🏢' }}</span>
         <div class="text-xs">
             <p class="font-bold text-gray-700 dark:text-gray-200">{{ $instansiInfo['nama'] }}</p>
             <p class="text-[11px] text-gray-500 dark:text-gray-400">Pegawai otomatis terdaftar pada instansi ini.</p>
@@ -56,12 +55,12 @@
         </svg>
         <select id="{{ $prefix }}instansi" name="instansi" class="h-10 sm:h-11 w-full rounded-xl border border-[#b9c9c1] dark:border-[#284c43] bg-[#f4faf7] dark:bg-[#0f1c19] pl-10 pr-3 text-xs sm:text-sm text-gray-800 dark:text-white outline-none transition focus:border-[#35635b] focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-[#35635b]/10">
             <option value="">Pilih Instansi</option>
-            <optgroup label="🏢 Dinas / Perangkat Daerah">
+            <optgroup label="Dinas / Perangkat Daerah">
                 @foreach (($dinasList ?? collect()) as $dinas)
                     <option value="dinas_{{ $dinas->id_dinas }}">{{ $dinas->nama_dinas }}</option>
                 @endforeach
             </optgroup>
-            <optgroup label="🏛️ Kecamatan">
+            <optgroup label="Kecamatan">
                 @foreach (($kecamatanList ?? collect()) as $kecamatan)
                     <option value="kecamatan_{{ $kecamatan->id_kecamatan }}">{{ $kecamatan->nama_kecamatan }}</option>
                 @endforeach

@@ -16,19 +16,25 @@ use App\Models\QRCode;
 use App\Models\UlangTahun;
 use App\Services\AppSetting;
 use App\Services\NewsApiService;
+use App\Services\SirapiMailer;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class PublicPageController extends Controller
 {
     private const PUBLIC_TIMEZONE = 'Asia/Jakarta';
+    public const KUNJUNGAN_OTP_SESSION_KEY = 'kunjungan_otp_verification';
+    public const KUNJUNGAN_OTP_RESEND_SECONDS = 60;
+    public const KUNJUNGAN_OTP_TTL_MINUTES = 10;
 
     public function index(NewsApiService $newsService)
     {
@@ -478,6 +484,95 @@ class PublicPageController extends Controller
         return view('publik.kunjungan.index', compact('pegawaiList', 'dinasList', 'kecamatanList'));
     }
 
+    public function kirimOtpKunjungan(Request $request)
+    {
+        $validated = $request->validate([
+            'email_pengunjung' => 'required|email|max:255',
+        ], [
+            'email_pengunjung.required' => 'Silakan isi alamat email Anda terlebih dahulu.',
+            'email_pengunjung.email' => 'Format email tidak valid.',
+        ]);
+
+        $email = strtolower($validated['email_pengunjung']);
+        $existingOtp = session(self::KUNJUNGAN_OTP_SESSION_KEY);
+        $now = now();
+
+        if (
+            ($existingOtp['email'] ?? null) === $email
+            && ($existingOtp['sent_at'] ?? 0) > $now->copy()->subSeconds(self::KUNJUNGAN_OTP_RESEND_SECONDS)->timestamp
+        ) {
+            $remaining = self::KUNJUNGAN_OTP_RESEND_SECONDS - ($now->timestamp - ($existingOtp['sent_at'] ?? 0));
+            return response()->json([
+                'success' => false,
+                'message' => "Kode OTP sudah dikirim. Harap tunggu {$remaining} detik sebelum meminta kode baru.",
+            ], 429);
+        }
+
+        $otp = (string) random_int(100000, 999999);
+
+        try {
+            SirapiMailer::send(
+                $email,
+                'Kode OTP Verifikasi Kunjungan Kerja RAPID',
+                "Yth. Pengunjung,\n\nKode OTP verifikasi pendaftaran kunjungan kerja Anda di RAPID Kabupaten Bogor adalah:\n\n{$otp}\n\nKode ini berlaku selama " . self::KUNJUNGAN_OTP_TTL_MINUTES . " menit. Mohon untuk tidak memberikan kode ini kepada pihak lain.\n\nJika Anda tidak merasa mengajukan kunjungan, abaikan email ini."
+            );
+        } catch (\Throwable $e) {
+            Log::error('PublicPageController: Gagal mengirim OTP kunjungan ke ' . $email . ': ' . $e->getMessage(), ['exception' => $e]);
+            $msg = 'Gagal mengirim OTP ke email. Periksa koneksi atau konfigurasi email.';
+            if (config('app.debug')) {
+                $msg .= ' (' . $e->getMessage() . ')';
+            }
+            return response()->json([
+                'success' => false,
+                'message' => $msg,
+            ], 500);
+        }
+
+        session()->put(self::KUNJUNGAN_OTP_SESSION_KEY, [
+            'email' => $email,
+            'otp_hash' => Hash::make($otp),
+            'expires_at' => $now->copy()->addMinutes(self::KUNJUNGAN_OTP_TTL_MINUTES)->timestamp,
+            'sent_at' => $now->timestamp,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kode OTP 6 digit berhasil dikirim ke email Anda.',
+        ]);
+    }
+
+    private function validateKunjunganOtp(string $email, string $otp): void
+    {
+        $otpSession = session(self::KUNJUNGAN_OTP_SESSION_KEY);
+        $normalizedEmail = strtolower($email);
+
+        if (! $otpSession) {
+            throw ValidationException::withMessages([
+                'otp' => 'Silakan klik tombol "Kirim OTP" ke email terlebih dahulu.',
+            ]);
+        }
+
+        if (($otpSession['email'] ?? null) !== $normalizedEmail) {
+            throw ValidationException::withMessages([
+                'otp' => 'Alamat email tidak cocok dengan email yang menerima kode OTP.',
+            ]);
+        }
+
+        if (($otpSession['expires_at'] ?? 0) < now()->timestamp) {
+            session()->forget(self::KUNJUNGAN_OTP_SESSION_KEY);
+
+            throw ValidationException::withMessages([
+                'otp' => 'Kode OTP sudah kedaluwarsa (berlaku 10 menit). Silakan klik "Kirim OTP" kembali.',
+            ]);
+        }
+
+        if (! Hash::check($otp, $otpSession['otp_hash'] ?? '')) {
+            throw ValidationException::withMessages([
+                'otp' => 'Kode OTP yang Anda masukkan salah. Periksa kembali email Anda.',
+            ]);
+        }
+    }
+
     public function simpanKunjungan(Request $request)
     {
         $namaPegawai = $request->input('nama_pegawai') ?: $request->input('nama_pejabat');
@@ -503,6 +598,7 @@ class PublicPageController extends Controller
             'asal_instansi' => 'required|string|max:255',
             'nomorhp_pengunjung' => 'required|string|max:13|regex:/^[0-9]+$/',
             'email_pengunjung' => 'required|email|max:255',
+            'otp' => 'required|digits:6',
             'keperluan' => 'required|string',
             'id_dinas' => 'nullable|integer',
             'id_kecamatan' => 'nullable|integer',
@@ -513,8 +609,13 @@ class PublicPageController extends Controller
             'nomorhp_pengunjung.required' => 'No. HP / WhatsApp wajib diisi.',
             'email_pengunjung.required' => 'Alamat email wajib diisi.',
             'email_pengunjung.email' => 'Format email tidak valid.',
+            'otp.required' => 'Kode OTP wajib diisi.',
+            'otp.digits' => 'Kode OTP harus berupa 6 digit angka.',
             'keperluan.required' => 'Keperluan kunjungan wajib diisi.',
         ]);
+
+        $this->validateKunjunganOtp($validated['email_pengunjung'], $validated['otp']);
+        unset($validated['otp']);
 
         $now = $this->nowWib();
         $validated['id_dinas'] = $idDinas ?: null;
@@ -543,7 +644,9 @@ class PublicPageController extends Controller
             }
         }
 
-        return back()->with('success', 'Form kunjungan Anda telah berhasil dikirim. Terima kasih!');
+        session()->forget(self::KUNJUNGAN_OTP_SESSION_KEY);
+
+        return back()->with('success', 'Form kunjungan Anda telah berhasil dikirim dan diverifikasi. Terima kasih!');
     }
 
     public function qrHadir(Agenda $agenda)

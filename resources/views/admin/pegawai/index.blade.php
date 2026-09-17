@@ -89,12 +89,12 @@
                             onchange="document.getElementById('form-search-pegawai').submit()"
                             class="h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 text-xs font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                             <option value="semua" @selected(($instansiFilter ?? 'semua') === 'semua')>Semua Instansi</option>
-                            <optgroup label="🏢 Dinas / Perangkat Daerah">
+                            <optgroup label="Dinas / Perangkat Daerah">
                                 @foreach (($dinasList ?? collect()) as $dinas)
                                     <option value="dinas_{{ $dinas->id_dinas }}" @selected(($instansiFilter ?? 'semua') === 'dinas_' . $dinas->id_dinas)>{{ $dinas->nama_dinas }}</option>
                                 @endforeach
                             </optgroup>
-                            <optgroup label="🏛️ Kecamatan">
+                            <optgroup label="Kecamatan">
                                 @foreach (($kecamatanList ?? collect()) as $kecamatan)
                                     <option value="kecamatan_{{ $kecamatan->id_kecamatan }}" @selected(($instansiFilter ?? 'semua') === 'kecamatan_' . $kecamatan->id_kecamatan)>{{ $kecamatan->nama_kecamatan }}</option>
                                 @endforeach
@@ -165,13 +165,11 @@
                             <td class="px-6 py-4 font-semibold text-gray-700 dark:text-slate-200">{{ $item->nip }}</td>
                             <td class="px-6 py-4">
                                 @if ($item->dinas)
-                                    <span class="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 px-2.5 py-1 text-xs font-bold text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/50 whitespace-nowrap">
-                                        <span class="text-xs">🏢</span>
+                                    <span class="inline-flex items-center rounded-lg bg-blue-50 dark:bg-blue-950/60 px-2.5 py-1 text-xs font-bold text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/50 whitespace-nowrap">
                                         <span>{{ $item->dinas->nama_dinas }}</span>
                                     </span>
                                 @elseif ($item->kecamatan)
-                                    <span class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/50 whitespace-nowrap">
-                                        <span class="text-xs">🏛️</span>
+                                    <span class="inline-flex items-center rounded-lg bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/50 whitespace-nowrap">
                                         <span>{{ $item->kecamatan->nama_kecamatan }}</span>
                                     </span>
                                 @else

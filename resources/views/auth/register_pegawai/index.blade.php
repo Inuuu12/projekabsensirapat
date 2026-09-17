@@ -168,18 +168,16 @@
             <form action="{{ route('pegawai.register.submit') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 rounded-xl border border-[#DDE3DF] dark:border-[#233a34] bg-white dark:bg-[#152420] p-4.5 sm:p-7 md:p-8 shadow-xs transition-colors">
                 @csrf
 
-                <!-- Upload Foto Profil -->
-                <div class="sm:col-span-2 flex flex-col items-center justify-center py-2 border-b border-gray-100 dark:border-[#233a34] mb-2">
-                    <input id="foto" name="foto" type="file" accept="image/*" class="hidden">
-                    <label for="foto" class="relative flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-[#7b8d86] dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] text-[#6f7d78] dark:text-gray-400 transition hover:border-sirapi-green hover:text-sirapi-green shadow-xs group">
-                        <img id="foto-preview" src="{{ asset('assets/foto/profile.png') }}" alt="Preview foto" class="h-full w-full rounded-full object-cover">
-                        <span class="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white dark:border-[#152420] bg-sirapi-green text-white shadow-sm group-hover:scale-110 transition-transform">
-                            <i data-lucide="camera" class="h-4 w-4"></i>
+                <!-- Foto Profil (Otomatis dari Perekaman Wajah / Face Recognition) -->
+                <div class="sm:col-span-2 flex flex-col items-center justify-center py-2.5 border-b border-gray-100 dark:border-[#233a34] mb-2">
+                    <div class="relative flex h-24 w-24 items-center justify-center rounded-full border-2 border-dashed border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] shadow-xs">
+                        <img id="foto-preview" src="{{ asset('assets/foto/profile.png') }}" alt="Preview Foto Profil" class="h-full w-full rounded-full object-cover">
+                    </div>
+                    <div class="flex flex-col items-center mt-2.5 text-center">
+                        <span class="text-xs font-bold text-gray-800 dark:text-gray-200">Foto Profil</span>
+                        <span id="foto-profil-desc" class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                            Otomatis diambil dari hasil scan kamera Face Recognition
                         </span>
-                    </label>
-                    <div class="flex gap-2 mt-2 items-center">
-                        <label for="foto" class="cursor-pointer text-xs font-bold text-sirapi-green dark:text-emerald-400 hover:underline">Unggah Foto Profil</label>
-                        <span class="text-xs text-gray-400">(Opsional, max 2MB)</span>
                     </div>
                 </div>
 
@@ -211,7 +209,7 @@
                             class="h-11 sm:h-12 w-full rounded-xl border border-[#DDE3DF] dark:border-[#284c43] bg-gray-50/50 dark:bg-[#0f1c19] pl-10 sm:pl-11 pr-8 text-xs sm:text-sm font-medium text-gray-800 dark:text-white shadow-xs outline-none transition focus:border-sirapi-green focus:bg-white dark:focus:bg-[#0f1c19] focus:ring-2 focus:ring-sirapi-green/15 cursor-pointer appearance-none">
                             <option value="">Pilih Instansi (Dinas / Kecamatan)</option>
                             @if (!empty($dinasList) && $dinasList->isNotEmpty())
-                                <optgroup label="🏢 Dinas / Perangkat Daerah">
+                                <optgroup label="Dinas / Perangkat Daerah">
                                     @foreach ($dinasList as $dinas)
                                         <option value="dinas_{{ $dinas->id_dinas }}" @selected(old('instansi') === 'dinas_' . $dinas->id_dinas)>
                                             {{ $dinas->nama_dinas }}
@@ -220,7 +218,7 @@
                                 </optgroup>
                             @endif
                             @if (!empty($kecamatanList) && $kecamatanList->isNotEmpty())
-                                <optgroup label="🏛️ Kecamatan">
+                                <optgroup label="Kecamatan">
                                     @foreach ($kecamatanList as $kecamatan)
                                         <option value="kecamatan_{{ $kecamatan->id_kecamatan }}" @selected(old('instansi') === 'kecamatan_' . $kecamatan->id_kecamatan)>
                                             {{ $kecamatan->nama_kecamatan }}
@@ -399,8 +397,12 @@
                                 <i data-lucide="scan-face" class="h-5 w-5"></i>
                             </div>
                             <div>
-                                <h3 class="text-xs sm:text-sm font-bold text-gray-800 dark:text-white">Perekaman Wajah (Face Recognition)</h3>
-                                <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Daftarkan wajah sekarang untuk kemudahan presensi rapat instan</p>
+                                <h3 class="text-xs sm:text-sm font-bold text-gray-800 dark:text-white flex items-center gap-1.5">
+                                    <span>Perekaman Wajah (Face Recognition)</span>
+                                    <span class="text-red-500 font-bold">*</span>
+                                    <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-950/70 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/60">Wajib</span>
+                                </h3>
+                                <p class="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">Wajib merekam wajah untuk validasi akun & presensi rapat biometrik</p>
                             </div>
                         </div>
 
@@ -508,11 +510,14 @@
                                 <span class="register-guide-corner w-4 h-4 border-t-3 border-l-3 border-white rounded-tl-xl transition-colors"></span>
                                 <span class="register-guide-corner w-4 h-4 border-t-3 border-r-3 border-white rounded-tr-xl transition-colors"></span>
                             </div>
-                            <span id="register-face-guide-hint" class="bg-black/65 backdrop-blur-xs text-white text-[10.5px] font-bold px-3 py-1 rounded-full text-center tracking-wide transition-colors z-10">Arahkan Wajah ke Bingkai</span>
                             <div class="w-full flex justify-between z-10">
                                 <span class="register-guide-corner w-4 h-4 border-b-3 border-l-3 border-white rounded-bl-xl transition-colors"></span>
                                 <span class="register-guide-corner w-4 h-4 border-b-3 border-r-3 border-white rounded-br-xl transition-colors"></span>
                             </div>
+                        </div>
+                        <!-- Teks Petunjuk di Bawah (Di Luar Border/Frame Wajah) -->
+                        <div class="absolute bottom-2.5 inset-x-0 flex justify-center z-30 pointer-events-none">
+                            <span id="register-face-guide-hint" class="bg-black/75 backdrop-blur-xs text-white text-[10.5px] sm:text-xs font-bold px-3.5 py-1 rounded-full text-center tracking-wide transition-colors shadow-md border border-white/10">Arahkan Wajah ke Bingkai</span>
                         </div>
                     </div>
                 </div>
@@ -551,18 +556,8 @@
             lucide.createIcons();
         }
 
-        const fotoInput = document.getElementById('foto');
         const fotoPreview = document.getElementById('foto-preview');
-        fotoInput?.addEventListener('change', function(e) {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    if (fotoPreview) fotoPreview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        const fotoProfilDesc = document.getElementById('foto-profil-desc');
 
         // Face Recognition Variables & Logic
         let faceModelsLoaded = false;
@@ -602,9 +597,12 @@
                 faceRecordedView.classList.add('flex');
             }
 
-            // Jika user belum memilih file foto manual, update preview avatar utama
-            if (fotoInput && (!fotoInput.files || fotoInput.files.length === 0) && fotoPreview) {
+            // Sinkronkan foto avatar utama secara otomatis dari hasil scan wajah
+            if (fotoPreview) {
                 fotoPreview.src = imageUrl;
+            }
+            if (fotoProfilDesc) {
+                fotoProfilDesc.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-bold">✓ Foto profil berhasil tersinkron</span>';
             }
             lucide.createIcons();
         }
@@ -626,8 +624,11 @@
             }
             if (faceUnrecordedView) faceUnrecordedView.classList.remove('hidden');
 
-            if (fotoInput && (!fotoInput.files || fotoInput.files.length === 0) && fotoPreview) {
+            if (fotoPreview) {
                 fotoPreview.src = "{{ asset('assets/foto/profile.png') }}";
+            }
+            if (fotoProfilDesc) {
+                fotoProfilDesc.innerText = 'Otomatis diambil dari hasil scan kamera Face Recognition';
             }
             lucide.createIcons();
         }
@@ -1035,6 +1036,15 @@
 
         const registerForm = document.querySelector('form[action="{{ route("pegawai.register.submit") }}"]') || document.querySelector('form');
         registerForm?.addEventListener('submit', function (e) {
+            // 1. Validasi Perekaman Wajah (Face Recognition) Wajib (otomatis menjadi foto profil)
+            if (!faceDescriptorInput?.value || !fotoWajahInput?.value) {
+                e.preventDefault();
+                alert('Perekaman Wajah (Face Recognition) wajib dilakukan sebelum mendaftar. Foto profil akan otomatis diambil dari hasil perekaman wajah.');
+                openFaceModal();
+                return false;
+            }
+
+            // 3. Validasi Jabatan Manual jika memilih Lainnya
             if (jabatanSelect && jabatanSelect.value === '__lainnya__') {
                 const val = jabatanManualInput ? jabatanManualInput.value.trim() : '';
                 if (!val) {
@@ -1046,6 +1056,7 @@
                 jabatanSelect.options[jabatanSelect.selectedIndex].value = val;
             }
 
+            // 4. Validasi Bidang Manual jika memilih Lainnya
             if (bidangSelect && bidangSelect.value === '__lainnya__') {
                 const val = bidangManualInput ? bidangManualInput.value.trim() : '';
                 bidangSelect.options[bidangSelect.selectedIndex].value = val;

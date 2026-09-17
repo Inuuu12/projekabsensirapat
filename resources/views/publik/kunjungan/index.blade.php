@@ -163,11 +163,27 @@
                            class="w-full bg-[#F3F2ED] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] rounded-2xl p-4 text-xs md:text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-ijo-tua focus:bg-white dark:focus:bg-[#152420] transition-all">
                 </div>
 
-                <!-- Email -->
+                <!-- Email & Kirim OTP -->
                 <div>
                     <label class="block text-xs md:text-sm font-bold text-gray-900 dark:text-gray-200 mb-1.5">Email *</label>
-                    <input type="email" name="email_pengunjung" value="{{ old('email_pengunjung') }}" placeholder="Masukkan alamat email anda" required
-                           class="w-full bg-[#F3F2ED] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] rounded-2xl p-4 text-xs md:text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-ijo-tua focus:bg-white dark:focus:bg-[#152420] transition-all">
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="email" id="email_pengunjung" name="email_pengunjung" value="{{ old('email_pengunjung') }}" placeholder="Masukkan alamat email anda" required
+                               class="w-full bg-[#F3F2ED] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] rounded-2xl p-4 text-xs md:text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-ijo-tua focus:bg-white dark:focus:bg-[#152420] transition-all">
+                        <button type="button" id="btn-send-kunjungan-otp"
+                                class="shrink-0 rounded-2xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-6 py-3.5 text-xs font-bold text-white transition-all shadow-xs cursor-pointer inline-flex items-center justify-center gap-1.5">
+                            <span id="btn-otp-text">Kirim OTP</span>
+                        </button>
+                    </div>
+                    <p id="kunjungan-otp-status" class="hidden text-[11px] font-bold mt-1.5"></p>
+                </div>
+
+                <!-- Input OTP -->
+                <div>
+                    <label class="block text-xs md:text-sm font-bold text-gray-900 dark:text-gray-200 mb-1.5">Kode OTP *</label>
+                    <input type="text" id="kunjungan-otp" name="otp" value="{{ old('otp') }}" required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="6 digit kode OTP"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6)"
+                           class="w-full bg-[#F3F2ED] dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] rounded-2xl p-4 text-xs md:text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-ijo-tua focus:bg-white dark:focus:bg-[#152420] transition-all tracking-wider font-semibold">
+                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Kode OTP 6 digit dikirimkan ke email Anda dan berlaku selama 10 menit.</p>
                 </div>
 
                 <!-- Keperluan Kunjungan -->
@@ -216,6 +232,87 @@
                 selectKecamatan.disabled = true;
             }
         }
+
+        // --- OTP KUNJUNGAN HANDLER ---
+        const btnSendOtp = document.getElementById('btn-send-kunjungan-otp');
+        const btnOtpText = document.getElementById('btn-otp-text');
+        const inputEmail = document.getElementById('email_pengunjung');
+        const statusOtp = document.getElementById('kunjungan-otp-status');
+        let otpCooldownInterval = null;
+
+        function showOtpStatus(message, isSuccess = false) {
+            if (!statusOtp) return;
+            statusOtp.textContent = message;
+            statusOtp.classList.remove('hidden', 'text-red-600', 'text-emerald-600', 'dark:text-emerald-400');
+            statusOtp.classList.add(isSuccess ? 'text-emerald-600' : 'text-red-600');
+            if (isSuccess) statusOtp.classList.add('dark:text-emerald-400');
+        }
+
+        function startOtpCooldown(seconds = 60) {
+            let count = seconds;
+            if (btnSendOtp) btnSendOtp.disabled = true;
+            if (btnOtpText) btnOtpText.textContent = `Tunggu (${count}s)`;
+
+            if (otpCooldownInterval) clearInterval(otpCooldownInterval);
+            otpCooldownInterval = setInterval(() => {
+                count--;
+                if (count <= 0) {
+                    clearInterval(otpCooldownInterval);
+                    if (btnSendOtp) btnSendOtp.disabled = false;
+                    if (btnOtpText) btnOtpText.textContent = 'Kirim Ulang OTP';
+                } else {
+                    if (btnOtpText) btnOtpText.textContent = `Tunggu (${count}s)`;
+                }
+            }, 1000);
+        }
+
+        btnSendOtp?.addEventListener('click', async () => {
+            const email = inputEmail?.value.trim();
+            if (!email) {
+                showOtpStatus('Silakan isi alamat email Anda terlebih dahulu.', false);
+                inputEmail?.focus();
+                return;
+            }
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                showOtpStatus('Format email tidak valid. Masukkan email yang benar.', false);
+                inputEmail?.focus();
+                return;
+            }
+
+            btnSendOtp.disabled = true;
+            if (btnOtpText) btnOtpText.textContent = 'Mengirim...';
+            showOtpStatus('Sedang mengirim kode OTP ke email...', true);
+
+            try {
+                const response = await fetch('{{ route('publik.form-kunjungan.otp') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email_pengunjung: email })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showOtpStatus(data.message || 'Kode OTP berhasil dikirim. Silakan periksa kotak masuk atau spam email Anda.', true);
+                    startOtpCooldown(60);
+                    document.getElementById('kunjungan-otp')?.focus();
+                } else {
+                    showOtpStatus(data.message || 'Gagal mengirim kode OTP.', false);
+                    btnSendOtp.disabled = false;
+                    if (btnOtpText) btnOtpText.textContent = 'Kirim OTP';
+                }
+            } catch (err) {
+                showOtpStatus('Terjadi kendala saat mengirim OTP. Periksa koneksi internet Anda.', false);
+                btnSendOtp.disabled = false;
+                if (btnOtpText) btnOtpText.textContent = 'Kirim OTP';
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
             @if(old('id_kecamatan'))

@@ -132,12 +132,12 @@
                                 </p>
                             </div>
                             @if ($item->isBerlangsung())
-                                <span class="self-start sm:self-center rounded-full bg-emerald-600 text-white px-2.5 py-0.5 text-[11px] font-black whitespace-nowrap inline-flex items-center gap-1.5 shadow-xs">
+                                <span class="self-start sm:self-center rounded-full bg-emerald-600 text-white px-3 py-0.5 text-[10px] font-extrabold whitespace-nowrap inline-flex items-center space-x-1.5 shadow-xs">
                                     <span class="relative flex h-2 w-2">
-                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75 keep-white" style="background-color: #ffffff !important;"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-white keep-white" style="background-color: #ffffff !important;"></span>
                                     </span>
-                                    <span>Live</span>
+                                    <span>Berlangsung</span>
                                 </span>
                             @else
                                 <span class="self-start sm:self-center rounded-full bg-[#35635b]/10 dark:bg-emerald-400/10 px-3 py-1 text-xs font-bold text-[#35635b] dark:text-emerald-400 whitespace-nowrap">{{ $labelTanggal }}</span>

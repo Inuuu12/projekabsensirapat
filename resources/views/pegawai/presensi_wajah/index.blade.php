@@ -119,11 +119,14 @@
                                 <span class="guide-corner w-4 h-4 border-t-3 border-l-3 border-white rounded-tl-xl transition-colors"></span>
                                 <span class="guide-corner w-4 h-4 border-t-3 border-r-3 border-white rounded-tr-xl transition-colors"></span>
                             </div>
-                            <span id="face-guide-hint" class="bg-black/65 backdrop-blur-xs text-white text-[10.5px] font-bold px-3 py-1 rounded-full text-center tracking-wide transition-colors z-10">Arahkan Wajah ke Bingkai</span>
                             <div class="w-full flex justify-between z-10">
                                 <span class="guide-corner w-4 h-4 border-b-3 border-l-3 border-white rounded-bl-xl transition-colors"></span>
                                 <span class="guide-corner w-4 h-4 border-b-3 border-r-3 border-white rounded-br-xl transition-colors"></span>
                             </div>
+                        </div>
+                        <!-- Teks Petunjuk di Bawah (Di Luar Border/Frame Wajah) -->
+                        <div class="absolute bottom-2.5 inset-x-0 flex justify-center z-30 pointer-events-none">
+                            <span id="face-guide-hint" class="bg-black/75 backdrop-blur-xs text-white text-[10.5px] sm:text-xs font-bold px-3.5 py-1 rounded-full text-center tracking-wide transition-colors shadow-md border border-white/10">Arahkan Wajah ke Bingkai</span>
                         </div>
                     </div>
 

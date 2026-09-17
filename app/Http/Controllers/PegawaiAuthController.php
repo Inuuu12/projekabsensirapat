@@ -200,12 +200,13 @@ class PegawaiAuthController extends Controller
             'bidang' => ['nullable', 'string', 'max:255'],
             'nomor_hp' => ['required', 'string', 'max:13', 'regex:/^[0-9]+$/'],
             'email' => ['required', 'email', 'max:255', 'unique:sirapi_md_pegawai,email'],
-            'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'face_descriptor' => ['nullable', 'string'],
-            'foto_wajah' => ['nullable', 'string'],
+            'face_descriptor' => ['required', 'string'],
+            'foto_wajah' => ['required', 'string'],
         ], [
             'instansi.required' => 'Silakan pilih instansi (Dinas atau Kecamatan) tempat Anda bertugas.',
+            'face_descriptor.required' => 'Perekaman biometrik wajah (Face Recognition) wajib dilakukan.',
+            'foto_wajah.required' => 'Perekaman foto wajah (Face Recognition) wajib dilakukan.',
         ]);
 
         if (str_starts_with($validated['instansi'], 'dinas_')) {
@@ -217,11 +218,7 @@ class PegawaiAuthController extends Controller
         }
         unset($validated['instansi']);
 
-        if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('pegawai', 'public');
-        }
-
-        // Simpan foto hasil scan wajah jika ada
+        // Simpan foto hasil scan wajah dan otomatis jadikan sebagai foto profil
         if (!empty($request->input('foto_wajah'))) {
             $imageParts = explode(';base64,', $request->input('foto_wajah'));
             if (count($imageParts) === 2) {
@@ -234,11 +231,7 @@ class PegawaiAuthController extends Controller
                 Storage::disk('public')->put('pegawai/' . $fileName, $imageBase64);
                 $fotoWajahPath = 'pegawai/' . $fileName;
                 $validated['foto_wajah'] = $fotoWajahPath;
-
-                // Jika belum upload foto profil terpisah, jadikan foto wajah sebagai foto profil
-                if (empty($validated['foto'])) {
-                    $validated['foto'] = $fotoWajahPath;
-                }
+                $validated['foto'] = $fotoWajahPath; // Foto profil otomatis dari hasil scan face recognition
             }
         }
 

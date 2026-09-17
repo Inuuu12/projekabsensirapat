@@ -35,21 +35,36 @@
         }
         .leaflet-popup-content-wrapper {
             border-radius: 16px !important;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18) !important;
+            background-color: #ffffff !important;
+            color: #111827 !important;
         }
         .leaflet-popup-content {
             margin: 14px 16px !important;
             line-height: 1.4 !important;
+            color: #111827 !important;
         }
-        .leaflet-container a.leaflet-popup-btn,
-        .leaflet-popup-content a {
+        .leaflet-popup-content h4,
+        .leaflet-popup-content h5 {
+            color: #111827 !important;
+        }
+        .leaflet-popup-content p {
+            color: #374151 !important;
+        }
+        .leaflet-container a.leaflet-popup-btn {
             color: #ffffff !important;
             text-decoration: none !important;
         }
-        .leaflet-container a.leaflet-popup-btn:hover,
-        .leaflet-popup-content a:hover {
+        .leaflet-container a.leaflet-popup-btn:hover {
             color: #ffffff !important;
             opacity: 0.92;
+        }
+        .leaflet-container a.leaflet-popup-close-button {
+            color: #4b5563 !important;
+            padding: 6px 8px 0 0 !important;
+        }
+        .leaflet-container a.leaflet-popup-close-button:hover {
+            color: #111827 !important;
         }
 
         /* ===== HERO BANNER FULL-WIDTH BREAKOUT ===== */
@@ -420,7 +435,7 @@
                             </div>
                         </div>
 
-                        <div id="beranda-map" class="w-full h-full z-0 bg-[#e5e3df] dark:bg-[#121f1c]"></div>
+                        <div id="beranda-map" class="w-full h-full z-0 bg-[#e5e3df]"></div>
 
                         <!-- Overlay Legend -->
                         <div class="absolute bottom-3 left-3 z-20 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/80 dark:border-[#233a34] rounded-xl p-3 shadow-lg text-[11px] space-y-1.5 pointer-events-auto max-w-[245px]">
@@ -1039,15 +1054,6 @@
             const centerLng = 106.82;
             const defaultZoom = 10;
 
-            let isDark = document.documentElement.classList.contains('dark');
-            const getTileUrl = (dark) => dark
-                ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
-                : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-            const getAttribution = (dark) => dark
-                ? '&copy; <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a> &mdash; Esri, DeLorme, NAVTEQ'
-                : '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
-
             const map = L.map('beranda-map', {
                 center: [centerLat, centerLng],
                 zoom: defaultZoom,
@@ -1055,34 +1061,13 @@
                 scrollWheelZoom: false
             });
 
-            let currentTileLayer = L.tileLayer(getTileUrl(isDark), {
-                attribution: getAttribution(isDark),
-                maxNativeZoom: isDark ? 16 : 19,
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
+                maxNativeZoom: 19,
                 maxZoom: 19
             }).addTo(map);
 
             let geojsonLayer;
-
-            const updateMapTheme = (dark) => {
-                map.removeLayer(currentTileLayer);
-                currentTileLayer = L.tileLayer(getTileUrl(dark), {
-                    attribution: getAttribution(dark),
-                    maxNativeZoom: dark ? 16 : 19,
-                    maxZoom: 19
-                }).addTo(map);
-
-                if (geojsonLayer) {
-                    geojsonLayer.setStyle({
-                        fillColor: dark ? '#10b981' : '#35635b',
-                        color: dark ? '#10b981' : '#2b4f49',
-                        fillOpacity: dark ? 0.25 : 0.18
-                    });
-                }
-            };
-
-            window.addEventListener('sirapi-theme-changed', (e) => {
-                updateMapTheme(e.detail.theme === 'dark');
-            });
 
             // Fetch Administrative GeoJSON of Kabupaten Bogor (40 Kecamatan)
             fetch("{{ asset('admin_kec.json') }}")
@@ -1093,14 +1078,13 @@
                 .then(data => {
                     geojsonLayer = L.geoJSON(data, {
                         style: function(feature) {
-                            const dark = document.documentElement.classList.contains('dark');
                             return {
-                                fillColor: dark ? '#10b981' : '#35635b',
+                                fillColor: '#35635b',
                                 weight: 1.5,
                                 opacity: 0.7,
-                                color: dark ? '#10b981' : '#2b4f49',
+                                color: '#2b4f49',
                                 dashArray: '2',
-                                fillOpacity: dark ? 0.25 : 0.18
+                                fillOpacity: 0.18
                             };
                         },
                         onEachFeature: function(feature, layer) {
@@ -1290,23 +1274,23 @@
                 let popupHtml = `
                     <div class="p-2 font-sans max-w-[250px]">
                         <span class="${badgeClass} text-[10px] font-extrabold px-2 py-0.5 rounded-full">${typeBadge}</span>
-                        <h4 class="font-bold text-xs text-gray-900 dark:text-white mt-1.5 leading-snug">${name}</h4>
-                        <p class="text-[11px] text-gray-600 dark:text-gray-300 mt-1 leading-normal">${addr}</p>
+                        <h4 class="font-bold text-xs text-gray-900 mt-1.5 leading-snug" style="color: #111827 !important;">${name}</h4>
+                        <p class="text-[11px] text-gray-700 font-medium mt-1 leading-relaxed" style="color: #374151 !important;">${addr}</p>
                 `;
 
                 if (hasAgenda) {
                     const topAg = matchedAgendas[0];
                     popupHtml += `
-                        <div class="mt-2.5 pt-2 border-t border-gray-100 dark:border-gray-700">
+                        <div class="mt-2.5 pt-2 border-t border-gray-200">
                             <span class="bg-red-100 text-red-800 text-[9.5px] font-black px-2 py-0.5 rounded-full">Ada Agenda Hari Ini</span>
-                            <h5 class="font-bold text-xs text-gray-900 mt-1 leading-tight">${topAg.nama}</h5>
-                            <p class="text-[10px] text-gray-500 mt-0.5">${topAg.waktu}</p>
+                            <h5 class="font-bold text-xs text-gray-900 mt-1 leading-tight" style="color: #111827 !important;">${topAg.nama}</h5>
+                            <p class="text-[10px] text-gray-600 font-medium mt-0.5" style="color: #4b5563 !important;">${topAg.waktu}</p>
                         </div>
                     `;
                 }
 
                 popupHtml += `
-                    <div class="flex items-center gap-2 mt-3 pt-2.5 border-t border-gray-100 dark:border-gray-700">
+                    <div class="flex items-center gap-2 mt-3 pt-2.5 border-t border-gray-200">
                         <a href="{{ route('publik.form-kunjungan') }}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn flex-1 text-center text-[10px] sm:text-[11px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-2 py-1.5 rounded-lg transition-all shadow-xs">Form Kunjungan</a>
                         <button type="button" onclick="openLocationAgendasModal('${safeName}', '${safeAddr}', ${idDinas || 'null'}, ${idKecamatan || 'null'}, '${safeBadge}')" style="color: #ffffff !important;" class="leaflet-popup-btn flex-1 text-center text-[10px] sm:text-[11px] font-bold text-white bg-emerald-700 hover:bg-emerald-800 px-2 py-1.5 rounded-lg transition-all shadow-xs cursor-pointer">Agenda &rarr;</button>
                     </div>
@@ -1424,10 +1408,10 @@
                         marker.bindPopup(`
                             <div class="p-2 font-sans max-w-[250px]">
                                 <span class="bg-red-100 text-red-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Agenda Kegiatan</span>
-                                <h4 class="font-bold text-xs text-gray-900 mt-1 leading-snug">${item.nama}</h4>
-                                <p class="text-[11px] text-gray-600 mt-1">${item.lokasi}</p>
-                                <p class="text-[10px] text-gray-500 mt-0.5">${item.waktu}</p>
-                                <div class="flex items-center gap-2 mt-3 pt-2.5 border-t border-gray-100 dark:border-gray-700">
+                                <h4 class="font-bold text-xs text-gray-900 mt-1 leading-snug" style="color: #111827 !important;">${item.nama}</h4>
+                                <p class="text-[11px] text-gray-700 font-medium mt-1 leading-relaxed" style="color: #374151 !important;">${item.lokasi}</p>
+                                <p class="text-[10px] text-gray-600 font-medium mt-0.5" style="color: #4b5563 !important;">${item.waktu}</p>
+                                <div class="flex items-center gap-2 mt-3 pt-2.5 border-t border-gray-200">
                                     <a href="{{ route('publik.form-kunjungan') }}" style="color: #ffffff !important; text-decoration: none !important;" class="leaflet-popup-btn flex-1 text-center text-[10px] sm:text-[11px] font-bold text-white bg-[#35635b] hover:bg-[#2b4f49] px-2 py-1.5 rounded-lg transition-all shadow-xs">Form Kunjungan</a>
                                     <button type="button" onclick="openLocationAgendasModal('${safeItemLoc}', '${safeItemLoc}', null, null, 'Agenda Kegiatan')" style="color: #ffffff !important;" class="leaflet-popup-btn flex-1 text-center text-[10px] sm:text-[11px] font-bold text-white bg-emerald-700 hover:bg-emerald-800 px-2 py-1.5 rounded-lg transition-all shadow-xs cursor-pointer">Agenda &rarr;</button>
                                 </div>

@@ -281,6 +281,7 @@ Route::post('/api/presensi/face', [PegawaiAuthController::class, 'simpanPresensi
 Route::get('/publik/presensi-tamu', [PublicPageController::class, 'presensiTamu'])->name('publik.presensi.tamu');
 
 Route::get('/publik/form-kunjungan', [PublicPageController::class, 'formKunjungan'])->name('publik.form-kunjungan');
+Route::post('/publik/form-kunjungan/otp', [PublicPageController::class, 'kirimOtpKunjungan'])->name('publik.form-kunjungan.otp');
 Route::post('/publik/form-kunjungan/simpan', [PublicPageController::class, 'simpanKunjungan'])->name('publik.form-kunjungan.simpan');
 Route::redirect('/publik/kunjungan', '/publik/form-kunjungan');
 
