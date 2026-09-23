@@ -1171,12 +1171,84 @@
                         isPresensiScanning = false;
                         clearInterval(presensiDetectionInterval);
                         if (presensiGuideFrame) presensiGuideFrame.classList.add('hidden');
-                        presensiStatus.classList.remove('hidden');
-                        presensiStatus.innerText = "Berhasil diverifikasi! Mencatat presensi...";
-                        presensiStatus.classList.replace('bg-gray-900', 'bg-sirapi-green/80');
+
+                        // Ambil snapshot foto wajah saat presensi berhasil
+                        let snapshotBase64 = null;
+                        try {
+                            const snapCanvas = document.createElement('canvas');
+                            snapCanvas.width = presensiVideo.videoWidth || 640;
+                            snapCanvas.height = presensiVideo.videoHeight || 480;
+                            const snapCtx = snapCanvas.getContext('2d');
+                            snapCtx.translate(snapCanvas.width, 0);
+                            snapCtx.scale(-1, 1);
+                            snapCtx.drawImage(presensiVideo, 0, 0, snapCanvas.width, snapCanvas.height);
+                            snapshotBase64 = snapCanvas.toDataURL('image/jpeg', 0.85);
+                        } catch (snapErr) {
+                            console.warn('Gagal snapshot kamera:', snapErr);
+                        }
+
+                        const formPresensi = document.getElementById('form-presensi');
+                        if (formPresensi) {
+                            let inputFoto = document.getElementById('input-foto-kehadiran');
+                            if (!inputFoto) {
+                                inputFoto = document.createElement('input');
+                                inputFoto.type = 'hidden';
+                                inputFoto.name = 'foto_kehadiran';
+                                inputFoto.id = 'input-foto-kehadiran';
+                                formPresensi.appendChild(inputFoto);
+                            }
+                            if (snapshotBase64) {
+                                inputFoto.value = snapshotBase64;
+                            }
+
+                            let inputLokasi = document.getElementById('input-lokasi-presensi');
+                            if (!inputLokasi) {
+                                inputLokasi = document.createElement('input');
+                                inputLokasi.type = 'hidden';
+                                inputLokasi.name = 'lokasi_presensi';
+                                inputLokasi.id = 'input-lokasi-presensi';
+                                formPresensi.appendChild(inputLokasi);
+                            }
+                            const trackedLokasi = liveGpsAddress 
+                                || sessionStorage.getItem('presensi_address_' + agendaId) 
+                                || sessionStorage.getItem('presensi_address_global') 
+                                || localStorage.getItem('presensi_address_latest') 
+                                || '';
+                            if (trackedLokasi) {
+                                inputLokasi.value = trackedLokasi;
+                            }
+                        }
+
+                        @php
+                            $facePhotoPath = $pegawai->foto_wajah ?: $pegawai->foto;
+                            $cleanFacePath = $facePhotoPath ? ltrim(str_replace('\\', '/', $facePhotoPath), '/') : null;
+                            if ($cleanFacePath && str_starts_with($cleanFacePath, 'storage/')) {
+                                $cleanFacePath = substr($cleanFacePath, 8);
+                            }
+                            $registeredFaceUrl = $cleanFacePath ? route('storage.media', ['path' => $cleanFacePath]) : '';
+                        @endphp
+                        const registeredFace = "{{ $registeredFaceUrl }}";
+                        const displayFace = registeredFace || snapshotBase64;
+
+                        presensiStatus.classList.remove('hidden', 'animate-pulse');
+                        presensiStatus.className = 'absolute inset-0 bg-sirapi-green/95 dark:bg-[#107050]/95 z-30 flex flex-col items-center justify-center text-white p-4';
+                        presensiStatus.innerHTML = `
+                            <div class="relative mb-3 flex items-center justify-center">
+                                ${displayFace ? `<img src="${displayFace}" class="w-20 h-20 rounded-full object-cover border-4 border-white shadow-2xl">` : `
+                                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-sirapi-green shadow-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </div>
+                                `}
+                                <span class="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold border-2 border-white shadow-xs">✓</span>
+                            </div>
+                            <h3 class="text-base font-extrabold text-white">{{ $pegawai->nama_pegawai }}</h3>
+                            <p class="text-xs text-emerald-100 font-medium mt-1">Wajah Berhasil Diverifikasi!</p>
+                            <p class="text-[10px] text-white/80 mt-0.5">Sedang mencatat presensi...</p>
+                        `;
+
                         setTimeout(() => {
-                            document.getElementById('form-presensi').submit();
-                        }, 1000);
+                            formPresensi?.submit();
+                        }, 1200);
                     }
                 }
 

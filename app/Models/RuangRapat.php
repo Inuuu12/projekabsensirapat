@@ -164,9 +164,9 @@ class RuangRapat extends Model
     }
 
     /**
-     * Memeriksa bentrok jadwal ruangan baik di Agenda resmi maupun Pengajuan Agenda (pending/disetujui).
+     * Memeriksa bentrok jadwal ruangan di Agenda resmi.
      */
-    public function checkScheduleConflict(string $tanggal, string $waktuMulai, ?string $waktuSelesai = null, ?int $ignoreAgendaId = null, ?int $ignorePengajuanId = null): ?array
+    public function checkScheduleConflict(string $tanggal, string $waktuMulai, ?string $waktuSelesai = null, ?int $ignoreAgendaId = null): ?array
     {
         $timezone = config('app.timezone', 'Asia/Jakarta');
         $targetStart = Carbon::parse($tanggal . ' ' . substr($waktuMulai, 0, 5), $timezone);
@@ -178,8 +178,8 @@ class RuangRapat extends Model
             $targetEnd->addDay();
         }
 
-        // 1. Cek Agenda Resmi (sirapi_md_agenda)
-        $agendas = $this->agendas()
+        // 1. Cek Agenda Resmi
+        $agendas = Agenda::where('id_ruangrapat', $this->id_ruangrapat)
             ->whereDate('tanggal', $tanggal)
             ->when($ignoreAgendaId, fn ($q) => $q->where('id_agenda', '!=', $ignoreAgendaId))
             ->get();
@@ -204,37 +204,6 @@ class RuangRapat extends Model
                     'waktu_mulai' => $existStartTime,
                     'waktu_selesai' => $existEndTime ?: 'selesai',
                     'sumber' => 'Agenda Resmi',
-                ];
-            }
-        }
-
-        // 2. Cek Pengajuan Agenda Pegawai (sirapi_md_pengajuan_agenda: disetujui & pending)
-        $pengajuans = \App\Models\PengajuanAgenda::where('id_ruangrapat', $this->id_ruangrapat)
-            ->whereDate('tanggal', $tanggal)
-            ->whereIn('status', ['pending', 'disetujui'])
-            ->when($ignorePengajuanId, fn ($q) => $q->where('id_pengajuan', '!=', $ignorePengajuanId))
-            ->get();
-
-        foreach ($pengajuans as $p) {
-            $existDate = $p->tanggal instanceof Carbon ? $p->tanggal->toDateString() : (string) $p->tanggal;
-            $existStartTime = substr((string) $p->waktu, 0, 5) ?: '00:00';
-            $existEndTime = substr((string) $p->waktu_selesai, 0, 5);
-
-            $existStart = Carbon::parse($existDate . ' ' . $existStartTime, $timezone);
-            $existEnd = $existEndTime
-                ? Carbon::parse($existDate . ' ' . $existEndTime, $timezone)
-                : $existStart->copy()->addHour();
-
-            if ($existEnd->lessThanOrEqualTo($existStart)) {
-                $existEnd->addDay();
-            }
-
-            if ($targetStart->lt($existEnd) && $targetEnd->gt($existStart)) {
-                return [
-                    'nama' => $p->nama_agenda,
-                    'waktu_mulai' => $existStartTime,
-                    'waktu_selesai' => $existEndTime ?: 'selesai',
-                    'sumber' => $p->status === 'disetujui' ? 'Pengajuan Disetujui' : 'Pengajuan Pending',
                 ];
             }
         }

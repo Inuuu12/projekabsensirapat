@@ -290,9 +290,10 @@ class AdminAgendaController extends Controller
             ->get();
         $qrCode = QRCode::where('id_agenda', $agenda->id_agenda)->first();
 
-        // 1. Data Kehadiran Pegawai (HANYA foto snapshot hasil scan wajah di agenda ini, BUKAN foto profil)
+        // 1. Data Kehadiran Pegawai (Foto hasil scan wajah presensi atau fallback ke foto wajah biometrik pegawai)
         $pesertaPegawai = DB::table('sirapi_md_kehadiran')
             ->join('sirapi_md_peserta', 'sirapi_md_kehadiran.id_peserta', '=', 'sirapi_md_peserta.id_peserta')
+            ->leftJoin('sirapi_md_pegawai', 'sirapi_md_peserta.email', '=', 'sirapi_md_pegawai.email')
             ->where('sirapi_md_kehadiran.id_agenda', $agenda->id_agenda)
             ->select(
                 'sirapi_md_peserta.nama',
@@ -301,7 +302,7 @@ class AdminAgendaController extends Controller
                 'sirapi_md_kehadiran.created_at',
                 'sirapi_md_kehadiran.lokasi_presensi',
                 DB::raw("'Pegawai' as tipe_peserta"),
-                'sirapi_md_kehadiran.foto_kehadiran as foto_bukti'
+                DB::raw('COALESCE(sirapi_md_kehadiran.foto_kehadiran, sirapi_md_pegawai.foto_wajah, sirapi_md_pegawai.foto) as foto_bukti')
             )
             ->get();
 

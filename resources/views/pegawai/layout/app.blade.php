@@ -6,6 +6,12 @@
     <title>@yield('title', 'Portal Pegawai') - RAPID</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Favicon / Logo Browser Tab (Tegar Beriman) -->
+    <link rel="icon" type="image/png" href="{{ asset('assets/foto/logo-bappenda.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/foto/logo-bappenda.png') }}">
+
     <!-- Script Anti-FOUC Tema Gelap/Terang -->
     <script>
         (function() {
@@ -185,11 +191,6 @@
                     <span>Dashboard</span>
                 </a>
 
-                <!-- Pengajuan Agenda -->
-                <a href="{{ route('pegawai.pengajuan.index') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ str_contains($currentRoute, 'pegawai.pengajuan') ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }}">
-                    <svg class="w-5 h-5 mr-3 {{ str_contains($currentRoute, 'pegawai.pengajuan') ? 'text-white dark:text-emerald-400' : 'text-[#35635b] dark:text-emerald-400/80' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    <span>Pengajuan Agenda</span>
-                </a>
 
                 <!-- Kalender Booking -->
                 <a href="{{ route('pegawai.booking.index') }}" class="flex items-center px-4 py-3 rounded-xl transition-all {{ str_contains($currentRoute, 'pegawai.booking') ? 'bg-[#35635b] dark:bg-[#1a332d] text-white dark:text-emerald-400 font-bold shadow-md dark:border dark:border-[#284c43]' : 'hover:bg-[#35635b]/10 dark:hover:bg-[#152420] text-[#35635b] dark:text-gray-300 dark:hover:text-white' }}">
@@ -233,7 +234,6 @@
         @php
             $navTitle = match(true) {
                 str_contains($currentRoute, 'dashboard') => 'Dashboard',
-                str_contains($currentRoute, 'pengajuan') => 'Pengajuan Agenda',
                 str_contains($currentRoute, 'booking') => 'Kalender Booking',
                 str_contains($currentRoute, 'history') => 'History Rapat',
                 str_contains($currentRoute, 'profil') => 'Data Diri',
@@ -241,7 +241,6 @@
             };
             $navSubtitle = match(true) {
                 str_contains($currentRoute, 'dashboard') => 'Ringkasan aktivitas dan agenda rapat Anda.',
-                str_contains($currentRoute, 'pengajuan') => 'Ajukan pengajuan agenda rapat baru ke admin.',
                 str_contains($currentRoute, 'booking') => 'Lihat ketersediaan ruang rapat dan jadwal.',
                 str_contains($currentRoute, 'history') => 'Riwayat kehadiran rapat yang telah Anda ikuti.',
                 str_contains($currentRoute, 'profil') => 'Kelola informasi data diri dan akun Anda.',
