@@ -23,7 +23,7 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         <!-- Total Rapat Diikuti -->
         <div class="relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs transition-all hover:border-emerald-500/50 hover:shadow-md group">
             <div class="flex items-center justify-between">
@@ -33,28 +33,6 @@
                 </div>
             </div>
             <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight mt-3">{{ number_format($totalRapatDiikuti ?? 0) }}</p>
-        </div>
-
-        <!-- Rapat Mendatang -->
-        <div class="relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs transition-all hover:border-amber-500/50 hover:shadow-md group">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rapat Mendatang</span>
-                <div class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-            </div>
-            <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight mt-3">{{ number_format($totalAgendaMendatang ?? 0) }}</p>
-        </div>
-
-        <!-- Rapat Bulan Ini -->
-        <div class="relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs transition-all hover:border-cyan-500/50 hover:shadow-md group">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rapat Bulan Ini</span>
-                <div class="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-900/30 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3" stroke-width="2"/><path stroke-linecap="round" stroke-width="2" d="M8 2v4M16 2v4M3 9h18"/></svg>
-                </div>
-            </div>
-            <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight mt-3">{{ number_format($totalAgendaBulanIni ?? 0) }}</p>
         </div>
 
         <!-- Ruang Rapat -->
@@ -67,13 +45,24 @@
             </div>
             <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tight mt-3">{{ number_format($ruangList->count()) }}</p>
         </div>
+
+        <!-- Status Akun -->
+        <div class="relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 shadow-xs transition-all hover:border-cyan-500/50 hover:shadow-md group">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status Pegawai</span>
+                <div class="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-900/30 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+            </div>
+            <p class="text-xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight mt-4 capitalize">{{ $pegawai->status_verifikasi ?? 'Aktif' }}</p>
+        </div>
     </div>
 
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
         <!-- Left: Agenda Mendatang -->
-        <div class="lg:col-span-7 space-y-6">
+        <div class="lg:col-span-8 space-y-6">
             <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl shadow-xs overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 dark:border-[#233a34] flex items-center justify-between">
                     <h3 class="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-wider">Agenda Rapat Mendatang</h3>
@@ -115,41 +104,8 @@
             </div>
         </div>
 
-        <!-- Right: Riwayat Kehadiran Terakhir -->
-        <div class="lg:col-span-5 space-y-6">
-            <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl shadow-xs overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100 dark:border-[#233a34] flex items-center justify-between">
-                    <h3 class="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-wider">Kehadiran Terakhir</h3>
-                    <a href="{{ route('pegawai.history.index') }}" class="text-xs font-semibold text-[#35635b] dark:text-emerald-400 hover:underline">Lihat Semua →</a>
-                </div>
-                <div class="divide-y divide-gray-100 dark:divide-[#233a34]">
-                    @forelse($riwayatKehadiranTerbaru as $kehadiran)
-                        <div class="px-6 py-4 hover:bg-gray-50/50 dark:hover:bg-[#1a2d29] transition-colors">
-                            <div class="flex items-center justify-between gap-3">
-                                <div class="min-w-0 flex-1">
-                                    <p class="font-bold text-sm text-gray-800 dark:text-white truncate">{{ $kehadiran->nama_agenda }}</p>
-                                    <div class="flex items-center gap-2 mt-1 text-xs text-gray-400 dark:text-gray-500">
-                                        <span>{{ $kehadiran->tanggal ? \Carbon\Carbon::parse($kehadiran->tanggal)->translatedFormat('d M Y') : '-' }}</span>
-                                        @if($kehadiran->nama_ruang)
-                                            <span>&bull;</span>
-                                            <span class="truncate">{{ $kehadiran->nama_ruang }}</span>
-                                        @endif
-                                    </div>
-                                </div>
-                                <span class="shrink-0 inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
-                                    Hadir
-                                </span>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="px-6 py-10 text-center">
-                            <svg class="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <p class="text-sm text-gray-400 dark:text-gray-500 font-medium">Belum ada riwayat kehadiran</p>
-                        </div>
-                    @endforelse
-                </div>
-            </div>
-
+        <!-- Right: Quick Actions & Profile Summary -->
+        <div class="lg:col-span-4 space-y-6">
             <!-- Quick Actions -->
             <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl shadow-xs p-6">
                 <h3 class="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-wider mb-4">Aksi Cepat</h3>
@@ -166,6 +122,31 @@
                         </div>
                         <span class="text-xs font-bold text-gray-700 dark:text-gray-300 text-center">Riwayat Rapat</span>
                     </a>
+                    <a href="{{ route('pegawai.history.index') }}" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-gray-50 dark:bg-[#1a2d29] border border-gray-100 dark:border-[#233a34] hover:border-[#35635b]/50 dark:hover:border-emerald-500/30 hover:shadow-md transition-all group">
+                        <div class="w-10 h-10 rounded-xl bg-[#35635b]/10 dark:bg-emerald-900/30 flex items-center justify-center group-hover:bg-[#35635b]/20 dark:group-hover:bg-emerald-900/50 transition-colors">
+                            <svg class="w-5 h-5 text-[#35635b] dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <span class="text-xs font-bold text-gray-700 dark:text-gray-300 text-center">History Rapat</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Info Card -->
+            <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl shadow-xs p-6 space-y-3">
+                <h3 class="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-wider">Informasi Pegawai</h3>
+                <div class="text-xs space-y-2 text-gray-600 dark:text-gray-300">
+                    <div class="flex justify-between py-1 border-b border-gray-100 dark:border-[#233a34]">
+                        <span class="text-gray-400 dark:text-gray-500">NIP</span>
+                        <span class="font-semibold">{{ $pegawai->nip ?? '-' }}</span>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-gray-100 dark:border-[#233a34]">
+                        <span class="text-gray-400 dark:text-gray-500">Instansi</span>
+                        <span class="font-semibold">{{ $pegawai->nama_instansi ?? '-' }}</span>
+                    </div>
+                    <div class="flex justify-between py-1">
+                        <span class="text-gray-400 dark:text-gray-500">Bidang</span>
+                        <span class="font-semibold">{{ $pegawai->bidang ?? '-' }}</span>
+                    </div>
                 </div>
             </div>
         </div>

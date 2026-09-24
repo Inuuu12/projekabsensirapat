@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lampiran Agenda - RAPID</title>
+    <!-- Favicon / Logo Browser Tab (Tegar Beriman) -->
+    <link rel="icon" type="image/png" href="{{ asset('assets/foto/logo-bappenda.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/foto/logo-bappenda.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {

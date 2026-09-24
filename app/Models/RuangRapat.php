@@ -164,9 +164,9 @@ class RuangRapat extends Model
     }
 
     /**
-     * Memeriksa bentrok jadwal ruangan baik di Agenda resmi maupun Pengajuan Agenda (pending/disetujui).
+     * Memeriksa bentrok jadwal ruangan di Agenda resmi.
      */
-    public function checkScheduleConflict(string $tanggal, string $waktuMulai, ?string $waktuSelesai = null, ?int $ignoreAgendaId = null, ?int $ignorePengajuanId = null): ?array
+    public function checkScheduleConflict(string $tanggal, string $waktuMulai, ?string $waktuSelesai = null, ?int $ignoreAgendaId = null): ?array
     {
         $timezone = config('app.timezone', 'Asia/Jakarta');
         $targetStart = Carbon::parse($tanggal . ' ' . substr($waktuMulai, 0, 5), $timezone);
@@ -178,8 +178,8 @@ class RuangRapat extends Model
             $targetEnd->addDay();
         }
 
-        // 1. Cek Agenda Resmi (sirapi_md_agenda)
-        $agendas = $this->agendas()
+        // 1. Cek Agenda Resmi
+        $agendas = Agenda::where('id_ruangrapat', $this->id_ruangrapat)
             ->whereDate('tanggal', $tanggal)
             ->when($ignoreAgendaId, fn ($q) => $q->where('id_agenda', '!=', $ignoreAgendaId))
             ->get();

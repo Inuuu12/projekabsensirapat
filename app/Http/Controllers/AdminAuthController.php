@@ -17,7 +17,7 @@ class AdminAuthController extends Controller
         if (Auth::guard('admin')->attempt($credentials)) {
             $user = Auth::guard('admin')->user();
 
-            // Cek status aktif/nonaktif akun jika field status ada
+            // Cek apakah akun dinonaktifkan
             if (isset($user->status) && $user->status === 'nonaktif') {
                 Auth::guard('admin')->logout();
 

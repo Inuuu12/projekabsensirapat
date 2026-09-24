@@ -130,9 +130,13 @@
                         </div>
                     </div>
 
-                    <div id="success-overlay" class="absolute inset-0 bg-ijo-tua/90 dark:bg-[#107050]/90 z-30 flex flex-col items-center justify-center text-white hidden">
-                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-ijo-tua mb-4 shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <div id="success-overlay" class="absolute inset-0 bg-ijo-tua/95 dark:bg-[#107050]/95 z-30 flex flex-col items-center justify-center text-white hidden">
+                        <div id="success-photo-wrapper" class="relative mb-3 flex items-center justify-center">
+                            <img id="success-photo" src="" alt="Foto Wajah" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-2xl hidden">
+                            <div id="success-icon-fallback" class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-ijo-tua shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <span id="success-badge" class="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold border-2 border-white shadow-xs hidden">✓</span>
                         </div>
                         <h2 class="text-xl font-bold" id="success-name">Bagus Wihandono</h2>
                         <p class="text-sm mt-2 font-medium px-4 text-center" id="success-msg">Presensi Berhasil Dicatat!</p>
@@ -390,7 +394,7 @@
                     const descriptorArray = JSON.parse(pegawai.face_descriptor);
                     const float32Array = new Float32Array(descriptorArray);
                     return new faceapi.LabeledFaceDescriptors(
-                        JSON.stringify({ id: pegawai.id_pegawai, name: pegawai.nama_pegawai }), 
+                        JSON.stringify({ id: pegawai.id_pegawai, name: pegawai.nama_pegawai, photo: pegawai.foto_url }), 
                         [float32Array]
                     );
                 });
@@ -484,7 +488,7 @@
                         
                         if (isScanning && bestMatch.distance < 0.45) { // Strict check
                             if (faceGuideFrame) faceGuideFrame.classList.add('hidden');
-                            handleSuccess(matchData.id, matchData.name);
+                            handleSuccess(matchData.id, matchData.name, matchData.photo);
                         }
                     }
 
@@ -540,7 +544,7 @@
                 }, () => {}, { enableHighAccuracy: true, timeout: 8000 });
             }
 
-            async function handleSuccess(idPegawai, namaPegawai) {
+            async function handleSuccess(idPegawai, namaPegawai, fotoUrl) {
                 isScanning = false;
 
                 // Ambil snapshot foto wajah tepat saat scan berhasil di agenda ini
@@ -557,6 +561,22 @@
                     snapshotBase64 = snapCanvas.toDataURL('image/jpeg', 0.85);
                 } catch (snapErr) {
                     console.warn('Gagal mengambil snapshot kamera:', snapErr);
+                }
+
+                const displayPhoto = fotoUrl || snapshotBase64;
+                const successPhoto = document.getElementById('success-photo');
+                const successIcon = document.getElementById('success-icon-fallback');
+                const successBadge = document.getElementById('success-badge');
+
+                if (displayPhoto && successPhoto) {
+                    successPhoto.src = displayPhoto;
+                    successPhoto.classList.remove('hidden');
+                    if (successIcon) successIcon.classList.add('hidden');
+                    if (successBadge) successBadge.classList.remove('hidden');
+                } else {
+                    if (successPhoto) successPhoto.classList.add('hidden');
+                    if (successIcon) successIcon.classList.remove('hidden');
+                    if (successBadge) successBadge.classList.add('hidden');
                 }
 
                 const trackedLokasi = liveGpsAddress 

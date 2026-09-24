@@ -1,6 +1,6 @@
 @extends('pegawai.layout.app')
 
-@section('title', 'Jadwal & Kalender Ruang Rapat')
+@section('title', 'Kalender Ruang Rapat')
 
 @section('content')
 <div class="max-w-[1400px] mx-auto space-y-6">
@@ -8,8 +8,8 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h2 class="text-lg font-black text-gray-900 dark:text-white">Jadwal & Kalender Ruang Rapat</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Pantau ketersediaan ruang rapat dan jadwal kegiatan resmi instansi.</p>
+            <h2 class="text-lg font-black text-gray-900 dark:text-white">Kalender Ruang Rapat</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Lihat jadwal pemakaian dan ketersediaan ruang rapat.</p>
         </div>
     </div>
 
@@ -50,6 +50,11 @@
                     </div>
                 </div>
 
+                <!-- Room Footer Info -->
+                <div class="px-5 py-3 border-t border-gray-100 dark:border-[#233a34] bg-gray-50/50 dark:bg-[#111e1b] flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                    <span>Lokasi: {{ $ruang->lokasi ?? 'Kantor Dinas' }}</span>
+                    <span class="font-medium text-emerald-600 dark:text-emerald-400">{{ $ruang->fasilitas ? 'Fasilitas Tersedia' : 'Standar' }}</span>
+                </div>
             </div>
         @endforeach
     </div>
@@ -60,8 +65,6 @@
             <p class="text-sm text-gray-400 dark:text-gray-500 font-medium">Belum ada ruang rapat terdaftar untuk instansi Anda.</p>
         </div>
     @endif
-</div>
-
 </div>
 
 @push('styles')
@@ -86,28 +89,6 @@
 
     function formatDate(d) {
         return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-    }
-
-    function formatDateFormatted(ds) {
-        if (!ds) return '-';
-        const parts = ds.split('-');
-        if (parts.length < 3) return ds;
-        const year = parts[0];
-        const monthIndex = parseInt(parts[1], 10) - 1;
-        const day = parseInt(parts[2], 10);
-        return `${day} ${bulanLabel[monthIndex]} ${year}`;
-    }
-
-    function calculateDurationMinutes(startStr, endStr) {
-        if (!startStr) return '60 Menit';
-        const s = startStr.substring(0, 5);
-        const e = endStr ? endStr.substring(0, 5) : null;
-        if (!e) return '60 Menit';
-        const [h1, m1] = s.split(':').map(Number);
-        const [h2, m2] = e.split(':').map(Number);
-        let diff = (h2 * 60 + m2) - (h1 * 60 + m1);
-        if (diff <= 0) diff += 1440;
-        return `${diff} Menit`;
     }
 
     function renderDateSlider() {
@@ -172,13 +153,9 @@
                 container.innerHTML = roomAgendas.map(a => `
                     <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/50 space-y-1.5">
                         <div class="flex items-center justify-between gap-2">
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold ${
-                                a.status_badge === 'disetujui'
-                                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300'
-                                    : 'bg-amber-200 text-amber-900 dark:bg-amber-900/80 dark:text-amber-200'
-                            }">
-                                <span class="w-1.5 h-1.5 rounded-full ${a.status_badge === 'disetujui' ? 'bg-emerald-500' : 'bg-amber-500'}"></span>
-                                ${a.status_label || 'Terbooking'}
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                ${a.status_label || 'Terisi'}
                             </span>
                             <span class="text-xs font-black text-amber-900 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/60 px-2 py-0.5 rounded-lg border border-amber-200 dark:border-amber-700/50">
                                 🕒 ${a.waktu || '-'}${a.waktu_selesai ? ' - ' + a.waktu_selesai : ''} WIB

@@ -449,37 +449,35 @@ class PublicPageController extends Controller
     {
         $pegawaiList = $this->queryOrDefault(fn () => Pegawai::orderBy('nama_pegawai')->get(), collect());
 
-        $dinasList = $this->queryOrDefault(function () {
-            $list = Dinas::orderBy('nama_dinas')->get();
-            if ($list->isEmpty()) {
-                $list = collect([
-                    (object) ['id_dinas' => 1, 'nama_dinas' => 'Dinas Komunikasi dan Informatika (Diskominfo)'],
-                    (object) ['id_dinas' => 2, 'nama_dinas' => 'Badan Perencanaan Pembangunan Daerah (Bappedalitbang)'],
-                    (object) ['id_dinas' => 3, 'nama_dinas' => 'Dinas Pendidikan'],
-                    (object) ['id_dinas' => 4, 'nama_dinas' => 'Dinas Kesehatan'],
-                    (object) ['id_dinas' => 5, 'nama_dinas' => 'Dinas Pekerjaan Umum dan Penataan Ruang (PUPR)'],
-                    (object) ['id_dinas' => 6, 'nama_dinas' => 'Dinas Perhubungan'],
-                    (object) ['id_dinas' => 7, 'nama_dinas' => 'Badan Pengelolaan Pendapatan Daerah (Bappenda)'],
-                    (object) ['id_dinas' => 8, 'nama_dinas' => 'Satuan Polisi Pamong Praja (Satpol PP)'],
-                ]);
-            }
-            return $list;
-        }, collect());
+        $defaultDinas = collect([
+            (object) ['id_dinas' => 1, 'nama_dinas' => 'Dinas Komunikasi dan Informatika (Diskominfo)'],
+            (object) ['id_dinas' => 2, 'nama_dinas' => 'Badan Perencanaan Pembangunan Daerah (Bappedalitbang)'],
+            (object) ['id_dinas' => 3, 'nama_dinas' => 'Dinas Pendidikan'],
+            (object) ['id_dinas' => 4, 'nama_dinas' => 'Dinas Kesehatan'],
+            (object) ['id_dinas' => 5, 'nama_dinas' => 'Dinas Pekerjaan Umum dan Penataan Ruang (PUPR)'],
+            (object) ['id_dinas' => 6, 'nama_dinas' => 'Dinas Perhubungan'],
+            (object) ['id_dinas' => 7, 'nama_dinas' => 'Badan Pengelolaan Pendapatan Daerah (Bappenda)'],
+            (object) ['id_dinas' => 8, 'nama_dinas' => 'Satuan Polisi Pamong Praja (Satpol PP)'],
+        ]);
 
-        $kecamatanList = $this->queryOrDefault(function () {
+        $dinasList = $this->queryOrDefault(function () use ($defaultDinas) {
+            $list = Dinas::orderBy('nama_dinas')->get();
+            return $list->isNotEmpty() ? $list : $defaultDinas;
+        }, $defaultDinas);
+
+        $defaultKecamatan = collect([
+            (object) ['id_kecamatan' => 1, 'nama_kecamatan' => 'Kecamatan Cibinong'],
+            (object) ['id_kecamatan' => 2, 'nama_kecamatan' => 'Kecamatan Ciawi'],
+            (object) ['id_kecamatan' => 3, 'nama_kecamatan' => 'Kecamatan Cisarua'],
+            (object) ['id_kecamatan' => 4, 'nama_kecamatan' => 'Kecamatan Babakan Madang'],
+            (object) ['id_kecamatan' => 5, 'nama_kecamatan' => 'Kecamatan Citeureup'],
+            (object) ['id_kecamatan' => 6, 'nama_kecamatan' => 'Kecamatan Gunung Putri'],
+        ]);
+
+        $kecamatanList = $this->queryOrDefault(function () use ($defaultKecamatan) {
             $list = Kecamatan::orderBy('nama_kecamatan')->get();
-            if ($list->isEmpty()) {
-                $list = collect([
-                    (object) ['id_kecamatan' => 1, 'nama_kecamatan' => 'Kecamatan Cibinong'],
-                    (object) ['id_kecamatan' => 2, 'nama_kecamatan' => 'Kecamatan Ciawi'],
-                    (object) ['id_kecamatan' => 3, 'nama_kecamatan' => 'Kecamatan Cisarua'],
-                    (object) ['id_kecamatan' => 4, 'nama_kecamatan' => 'Kecamatan Babakan Madang'],
-                    (object) ['id_kecamatan' => 5, 'nama_kecamatan' => 'Kecamatan Citeureup'],
-                    (object) ['id_kecamatan' => 6, 'nama_kecamatan' => 'Kecamatan Gunung Putri'],
-                ]);
-            }
-            return $list;
-        }, collect());
+            return $list->isNotEmpty() ? $list : $defaultKecamatan;
+        }, $defaultKecamatan);
 
         return view('publik.kunjungan.index', compact('pegawaiList', 'dinasList', 'kecamatanList'));
     }

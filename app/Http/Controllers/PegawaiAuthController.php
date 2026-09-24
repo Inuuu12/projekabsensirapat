@@ -306,7 +306,28 @@ class PegawaiAuthController extends Controller
             return back()->withErrors(['presensi' => 'Presensi ditolak karena kuota peserta agenda ini sudah penuh.']);
         }
 
-        $this->catatKehadiranPegawai($agenda, $pegawai, 'Presensi pegawai manual');
+        $fotoScanPath = null;
+        if ($request->filled('foto_kehadiran')) {
+            try {
+                $imageParts = explode(';base64,', (string) $request->input('foto_kehadiran'));
+                $imageTypeAux = explode('image/', $imageParts[0] ?? '');
+                $imageType = $imageTypeAux[1] ?? 'jpeg';
+                if (isset($imageParts[1])) {
+                    $imageBase64 = base64_decode($imageParts[1]);
+                    $fileName = 'presensi_face_' . $agenda->id_agenda . '_' . $pegawai->id_pegawai . '_' . time() . '.' . $imageType;
+                    Storage::disk('public')->put('presensi/' . $fileName, $imageBase64);
+                    $fotoScanPath = 'presensi/' . $fileName;
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Gagal menyimpan foto scan presensi: ' . $e->getMessage());
+            }
+        }
+
+        if (! $fotoScanPath) {
+            $fotoScanPath = $pegawai->foto_wajah ?: $pegawai->foto;
+        }
+
+        $this->catatKehadiranPegawai($agenda, $pegawai, 'Hadir lewat Scan Wajah (Face Recognition)', $request->input('lokasi_presensi'), $fotoScanPath);
 
         return redirect()
             ->route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda])
@@ -672,8 +693,21 @@ class PegawaiAuthController extends Controller
         $pegawai = DB::table('sirapi_md_pegawai')
             ->where('status_verifikasi', Pegawai::STATUS_AKTIF)
             ->whereNotNull('face_descriptor')
-            ->select('id_pegawai', 'nama_pegawai', 'face_descriptor')
-            ->get();
+            ->select('id_pegawai', 'nama_pegawai', 'face_descriptor', 'foto_wajah', 'foto')
+            ->get()
+            ->map(function ($p) {
+                $fotoPath = $p->foto_wajah ?: $p->foto;
+                $cleanPath = $fotoPath ? ltrim(str_replace('\\', '/', $fotoPath), '/') : null;
+                if ($cleanPath && str_starts_with($cleanPath, 'storage/')) {
+                    $cleanPath = substr($cleanPath, 8);
+                }
+                return [
+                    'id_pegawai' => $p->id_pegawai,
+                    'nama_pegawai' => $p->nama_pegawai,
+                    'face_descriptor' => $p->face_descriptor,
+                    'foto_url' => $cleanPath ? route('storage.media', ['path' => $cleanPath]) : null,
+                ];
+            });
 
         return response()->json($pegawai);
     }
@@ -742,6 +776,10 @@ class PegawaiAuthController extends Controller
             }
         }
 
+        if (! $fotoScanPath) {
+            $fotoScanPath = $pegawai->foto_wajah ?: $pegawai->foto;
+        }
+
         $kehadiran = $this->kehadiranPegawai($agenda->id_agenda, $pegawai->email);
         if ($kehadiran) {
             // Update foto bukti kehadiran dari hasil scan kamera saat ini jika tersedia
@@ -808,6 +846,9 @@ class PegawaiAuthController extends Controller
             $lokasi = $agenda->lokasi ?: 'Dinas Komunikasi dan Informasi Kabupaten Bogor, Jalan Tegar Beriman, Pakansari, Cibinong, Bogor, Jawa Barat';
         }
         $fotoBukti = $fotoKehadiran ?: request()->input('foto_kehadiran');
+        if (! $fotoBukti) {
+            $fotoBukti = is_object($pegawai) ? ($pegawai->foto_wajah ?? ($pegawai->foto ?? null)) : null;
+        }
 
         DB::transaction(function () use ($agenda, $nama, $jabatan, $instansi, $noHp, $email, $now, $catatan, $lokasi, $fotoBukti) {
             $pesertaData = [
@@ -922,16 +963,6 @@ class PegawaiAuthController extends Controller
             ? DB::table('sirapi_md_kehadiran')->where('id_peserta', $peserta->id_peserta)->count()
             : 0;
 
-        // Stat Rapat Mendatang & Bulan Ini sesuai instansi pegawai
-        $totalAgendaMendatang = $this->getAgendaQueryForPegawai($pegawai)
-            ->where('tanggal', '>=', now()->toDateString())
-            ->count();
-
-        $totalAgendaBulanIni = $this->getAgendaQueryForPegawai($pegawai)
-            ->whereMonth('tanggal', now()->month)
-            ->whereYear('tanggal', now()->year)
-            ->count();
-
         // Ruang Rapat & Agenda mendatang sesuai instansi pegawai
         $ruangList = $this->getRuangRapatForPegawai($pegawai);
         $agendaMendatang = $this->getAgendaQueryForPegawai($pegawai)
@@ -942,32 +973,11 @@ class PegawaiAuthController extends Controller
             ->take(6)
             ->get();
 
-        // Riwayat kehadiran terakhir pegawai
-        $riwayatKehadiranTerbaru = $peserta
-            ? DB::table('sirapi_md_kehadiran as k')
-                ->join('sirapi_md_agenda as a', 'k.id_agenda', '=', 'a.id_agenda')
-                ->leftJoin('sirapi_md_ruangrapat as r', 'a.id_ruangrapat', '=', 'r.id_ruangrapat')
-                ->where('k.id_peserta', $peserta->id_peserta)
-                ->select(
-                    'a.nama_agenda',
-                    'a.tanggal',
-                    'a.waktu',
-                    'r.nama_ruang',
-                    'k.created_at as waktu_presensi'
-                )
-                ->orderByDesc('k.created_at')
-                ->take(5)
-                ->get()
-            : collect();
-
         return view('pegawai.dashboard.index', compact(
             'pegawai',
             'totalRapatDiikuti',
-            'totalAgendaMendatang',
-            'totalAgendaBulanIni',
             'ruangList',
-            'agendaMendatang',
-            'riwayatKehadiranTerbaru'
+            'agendaMendatang'
         ));
     }
 
@@ -993,7 +1003,6 @@ class PegawaiAuthController extends Controller
 
         foreach ($agendas as $agenda) {
             $dateKey = \Carbon\Carbon::parse($agenda->tanggal)->format('Y-m-d');
-
             $agendaByDate[$dateKey][] = [
                 'id_agenda' => 'agenda_' . $agenda->id_agenda,
                 'nama_agenda' => $agenda->nama_agenda,
@@ -1018,6 +1027,7 @@ class PegawaiAuthController extends Controller
             ->join('sirapi_md_peserta as p', 'k.id_peserta', '=', 'p.id_peserta')
             ->join('sirapi_md_agenda as a', 'k.id_agenda', '=', 'a.id_agenda')
             ->leftJoin('sirapi_md_ruangrapat as r', 'a.id_ruangrapat', '=', 'r.id_ruangrapat')
+            ->leftJoin('sirapi_md_pegawai as peg', 'p.email', '=', 'peg.email')
             ->where('p.email', $pegawai->email)
             ->select(
                 'a.nama_agenda',
@@ -1025,7 +1035,7 @@ class PegawaiAuthController extends Controller
                 'a.waktu',
                 'r.nama_ruang',
                 'k.lokasi_presensi',
-                'k.foto_kehadiran',
+                DB::raw('COALESCE(k.foto_kehadiran, peg.foto_wajah, peg.foto) as foto_kehadiran'),
                 'k.created_at as waktu_presensi'
             )
             ->orderByDesc('a.tanggal')

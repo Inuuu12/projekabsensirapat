@@ -6,6 +6,12 @@
     <title>@yield('title', 'Portal Pegawai') - RAPID</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Favicon / Logo Browser Tab (Tegar Beriman) -->
+    <link rel="icon" type="image/png" href="{{ asset('assets/foto/logo-bappenda.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/foto/logo-bappenda.png') }}">
+
     <!-- Script Anti-FOUC Tema Gelap/Terang -->
     <script>
         (function() {

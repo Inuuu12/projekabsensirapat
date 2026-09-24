@@ -189,18 +189,28 @@ Route::prefix('pegawai')->group(function () {
     Route::post('/password/reset', [PegawaiAuthController::class, 'resetPassword'])->name('pegawai.password.reset');
     Route::get('/daftar', [PegawaiAuthController::class, 'showRegisterForm'])->name('pegawai.register');
     Route::post('/daftar', [PegawaiAuthController::class, 'register'])->name('pegawai.register.submit');
-    Route::redirect('/dashboard', '/');
-
     // Halaman presensi pegawai diarahkan langsung ke presensi publik (Scan Wajah / QR)
     Route::get('/presensi', function (\Illuminate\Http\Request $request) {
         return redirect()->route('publik.presensi.pegawai', array_filter(['agenda_id' => $request->query('agenda_id')]));
     })->name('pegawai.presensi.index');
-    // Fallback redirect untuk bekas menu portal pegawai
-    Route::redirect('/booking-ruang', '/');
-    Route::redirect('/pengajuan-agenda', '/');
-    Route::redirect('/history-rapat', '/');
-    Route::redirect('/profil', '/');
-    Route::post('/logout', fn () => redirect()->route('publik.beranda'))->name('pegawai.logout');
+
+    // Redirect bekas pengajuan agenda pegawai
+    Route::redirect('/pengajuan-agenda', '/pegawai/dashboard');
+
+    Route::middleware('auth:pegawai')->group(function () {
+        // Portal Pegawai
+        Route::get('/dashboard', [PegawaiAuthController::class, 'dashboard'])->name('pegawai.dashboard');
+        Route::get('/booking-ruang', [PegawaiAuthController::class, 'bookingRuang'])->name('pegawai.booking.index');
+        Route::get('/history-rapat', [PegawaiAuthController::class, 'historyRapat'])->name('pegawai.history.index');
+        Route::get('/profil', [PegawaiAuthController::class, 'profilPegawai'])->name('pegawai.profil.index');
+
+        // Presensi & Profil existing
+        Route::post('/presensi', [PegawaiAuthController::class, 'simpanPresensi'])->name('pegawai.presensi.submit');
+        Route::post('/profil/password-otp', [PegawaiAuthController::class, 'kirimOtpPassword'])->name('pegawai.profil.password-otp');
+        Route::put('/profil/update', [PegawaiAuthController::class, 'updateProfil'])->name('pegawai.profil.update');
+        Route::post('/profil/face', [PegawaiAuthController::class, 'updateFace'])->name('pegawai.profil.face');
+        Route::post('/logout', [PegawaiAuthController::class, 'logout'])->name('pegawai.logout');
+    });
 });
 
 // Fitur pengaduan masyarakat

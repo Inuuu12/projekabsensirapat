@@ -407,147 +407,57 @@
                     <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Peta Sebaran Agenda & Kunjungan Kerja</h3>                </div>
             </div>
 
-            <!-- Grid 2 Kolom: Peta (Kiri 8 Kolom) + Daftar Rapat Dinas (Kanan 4 Kolom) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-                <!-- Sisi Kiri: Card Container Peta (lg:col-span-8) -->
-                <div class="lg:col-span-8 bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-4 md:p-6 shadow-lg space-y-4 flex flex-col justify-between">
-
-
-                    <!-- Leaflet Container -->
-                    <div class="relative z-10 isolate w-full h-[460px] md:h-[500px] rounded-xl overflow-hidden border border-gray-200/80 dark:border-[#284c43] shadow-inner flex-grow">
-                        <!-- Map Search Bar Overlay (Top Right) -->
-                        <div class="absolute top-3 right-3 left-3 sm:left-auto sm:w-80 z-20 pointer-events-auto">
-                            <div class="relative">
-                                <div class="relative flex items-center">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                    </div>
-                                    <input type="text" id="map-search-input" placeholder="Cari Dinas / Kecamatan (contoh: Diskominfo, Cibinong)..." 
-                                           class="w-full pl-9 pr-8 py-2.5 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/90 dark:border-[#284c43] rounded-xl text-xs font-medium text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 shadow-md focus:outline-none focus:ring-2 focus:ring-[#35635b] dark:focus:ring-emerald-500 transition-all">
-                                    <button type="button" id="map-search-clear" onclick="clearMapSearch()" class="hidden absolute right-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                                        ✕
-                                    </button>
+            <!-- Card Container Peta -->
+            <div class="w-full bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-4 md:p-6 shadow-lg space-y-4">
+                <!-- Leaflet Container -->
+                <div class="relative z-10 isolate w-full h-[480px] md:h-[550px] rounded-xl overflow-hidden border border-gray-200/80 dark:border-[#284c43] shadow-inner">
+                    <!-- Map Search Bar Overlay (Top Right) -->
+                    <div class="absolute top-3 right-3 left-3 sm:left-auto sm:w-80 z-20 pointer-events-auto">
+                        <div class="relative">
+                            <div class="relative flex items-center">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                 </div>
-
-                                <!-- Search Results Dropdown -->
-                                <div id="map-search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/90 dark:border-[#284c43] rounded-xl shadow-xl max-h-60 overflow-y-auto z-30 divide-y divide-gray-100 dark:divide-[#233a34]">
-                                </div>
+                                <input type="text" id="map-search-input" placeholder="Cari Dinas / Kecamatan (contoh: Diskominfo, Cibinong)..." 
+                                       class="w-full pl-9 pr-8 py-2.5 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/90 dark:border-[#284c43] rounded-xl text-xs font-medium text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 shadow-md focus:outline-none focus:ring-2 focus:ring-[#35635b] dark:focus:ring-emerald-500 transition-all">
+                                <button type="button" id="map-search-clear" onclick="clearMapSearch()" class="hidden absolute right-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                                    ✕
+                                </button>
                             </div>
-                        </div>
 
-                        <div id="beranda-map" class="w-full h-full z-0 bg-[#e5e3df]"></div>
-
-                        <!-- Overlay Legend -->
-                        <div class="absolute bottom-3 left-3 z-20 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/80 dark:border-[#233a34] rounded-xl p-3 shadow-lg text-[11px] space-y-1.5 pointer-events-auto max-w-[245px]">
-                            <p class="font-bold text-gray-900 dark:text-white text-xs border-b border-gray-100 dark:border-[#284c43] pb-1">Keterangan Peta</p>
-                            <div class="flex items-center space-x-2">
-                                <span class="w-3 h-3 rounded-full bg-[#10b981] border border-emerald-700 shrink-0"></span>
-                                <span class="text-gray-700 dark:text-gray-300">Batas Kecamatan Kab. Bogor</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <div class="flex flex-col items-center shrink-0">
-                                    <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 relative overflow-hidden shadow-xs border border-white">
-                                        <span class="absolute top-0.5 left-0.5 w-2 h-1 bg-white/70 rounded-full rotate-[-30deg] z-20"></span>
-                                    </span>
-                                    <span class="w-[2px] h-1.5 bg-gray-900"></span>
-                                </div>
-                                <span class="text-gray-700 dark:text-gray-300">Kantor Kecamatan</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <div class="flex flex-col items-center shrink-0">
-                                    <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-red-500 to-red-700 relative overflow-hidden shadow-xs border border-white">
-                                        <span class="absolute top-0.5 left-0.5 w-2 h-1 bg-white/70 rounded-full rotate-[-30deg] z-20"></span>
-                                    </span>
-                                    <span class="w-[2px] h-1.5 bg-gray-900"></span>
-                                </div>
-                                <span class="text-gray-700 dark:text-gray-300">Kantor Dinas & Pemkab</span>
+                            <!-- Search Results Dropdown -->
+                            <div id="map-search-results" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/90 dark:border-[#284c43] rounded-xl shadow-xl max-h-60 overflow-y-auto z-30 divide-y divide-gray-100 dark:divide-[#233a34]">
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Sisi Kanan: Daftar Rapat Dinas / Instansi (lg:col-span-4) -->
-                <div class="lg:col-span-4 bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-xl p-5 md:p-6 shadow-lg flex flex-col justify-between space-y-4">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between border-b border-gray-100 dark:border-[#233a34] pb-3">
-                            <div>
-                                <h4 class="font-bold text-gray-900 dark:text-white text-base leading-snug">Rapat Dinas & Instansi</h4>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Daftar agenda kegiatan di Pemkab Bogor</p>
+                    <div id="beranda-map" class="w-full h-full z-0 bg-[#e5e3df]"></div>
+
+                    <!-- Overlay Legend -->
+                    <div class="absolute bottom-3 left-3 z-20 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/80 dark:border-[#233a34] rounded-xl p-3 shadow-lg text-[11px] space-y-1.5 pointer-events-auto max-w-[245px]">
+                        <p class="font-bold text-gray-900 dark:text-white text-xs border-b border-gray-100 dark:border-[#284c43] pb-1">Keterangan Peta</p>
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-[#10b981] border border-emerald-700 shrink-0"></span>
+                            <span class="text-gray-700 dark:text-gray-300">Batas Kecamatan Kab. Bogor</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="flex flex-col items-center shrink-0">
+                                <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 relative overflow-hidden shadow-xs border border-white">
+                                    <span class="absolute top-0.5 left-0.5 w-2 h-1 bg-white/70 rounded-full rotate-[-30deg] z-20"></span>
+                                </span>
+                                <span class="w-[2px] h-1.5 bg-gray-900"></span>
                             </div>
+                            <span class="text-gray-700 dark:text-gray-300">Kantor Kecamatan</span>
                         </div>
-
-                        <!-- 3 List Rapat Terbaru -->
-                        <div class="space-y-3">
-                            @forelse ($agendaItems->take(3) as $agenda)
-                                @php
-                                    $isBerlangsung = $agenda->isBerlangsung();
-                                    $isSelesai = $agenda->isSelesai();
-                                @endphp
-                                <div class="rounded-xl p-3.5 space-y-2 transition-all duration-200 group relative overflow-hidden
-                                    {{ $isBerlangsung 
-                                        ? 'bg-gradient-to-br from-emerald-50/95 via-teal-50/90 to-white dark:from-[#132c25] dark:via-[#16382d] dark:to-[#12241f] border-2 border-emerald-500/90 dark:border-emerald-400/90 shadow-sm' 
-                                        : ($isSelesai 
-                                            ? 'bg-gray-100/70 dark:bg-[#0d1715]/70 border border-gray-200/70 dark:border-[#1a2b27] opacity-85 hover:opacity-100' 
-                                            : 'bg-[#F8F7F4] dark:bg-[#0f1c19] border border-gray-200/70 dark:border-[#233a34] hover:border-ijo-tua dark:hover:border-emerald-500/50') }}">
-                                    
-                                    <div class="flex items-center justify-between gap-2 text-[10px]">
-                                        @if ($isBerlangsung)
-                                            <span class="bg-emerald-600 text-white font-extrabold px-2.5 py-0.5 rounded-full inline-flex items-center space-x-1 shadow-xs">
-                                                <span class="relative flex h-1.5 w-1.5">
-                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                                                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
-                                                </span>
-                                                <span>Berlangsung</span>
-                                            </span>
-                                        @elseif ($isSelesai)
-                                            <span class="bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-300/60 dark:border-gray-700 font-medium px-2 py-0.5 rounded-full">
-                                                Selesai
-                                            </span>
-                                        @else
-                                            <span class="bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50 font-bold px-2 py-0.5 rounded-full">
-                                                {{ $agenda->status_label }}
-                                            </span>
-                                        @endif
-
-                                        <span class="{{ $isBerlangsung ? 'text-emerald-900 dark:text-emerald-300 font-bold' : ($isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400 font-medium') }}">
-                                            {{ substr((string) $agenda->waktu, 0, 5) }} WIB
-                                        </span>
-                                    </div>
-
-                                    <div>
-                                        <h5 class="font-bold text-xs leading-snug line-clamp-2 transition-colors {{ $isBerlangsung ? 'text-emerald-950 dark:text-white group-hover:text-emerald-700' : ($isSelesai ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-white group-hover:text-ijo-tua dark:group-hover:text-emerald-400') }}">
-                                            {{ $agenda->nama_agenda }}
-                                        </h5>
-                                        <p class="text-[10px] font-semibold text-ijo-tua dark:text-emerald-400 mt-0.5 truncate">
-                                            {{ $agenda->dinas?->nama_dinas ?? 'Diskominfo Kab. Bogor' }}
-                                        </p>
-                                        <p class="text-[11px] {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400' }} mt-0.5 truncate">
-                                            {{ $agenda->lokasi_display ?? 'Diskominfo Kab. Bogor' }}
-                                        </p>
-                                    </div>
-
-                                    <div class="pt-2 border-t {{ $isBerlangsung ? 'border-emerald-200 dark:border-emerald-800/50' : 'border-gray-200/50 dark:border-[#233a34]' }} flex items-center justify-between text-[11px]">
-                                        <span class="{{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400' }}">
-                                            {{ $agenda->tanggal ? \Carbon\Carbon::parse($agenda->tanggal)->translatedFormat('d M Y') : '-' }}
-                                        </span>
-                                        <a href="{{ route('publik.agenda.detail', $agenda->id_agenda) }}" class="font-bold {{ $isBerlangsung ? 'text-emerald-700 dark:text-emerald-300 hover:underline' : ($isSelesai ? 'text-gray-500 dark:text-gray-400 hover:underline' : 'text-ijo-tua dark:text-emerald-400 hover:underline') }}">
-                                            Detail
-                                        </a>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="bg-[#F8F7F4] dark:bg-[#0f1c19] rounded-xl p-6 text-center text-xs text-gray-500 dark:text-gray-400 border border-gray-200/60 dark:border-[#233a34]">
-                                    Belum ada rapat dinas terjadwal.
-                                </div>
-                            @endforelse
+                        <div class="flex items-center space-x-2">
+                            <div class="flex flex-col items-center shrink-0">
+                                <span class="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-red-500 to-red-700 relative overflow-hidden shadow-xs border border-white">
+                                    <span class="absolute top-0.5 left-0.5 w-2 h-1 bg-white/70 rounded-full rotate-[-30deg] z-20"></span>
+                                </span>
+                                <span class="w-[2px] h-1.5 bg-gray-900"></span>
+                            </div>
+                            <span class="text-gray-700 dark:text-gray-300">Kantor Dinas & Pemkab</span>
                         </div>
-                    </div>
-
-                    <!-- Tombol Selengkapnya ke Halaman Agenda -->
-                    <div class="pt-2">
-                        <a href="{{ route('publik.agenda') }}" class="w-full inline-flex items-center justify-center space-x-2 text-xs font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 py-3 rounded-xl transition-all shadow-xs group">
-                            <span>Selengkapnya</span>
-                        </a>
                     </div>
                 </div>
             </div>
