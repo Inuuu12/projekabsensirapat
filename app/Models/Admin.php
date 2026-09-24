@@ -57,7 +57,7 @@ class Admin extends Authenticatable
     {
         if ($this->isAdminDinas() && $this->id_dinas && $this->dinas) {
             $nama = $this->dinas->nama_dinas;
-            $kode = $this->dinas->kode_dinas ?: $nama;
+            $kode = $this->dinas->singkatan ?: ($this->dinas->kode_dinas ?: $nama);
             $alamat = $this->dinas->alamat ?: 'Cibinong, Kabupaten Bogor';
             return [
                 'tipe' => 'dinas',

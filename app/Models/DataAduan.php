@@ -27,15 +27,37 @@ class DataAduan extends Model
 
     protected static function booted(): void
     {
-        static::addGlobalScope('dinas', function (Builder $builder) {
-            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
-                $builder->where($builder->getQuery()->from . '.id_dinas', auth('admin')->user()->id_dinas);
+        static::addGlobalScope('instansi', function (Builder $builder) {
+            if (auth('admin')->check()) {
+                $user = auth('admin')->user();
+                $table = $builder->getQuery()->from;
+
+                // 1. Admin Dinas: Hanya tampilkan aduan yang ditujukan ke dinasnya
+                if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas) {
+                    if ((int) $user->id_dinas === 1) {
+                        $builder->where(function ($q) use ($table, $user) {
+                            $q->where($table . '.id_dinas', $user->id_dinas)
+                              ->orWhereNull($table . '.id_dinas');
+                        });
+                    } else {
+                        $builder->where($table . '.id_dinas', $user->id_dinas);
+                    }
+                }
+                // 2. Admin Kecamatan: Karena aduan publik saat ini khusus ditujukan ke Dinas / SKPD,
+                // admin kecamatan tidak melihat aduan milik dinas lain.
+                elseif (in_array($user->role, ['admin_kecamatan', 'kecamatan'])) {
+                    $builder->whereRaw('1 = 0');
+                }
+                // 3. Super Admin: Tetap melihat seluruh aduan
             }
         });
 
         static::creating(function ($model) {
-            if (auth('admin')->check() && auth('admin')->user()->role === 'admin_dinas') {
-                $model->id_dinas = auth('admin')->user()->id_dinas;
+            if (auth('admin')->check()) {
+                $user = auth('admin')->user();
+                if (in_array($user->role, ['admin_dinas', 'dinas']) && $user->id_dinas) {
+                    $model->id_dinas = $user->id_dinas;
+                }
             }
         });
     }

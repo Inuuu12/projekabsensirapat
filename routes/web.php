@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminPengajuanAgendaController;
 use App\Http\Controllers\AdminAgendaController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminDashboardController;
@@ -61,12 +60,8 @@ Route::prefix('admin')->group(function () {
 
         Route::redirect('/agenda', '/admin/agenda/lihat')->name('admin.agenda');
         Route::get('/agenda/cari', [AdminAgendaController::class, 'cari_Agenda']);
-        
-        // Pengajuan Agenda Pegawai
-        Route::get('/pengajuan-agenda', [AdminPengajuanAgendaController::class, 'index'])->name('admin.pengajuan.index');
-        Route::post('/pengajuan-agenda/{id}/setujui', [AdminPengajuanAgendaController::class, 'setujui'])->name('admin.pengajuan.setujui');
-        Route::post('/pengajuan-agenda/{id}/tolak', [AdminPengajuanAgendaController::class, 'tolak'])->name('admin.pengajuan.tolak');
-        Route::delete('/pengajuan-agenda/{id}', [AdminPengajuanAgendaController::class, 'destroy'])->name('admin.pengajuan.destroy');
+        // Redirect bekas pengajuan agenda ke daftar agenda
+        Route::redirect('/pengajuan-agenda', '/admin/agenda/lihat');
 
         // Halaman admin
         Route::get('/ruang', [AdminRuangController::class, 'daftarRuang'])->name('admin.ruang.lihat');
@@ -186,39 +181,26 @@ Route::prefix('admin')->group(function () {
 Route::post('/kehadiran/scan-qr', [KehadiranController::class, 'scan_QR']);
 Route::post('/kehadiran/verifikasi-fr', [KehadiranController::class, 'verifikasi_FaceRecognition']);
 
-// ROUTE GRUP PEGAWAI
+// ROUTE GRUP PEGAWAI (PENDAFTARAN & REGISTRASI AKUN PEGAWAI)
 Route::prefix('pegawai')->group(function () {
-    Route::get('/login', [PegawaiAuthController::class, 'showLoginForm'])->name('pegawai.login');
+    Route::redirect('/login', '/pegawai/daftar')->name('pegawai.login');
     Route::post('/login', [PegawaiAuthController::class, 'login'])->name('pegawai.login.submit');
     Route::post('/password/otp', [PegawaiAuthController::class, 'kirimOtpLupaPassword'])->name('pegawai.password.otp');
     Route::post('/password/reset', [PegawaiAuthController::class, 'resetPassword'])->name('pegawai.password.reset');
     Route::get('/daftar', [PegawaiAuthController::class, 'showRegisterForm'])->name('pegawai.register');
     Route::post('/daftar', [PegawaiAuthController::class, 'register'])->name('pegawai.register.submit');
+    Route::redirect('/dashboard', '/');
 
-    // Halaman presensi pegawai (jika belum login, langsung ke face recognition tanpa paksa login)
+    // Halaman presensi pegawai diarahkan langsung ke presensi publik (Scan Wajah / QR)
     Route::get('/presensi', function (\Illuminate\Http\Request $request) {
-        if (! Auth::guard('pegawai')->check()) {
-            return redirect()->route('publik.presensi.pegawai', array_filter(['agenda_id' => $request->query('agenda_id')]));
-        }
-        return app(\App\Http\Controllers\PegawaiAuthController::class)->presensi($request);
+        return redirect()->route('publik.presensi.pegawai', array_filter(['agenda_id' => $request->query('agenda_id')]));
     })->name('pegawai.presensi.index');
-
-    Route::middleware('auth:pegawai')->group(function () {
-        // Portal Pegawai
-        Route::get('/dashboard', [PegawaiAuthController::class, 'dashboard'])->name('pegawai.dashboard');
-        Route::get('/pengajuan-agenda', [PegawaiAuthController::class, 'pengajuanAgenda'])->name('pegawai.pengajuan.index');
-        Route::post('/pengajuan-agenda', [PegawaiAuthController::class, 'simpanPengajuanAgenda'])->name('pegawai.pengajuan.store');
-        Route::get('/booking-ruang', [PegawaiAuthController::class, 'bookingRuang'])->name('pegawai.booking.index');
-        Route::get('/history-rapat', [PegawaiAuthController::class, 'historyRapat'])->name('pegawai.history.index');
-        Route::get('/profil', [PegawaiAuthController::class, 'profilPegawai'])->name('pegawai.profil.index');
-
-        // Presensi & Profil existing
-        Route::post('/presensi', [PegawaiAuthController::class, 'simpanPresensi'])->name('pegawai.presensi.submit');
-        Route::post('/profil/password-otp', [PegawaiAuthController::class, 'kirimOtpPassword'])->name('pegawai.profil.password-otp');
-        Route::put('/profil/update', [PegawaiAuthController::class, 'updateProfil'])->name('pegawai.profil.update');
-        Route::post('/profil/face', [PegawaiAuthController::class, 'updateFace'])->name('pegawai.profil.face');
-        Route::post('/logout', [PegawaiAuthController::class, 'logout'])->name('pegawai.logout');
-    });
+    // Fallback redirect untuk bekas menu portal pegawai
+    Route::redirect('/booking-ruang', '/');
+    Route::redirect('/pengajuan-agenda', '/');
+    Route::redirect('/history-rapat', '/');
+    Route::redirect('/profil', '/');
+    Route::post('/logout', fn () => redirect()->route('publik.beranda'))->name('pegawai.logout');
 });
 
 // Fitur pengaduan masyarakat

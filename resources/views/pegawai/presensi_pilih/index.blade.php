@@ -170,38 +170,33 @@
                     </div>
 
                     <div id="methods-list" class="grid grid-cols-1 gap-3.5">
-                        <!-- Opsi 1: Scan Wajah -->
+                        <!-- Opsi Utama: Scan Wajah -->
                         <a id="btn-scan-wajah" href="{{ route('publik.presensi.pegawai.wajah', $routeParams) }}" class="method-option pointer-events-none opacity-40 grayscale cursor-not-allowed border-2 border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-5 text-center flex items-center space-x-4 transition-all duration-300 relative group overflow-hidden select-none">
-                            <div class="w-14 h-14 rounded-full bg-gray-200 dark:bg-[#152420] text-gray-400 dark:text-gray-500 method-icon-bg flex items-center justify-center text-2xl shrink-0 transition-colors">
+                            <div class="w-14 h-14 rounded-2xl bg-gray-200 dark:bg-[#152420] text-gray-400 dark:text-gray-500 method-icon-bg flex items-center justify-center text-2xl shrink-0 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
                             </div>
                             <div class="text-left flex-1 min-w-0">
                                 <div class="flex items-center justify-between">
-                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">Scan Wajah (Otomatis)</h4>
+                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white">Scan Wajah (Face Recognition)</h4>
                                     <span class="lock-indicator text-[10px] font-bold text-gray-400 dark:text-gray-500 bg-gray-200/80 dark:bg-gray-800 px-2 py-0.5 rounded-md flex items-center gap-1">
                                         <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
                                         <span>Terkunci</span>
                                     </span>
                                 </div>
-                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1 leading-tight">Gunakan kamera untuk absen cepat</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1 leading-tight">Presensi otomatis dengan verifikasi biometrik wajah</p>
                             </div>
                         </a>
 
-                        <!-- Opsi 2: Login Manual -->
-                        <a id="btn-login-manual" href="{{ route('pegawai.login', $routeParams) }}" class="method-option pointer-events-none opacity-40 grayscale cursor-not-allowed border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] rounded-2xl p-5 text-center flex items-center space-x-4 transition-all duration-300 relative group overflow-hidden select-none">
-                            <div class="w-14 h-14 rounded-full bg-gray-200 dark:bg-[#152420] text-gray-400 dark:text-gray-500 method-icon-bg flex items-center justify-center text-xl shrink-0 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <!-- Opsi Bantuan: Belum Terdaftar -->
+                        <a href="{{ route('pegawai.register') }}" class="border border-dashed border-gray-300 dark:border-[#284c43] bg-gray-50/70 dark:bg-[#0f1c19]/50 hover:bg-emerald-50/50 dark:hover:bg-[#152420] rounded-2xl p-4 text-center flex items-center space-x-4 transition-all duration-300 group">
+                            <div class="w-11 h-11 rounded-xl bg-gray-100 dark:bg-[#152420] text-gray-500 dark:text-gray-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 flex items-center justify-center text-lg shrink-0 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                             </div>
                             <div class="text-left flex-1 min-w-0">
-                                <div class="flex items-center justify-between">
-                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-ijo-tua dark:group-hover:text-emerald-400 transition-colors">Login Manual</h4>
-                                    <span class="lock-indicator text-[10px] font-bold text-gray-400 dark:text-gray-500 bg-gray-200/80 dark:bg-gray-800 px-2 py-0.5 rounded-md flex items-center gap-1">
-                                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
-                                        <span>Terkunci</span>
-                                    </span>
-                                </div>
-                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mt-1 leading-tight">Masuk dengan email dan password</p>
+                                <h4 class="font-bold text-xs text-gray-800 dark:text-gray-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">Belum Terdaftar Sebagai Pegawai?</h4>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Daftarkan akun dan rekam biometrik wajah Anda</p>
                             </div>
+                            <svg class="w-4 h-4 text-gray-400 group-hover:text-emerald-600 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </a>
                     </div>
                 </div>
@@ -366,10 +361,12 @@
                 const scanIcon = btnScan.querySelector('.method-icon-bg');
                 if (scanIcon) scanIcon.className = "w-14 h-14 rounded-full bg-ijo-tua dark:bg-[#107050] text-white flex items-center justify-center text-2xl shrink-0 shadow-xs border border-transparent dark:border-[#10b981]/30";
 
-                // Button Login Manual
-                btnLogin.className = "method-option border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] hover:border-ijo-tua dark:hover:border-emerald-500 rounded-2xl p-5 text-center flex items-center space-x-4 cursor-pointer hover:shadow-md hover:scale-[1.01] transition-all duration-300 group";
-                const loginIcon = btnLogin.querySelector('.method-icon-bg');
-                if (loginIcon) loginIcon.className = "w-14 h-14 rounded-full bg-gray-100 dark:bg-[#152420] text-gray-500 dark:text-gray-400 group-hover:bg-ijo-tua dark:group-hover:bg-[#107050] group-hover:text-white transition-colors flex items-center justify-center text-xl shrink-0";
+                // Button Login Manual (jika ada)
+                if (btnLogin) {
+                    btnLogin.className = "method-option border border-gray-200 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] hover:border-ijo-tua dark:hover:border-emerald-500 rounded-2xl p-5 text-center flex items-center space-x-4 cursor-pointer hover:shadow-md hover:scale-[1.01] transition-all duration-300 group";
+                    const loginIcon = btnLogin.querySelector('.method-icon-bg');
+                    if (loginIcon) loginIcon.className = "w-14 h-14 rounded-full bg-gray-100 dark:bg-[#152420] text-gray-500 dark:text-gray-400 group-hover:bg-ijo-tua dark:group-hover:bg-[#107050] group-hover:text-white transition-colors flex items-center justify-center text-xl shrink-0";
+                }
 
                 // Lock Badges
                 lockIndicators.forEach(el => {

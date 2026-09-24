@@ -113,11 +113,11 @@
         <div class="absolute -right-20 -bottom-24 h-72 w-72 rounded-full bg-white/5 dark:bg-white/5"></div>
         
         <!-- Back Button Top-Left -->
-        <a href="{{ route('pegawai.login') }}" 
+        <a href="{{ route('publik.beranda') }}" 
            class="absolute top-4 left-4 sm:top-5 sm:left-5 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white/90 hover:text-white bg-white/10 hover:bg-white/20 dark:bg-[#152420] dark:border dark:border-[#284c43] transition cursor-pointer z-20"
-           title="Kembali ke Login">
+           title="Kembali ke Beranda">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            <span class="hidden sm:inline">Kembali</span>
+            <span class="hidden sm:inline">Beranda</span>
         </a>
 
         <!-- Theme Toggle Top-Right -->
@@ -143,6 +143,16 @@
     <!-- Main Content -->
     <main class="flex flex-1 justify-center px-3.5 sm:px-6 py-6 sm:py-10">
         <section class="w-full max-w-xl md:max-w-2xl lg:max-w-3xl">
+            @if (session('status'))
+                <div class="mb-5 rounded-2xl border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50 dark:bg-emerald-950/40 p-4 text-xs sm:text-sm font-medium text-emerald-800 dark:text-emerald-200 shadow-xs flex items-start gap-3">
+                    <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5"></i>
+                    <div class="leading-relaxed">
+                        <strong class="font-bold text-emerald-900 dark:text-emerald-100">Pendaftaran Berhasil!</strong>
+                        <p class="mt-0.5">{{ session('status') }}</p>
+                    </div>
+                </div>
+            @endif
+
             @if ($errors->any())
                 <div class="mb-5 rounded-2xl border border-red-200 dark:border-red-800/80 bg-red-50 dark:bg-red-950/40 p-4 text-xs sm:text-sm font-medium text-red-700 dark:text-red-300 shadow-xs">
                     <div class="flex items-center gap-2 font-bold mb-1.5 text-red-800 dark:text-red-200">
@@ -161,7 +171,7 @@
                 <i data-lucide="info" class="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5 sm:mt-0"></i>
                 <div class="leading-relaxed">
                     <strong class="font-bold text-blue-900 dark:text-blue-100">Informasi Pendaftaran:</strong>
-                    Akun baru memerlukan verifikasi Administrator sebelum dapat digunakan untuk login dan presensi.
+                    Akun dan data rekaman biometrik wajah Anda akan diverifikasi Administrator. Setelah diverifikasi, Anda dapat langsung melakukan presensi rapat menggunakan Scan Wajah (Face Recognition) di lokasi rapat.
                 </div>
             </div>
 
@@ -462,13 +472,13 @@
 
                 <!-- Form Action Buttons -->
                 <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3.5 pt-4 sm:col-span-2 border-t border-gray-100 dark:border-[#233a34] mt-2">
-                    <a href="{{ route('pegawai.login') }}" class="inline-flex items-center justify-center sm:justify-start gap-1.5 text-xs sm:text-sm font-bold text-gray-600 dark:text-emerald-400 hover:text-sirapi-green dark:hover:underline py-1.5 transition">
+                    <a href="{{ route('publik.beranda') }}" class="inline-flex items-center justify-center sm:justify-start gap-1.5 text-xs sm:text-sm font-bold text-gray-600 dark:text-emerald-400 hover:text-sirapi-green dark:hover:underline py-1.5 transition">
                         <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                        <span>Sudah punya akun? Masuk di sini</span>
+                        <span>Kembali ke Beranda</span>
                     </a>
                     
                     <button type="submit" class="w-full sm:w-auto h-11 sm:h-12 rounded-xl bg-sirapi-green hover:bg-sirapi-greenSoft dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:border dark:border-[#10b981]/30 px-7 sm:px-8 text-xs sm:text-sm font-extrabold text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-sirapi-green/25 cursor-pointer flex items-center justify-center gap-2">
-                        <span>Daftar Akun</span>
+                        <span>Daftar Akun Pegawai</span>
                         <i data-lucide="user-plus" class="w-4 h-4"></i>
                     </button>
                 </div>

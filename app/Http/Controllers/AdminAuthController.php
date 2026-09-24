@@ -17,19 +17,19 @@ class AdminAuthController extends Controller
         if (Auth::guard('admin')->attempt($credentials)) {
             $user = Auth::guard('admin')->user();
 
-            // Batasi akun Dinas dan Kecamatan agar tidak bisa login ke portal Admin biasa (akan dikembangkan terpisah)
-            if (in_array($user->role, ['dinas', 'kecamatan'])) {
+            // Cek status aktif/nonaktif akun jika field status ada
+            if (isset($user->status) && $user->status === 'nonaktif') {
                 Auth::guard('admin')->logout();
 
                 if ($request->wantsJson()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Akun Dinas / Kecamatan tidak diizinkan login ke portal Admin Utama.',
+                        'message' => 'Akun Anda sedang dinonaktifkan. Silakan hubungi Super Admin.',
                     ], 403);
                 }
 
                 return back()->withErrors([
-                    'username' => 'Akun Dinas / Kecamatan tidak diizinkan masuk ke portal Admin Utama. Akses login khusus akan dikembangkan secara terpisah.',
+                    'username' => 'Akun Anda sedang dinonaktifkan. Silakan hubungi Super Admin.',
                 ])->onlyInput('username');
             }
 

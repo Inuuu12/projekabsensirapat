@@ -17,6 +17,7 @@ class AdminDinasController extends Controller
             ->when($keyword !== '', function ($query) use ($keyword) {
                 $query->where(function ($search) use ($keyword) {
                     $search->where('nama_dinas', 'like', "%{$keyword}%")
+                        ->orWhere('singkatan', 'like', "%{$keyword}%")
                         ->orWhere('kode_dinas', 'like', "%{$keyword}%")
                         ->orWhere('alamat', 'like', "%{$keyword}%")
                         ->orWhere('telepon', 'like', "%{$keyword}%")
@@ -24,7 +25,7 @@ class AdminDinasController extends Controller
                         ->orWhere('kepala_dinas', 'like', "%{$keyword}%");
                 });
             })
-            ->latest('id_dinas')
+            ->orderBy('nama_dinas', 'asc')
             ->get();
 
         $totalDinas = Dinas::count();
@@ -41,12 +42,22 @@ class AdminDinasController extends Controller
     {
         $validated = $request->validate([
             'kode_dinas' => 'nullable|string|max:50|unique:sirapi_md_dinas,kode_dinas',
+            'singkatan' => 'nullable|string|max:50',
             'nama_dinas' => 'required|string|max:255',
             'alamat' => 'nullable|string',
             'telepon' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
             'kepala_dinas' => 'nullable|string|max:255',
+            'gps_lat' => 'nullable|string|max:50',
+            'gps_long' => 'nullable|string|max:50',
         ]);
+
+        if (empty($validated['kode_dinas']) && !empty($validated['singkatan'])) {
+            $validated['kode_dinas'] = strtoupper(str_replace(' ', '', $validated['singkatan']));
+        }
+        if (empty($validated['singkatan']) && !empty($validated['kode_dinas'])) {
+            $validated['singkatan'] = $validated['kode_dinas'];
+        }
 
         $dinas = Dinas::create($validated);
 
@@ -63,12 +74,22 @@ class AdminDinasController extends Controller
 
         $validated = $request->validate([
             'kode_dinas' => 'nullable|string|max:50|unique:sirapi_md_dinas,kode_dinas,' . $id . ',id_dinas',
+            'singkatan' => 'nullable|string|max:50',
             'nama_dinas' => 'required|string|max:255',
             'alamat' => 'nullable|string',
             'telepon' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
             'kepala_dinas' => 'nullable|string|max:255',
+            'gps_lat' => 'nullable|string|max:50',
+            'gps_long' => 'nullable|string|max:50',
         ]);
+
+        if (empty($validated['kode_dinas']) && !empty($validated['singkatan'])) {
+            $validated['kode_dinas'] = strtoupper(str_replace(' ', '', $validated['singkatan']));
+        }
+        if (empty($validated['singkatan']) && !empty($validated['kode_dinas'])) {
+            $validated['singkatan'] = $validated['kode_dinas'];
+        }
 
         $dinas->update($validated);
 

@@ -31,7 +31,8 @@ class AdminAkunDinasController extends Controller
                         ->orWhere('email', 'like', "%{$keyword}%")
                         ->orWhere('nomor_hp', 'like', "%{$keyword}%")
                         ->orWhereHas('dinas', function ($q) use ($keyword) {
-                            $q->where('nama_dinas', 'like', "%{$keyword}%");
+                            $q->where('nama_dinas', 'like', "%{$keyword}%")
+                                ->orWhere('singkatan', 'like', "%{$keyword}%");
                         });
                 });
             })

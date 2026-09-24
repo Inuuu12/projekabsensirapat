@@ -14,6 +14,7 @@ class Dinas extends Model
 
     protected $fillable = [
         'kode_dinas',
+        'singkatan',
         'nama_dinas',
         'alamat',
         'telepon',
@@ -22,6 +23,11 @@ class Dinas extends Model
         'gps_lat',
         'gps_long',
     ];
+
+    public function getSingkatanAttribute($value): string
+    {
+        return $value ?: ($this->kode_dinas ?: $this->nama_dinas);
+    }
 
     public function admins()
     {

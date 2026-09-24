@@ -62,7 +62,7 @@
                     <div class="w-8 h-0.5 bg-oren-utama mt-1"></div>
                 </div>
                 <ul class="space-y-2.5 text-xs text-gray-300">
-                    <li><a href="{{ route('pegawai.login') }}" class="hover:text-white transition-colors">Portal / Login Pegawai</a></li>
+                    <li><a href="{{ route('pegawai.register') }}" class="hover:text-white transition-colors">Pendaftaran Akun Pegawai</a></li>
                     <li><a href="{{ route('publik.masukan') }}" class="hover:text-white transition-colors">Formulir Pengaduan</a></li>
                 </ul>
             </div>

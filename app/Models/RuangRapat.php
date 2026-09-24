@@ -208,37 +208,6 @@ class RuangRapat extends Model
             }
         }
 
-        // 2. Cek Pengajuan Agenda Pegawai (sirapi_md_pengajuan_agenda: disetujui & pending)
-        $pengajuans = \App\Models\PengajuanAgenda::where('id_ruangrapat', $this->id_ruangrapat)
-            ->whereDate('tanggal', $tanggal)
-            ->whereIn('status', ['pending', 'disetujui'])
-            ->when($ignorePengajuanId, fn ($q) => $q->where('id_pengajuan', '!=', $ignorePengajuanId))
-            ->get();
-
-        foreach ($pengajuans as $p) {
-            $existDate = $p->tanggal instanceof Carbon ? $p->tanggal->toDateString() : (string) $p->tanggal;
-            $existStartTime = substr((string) $p->waktu, 0, 5) ?: '00:00';
-            $existEndTime = substr((string) $p->waktu_selesai, 0, 5);
-
-            $existStart = Carbon::parse($existDate . ' ' . $existStartTime, $timezone);
-            $existEnd = $existEndTime
-                ? Carbon::parse($existDate . ' ' . $existEndTime, $timezone)
-                : $existStart->copy()->addHour();
-
-            if ($existEnd->lessThanOrEqualTo($existStart)) {
-                $existEnd->addDay();
-            }
-
-            if ($targetStart->lt($existEnd) && $targetEnd->gt($existStart)) {
-                return [
-                    'nama' => $p->nama_agenda,
-                    'waktu_mulai' => $existStartTime,
-                    'waktu_selesai' => $existEndTime ?: 'selesai',
-                    'sumber' => $p->status === 'disetujui' ? 'Pengajuan Disetujui' : 'Pengajuan Pending',
-                ];
-            }
-        }
-
         return null;
     }
 }

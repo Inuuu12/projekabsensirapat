@@ -20,7 +20,7 @@
         <div class="hidden md:flex items-center gap-2.5 shrink-0">
             <nav class="flex items-center gap-1.5 text-xs font-semibold">
                 <a href="{{ route('publik.beranda') }}" 
-                   class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all {{ request()->routeIs('publik.beranda') ? 'bg-white/15 dark:bg-[#1a332d] dark:text-emerald-400 dark:border dark:border-[#284c43] text-white' : 'text-gray-200 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-[#152420] hover:text-white' }}">
+                   class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 {{ request()->routeIs('publik.beranda') ? 'bg-white/15 hover:bg-white/25 dark:bg-[#1a332d] dark:hover:bg-[#23453d] dark:text-emerald-400 dark:border dark:border-[#284c43] text-white shadow-xs' : 'text-gray-200 dark:text-gray-300 hover:bg-white/15 dark:hover:bg-[#152420] hover:text-white' }}">
                     Beranda
                 </a>
 
@@ -29,9 +29,9 @@
                     Aduan
                 </a>
 
-                <a href="{{ route('pegawai.login') }}" 
-                   class="px-3.5 py-2 bg-white/15 hover:bg-white/25 dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold rounded-xl shadow-xs text-xs transition-colors flex items-center gap-1.5">
-                    <span>Portal Pegawai</span>
+                <a href="{{ route('pegawai.register') }}" 
+                   class="px-4 py-2 bg-white text-[#35635b] hover:bg-white/90 dark:bg-[#107050] dark:hover:bg-[#0c5940] dark:text-white font-bold rounded-xl shadow-xs hover:shadow-md text-xs transition-all duration-200 active:scale-95">
+                    Daftar Pegawai
                 </a>
             </nav>
 
@@ -62,7 +62,7 @@
     <!-- Mobile Navigation Drawer / Dropdown -->
     <div id="mobile-publik-menu" class="hidden md:hidden border-t border-white/10 dark:border-[#233a34] bg-[#2b4f49] dark:bg-[#0f1c19] px-4 py-3 space-y-2 shadow-inner transition-all">
         <a href="{{ route('publik.beranda') }}" 
-           class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all {{ request()->routeIs('publik.beranda') ? 'bg-white/20 dark:bg-[#1a332d] text-white dark:text-emerald-400' : 'text-gray-200 dark:text-gray-300 hover:bg-white/10' }}">
+           class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 {{ request()->routeIs('publik.beranda') ? 'bg-white/15 hover:bg-white/25 dark:bg-[#1a332d] dark:hover:bg-[#23453d] text-white dark:text-emerald-400 dark:border dark:border-[#284c43]' : 'text-gray-200 dark:text-gray-300 hover:bg-white/15 dark:hover:bg-[#152420] hover:text-white' }}">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
             <span>Beranda</span>
         </a>
@@ -73,9 +73,9 @@
             <span>Sampaikan Aduan</span>
         </a>
 
-        <a href="{{ route('pegawai.login') }}" 
-           class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-white/15 dark:bg-[#107050] text-white hover:bg-white/25 transition-all">
-            <span>Portal Pegawai</span>
+        <a href="{{ route('pegawai.register') }}" 
+           class="block px-4 py-2.5 rounded-xl text-xs font-bold bg-white text-[#35635b] hover:bg-white/90 dark:bg-[#107050] dark:text-white dark:hover:bg-[#0c5940] transition-all duration-200 shadow-xs">
+            Daftar Pegawai
         </a>
     </div>
 </header>
