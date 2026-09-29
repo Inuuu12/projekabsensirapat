@@ -50,10 +50,6 @@
         @endphp
 
         <div class="bg-white dark:bg-[#152420] border border-gray-200/80 dark:border-[#233a34] rounded-xl p-6 md:p-8 max-w-lg w-full shadow-lg relative space-y-6 transition-colors">
-            <a href="{{ $agendaAktif ? route('publik.agenda.detail', $agendaAktif->id_agenda) : route('publik.agenda') }}" class="absolute top-6 right-6 w-8 h-8 rounded-full bg-gray-100 dark:bg-[#0f1c19] hover:bg-gray-200 dark:hover:bg-white/10 flex items-center justify-center text-gray-500 dark:text-gray-300 font-bold transition-colors cursor-pointer" title="Kembali">
-                &larr;
-            </a>
-
             <div class="space-y-1">
                 @if ($kehadiran ?? false)
                     <div class="flex items-center gap-2">
