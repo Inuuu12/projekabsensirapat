@@ -282,7 +282,7 @@
                          src="" 
                          alt="Lampiran Foto Aduan" 
                          ondblclick="toggleZoom()"
-                         class="max-h-[72vh] w-auto max-w-full object-contain rounded-lg shadow-lg border border-white/10 bg-[#0e1412] cursor-grab transition-all">
+                         class="max-h-[72vh] w-auto max-w-full object-contain rounded-lg shadow-lg cursor-grab transition-all">
                 </div>
             </div>
 

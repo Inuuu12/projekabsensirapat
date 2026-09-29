@@ -50,7 +50,7 @@
                         id="dinas-filter"
                         name="dinas"
                         onchange="document.getElementById('form-search-akun-dinas').submit()"
-                        class="h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 text-xs font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        class="h-10 w-full sm:w-auto shrink-0 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 text-xs font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                         <option value="semua" @selected(($dinasFilter ?? 'semua') === 'semua')>Semua Dinas</option>
                         @foreach ($masterDinas as $d)
                             <option value="{{ $d->id_dinas }}" @selected(($dinasFilter ?? 'semua') == $d->id_dinas)>{{ $d->nama_dinas }}</option>
@@ -60,7 +60,7 @@
                         id="status-filter"
                         name="status"
                         onchange="document.getElementById('form-search-akun-dinas').submit()"
-                        class="h-10 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 text-xs font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
+                        class="h-10 w-full sm:w-auto shrink-0 rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-50 dark:bg-[#0f1c19] px-3 text-xs font-medium text-gray-700 dark:text-white outline-none transition focus:border-[#35635b] focus:ring-2 focus:ring-[#35635b]/20">
                         <option value="semua" @selected(($statusFilter ?? 'semua') === 'semua')>Semua Status</option>
                         <option value="aktif" @selected(($statusFilter ?? '') === 'aktif')>Aktif</option>
                         <option value="nonaktif" @selected(($statusFilter ?? '') === 'nonaktif')>Nonaktif</option>
@@ -69,7 +69,7 @@
             </form>
 
             <!-- Right: Action Button -->
-            <button onclick="openModal('modal-tambah-akun-dinas')" class="bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer shrink-0">
+            <button onclick="openModal('modal-tambah-akun-dinas')" class="w-full sm:w-auto bg-[#35635b] hover:bg-[#2b4f49] dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-xs border border-transparent dark:border-[#10b981]/30 cursor-pointer shrink-0">
                 <span class="text-base leading-none">+</span>
                 <span>Tambah Akun Dinas</span>
             </button>

@@ -155,7 +155,8 @@ class PublicPageController extends Controller
                             ->orWhere('ditugaskan', 'like', "%{$keyword}%");
                     });
                 })
-                ->when($tab === 'mendatang', fn ($q) => $q->whereDate('tanggal', '>=', $today))
+                ->when($tab === 'hari-ini', fn ($q) => $q->whereDate('tanggal', '=', $today))
+                ->when($tab === 'mendatang', fn ($q) => $q->whereDate('tanggal', '>', $today))
                 ->when($tab === 'selesai', fn ($q) => $q->whereDate('tanggal', '<', $today))
                 ->orderByRaw('tanggal >= ? desc', [$today->toDateString()])
                 ->orderByRaw('CASE WHEN tanggal >= ? THEN tanggal END ASC', [$today->toDateString()])

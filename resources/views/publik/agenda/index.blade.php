@@ -54,8 +54,11 @@
                 <a href="{{ route('publik.agenda', array_filter(['tab' => 'semua', 'keyword' => $keyword])) }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors shrink-0 {{ ($tab ?? 'semua') === 'semua' ? 'bg-ijo-tua text-white dark:bg-[#107050]' : 'bg-gray-200/70 dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-300/70 dark:hover:bg-[#1e342e]' }}">
                     Semua Agenda ({{ $agendaItems->count() }})
                 </a>
+                <a href="{{ route('publik.agenda', array_filter(['tab' => 'hari-ini', 'keyword' => $keyword])) }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors shrink-0 {{ ($tab ?? '') === 'hari-ini' ? 'bg-ijo-tua text-white dark:bg-[#107050]' : 'bg-gray-200/70 dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-300/70 dark:hover:bg-[#1e342e]' }}">
+                    Hari Ini
+                </a>
                 <a href="{{ route('publik.agenda', array_filter(['tab' => 'mendatang', 'keyword' => $keyword])) }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors shrink-0 {{ ($tab ?? '') === 'mendatang' ? 'bg-ijo-tua text-white dark:bg-[#107050]' : 'bg-gray-200/70 dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-300/70 dark:hover:bg-[#1e342e]' }}">
-                    Hari Ini & Mendatang
+                    Mendatang
                 </a>
                 <a href="{{ route('publik.agenda', array_filter(['tab' => 'selesai', 'keyword' => $keyword])) }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors shrink-0 {{ ($tab ?? '') === 'selesai' ? 'bg-ijo-tua text-white dark:bg-[#107050]' : 'bg-gray-200/70 dark:bg-[#152420] text-gray-600 dark:text-gray-300 hover:bg-gray-300/70 dark:hover:bg-[#1e342e]' }}">
                     Selesai
@@ -86,6 +89,7 @@
                                     <p class="text-[10px] opacity-75">WIB</p>
                                 </div>
                                 <div class="space-y-1">
+                                    <p class="text-xs font-bold text-[#35635b] dark:text-emerald-400 flex items-center gap-1">{{ $item->dinas?->nama_dinas ?? 'Dinas Komunikasi dan Informatika' }}</p>
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <h4 class="font-bold text-sm {{ $isBerlangsung ? 'text-emerald-950 dark:text-white' : ($isSelesai ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-white') }}">{{ $item->nama_agenda }}</h4>
                                         @if (strtolower((string) ($item->kategori_surat ?? 'internal')) === 'internal')
@@ -96,7 +100,6 @@
                                             <span class="inline-flex items-center text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800/40">Pegawai & Tamu</span>
                                         @endif
                                     </div>
-                                    <p class="text-xs font-bold text-[#35635b] dark:text-emerald-400 flex items-center gap-1">{{ $item->dinas?->nama_dinas ?? 'Dinas Komunikasi dan Informatika' }}</p>
                                     <p class="text-xs {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-300' }}">{{ $item->lokasi_display ?? '-' }}</p>
                                 </div>
                             </div>

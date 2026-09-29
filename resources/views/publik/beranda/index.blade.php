@@ -364,6 +364,7 @@
                             </div>
 
                             <div class="space-y-1">
+                                <p class="text-xs font-bold text-[#35635b] dark:text-emerald-400">{{ $agenda->dinas?->nama_dinas ?? 'Diskominfo Kab. Bogor' }}</p>
                                 <div class="flex items-center gap-1.5 flex-wrap">
                                     <h4 class="font-bold text-sm leading-snug {{ $isBerlangsung ? 'text-emerald-950 dark:text-white' : ($isSelesai ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-white') }}">
                                         {{ $agenda->nama_agenda }}
@@ -376,7 +377,6 @@
                                         <span class="inline-flex items-center text-[9px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800/40">Pegawai & Tamu</span>
                                     @endif
                                 </div>
-                                <p class="text-xs font-bold text-[#35635b] dark:text-emerald-400">{{ $agenda->dinas?->nama_dinas ?? 'Diskominfo Kab. Bogor' }}</p>
                                 <p class="text-xs {{ $isSelesai ? 'text-gray-400 dark:text-gray-400' : 'text-gray-500 dark:text-gray-300' }}">{{ $agenda->lokasi_display ?? '-' }}</p>
                             </div>
                         </div>
@@ -404,7 +404,8 @@
         <section class="scroll-reveal space-y-5">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div class="min-w-0">
-                    <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Peta Sebaran Agenda & Kunjungan Kerja</h3>                </div>
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Peta Sebaran Agenda</h3>
+                </div>
             </div>
 
             <!-- Card Container Peta -->
@@ -437,7 +438,7 @@
                     <div class="absolute bottom-3 left-3 z-20 bg-white/95 dark:bg-[#152420]/95 backdrop-blur-md border border-gray-200/80 dark:border-[#233a34] rounded-xl p-3 shadow-lg text-[11px] space-y-1.5 pointer-events-auto max-w-[245px]">
                         <p class="font-bold text-gray-900 dark:text-white text-xs border-b border-gray-100 dark:border-[#284c43] pb-1">Keterangan Peta</p>
                         <div class="flex items-center space-x-2">
-                            <span class="w-3 h-3 rounded-full bg-[#10b981] border border-emerald-700 shrink-0"></span>
+                            <span class="w-5 h-1.5 rounded-full bg-[#10b981] shrink-0 inline-block shadow-2xs"></span>
                             <span class="text-gray-700 dark:text-gray-300">Batas Kecamatan Kab. Bogor</span>
                         </div>
                         <div class="flex items-center space-x-2">
@@ -640,18 +641,18 @@
                 </div>
 
                 <!-- Card Lampiran Foto -->
-                <div id="home-aduan-photo-container" class="hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5 space-y-2 shadow-2xs">
+                <div id="home-aduan-photo-container" class="hidden rounded-2xl border border-gray-100 dark:border-[#233a34] bg-white dark:bg-[#0f1c19] p-5 space-y-3 shadow-2xs">
                     <p class="text-[10px] uppercase font-extrabold tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1.5">
                         <span>Lampiran Foto Aduan</span>
                     </p>
-                    <div class="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4 p-3.5 bg-gray-50/80 dark:bg-[#152420] rounded-2xl border border-gray-100 dark:border-[#284c43]">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                         <button type="button" 
                                 onclick="openHomePhotoModal()" 
-                                class="group relative inline-block overflow-hidden rounded-xl border border-gray-200 dark:border-[#284c43] bg-gray-100 dark:bg-[#0f1c19] transition hover:border-ijo-semitua hover:shadow-md cursor-pointer shrink-0"
+                                class="group relative inline-block overflow-hidden rounded-xl transition hover:opacity-90 cursor-pointer shrink-0"
                                 title="Klik untuk memperbesar foto">
-                            <img id="home-aduan-photo-img" src="" alt="Lampiran Foto" class="h-24 w-36 object-cover rounded-xl transition duration-200 group-hover:scale-105">
+                            <img id="home-aduan-photo-img" src="" alt="Lampiran Foto" class="h-24 w-36 object-cover rounded-xl transition duration-200 group-hover:scale-105 shadow-sm">
                             <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl">
-                                <span class="rounded-lg bg-white/95 dark:bg-[#0f1c19] px-2.5 py-1 text-[11px] font-bold text-ijo-tua dark:text-emerald-400 shadow-xs flex items-center gap-1 border border-transparent dark:border-[#284c43]">
+                                <span class="rounded-lg bg-white/95 dark:bg-[#0f1c19] px-2.5 py-1 text-[11px] font-bold text-ijo-tua dark:text-emerald-400 shadow-xs flex items-center gap-1">
                                     <span>Perbesar</span>
                                 </span>
                             </div>
@@ -699,7 +700,7 @@
         <div class="my-auto flex max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col rounded-3xl bg-white dark:bg-[#152420] text-gray-800 dark:text-slate-100 shadow-2xl overflow-hidden border border-gray-100 dark:border-[#233a34]">
             <div class="bg-ijo-tua dark:bg-[#0f1c19] text-white p-5 sm:p-6 flex items-start justify-between gap-4 border-b border-transparent dark:border-[#233a34] shrink-0">
                 <div>
-                    <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Cuaca API</p>
+                    <p class="text-xs uppercase tracking-wider text-white/70 dark:text-emerald-400 font-bold">Info Cuaca</p>
                     <h2 id="weather-location" class="text-lg sm:text-xl font-bold mt-1 text-white">Cibinong, Kabupaten Bogor</h2>
                     <p id="weather-updated" class="text-xs text-white/70 dark:text-gray-300 mt-1">Memuat data...</p>
                 </div>
