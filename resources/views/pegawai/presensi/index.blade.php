@@ -140,7 +140,7 @@
         $namaDepan = trim(explode(' ', $pegawai->nama_pegawai)[0] ?? $pegawai->nama_pegawai);
         $initials = collect(explode(' ', $pegawai->nama_pegawai))->filter()->take(2)->map(fn ($part) => strtoupper(substr($part, 0, 1)))->implode('');
         $fotoPegawai = $pegawai->foto
-            ? (str_starts_with($pegawai->foto, 'assets/foto/') || str_starts_with($pegawai->foto, 'foto/') ? asset($pegawai->foto) : asset('storage/' . $pegawai->foto))
+            ? (str_starts_with($pegawai->foto, 'assets/foto/') || str_starts_with($pegawai->foto, 'foto/') ? asset($pegawai->foto) : route('storage.media', ['path' => ltrim(str_replace('\\', '/', $pegawai->foto), '/')]))
             : null;
         $routeParams = $agendaAktif ? ['agenda_id' => $agendaAktif->id_agenda] : [];
         $lampiranAgenda = $agendaAktif?->lampiran ? basename($agendaAktif->lampiran) : null;

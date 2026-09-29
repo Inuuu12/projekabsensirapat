@@ -868,7 +868,10 @@ class PublicPageController extends Controller
             $kehadiran = DB::table('sirapi_md_kehadiran')
                 ->join('sirapi_md_peserta', 'sirapi_md_kehadiran.id_peserta', '=', 'sirapi_md_peserta.id_peserta')
                 ->where('sirapi_md_kehadiran.id_agenda', $agenda->id_agenda)
-                ->where('sirapi_md_peserta.email', $pegawai->email)
+                ->where(function ($q) use ($pegawai) {
+                    $q->where('sirapi_md_peserta.email', $pegawai->email)
+                      ->orWhereRaw('LOWER(sirapi_md_peserta.email) = ?', [strtolower($pegawai->email)]);
+                })
                 ->select(
                     'sirapi_md_kehadiran.*',
                     'sirapi_md_peserta.nama',
@@ -877,6 +880,7 @@ class PublicPageController extends Controller
                     'sirapi_md_peserta.nomor_hp',
                     'sirapi_md_peserta.email'
                 )
+                ->orderByDesc('sirapi_md_kehadiran.id_kehadiran')
                 ->first();
         }
 
@@ -895,10 +899,13 @@ class PublicPageController extends Controller
                     'sirapi_md_peserta.nomor_hp',
                     'sirapi_md_peserta.email'
                 )
+                ->orderByDesc('sirapi_md_kehadiran.id_kehadiran')
                 ->first();
 
             if ($kehadiran && !$pegawai) {
-                $pegawai = Pegawai::where('email', $kehadiran->email)->first();
+                $pegawai = Pegawai::where('email', $kehadiran->email)
+                    ->orWhereRaw('LOWER(email) = ?', [strtolower($kehadiran->email)])
+                    ->first();
             }
         }
 

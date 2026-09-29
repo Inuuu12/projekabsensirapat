@@ -104,19 +104,25 @@
                     <div class="rounded-xl border border-gray-200/90 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] p-4 text-left space-y-4 shadow-xs">
                         <div class="flex items-center space-x-3.5">
                             @php
+                                $rawFoto = $kehadiran->foto_kehadiran ?? $pegawai?->foto_wajah ?? $pegawai?->foto ?? null;
                                 $fotoUrl = null;
-                                if (!empty($kehadiran->foto_kehadiran)) {
-                                    $fotoUrl = asset('storage/' . $kehadiran->foto_kehadiran);
-                                } elseif (!empty($pegawai?->foto_wajah)) {
-                                    $fotoUrl = asset('storage/' . $pegawai->foto_wajah);
-                                } elseif (!empty($pegawai?->foto)) {
-                                    $fotoUrl = asset('storage/' . $pegawai->foto);
+                                if (!empty($rawFoto)) {
+                                    if (str_starts_with($rawFoto, 'http://') || str_starts_with($rawFoto, 'https://') || str_starts_with($rawFoto, 'data:image')) {
+                                        $fotoUrl = $rawFoto;
+                                    } else {
+                                        $cleanFotoPath = ltrim(str_replace('\\', '/', $rawFoto), '/');
+                                        if (str_starts_with($cleanFotoPath, 'storage/')) {
+                                            $cleanFotoPath = substr($cleanFotoPath, 8);
+                                        }
+                                        $fotoUrl = route('storage.media', ['path' => $cleanFotoPath]);
+                                    }
                                 }
                             @endphp
 
-                            <div class="relative w-16 h-16 shrink-0 rounded-2xl overflow-hidden border-2 border-emerald-500/60 shadow-xs bg-gray-100 dark:bg-gray-800">
+                            <div class="relative w-16 h-16 shrink-0 rounded-2xl overflow-hidden border-2 border-emerald-500/60 shadow-xs bg-gray-100 dark:bg-gray-800 {{ $fotoUrl ? 'cursor-pointer group' : '' }}" @if($fotoUrl) onclick="openBuktiFotoModal('{{ $fotoUrl }}', 'Bukti Presensi - {{ addslashes($pegawai?->nama_pegawai ?? $kehadiran->nama ?? 'Pegawai') }}')" title="Klik untuk memperbesar foto bukti" @endif>
                                 @if ($fotoUrl)
-                                    <img src="{{ $fotoUrl }}" alt="Foto Presensi" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"><div class="hidden w-full h-full flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl font-black">{{ strtoupper(substr($pegawai?->nama_pegawai ?? $kehadiran->nama ?? 'P', 0, 1)) }}</div>
+                                    <img src="{{ $fotoUrl }}" alt="Foto Presensi" class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                                    <div class="hidden w-full h-full flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl font-black">{{ strtoupper(substr($pegawai?->nama_pegawai ?? $kehadiran->nama ?? 'P', 0, 1)) }}</div>
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl font-black">
                                         {{ strtoupper(substr($pegawai?->nama_pegawai ?? $kehadiran->nama ?? 'P', 0, 1)) }}
@@ -126,9 +132,17 @@
                             </div>
 
                             <div class="min-w-0 flex-1">
-                                <h3 class="font-extrabold text-sm text-gray-900 dark:text-white truncate">
-                                    {{ $pegawai?->nama_pegawai ?? $kehadiran->nama }}
-                                </h3>
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-extrabold text-sm text-gray-900 dark:text-white truncate">
+                                        {{ $pegawai?->nama_pegawai ?? $kehadiran->nama }}
+                                    </h3>
+                                    @if ($fotoUrl)
+                                        <button type="button" onclick="openBuktiFotoModal('{{ $fotoUrl }}', 'Bukti Presensi - {{ addslashes($pegawai?->nama_pegawai ?? $kehadiran->nama ?? 'Pegawai') }}')" class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1 cursor-pointer">
+                                            <span>Lihat Foto</span>
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                        </button>
+                                    @endif
+                                </div>
                                 <p class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
                                     NIP. {{ $pegawai?->nip ?? '-' }}
                                 </p>
@@ -595,5 +609,44 @@
         });
     </script>
     @endif
+    <!-- Modal Preview Foto Bukti Presensi -->
+    <div id="modal-bukti-foto" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-xs p-4" onclick="closeBuktiFotoModal()">
+        <div class="relative max-w-sm sm:max-w-md w-full bg-white dark:bg-[#152420] rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-[#284c43]" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between p-4 border-b border-gray-100 dark:border-[#233a34]">
+                <h4 id="modal-bukti-foto-title" class="font-extrabold text-sm text-gray-900 dark:text-white truncate">Bukti Presensi Scan Wajah</h4>
+                <button type="button" onclick="closeBuktiFotoModal()" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-[#0f1c19] text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white flex items-center justify-center font-bold text-lg cursor-pointer transition">&times;</button>
+            </div>
+            <div class="p-3 bg-gray-950 flex items-center justify-center min-h-[220px]">
+                <img id="modal-bukti-foto-img" src="" alt="Bukti Presensi" class="max-h-[60vh] max-w-full rounded-xl object-contain shadow-md">
+            </div>
+            <div class="p-3 bg-gray-50 dark:bg-[#0f1c19] text-center border-t border-gray-100 dark:border-[#233a34]">
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    Terverifikasi Biometrik Face Recognition
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openBuktiFotoModal(url, title) {
+            const modal = document.getElementById('modal-bukti-foto');
+            const img = document.getElementById('modal-bukti-foto-img');
+            const titleEl = document.getElementById('modal-bukti-foto-title');
+            if (modal && img) {
+                img.src = url;
+                if (titleEl && title) titleEl.textContent = title;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+        function closeBuktiFotoModal() {
+            const modal = document.getElementById('modal-bukti-foto');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+    </script>
 </body>
 </html>
