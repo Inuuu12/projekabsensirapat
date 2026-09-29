@@ -796,6 +796,10 @@ class PegawaiAuthController extends Controller
             $waktuHadir = $kehadiran->created_at ? Carbon::parse($kehadiran->created_at)->timezone(self::TIMEZONE)->format('H:i') : null;
             $pesan = "Presensi Wajah berhasil untuk {$pegawai->nama_pegawai}!";
             if ($request->hasSession()) {
+                $request->session()->put('presensi_sukses_' . $agenda->id_agenda, [
+                    'id_pegawai' => $pegawai->id_pegawai,
+                ]);
+                $request->session()->put('last_id_kehadiran_' . $agenda->id_agenda, $kehadiran->id_kehadiran);
                 $request->session()->flash('success', $pesan);
             }
 
@@ -803,7 +807,7 @@ class PegawaiAuthController extends Controller
                 'success' => true,
                 'already_present' => true,
                 'message' => $pesan,
-                'redirect_url' => route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda]),
+                'redirect_url' => route('publik.presensi.pegawai', ['agenda_id' => $agenda->id_agenda]),
             ]);
         }
 
@@ -822,14 +826,22 @@ class PegawaiAuthController extends Controller
             $fotoScanPath
         );
 
+        $newKehadiran = $this->kehadiranPegawai($agenda->id_agenda, $pegawai->email);
+
         if ($request->hasSession()) {
+            $request->session()->put('presensi_sukses_' . $agenda->id_agenda, [
+                'id_pegawai' => $pegawai->id_pegawai,
+            ]);
+            if ($newKehadiran) {
+                $request->session()->put('last_id_kehadiran_' . $agenda->id_agenda, $newKehadiran->id_kehadiran);
+            }
             $request->session()->flash('success', "Presensi berhasil dicatat untuk {$pegawai->nama_pegawai}!");
         }
 
         return response()->json([
             'success' => true,
             'message' => "Presensi Wajah berhasil untuk {$pegawai->nama_pegawai}!",
-            'redirect_url' => route('pegawai.presensi.index', ['agenda_id' => $agenda->id_agenda]),
+            'redirect_url' => route('publik.presensi.pegawai', ['agenda_id' => $agenda->id_agenda]),
         ]);
     }
 

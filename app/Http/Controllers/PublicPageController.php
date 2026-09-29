@@ -22,7 +22,9 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -852,7 +854,55 @@ class PublicPageController extends Controller
         if (!$agenda) {
             return redirect()->route('publik.agenda')->withErrors(['agenda' => 'Agenda tidak ditemukan.']);
         }
-        return view('pegawai.presensi_pilih.index', compact('agenda'));
+
+        // Cek pegawai yang sedang login atau dari sesi presensi terbaru
+        $pegawai = Auth::guard('pegawai')->user();
+        if (!$pegawai && $request->session()->has('presensi_sukses_' . $agenda->id_agenda)) {
+            $sessData = $request->session()->get('presensi_sukses_' . $agenda->id_agenda);
+            $pegawai = Pegawai::find($sessData['id_pegawai'] ?? null);
+        }
+
+        // Cari data kehadiran pegawai ini untuk agenda ini
+        $kehadiran = null;
+        if ($pegawai) {
+            $kehadiran = DB::table('sirapi_md_kehadiran')
+                ->join('sirapi_md_peserta', 'sirapi_md_kehadiran.id_peserta', '=', 'sirapi_md_peserta.id_peserta')
+                ->where('sirapi_md_kehadiran.id_agenda', $agenda->id_agenda)
+                ->where('sirapi_md_peserta.email', $pegawai->email)
+                ->select(
+                    'sirapi_md_kehadiran.*',
+                    'sirapi_md_peserta.nama',
+                    'sirapi_md_peserta.jabatan',
+                    'sirapi_md_peserta.instansi',
+                    'sirapi_md_peserta.nomor_hp',
+                    'sirapi_md_peserta.email'
+                )
+                ->first();
+        }
+
+        // Fallback jika ada last_id_kehadiran di sesi
+        if (!$kehadiran && $request->session()->has('last_id_kehadiran_' . $agenda->id_agenda)) {
+            $lastId = $request->session()->get('last_id_kehadiran_' . $agenda->id_agenda);
+            $kehadiran = DB::table('sirapi_md_kehadiran')
+                ->join('sirapi_md_peserta', 'sirapi_md_kehadiran.id_peserta', '=', 'sirapi_md_peserta.id_peserta')
+                ->where('sirapi_md_kehadiran.id_kehadiran', $lastId)
+                ->where('sirapi_md_kehadiran.id_agenda', $agenda->id_agenda)
+                ->select(
+                    'sirapi_md_kehadiran.*',
+                    'sirapi_md_peserta.nama',
+                    'sirapi_md_peserta.jabatan',
+                    'sirapi_md_peserta.instansi',
+                    'sirapi_md_peserta.nomor_hp',
+                    'sirapi_md_peserta.email'
+                )
+                ->first();
+
+            if ($kehadiran && !$pegawai) {
+                $pegawai = Pegawai::where('email', $kehadiran->email)->first();
+            }
+        }
+
+        return view('pegawai.presensi_pilih.index', compact('agenda', 'pegawai', 'kehadiran'));
     }
 
     public function presensiPegawaiWajah(Request $request)
@@ -862,6 +912,21 @@ class PublicPageController extends Controller
         if (!$agenda) {
             return redirect()->route('publik.agenda')->withErrors(['agenda' => 'Agenda tidak ditemukan.']);
         }
+
+        // Cek jika pegawai sudah login dan sudah hadir, langsung alihkan ke halaman bukti presensi
+        $pegawai = Auth::guard('pegawai')->user();
+        if ($pegawai) {
+            $sudahHadir = DB::table('sirapi_md_kehadiran')
+                ->join('sirapi_md_peserta', 'sirapi_md_kehadiran.id_peserta', '=', 'sirapi_md_peserta.id_peserta')
+                ->where('sirapi_md_kehadiran.id_agenda', $agenda->id_agenda)
+                ->where('sirapi_md_peserta.email', $pegawai->email)
+                ->exists();
+
+            if ($sudahHadir) {
+                return redirect()->route('publik.presensi.pegawai', ['agenda_id' => $agenda->id_agenda]);
+            }
+        }
+
         return view('pegawai.presensi_wajah.index', compact('agenda'));
     }
 }

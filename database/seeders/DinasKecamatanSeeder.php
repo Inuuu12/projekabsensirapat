@@ -210,28 +210,34 @@ class DinasKecamatanSeeder extends Seeder
                 'telepon' => '(021) 8758602',
                 'email' => 'inspektorat@bogorkab.go.id'
             ],
+            'POLISI' => [
+                'kode' => 'Pol',
+                'nama' => 'Polisi',
+                'telepon' => null,
+                'email' => null
+            ],
             'RSUD CIAWI' => [
                 'kode' => 'RSUD Ciawi',
-                'nama' => 'RSUD Idham Chalid Ciawi',
+                'nama' => 'Rumah Sakit Umum Daerah Idham Chalid Ciawi',
                 'telepon' => '(0251) 8240797',
                 'email' => 'rsudciawi@bogorkab.go.id',
                 'alamat' => 'Jl. Raya Puncak No.479, Bendungan, Kec. Ciawi, Kabupaten Bogor 16720'
             ],
             'RSUD CIBINONG' => [
                 'kode' => 'RSUD Cibinong',
-                'nama' => 'RSUD Bakti Pajajaran Cibinong',
+                'nama' => 'Rumah Sakit Umum Daerah Bakti Pajajaran Cibinong',
                 'telepon' => '(021) 8753482',
                 'email' => 'rsudcibinong@bogorkab.go.id'
             ],
             'RSUD CILEUNGSI' => [
                 'kode' => 'RSUD Cileungsi',
-                'nama' => 'RSUD RH. Satibi Cileungsi',
+                'nama' => 'Rumah Sakit Umum Daerah RH. Satibi Cileungsi',
                 'telepon' => '(021) 89934666',
                 'email' => 'rsudcileungsi@bogorkab.go.id'
             ],
             'RSUD LEUWILIANG' => [
                 'kode' => 'RSUD Leuwiliang',
-                'nama' => 'RSUD R. Moh. Noh Nur Leuwiliang',
+                'nama' => 'Rumah Sakit Umum Daerah R. Moh. Noh Nur Leuwiliang',
                 'telepon' => '(0251) 8643291',
                 'email' => 'rsudleuwiliang@bogorkab.go.id',
                 'alamat' => 'Jl. Raya Cibeber No.1, Leuwiliang, Kec. Leuwiliang, Kabupaten Bogor 16640'

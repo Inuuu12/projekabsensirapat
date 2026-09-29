@@ -55,8 +55,21 @@
             </a>
 
             <div class="space-y-1">
-                <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Metode Presensi</h1>
-                <p class="text-xs text-gray-500 dark:text-gray-300 font-medium">Pegawai &bull; {{ $agendaAktif?->nama_agenda ?? 'Belum ada agenda tersedia' }}</p>
+                @if ($kehadiran ?? false)
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" /></svg>
+                        </span>
+                        <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Tanda Terima Presensi</h1>
+                    </div>
+                    <p class="text-xs text-emerald-700 dark:text-emerald-400 font-extrabold flex items-center gap-1.5 pt-0.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Status: Telah Hadir (Presensi Sah)</span>
+                    </p>
+                @else
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Metode Presensi</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-300 font-medium">Pegawai &bull; {{ $agendaAktif?->nama_agenda ?? 'Belum ada agenda tersedia' }}</p>
+                @endif
                 <p class="text-xs text-gray-400 dark:text-gray-400">{{ substr((string) $agendaAktif?->waktu, 0, 5) ?: '-' }} WIB &bull; {{ $agendaAktif?->lokasi ?? '-' }}</p>
                 @if (strtolower((string) ($agendaAktif?->kategori_surat ?? '')) === 'masuk' && !empty($agendaAktif?->ditugaskan))
                     <div class="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-ijo-sangatmuda dark:bg-[#0f1c19] border border-transparent dark:border-[#284c43] px-3 py-1 text-xs font-bold text-ijo-tua dark:text-emerald-400">
@@ -68,7 +81,103 @@
 
             <hr class="border-gray-100 dark:border-[#233a34]">
 
-            @if ($agendaAktif && $agendaAktif->status_label === 'Selesai')
+            @if ($kehadiran ?? false)
+                <!-- KARTU BUKTI PRESENSI RESMI (TANDA TERIMA KEHADIRAN) -->
+                <div class="rounded-2xl border-2 border-emerald-500/80 bg-gradient-to-b from-emerald-50/70 to-white dark:from-[#0f241d] dark:to-[#152420] p-6 sm:p-7 space-y-6 shadow-md transition-all text-center">
+                    
+                    <!-- Status Icon & Label -->
+                    <div class="space-y-2">
+                        <div class="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-inner ring-4 ring-emerald-500/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Presensi Telah Tercatat
+                        </span>
+                        <h2 class="text-xl font-extrabold text-gray-900 dark:text-white pt-1">Bukti Kehadiran Resmi</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Anda telah berhasil melakukan presensi kehadiran pada agenda rapat ini.</p>
+                    </div>
+
+                    <!-- Foto Hasil Scan Wajah & Identitas Pegawai -->
+                    <div class="rounded-xl border border-gray-200/90 dark:border-[#284c43] bg-white dark:bg-[#0f1c19] p-4 text-left space-y-4 shadow-xs">
+                        <div class="flex items-center space-x-3.5">
+                            @php
+                                $fotoUrl = null;
+                                if (!empty($kehadiran->foto_kehadiran)) {
+                                    $fotoUrl = asset('storage/' . $kehadiran->foto_kehadiran);
+                                } elseif (!empty($pegawai?->foto_wajah)) {
+                                    $fotoUrl = asset('storage/' . $pegawai->foto_wajah);
+                                } elseif (!empty($pegawai?->foto)) {
+                                    $fotoUrl = asset('storage/' . $pegawai->foto);
+                                }
+                            @endphp
+
+                            <div class="relative w-16 h-16 shrink-0 rounded-2xl overflow-hidden border-2 border-emerald-500/60 shadow-xs bg-gray-100 dark:bg-gray-800">
+                                @if ($fotoUrl)
+                                    <img src="{{ $fotoUrl }}" alt="Foto Presensi" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"><div class="hidden w-full h-full flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl font-black">{{ strtoupper(substr($pegawai?->nama_pegawai ?? $kehadiran->nama ?? 'P', 0, 1)) }}</div>
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl font-black">
+                                        {{ strtoupper(substr($pegawai?->nama_pegawai ?? $kehadiran->nama ?? 'P', 0, 1)) }}
+                                    </div>
+                                @endif
+                                <span class="absolute bottom-0 inset-x-0 bg-emerald-600/90 text-[8px] text-white font-black text-center py-0.5 tracking-tighter">FACE VERIFIED</span>
+                            </div>
+
+                            <div class="min-w-0 flex-1">
+                                <h3 class="font-extrabold text-sm text-gray-900 dark:text-white truncate">
+                                    {{ $pegawai?->nama_pegawai ?? $kehadiran->nama }}
+                                </h3>
+                                <p class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+                                    NIP. {{ $pegawai?->nip ?? '-' }}
+                                </p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                                    {{ $pegawai?->jabatan ?? $kehadiran->jabatan ?? '-' }}
+                                </p>
+                                <p class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                                    {{ $pegawai?->bidang ?? $kehadiran->instansi ?? 'Pemerintah Kabupaten Bogor' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Data Rincian Presensi -->
+                        <div class="border-t border-gray-100 dark:border-[#233a34] pt-3 space-y-2 text-xs">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="text-gray-500 dark:text-gray-400">Metode Verifikasi:</span>
+                                <span class="font-bold text-gray-800 dark:text-gray-200 inline-flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                                    Scan Wajah Biometrik
+                                </span>
+                            </div>
+
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="text-gray-500 dark:text-gray-400">Waktu Tercatat:</span>
+                                <span class="font-extrabold text-emerald-700 dark:text-emerald-400">
+                                    {{ \Carbon\Carbon::parse($kehadiran->created_at)->timezone('Asia/Jakarta')->translatedFormat('l, d F Y') }} &bull; {{ \Carbon\Carbon::parse($kehadiran->created_at)->timezone('Asia/Jakarta')->format('H:i:s') }} WIB
+                                </span>
+                            </div>
+
+                            @if (!empty($kehadiran->lokasi_presensi))
+                                <div class="pt-1.5 border-t border-dashed border-gray-100 dark:border-[#233a34]">
+                                    <span class="block text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-0.5">Lokasi Presensi (GPS Real-Time):</span>
+                                    <p class="text-[11px] font-medium text-gray-700 dark:text-gray-300 leading-snug bg-gray-50 dark:bg-[#152420] p-2.5 rounded-lg border border-gray-200/60 dark:border-[#284c43]">
+                                        📍 {{ $kehadiran->lokasi_presensi }}
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="pt-2">
+                        <a href="{{ route('publik.agenda.detail', $agendaAktif->id_agenda) }}" class="w-full h-11 sm:h-12 rounded-xl bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] text-white text-xs sm:text-sm font-bold transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.99]">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                            <span>Kembali ke Detail Agenda</span>
+                        </a>
+                    </div>
+                </div>
+            @elseif ($agendaAktif && $agendaAktif->status_label === 'Selesai')
                 <div class="rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 p-6 text-center space-y-3">
                     <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 11 0 0118 0" /></svg>
@@ -202,14 +311,17 @@
                 </div>
             @endif
 
+            @if (!($kehadiran ?? false))
             <div class="text-center mt-6">
                 <a href="{{ $agendaAktif ? route('publik.agenda.detail', $agendaAktif->id_agenda) : route('publik.agenda') }}" class="text-xs font-semibold text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">Kembali ke Detail Agenda</a>
             </div>
+            @endif
         </div>
     </main>
 
     @include('publik.layout.footer')
 
+    @if (!($kehadiran ?? false))
     <!-- Script Live Real-Time Location Tracking, Map & Reverse Geocoding -->
     <script>
         const agendaId = "{{ $agendaAktif?->id_agenda ?? 0 }}";
@@ -482,5 +594,6 @@
             }
         });
     </script>
+    @endif
 </body>
 </html>
