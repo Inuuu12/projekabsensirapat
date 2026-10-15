@@ -675,6 +675,81 @@
                 </div>
             </div>
         </section>
+
+        <!-- 7. Section Panduan Video YouTube -->
+        <section id="section-panduan" class="scroll-reveal space-y-5">
+            <!-- Header Section -->
+            <div class="min-w-0">
+                <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Panduan Penggunaan RAPID</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Video tutorial dan petunjuk praktis untuk mengoptimalkan penggunaan seluruh layanan aplikasi.</p>
+            </div>
+
+            <!-- Content Grid: Video Showcase & Step Guides -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                <!-- Sisi Kiri: Video Player Frame dari YouTube -->
+                <div class="lg:col-span-8 bg-black rounded-lg border border-gray-100 dark:border-[#233a34] shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col justify-center">
+                    <!-- YouTube Iframe Responsive Container -->
+                    <div class="relative w-full aspect-video bg-black overflow-hidden group">
+                        {{-- 
+                            PETUNJUK: 
+                            - Variabel $youtubeEmbedUrl terisi otomatis dari pengaturan sistem.
+                            - Atau ganti src di bawah secara langsung dengan link embed video YouTube Anda:
+                              contoh: https://www.youtube.com/embed/KODE_VIDEO_YT
+                        --}}
+                        <iframe
+                            id="yt-panduan-player"
+                            class="w-full h-full"
+                            src="https://www.youtube.com/embed/dXaLD2k-OdM"
+                            title="Video Panduan Penggunaan RAPID"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Sisi Kanan: Panduan Langkah Cepat -->
+                <div class="lg:col-span-4 flex flex-col justify-between gap-3.5">
+                    <!-- 1. Form Pengajuan -->
+                    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-lg p-4 sm:p-5 shadow-xs flex items-start gap-3.5">
+                        <div class="w-9 h-9 rounded-md bg-emerald-50 dark:bg-[#1b3832] text-ijo-tua dark:text-emerald-400 font-extrabold text-sm flex items-center justify-center shrink-0 border border-emerald-200/50 dark:border-emerald-700/30 shadow-2xs">
+                            1
+                        </div>
+                        <div class="space-y-1 min-w-0 flex-1">
+                            <h4 class="font-bold text-xs sm:text-sm text-gray-900 dark:text-white">Form Pengajuan</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Ajukan pendaftaran kunjungan dinas, audiensi resmi, atau konsultasi langsung dengan jajaran Pemkab.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 2. Absensi Rapat -->
+                    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-lg p-4 sm:p-5 shadow-xs flex items-start gap-3.5">
+                        <div class="w-9 h-9 rounded-md bg-amber-50 dark:bg-amber-950/40 text-oren-tua dark:text-amber-300 font-extrabold text-sm flex items-center justify-center shrink-0 border border-amber-200/50 dark:border-amber-700/30 shadow-2xs">
+                            2
+                        </div>
+                        <div class="space-y-1 min-w-0 flex-1">
+                            <h4 class="font-bold text-xs sm:text-sm text-gray-900 dark:text-white">Absensi Rapat</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Presensi kehadiran agenda rapat kedinasan secara digital menggunakan Scan Wajah atau Kode QR unik.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Form Aduan -->
+                    <div class="bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-lg p-4 sm:p-5 shadow-xs flex items-start gap-3.5">
+                        <div class="w-9 h-9 rounded-md bg-blue-50 dark:bg-sky-950/40 text-biru-tua dark:text-sky-300 font-extrabold text-sm flex items-center justify-center shrink-0 border border-blue-200/50 dark:border-sky-800/30 shadow-2xs">
+                            3
+                        </div>
+                        <div class="space-y-1 min-w-0 flex-1">
+                            <h4 class="font-bold text-xs sm:text-sm text-gray-900 dark:text-white">Form Aduan</h4>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Sampaikan aspirasi, saran, dan pengaduan terkait layanan dinas secara mudah, cepat, dan transparan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Modal Detail Aduan Publik di Beranda (Z-Index 2000 untuk menutupi sticky navbar z-1001) -->
