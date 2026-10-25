@@ -255,110 +255,192 @@
 <body class="bg-[#F8F7F4] dark:bg-[#0d1614] font-sans antialiased text-gray-800 dark:text-slate-100 flex flex-col min-h-screen transition-colors duration-200 overflow-x-hidden">
     @include('publik.layout.navbarpublik')
 
-    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-6 sm:pt-8 space-y-16 sm:space-y-20">
-        @php
-            $agendaItems = collect($agendaBeranda ?? $agendaHariIni ?? [])->take(3);
-            $agendaTerbaruItems = collect($agendaTerbaru ?? []);
-            $beritaItems = collect($beritaTerbaru ?? []);
-            $galeriItems = collect($galeri ?? []);
-            $ulangTahunItems = collect($ulangTahun ?? []);
-            $masukanItems = collect($masukan ?? []);
-            $ulangTahunUtama = $ulangTahunHariIni ?? $ulangTahunItems->first();
-            $infoItems = $agendaTerbaruItems->pluck('nama_agenda')->merge($beritaItems->pluck('judul'))->take(4);
-            $initial = fn ($name) => collect(explode(' ', trim((string) $name)))->filter()->take(2)->map(fn ($word) => strtoupper(substr($word, 0, 1)))->join('') ?: 'DB';
-            $imageUrl = function ($path, $fallback = 'assets/foto/Agendahariini.png') {
-                if (! $path) {
-                    return asset($fallback);
-                }
+    @php
+        $agendaItems = collect($agendaBeranda ?? $agendaHariIni ?? [])->take(3);
+        $agendaTerbaruItems = collect($agendaTerbaru ?? []);
+        $beritaItems = collect($beritaTerbaru ?? []);
+        $galeriItems = collect($galeri ?? []);
+        $ulangTahunItems = collect($ulangTahun ?? []);
+        $masukanItems = collect($masukan ?? []);
+        $ulangTahunUtama = $ulangTahunHariIni ?? $ulangTahunItems->first();
+        $infoItems = $agendaTerbaruItems->pluck('nama_agenda')->merge($beritaItems->pluck('judul'))->take(4);
+        $initial = fn ($name) => collect(explode(' ', trim((string) $name)))->filter()->take(2)->map(fn ($word) => strtoupper(substr($word, 0, 1)))->join('') ?: 'DB';
+        $imageUrl = function ($path, $fallback = 'assets/foto/Agendahariini.png') {
+            if (! $path) {
+                return asset($fallback);
+            }
 
-                if (filter_var($path, FILTER_VALIDATE_URL)) {
-                    return $path;
-                }
+            if (filter_var($path, FILTER_VALIDATE_URL)) {
+                return $path;
+            }
 
-                $path = ltrim($path, '/');
+            $path = ltrim($path, '/');
 
-                if (str_starts_with($path, 'assets/foto/') || str_starts_with($path, 'foto/') || str_starts_with($path, 'uploads/')) {
-                    return asset($path);
-                }
+            if (str_starts_with($path, 'assets/foto/') || str_starts_with($path, 'foto/') || str_starts_with($path, 'uploads/')) {
+                return asset($path);
+            }
 
-                return asset('storage/' . $path);
-            };
-            $statusClass = fn ($status) => match (strtolower((string) $status)) {
-                'selesai' => 'bg-ijo-sangatmuda dark:bg-emerald-950/60 text-ijo-tua dark:text-emerald-300 dark:border dark:border-emerald-800/40',
-                'diproses', 'proses' => 'bg-biru-muda dark:bg-sky-950/60 text-biru-tua dark:text-sky-300 dark:border dark:border-sky-800/40',
-                default => 'bg-oren-muda dark:bg-amber-950/60 text-oren-tua dark:text-amber-300 dark:border dark:border-amber-800/40',
-            };
-            $maskEmail = function ($email) {
-                if (! $email || ! str_contains($email, '@')) {
-                    return '-';
-                }
+            return asset('storage/' . $path);
+        };
+        $statusClass = fn ($status) => match (strtolower((string) $status)) {
+            'selesai' => 'bg-ijo-sangatmuda dark:bg-emerald-950/60 text-ijo-tua dark:text-emerald-300 dark:border dark:border-emerald-800/40',
+            'diproses', 'proses' => 'bg-biru-muda dark:bg-sky-950/60 text-biru-tua dark:text-sky-300 dark:border dark:border-sky-800/40',
+            default => 'bg-oren-muda dark:bg-amber-950/60 text-oren-tua dark:text-amber-300 dark:border dark:border-amber-800/40',
+        };
+        $maskEmail = function ($email) {
+            if (! $email || ! str_contains($email, '@')) {
+                return '-';
+            }
 
-                [$local, $domain] = explode('@', $email, 2);
-                $visible = substr($local, 0, min(2, strlen($local)));
+            [$local, $domain] = explode('@', $email, 2);
+            $visible = substr($local, 0, min(2, strlen($local)));
 
-                return $visible . '***@' . $domain;
-            };
-            $getFotoUrl = function($path) {
-                if (empty($path) || $path === 'aduan/default.jpg') return null;
-                if (filter_var($path, FILTER_VALIDATE_URL)) return $path;
-                $cleanPath = ltrim(str_replace('\\', '/', $path), '/');
-                if (str_starts_with($cleanPath, 'storage/')) {
-                    $cleanPath = substr($cleanPath, 8);
-                }
-                return route('storage.media', ['path' => $cleanPath]);
-            };
-            $aduanDetailItems = $masukanItems->mapWithKeys(fn ($aduan) => [
-                $aduan->id_dataaduan => [
-                    'nama_pengadu' => $aduan->nama_pengadu,
-                    'email' => $maskEmail($aduan->email),
-                    'dinas_nama' => $aduan->dinas?->nama_dinas ?? 'Dinas Komunikasi dan Informatika',
-                    'isi_aduan' => $aduan->isi_aduan,
-                    'balasan_admin' => $aduan->balasan_admin ?: 'Belum ada balasan dari admin.',
-                    'status' => (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status,
-                    'tanggal' => $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d F Y, H:i') : '-',
-                    'foto_url' => $getFotoUrl($aduan->foto),
-                ],
-            ])->all();
-        @endphp
+            return $visible . '***@' . $domain;
+        };
+        $getFotoUrl = function($path) {
+            if (empty($path) || $path === 'aduan/default.jpg') return null;
+            if (filter_var($path, FILTER_VALIDATE_URL)) return $path;
+            $cleanPath = ltrim(str_replace('\\', '/', $path), '/');
+            if (str_starts_with($cleanPath, 'storage/')) {
+                $cleanPath = substr($cleanPath, 8);
+            }
+            return route('storage.media', ['path' => $cleanPath]);
+        };
+        $aduanDetailItems = $masukanItems->mapWithKeys(fn ($aduan) => [
+            $aduan->id_dataaduan => [
+                'nama_pengadu' => $aduan->nama_pengadu,
+                'email' => $maskEmail($aduan->email),
+                'dinas_nama' => $aduan->dinas?->nama_dinas ?? 'Dinas Komunikasi dan Informatika',
+                'isi_aduan' => $aduan->isi_aduan,
+                'balasan_admin' => $aduan->balasan_admin ?: 'Belum ada balasan dari admin.',
+                'status' => (strtolower((string) ($aduan->status ?? '')) === 'pending' || empty($aduan->status)) ? 'Menunggu' : $aduan->status,
+                'tanggal' => $aduan->created_at ? \Carbon\Carbon::parse($aduan->created_at)->translatedFormat('d F Y, H:i') : '-',
+                'foto_url' => $getFotoUrl($aduan->foto),
+            ],
+        ])->all();
+    @endphp
 
-        <!-- Header Grid (Ingin Bertemu Kami & Widget Cuaca) -->
-        <div id="section-layanan-data" class="scroll-reveal grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-            <!-- Sisi Kiri: Banner Kunjungan -->
-            <div class="lg:col-span-8 relative overflow-hidden bg-white dark:bg-[#152420] border border-gray-100 dark:border-[#233a34] rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-                <div class="flex items-center gap-4">
-                    <div>
-                        <p class="text-ijo-tua dark:text-emerald-400 text-[10px] font-bold uppercase tracking-widest">Layanan Kunjungan Resmi</p>
-                        <h3 class="font-bold text-gray-900 dark:text-white text-lg md:text-xl leading-snug mt-0.5">Ingin Bertemu Kami?</h3>
-                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 max-w-lg leading-relaxed">
-                            Ajukan pendaftaran kunjungan kerja, audiensi, atau konsultasi resmi dengan jajaran pimpinan Pemkab Bogor.
-                        </p>
-                    </div>
-                </div>
-                <a href="{{ route('publik.form-kunjungan') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-xs md:text-sm font-bold text-white bg-ijo-tua hover:bg-ijo-semitua dark:bg-[#107050] dark:hover:bg-[#0c5940] px-5 py-3 rounded-full transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 shrink-0 whitespace-nowrap">
-                    <span>Isi Form Kunjungan</span>
+    <!-- ===== HERO SECTION RESMI KABUPATEN BOGOR (BACKGROUND & WATERMARK) ===== -->
+    <header class="relative overflow-hidden bg-gradient-to-b from-[#35635b] via-[#244c43] to-[#1c3a33] dark:from-[#0f1c19] dark:via-[#132722] dark:to-[#0d1a17] text-white pt-10 sm:pt-14 md:pt-18 pb-24 sm:pb-28 md:pb-36 transition-colors duration-300">
+        <!-- Ambient Radial Glow Highlights -->
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-1/2 -right-24 w-96 h-96 bg-teal-300/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-1/3 w-80 h-80 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+        <!-- Watermark Lambang Daerah Pemkab Bogor (Sayaga Tohaga Prayoga) -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+            <img src="{{ asset('assets/foto/logo-bappenda.png') }}" 
+                 alt="Watermark Pemkab Bogor" 
+                 class="w-[340px] sm:w-[460px] md:w-[540px] lg:w-[620px] object-contain opacity-[0.06] dark:opacity-[0.04] filter brightness-125 dark:brightness-100 scale-105 transition-all">
+        </div>
+
+        <!-- Subtle Dot Texture Overlay -->
+        <div class="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none"></div>
+
+        <!-- Hero Content Container -->
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            
+            <!-- Official Tagline (Tanpa Background & Border) -->
+            <p class="text-[11px] sm:text-xs md:text-sm font-extrabold text-emerald-200/90 dark:text-emerald-300 tracking-widest uppercase mb-3 sm:mb-4">
+                Portal Resmi Layanan & Agenda Rapat Kabupaten Bogor
+            </p>
+
+            <!-- Main Heading -->
+            <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight md:leading-[1.15] drop-shadow-sm">
+                Selamat Datang di Portal <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-100 to-teal-200">RAPID</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="mt-3 sm:mt-5 text-xs sm:text-sm md:text-base lg:text-lg text-emerald-100/90 dark:text-gray-300 max-w-3xl mx-auto font-normal leading-relaxed">
+                Portal satu pintu pelayanan permohonan kunjungan kerja, koordinasi dinas, transparansi agenda rapat pimpinan, dan integrasi aspirasi ke seluruh instansi Pemerintah Kabupaten Bogor.
+            </p>
+
+            <!-- Action Buttons (CTA) -->
+            <div class="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+                <!-- Primary CTA: Baca Berita Terkini -->
+                <a href="#section-berita" 
+                   class="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 shadow-sm">
+                    <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+                    <span>Baca Berita Terkini</span>
+                </a>
+
+                <!-- Secondary CTA: Panduan RAPID -->
+                <a href="#section-panduan" 
+                   class="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 shadow-sm">
+                    <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Panduan RAPID</span>
+                </a>
+
+                <!-- Tertiary CTA: Sampaikan Aduan -->
+                <a href="#section-aduan" 
+                   class="inline-flex items-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 shadow-sm">
+                    <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                    <span>Sampaikan Aduan</span>
                 </a>
             </div>
 
-            <!-- Sisi Kanan: Cuaca Minimalis (Tanpa Card Box) -->
-            <button type="button" id="open-weather-modal" class="lg:col-span-4 flex items-center justify-between p-4 md:p-5 rounded-2xl hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-all text-left cursor-pointer group">
-                <div class="flex-1 min-w-0 space-y-1">
-                    <div class="flex items-center gap-1.5">
-                        <p id="home-weather-location" class="text-[11px] font-bold text-ijo-tua dark:text-emerald-400 tracking-wider uppercase truncate">Cibinong, Kab. Bogor</p>
-                    </div>
-                    <div class="flex items-baseline gap-2.5">
-                        <h2 id="home-weather-temp" class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">-</h2>
-                        <p id="home-weather-condition" class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">Memuat cuaca...</p>
-                    </div>
-                    <p id="home-weather-humidity" class="text-[10px] sm:text-[11px] font-medium text-gray-500 dark:text-gray-400 pt-0.5">
-                        Kelembapan - &bull; Klik untuk detail
+        </div>
+    </header>
+
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-12 sm:space-y-16">
+
+        <!-- ===== 1. FLOATING OVERLAPPING CARDS (DEPTH & LAYERING) ===== -->
+        <div class="-mt-14 sm:-mt-16 md:-mt-20 relative z-20 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+            
+            <!-- Card 1: Agenda Kedinasan -->
+            <a href="#section-agenda" class="group bg-white dark:bg-[#152420] border border-gray-200/90 dark:border-[#233a34] rounded-2xl p-5 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between block text-left">
+                <div class="space-y-1.5">
+                    <h3 class="font-bold text-gray-900 dark:text-white text-base md:text-lg group-hover:text-ijo-tua dark:group-hover:text-emerald-400 transition-colors">Agenda Hari Ini</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                        Jadwal rapat kedinasan pimpinan, ruang rapat, & agenda instansi terupdate.
                     </p>
                 </div>
-                <div id="home-weather-icon" class="text-4xl md:text-5xl shrink-0 group-hover:scale-110 transition-transform duration-300 ml-3"></div>
+                <div class="mt-4 pt-3 border-t border-gray-100 dark:border-[#233a34] flex items-center justify-between text-xs font-bold text-ijo-tua dark:text-emerald-400">
+                    <span>Lihat Agenda</span>
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </div>
+            </a>
+
+            <!-- Card 2: Form Kunjungan Kerja -->
+            <a href="{{ route('publik.form-kunjungan') }}" class="group bg-white dark:bg-[#152420] border border-gray-200/90 dark:border-[#233a34] rounded-2xl p-5 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between block text-left">
+                <div class="space-y-1.5">
+                    <h3 class="font-bold text-gray-900 dark:text-white text-base md:text-lg group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">Layanan Kunjungan</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                        Pengajuan audiensi & studi komparasi resmi ke SKPD atau Kecamatan.
+                    </p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-100 dark:border-[#233a34] flex items-center justify-between text-xs font-bold text-teal-700 dark:text-teal-400">
+                    <span>Ajukan Permohonan</span>
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </div>
+            </a>
+
+            <!-- Card 3: Cuaca & Live Monitoring Info -->
+            <button type="button" id="open-weather-modal" class="group bg-white dark:bg-[#152420] border border-gray-200/90 dark:border-[#233a34] rounded-2xl p-5 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between text-left cursor-pointer">
+                <div class="w-full space-y-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <p id="home-weather-location" class="text-[11px] font-bold text-ijo-tua dark:text-emerald-400 tracking-wider uppercase truncate">Cibinong, Kab. Bogor</p>
+                        </div>
+                        <div id="home-weather-icon" class="text-2xl md:text-3xl shrink-0 group-hover:scale-110 transition-transform"></div>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <h2 id="home-weather-temp" class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-none">-</h2>
+                        <p id="home-weather-condition" class="text-xs font-semibold text-gray-600 dark:text-gray-300 truncate">Memuat cuaca...</p>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-100 dark:border-[#233a34] flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 w-full">
+                    <span id="home-weather-humidity" class="truncate">Kelembapan - &bull; Klik detail</span>
+                    <span class="text-sky-600 dark:text-sky-400 font-bold group-hover:translate-x-1 transition-transform inline-flex items-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </span>
+                </div>
             </button>
+
         </div>
 
         <!-- 3. Section Agenda Hari Ini -->
-        <section class="scroll-reveal space-y-5">
+        <section id="section-agenda" class="scroll-reveal space-y-5 scroll-mt-24 md:scroll-mt-32">
             <div class="flex items-center justify-between gap-3">
                 <div class="min-w-0">
                     <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight truncate">{{ $agendaBerandaLabel ?? 'Agenda Hari Ini' }}</h3>
@@ -557,7 +639,7 @@
         </section>
 
         <!-- 5. Section Berita Terkini -->
-        <section class="scroll-reveal space-y-5">
+        <section id="section-berita" class="scroll-reveal space-y-5 scroll-mt-24 md:scroll-mt-32">
             <div class="flex items-center justify-between gap-3">
                 <div class="min-w-0">
                     <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Berita Terkini</h3>
@@ -602,7 +684,7 @@
         </section>
 
         <!-- 6. Section Daftar Aduan -->
-        <section class="scroll-reveal space-y-5">
+        <section id="section-aduan" class="scroll-reveal space-y-5 scroll-mt-24 md:scroll-mt-32">
             <!-- Header -->
             <div class="flex items-center justify-between gap-3">
                 <div class="min-w-0">
@@ -677,7 +759,7 @@
         </section>
 
         <!-- 7. Section Panduan Video YouTube -->
-        <section id="section-panduan" class="scroll-reveal space-y-5">
+        <section id="section-panduan" class="scroll-reveal space-y-5 scroll-mt-24 md:scroll-mt-32">
             <!-- Header Section -->
             <div class="min-w-0">
                 <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white leading-tight">Panduan Penggunaan RAPID</h3>
@@ -2279,9 +2361,46 @@
 
     @include('publik.layout.image-preview-modal')
 
-    <!-- Scroll Reveal Observer -->
+    <!-- Scroll Reveal Observer & Centered Smooth Scroll -->
     <script>
     (function() {
+        // Centered Smooth Scroll untuk button navigasi ke section
+        document.querySelectorAll('a[href^="#section-"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                const targetEl = document.querySelector(targetId);
+                if (!targetEl) return;
+
+                e.preventDefault();
+
+                const nav = document.querySelector('header');
+                const navHeight = nav ? nav.offsetHeight : 80;
+                const visibleHeight = window.innerHeight - navHeight;
+                const targetRect = targetEl.getBoundingClientRect();
+                const targetHeight = targetRect.height;
+
+                let targetScrollTop;
+                if (targetHeight < visibleHeight) {
+                    // Posisikan tepat di tengah area layar yang terlihat di bawah navbar
+                    const verticalMargin = (visibleHeight - targetHeight) / 2;
+                    targetScrollTop = window.pageYOffset + targetRect.top - navHeight - verticalMargin;
+                } else {
+                    // Jika elemen lebih tinggi dari layar, berikan padding lega di bawah navbar agar judul tidak kepotong
+                    targetScrollTop = window.pageYOffset + targetRect.top - navHeight - 32;
+                }
+
+                window.scrollTo({
+                    top: Math.max(0, Math.round(targetScrollTop)),
+                    behavior: 'smooth'
+                });
+
+                if (window.history && window.history.pushState) {
+                    window.history.pushState(null, null, targetId);
+                }
+            });
+        });
+
+        // Scroll Reveal Observer
         const revealEls = document.querySelectorAll('.scroll-reveal');
         if (!revealEls.length) return;
 
